@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { Menu } from "@/components/Menu";
-import { PageLoader } from "@/components/PageLoader";
-import { BackToTop } from "@/components/BackToTop";
+import { SiteChrome } from "@/components/SiteChrome";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 
@@ -39,9 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased bg-black text-white">
-        <PageLoader />
-        <Menu />
-        <BackToTop />
+        <SiteChrome />
         {children}
         <SpeedInsights />
         <Analytics />
