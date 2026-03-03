@@ -34,7 +34,7 @@ export function Menu() {
         <Link href="/" className="z-50">
           <Image
             src="/logos/f28/f28_white.png"
-            alt="f/28"
+            alt="f/2.8"
             width={120}
             height={60}
             className="h-12 w-auto"

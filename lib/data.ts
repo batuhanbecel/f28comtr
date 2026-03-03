@@ -46,7 +46,7 @@ export const photographers: Photographer[] = [
     fullName: 'ÖMÜR TEMEL',
     title: 'PHOTOGRAPHER',
     folder: 'omur-temel',
-    preview: '/portfolios/previews/omur-temel.jpg'
+    preview: '/portfolios/previews/omur-temel.webp'
   },
   {
     id: 'kerem-cakmak',
@@ -54,7 +54,7 @@ export const photographers: Photographer[] = [
     fullName: 'KEREM ÇAKMAK',
     title: 'RETOUCHER',
     folder: 'kerem-cakmak',
-    preview: '/portfolios/previews/kerem-cakmak.png'
+    preview: '/portfolios/previews/kerem-cakmak.webp'
   },
   {
     id: 'dogu-biricik',
@@ -62,7 +62,7 @@ export const photographers: Photographer[] = [
     fullName: 'DOĞU BİRİCİK',
     title: 'RETOUCHER',
     folder: 'dogu-biricik',
-    preview: '/portfolios/previews/dogu-biricik.jpg'
+    preview: '/portfolios/previews/dogu-biricik.webp'
   }
 ];
 

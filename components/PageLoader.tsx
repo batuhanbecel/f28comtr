@@ -39,7 +39,7 @@ export function PageLoader() {
         <div className="absolute inset-0 animate-ping opacity-20">
           <Image
             src="/logos/f28/f28_white.png"
-            alt="f/28"
+            alt="f/2.8"
             width={150}
             height={75}
             className="h-16 w-auto"
@@ -49,7 +49,7 @@ export function PageLoader() {
         <div className="relative animate-scale-fade">
           <Image
             src="/logos/f28/f28_white.png"
-            alt="f/28"
+            alt="f/2.8"
             width={150}
             height={75}
             className="h-16 w-auto"
