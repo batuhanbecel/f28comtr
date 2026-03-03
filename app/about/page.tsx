@@ -39,7 +39,7 @@ export default function AboutPage() {
           <h2 className="heading-lg text-center mb-16">
             Partner Agencies
           </h2>
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 items-center">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 items-center">
             {partnerLogos.map((logo) => {
               const brandName = logo.split('/').pop()?.replace(/\.(png|jpg|webp|svg)$/i, '') || '';
               return (
@@ -69,7 +69,7 @@ export default function AboutPage() {
           <h2 className="heading-lg text-center mb-16">
             Clients
           </h2>
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 items-center">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6 items-center">
             {clientLogos.map((logo) => {
               const brandName = logo.split('/').pop()?.replace(/\.(png|jpg|webp|svg)$/i, '') || '';
               return (
@@ -99,13 +99,13 @@ export default function AboutPage() {
           <h2 className="heading-lg text-center mb-16">
             Services
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {services.map((service, index) => (
               <div
                 key={service}
-                className="text-center p-5 glass-effect rounded-lg hover-lift"
+                className="text-center p-4 md:p-5 glass-effect rounded-lg hover-lift"
               >
-                <p className="label-text opacity-100 normal-case tracking-widest text-sm">{service}</p>
+                <p className="label-text opacity-100 normal-case tracking-widest text-xs md:text-sm">{service}</p>
               </div>
             ))}
           </div>

@@ -45,10 +45,10 @@ img, video {
 
 /* Typography System */
 .heading-hero {
-  font-size: clamp(2.5rem, 8vw, 6rem);
+  font-size: clamp(2rem, 8vw, 6rem);
   font-weight: 900;
-  letter-spacing: -0.05em;
-  line-height: 0.9;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
 }
 
 .text-shadow-lg {
@@ -56,31 +56,39 @@ img, video {
 }
 
 .heading-xl {
-  font-size: clamp(2rem, 5vw, 4rem);
+  font-size: clamp(1.75rem, 5vw, 4rem);
   font-weight: 300;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
 .heading-lg {
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-size: clamp(1.25rem, 3vw, 2.5rem);
   font-weight: 300;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .body-text {
-  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-size: clamp(0.9rem, 2vw, 1.25rem);
   font-weight: 300;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .label-text {
-  font-size: 0.75rem;
-  font-weight: 400;
+  font-size: 0.7rem;
+  font-weight: 500;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   opacity: 0.6;
+}
+
+/* Disable hover effects on touch-only devices */
+@media (hover: none) {
+  .hover-lift:hover {
+    transform: none;
+    box-shadow: none;
+  }
 }
 
 /* Modern design utilities */

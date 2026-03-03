@@ -23,11 +23,11 @@ export default function Home() {
         </div>
         
         <div className="relative h-full flex items-center justify-center px-6">
-          <div className="text-center transform transition-all duration-500 group-hover:scale-110">
-            <h1 className="heading-hero gradient-text mb-4 md:mb-6">
+          <div className="text-center transition-transform duration-500 md:group-hover:scale-105">
+            <h1 className="heading-hero gradient-text mb-3 md:mb-6">
               PRODUCTION
             </h1>
-            <p className="body-text opacity-60 group-hover:opacity-100 transition-opacity">
+            <p className="body-text opacity-80 md:opacity-60 md:group-hover:opacity-100 transition-opacity">
               Photography & Retouching
             </p>
           </div>
@@ -56,11 +56,11 @@ export default function Home() {
         </div>
         
         <div className="relative h-full flex items-center justify-center px-6">
-          <div className="text-center transform transition-all duration-500 group-hover:scale-110">
-            <h1 className="heading-hero gradient-text mb-4 md:mb-6">
+          <div className="text-center transition-transform duration-500 md:group-hover:scale-105">
+            <h1 className="heading-hero gradient-text mb-3 md:mb-6">
               AI BASED
             </h1>
-            <p className="body-text opacity-60 group-hover:opacity-100 transition-opacity">
+            <p className="body-text opacity-80 md:opacity-60 md:group-hover:opacity-100 transition-opacity">
               Artificial Intelligence & Creativity
             </p>
           </div>

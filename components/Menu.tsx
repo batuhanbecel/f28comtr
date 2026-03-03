@@ -39,7 +39,7 @@ export function Menu() {
   return (
     <>
       {/* Header */}
-      <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-6 md:p-8 transition-all duration-500 ${
+      <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-4 md:p-8 transition-all duration-500 ${
         isScrolled ? 'backdrop-blur-xl bg-black/40 shadow-lg' : ''
       }`}>
         <Link href="/" className="relative z-50 transform transition-transform duration-300 hover:scale-105">
@@ -48,7 +48,7 @@ export function Menu() {
             alt="f/2.8"
             width={120}
             height={60}
-            className="h-12 w-auto"
+            className="h-9 md:h-12 w-auto"
             priority
           />
         </Link>
@@ -97,9 +97,9 @@ export function Menu() {
         </div>
 
         {/* Menu Content */}
-        <div className="relative h-full flex flex-col items-center justify-center text-white p-8">
+        <div className="relative h-full flex flex-col items-center justify-center text-white px-6 py-8 md:p-8 overflow-y-auto">
           {/* Navigation Links */}
-          <nav className="flex flex-col items-center space-y-8 mb-16">
+          <nav className="flex flex-col items-center space-y-5 md:space-y-8 mb-10 md:mb-16">
             {menuItems.map((item, index) => (
               <div
                 key={item.href}
@@ -114,7 +114,7 @@ export function Menu() {
                 <Link
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className="group relative heading-hero text-white block"
+                  className="group relative text-white block text-[2rem] sm:text-[2.5rem] md:text-[4rem] lg:text-[5rem] font-black tracking-tight leading-none"
                 >
                   <span className="relative inline-block transition-transform duration-500 group-hover:translate-x-3">
                     <span className="relative z-10 transition-colors duration-500 group-hover:text-white/60">
@@ -130,7 +130,7 @@ export function Menu() {
 
           {/* Social Links */}
           <div
-            className="flex flex-col items-center space-y-4"
+            className="flex flex-col items-center space-y-3 md:space-y-4"
             style={{
               opacity: isVisible ? 1 : 0,
               transform: isVisible ? 'translateY(0px)' : 'translateY(30px)',
