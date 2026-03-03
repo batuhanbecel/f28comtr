@@ -3,6 +3,8 @@ import "./globals.css";
 import { Menu } from "@/components/Menu";
 import { PageLoader } from "@/components/PageLoader";
 import { BackToTop } from "@/components/BackToTop";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: "f/2.8 Production Agency | Photography & Retouching",
@@ -42,6 +44,8 @@ export default function RootLayout({
         <Menu />
         <BackToTop />
         {children}
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
