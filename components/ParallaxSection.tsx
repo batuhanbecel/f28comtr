@@ -72,15 +72,15 @@ export function ParallaxSection({ photographer, index }: ParallaxSectionProps) {
       
       <div className="relative z-10 text-white px-8 md:px-16 lg:px-24 max-w-7xl">
         <div className="space-y-6">
-          <p className="text-sm md:text-base lg:text-lg tracking-[0.4em] font-light uppercase opacity-90 fade-in-up" style={{animationDelay: '0.1s'}}>
+          <p className="label-text opacity-90 fade-in-up" style={{animationDelay: '0.1s'}}>
             {photographer.title}
           </p>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-8 leading-[0.95] fade-in-up" style={{animationDelay: '0.2s'}}>
+          <h2 className="heading-hero mb-8 fade-in-up" style={{animationDelay: '0.2s'}}>
             {photographer.fullName}
           </h2>
           <Link
             href={`/portfolio/${photographer.id}`}
-            className="group inline-flex items-center gap-4 text-sm md:text-base tracking-[0.25em] font-medium uppercase relative px-6 py-3 border border-white/30 hover:border-white/60 transition-all duration-300 hover:bg-white/10 backdrop-blur-sm fade-in-up"
+            className="group inline-flex items-center gap-4 label-text relative px-6 py-3 border border-white/30 hover:border-white/60 transition-all duration-300 hover:bg-white/10 backdrop-blur-sm fade-in-up"
             style={{animationDelay: '0.3s'}}
           >
             <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-1">

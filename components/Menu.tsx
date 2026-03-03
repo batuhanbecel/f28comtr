@@ -26,12 +26,27 @@ export function Menu() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isOpen]);
+
+  const menuItems = [
+    { href: '/', label: 'HOME' },
+    { href: '/production', label: 'PRODUCTION' },
+    { href: '/ai-based', label: 'AI BASED' },
+    { href: '/about', label: 'ABOUT US' },
+  ];
+
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-6 md:p-8 transition-all duration-300 ${
-        isScrolled ? 'backdrop-blur-md bg-black/30' : ''
+      <nav className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-6 md:p-8 transition-all duration-500 ${
+        isScrolled ? 'backdrop-blur-xl bg-black/40 shadow-lg' : ''
       }`}>
-        <Link href="/" className="z-50">
+        <Link href="/" className="z-50 transform transition-transform duration-300 hover:scale-105">
           <Image
             src="/logos/f28/f28_white.png"
             alt="f/2.8"
@@ -44,110 +59,141 @@ export function Menu() {
         
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="z-50 flex flex-col gap-1.5 w-8 h-8 items-center justify-center"
+          className="z-50 relative w-12 h-12 flex items-center justify-center group"
           aria-label="Toggle menu"
         >
-          <span className={`w-6 h-0.5 bg-white transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-2' : ''}`} />
-          <span className={`w-6 h-0.5 bg-white transition-all duration-300 ${isOpen ? 'opacity-0' : ''}`} />
-          <span className={`w-6 h-0.5 bg-white transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+          <div className="absolute inset-0 border border-white/20 rounded-full scale-100 group-hover:scale-110 group-hover:border-white/40 transition-all duration-300" />
+          <div className="relative flex flex-col gap-1.5 w-6">
+            <span className={`h-0.5 bg-white rounded-full transition-all duration-700 ease-out ${
+              isOpen ? 'rotate-45 translate-y-2' : ''
+            }`} />
+            <span className={`h-0.5 bg-white rounded-full transition-all duration-700 ${
+              isOpen ? 'opacity-0 scale-0' : 'opacity-100 scale-100'
+            }`} />
+            <span className={`h-0.5 bg-white rounded-full transition-all duration-700 ease-out ${
+              isOpen ? '-rotate-45 -translate-y-2' : ''
+            }`} />
+          </div>
         </button>
       </nav>
 
+      {/* Menu Overlay - Slide from right */}
       <div
-        className={`fixed inset-0 z-40 transition-all duration-500 ${
-          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        className={`fixed top-0 right-0 bottom-0 w-full md:w-2/3 lg:w-1/2 z-40 transition-all duration-700 ease-out ${
+          isOpen ? 'translate-x-0 pointer-events-auto opacity-100' : 'translate-x-full pointer-events-none opacity-0'
         }`}
       >
-        <div className="absolute inset-0">
+        {/* Background with parallax effect */}
+        <div className="absolute inset-0 overflow-hidden">
           <Image
             src="/menubg.webp"
             alt="Menu background"
             fill
             className="object-cover"
             priority
+            quality={85}
           />
-          <div className="absolute inset-0 bg-black/70" />
+          <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/85 to-black/90 backdrop-blur-sm" />
+          
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-white/20 via-white/5 to-white/20" />
         </div>
 
-        <div className="relative h-full flex flex-col items-center justify-center text-white px-6">
-          <div className="space-y-6 md:space-y-8 text-center mb-20">
-            <Link
-              href="/"
-              onClick={() => setIsOpen(false)}
-              className="block text-4xl md:text-6xl lg:text-7xl font-light tracking-wider hover:opacity-70 transition-opacity"
-            >
-              HOME
-            </Link>
-            <Link
-              href="/portfolios"
-              onClick={() => setIsOpen(false)}
-              className="block text-4xl md:text-6xl lg:text-7xl font-light tracking-wider hover:opacity-70 transition-opacity"
-            >
-              PORTFOLIOS
-            </Link>
-            <Link
-              href="/about"
-              onClick={() => setIsOpen(false)}
-              className="block text-4xl md:text-6xl lg:text-7xl font-light tracking-wider hover:opacity-70 transition-opacity"
-            >
-              ABOUT US
-            </Link>
-          </div>
+        {/* Menu Content */}
+        <div className="relative h-full flex flex-col justify-between text-white p-8 md:p-12 lg:p-16">
+          {/* Navigation Links */}
+          <nav className="flex-1 flex flex-col justify-center space-y-6 md:space-y-8">
+            {menuItems.map((item, index) => (
+              <div
+                key={item.href}
+                className={`transform transition-all duration-700 ${
+                  isOpen 
+                    ? 'translate-x-0 opacity-100' 
+                    : 'translate-x-20 opacity-0'
+                }`}
+                style={{ transitionDelay: isOpen ? `${(index + 1) * 100}ms` : '0ms' }}
+              >
+                <Link
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className="group relative inline-block heading-hero text-white hover:text-white/70 transition-all duration-500 hover:translate-x-2"
+                >
+                  {item.label}
+                </Link>
+              </div>
+            ))}
+          </nav>
 
-          <div className="absolute bottom-8 md:bottom-12 left-0 right-0 px-6">
-            <div className="max-w-2xl mx-auto">
-              <div className="grid md:grid-cols-2 gap-6 text-center md:text-left glass-effect p-6 rounded-lg">
-                <div className="space-y-3">
-                  <h3 className="text-xs tracking-[0.4em] mb-2 opacity-60 uppercase">Contact</h3>
-                  <a 
-                    href={`mailto:${contactInfo.email}`}
-                    className="block text-base md:text-lg hover:opacity-70 transition-opacity"
+          {/* Contact Section */}
+          <div 
+            className={`border-t border-white/10 pt-8 transform transition-all duration-700 delay-500 ${
+              isOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            }`}
+          >
+            <div className="space-y-6">
+              <div>
+                <h3 className="label-text mb-3">Contact</h3>
+                <a 
+                  href={`mailto:${contactInfo.email}`}
+                  className="block body-text hover:text-white/70 transition-colors duration-300"
+                >
+                  {contactInfo.email}
+                </a>
+              </div>
+              
+              <div>
+                <h3 className="label-text mb-3">Location</h3>
+                <p className="body-text opacity-80 text-sm">
+                  {contactInfo.address}<br/>
+                  {contactInfo.city}
+                </p>
+              </div>
+
+              <div>
+                <h3 className="label-text mb-3">Follow Us</h3>
+                <div className="flex gap-3">
+                  <Link 
+                    href={contactInfo.instagram} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="p-3 border border-white/20 rounded-lg hover:border-white/40 hover:bg-white/5 transition-all duration-300"
                   >
-                    {contactInfo.email}
-                  </a>
-                  <p className="text-sm md:text-base opacity-80 leading-relaxed">
-                    {contactInfo.address}<br/>
-                    {contactInfo.city}
-                  </p>
-                </div>
-                <div className="space-y-3">
-                  <h3 className="text-xs tracking-[0.4em] mb-2 opacity-60 uppercase">Follow Us</h3>
-                  <div className="flex gap-3 justify-center md:justify-start">
-                    <Link 
-                      href={contactInfo.instagram} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="p-3 glass-effect rounded-lg hover-lift"
-                    >
-                      <Image
-                        src="/logos/social/instagram.svg"
-                        alt="Instagram"
-                        width={24}
-                        height={24}
-                        className="w-6 h-6 filter brightness-0 invert"
-                      />
-                    </Link>
-                    <Link 
-                      href={contactInfo.linkedin} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="p-3 glass-effect rounded-lg hover-lift"
-                    >
-                      <Image
-                        src="/logos/social/linkedin.svg"
-                        alt="LinkedIn"
-                        width={24}
-                        height={24}
-                        className="w-6 h-6 filter brightness-0 invert"
-                      />
-                    </Link>
-                  </div>
+                    <Image
+                      src="/logos/social/instagram.svg"
+                      alt="Instagram"
+                      width={20}
+                      height={20}
+                      className="w-5 h-5 filter brightness-0 invert"
+                    />
+                  </Link>
+                  <Link 
+                    href={contactInfo.linkedin} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="p-3 border border-white/20 rounded-lg hover:border-white/40 hover:bg-white/5 transition-all duration-300"
+                  >
+                    <Image
+                      src="/logos/social/linkedin.svg"
+                      alt="LinkedIn"
+                      width={20}
+                      height={20}
+                      className="w-5 h-5 filter brightness-0 invert"
+                    />
+                  </Link>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Backdrop overlay */}
+      <div
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-30 transition-opacity duration-500 ${
+          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setIsOpen(false)}
+      />
     </>
   );
 }

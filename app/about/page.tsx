@@ -26,10 +26,10 @@ export default function AboutPage() {
           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-white rounded-full blur-3xl" />
         </div>
         <div className="relative z-10 text-center max-w-5xl mx-auto">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-12 leading-[0.9] gradient-text fade-in-up" style={{animationDelay: '0.1s'}}>
+          <h1 className="heading-hero gradient-text mb-12 fade-in-up" style={{animationDelay: '0.1s'}}>
             PRODUCTION<br/>IS OUR LIFE
           </h1>
-          <p className="text-lg md:text-xl font-light max-w-3xl mx-auto leading-relaxed opacity-80 fade-in-up" style={{animationDelay: '0.2s'}}>
+          <p className="body-text max-w-3xl mx-auto opacity-80 fade-in-up" style={{animationDelay: '0.2s'}}>
             Based in Istanbul since 2008, f/2.8 Production delivers high-quality photography and video services through an international portfolio. Working with many leading brands from around the world, the team provides efficient solutions for photography, video, CGI, animation, editing, and motion graphics.
           </p>
         </div>
@@ -38,7 +38,7 @@ export default function AboutPage() {
       {/* Partner Agencies */}
       <section className="py-24 px-6 md:px-12 bg-gradient-to-b from-white/5 to-transparent">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-light tracking-wider text-center mb-16 uppercase">
+          <h2 className="heading-lg text-center mb-16">
             Partner Agencies
           </h2>
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 items-center">
@@ -67,7 +67,7 @@ export default function AboutPage() {
       {/* Clients */}
       <section className="py-24 px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-light tracking-wider text-center mb-16 uppercase">
+          <h2 className="heading-lg text-center mb-16">
             Clients
           </h2>
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 items-center">
@@ -96,7 +96,7 @@ export default function AboutPage() {
       {/* Services Section - Bottom */}
       <section className="py-24 px-6 md:px-12 border-t border-white/5">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-light tracking-wider text-center mb-16 uppercase">
+          <h2 className="heading-lg text-center mb-16">
             Services
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -106,7 +106,7 @@ export default function AboutPage() {
                 className="text-center p-5 glass-effect rounded-lg hover-lift fade-in-up"
                 style={{animationDelay: `${index * 0.05}s`}}
               >
-                <p className="text-sm md:text-base font-light tracking-wide">{service}</p>
+                <p className="body-text">{service}</p>
               </div>
             ))}
           </div>
@@ -116,27 +116,27 @@ export default function AboutPage() {
       {/* Contact Section */}
       <section className="py-24 px-6 md:px-12 bg-gradient-to-b from-transparent to-white/5">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-light tracking-wider text-center mb-16 uppercase">
+          <h2 className="heading-lg text-center mb-16">
             Get in Touch
           </h2>
           <div className="grid md:grid-cols-2 gap-12 md:gap-16">
             <div className="space-y-8">
               <div className="glass-effect p-6 rounded-lg">
-                <h3 className="text-xs tracking-[0.4em] mb-3 opacity-60 uppercase">Address</h3>
-                <p className="text-base md:text-lg leading-relaxed opacity-90">
+                <h3 className="label-text mb-3">Address</h3>
+                <p className="body-text opacity-90">
                   {contactInfo.address}<br/>
                   {contactInfo.city}
                 </p>
               </div>
               <div className="glass-effect p-6 rounded-lg">
-                <h3 className="text-xs tracking-[0.4em] mb-3 opacity-60 uppercase">Email</h3>
-                <a href={`mailto:${contactInfo.email}`} className="text-base md:text-lg hover:opacity-70 transition-opacity">
+                <h3 className="label-text mb-3">Email</h3>
+                <a href={`mailto:${contactInfo.email}`} className="body-text hover:opacity-70 transition-opacity">
                   {contactInfo.email}
                 </a>
               </div>
             </div>
             <div className="glass-effect p-6 rounded-lg">
-              <h3 className="text-xs tracking-[0.4em] mb-6 opacity-60 uppercase">Follow Us</h3>
+              <h3 className="label-text mb-6">Follow Us</h3>
               <div className="flex gap-4">
                 <Link href={contactInfo.instagram} target="_blank" rel="noopener noreferrer" className="p-4 glass-effect rounded-lg hover-lift">
                   <Image

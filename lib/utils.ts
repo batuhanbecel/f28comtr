@@ -67,3 +67,25 @@ export function getClientLogos(): string[] {
     return [];
   }
 }
+
+export function getAIImages(): string[] {
+  const aiImagesPath = path.join(process.cwd(), 'public', 'ai-images');
+  
+  try {
+    const files = fs.readdirSync(aiImagesPath);
+    return files
+      .filter(file => {
+        if (!/\.(jpg|jpeg|png|webp)$/i.test(file)) return false;
+        
+        // Filter out 0-byte corrupted files
+        const filePath = path.join(aiImagesPath, file);
+        const stats = fs.statSync(filePath);
+        return stats.size > 1024; // Only include files larger than 1KB
+      })
+      .map(file => `/ai-images/${file}`)
+      .sort();
+  } catch (error) {
+    console.error('Error reading AI images:', error);
+    return [];
+  }
+}
