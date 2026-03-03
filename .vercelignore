@@ -1,0 +1,9 @@
+node_modules
+.git
+.vscode
+memory-bank
+scripts
+*.md
+AGENTS.md
+README.md
+!public/portfolios/**
