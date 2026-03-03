@@ -1,28 +1,31 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { photographers } from '@/lib/data';
-import { getPortfolioImages } from '@/lib/utils';
+import { photographers as staticPhotographers } from '@/lib/data';
+import { getPhotographers, getPhotographerImages } from '@/lib/db';
 import { MasonryGrid } from '@/components/MasonryGrid';
+
+export const revalidate = 60;
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export async function generateStaticParams() {
-  return photographers.map((photographer) => ({
+  return staticPhotographers.map((photographer) => ({
     id: photographer.id,
   }));
 }
 
 export default async function PortfolioPage({ params }: PageProps) {
   const { id } = await params;
+  const photographers = await getPhotographers();
   const photographer = photographers.find((p) => p.id === id);
 
   if (!photographer) {
     notFound();
   }
 
-  const images = getPortfolioImages(photographer.folder);
+  const images = await getPhotographerImages(id);
 
   return (
     <main className="min-h-screen">
