@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   output: 'export',
   images: {
     unoptimized: true,
+    formats: ['image/webp'],
   },
   compress: true,
   poweredByHeader: false,
@@ -15,6 +16,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['react-icons'],
     optimizeCss: true,
   },
+  trailingSlash: true,
 };
 
 export default nextConfig;
