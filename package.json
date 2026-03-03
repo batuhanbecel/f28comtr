@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/generate-image-manifest.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "generate-manifest": "node scripts/generate-image-manifest.js",
     "convert-images": "node scripts/convert-to-webp.js"
   },
   "dependencies": {
