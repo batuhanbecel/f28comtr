@@ -14,26 +14,26 @@ export default function PortfoliosPage() {
           <Link
             key={photographer.id}
             href={`/portfolio/${photographer.id}`}
-            className="group relative aspect-[4/5] overflow-hidden bg-gray-900"
+            className="group relative aspect-[4/5] overflow-hidden bg-gray-900 hover-lift rounded-sm"
           >
             <Image
               src={photographer.preview}
               alt={photographer.fullName}
               fill
-              className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
+              className="object-cover object-center transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               loading="eager"
               quality={85}
               placeholder="blur"
               blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
             />
-            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-all duration-300" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center text-white px-4">
-                <p className="text-xs md:text-sm tracking-[0.3em] mb-2 font-light opacity-80">
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-70 group-hover:opacity-90 transition-all duration-300" />
+            <div className="absolute inset-0 flex items-end p-6 md:p-8">
+              <div className="text-left text-white transform transition-transform duration-300 group-hover:translate-y-[-4px]">
+                <p className="text-xs tracking-[0.4em] mb-2 font-light opacity-80 uppercase">
                   {photographer.title}
                 </p>
-                <h2 className="text-3xl md:text-4xl font-bold tracking-wide">
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
                   {photographer.fullName}
                 </h2>
               </div>

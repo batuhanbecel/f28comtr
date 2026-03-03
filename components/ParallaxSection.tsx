@@ -68,46 +68,34 @@ export function ParallaxSection({ photographer, index }: ParallaxSectionProps) {
           blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
         />
       </div>
-      <div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-black/50" />
       
       <div className="relative z-10 text-white px-8 md:px-16 lg:px-24 max-w-7xl">
-        <p className="text-base md:text-xl lg:text-2xl tracking-[0.3em] mb-4 font-black uppercase">
-          {photographer.title}
-        </p>
-        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-wide mb-8 leading-tight">
-          {photographer.fullName}
-        </h2>
-        <Link
-          href={`/portfolio/${photographer.id}`}
-          className="group inline-flex items-center gap-3 text-sm md:text-base lg:text-lg tracking-[0.3em] font-bold uppercase relative overflow-hidden"
-        >
-          <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-1">
-            SEE ALL
-          </span>
-          <svg 
-            className="w-8 h-[1px] relative overflow-hidden" 
-            viewBox="0 0 32 1"
+        <div className="space-y-6">
+          <p className="text-sm md:text-base lg:text-lg tracking-[0.4em] font-light uppercase opacity-90 fade-in-up" style={{animationDelay: '0.1s'}}>
+            {photographer.title}
+          </p>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-8 leading-[0.95] fade-in-up" style={{animationDelay: '0.2s'}}>
+            {photographer.fullName}
+          </h2>
+          <Link
+            href={`/portfolio/${photographer.id}`}
+            className="group inline-flex items-center gap-4 text-sm md:text-base tracking-[0.25em] font-medium uppercase relative px-6 py-3 border border-white/30 hover:border-white/60 transition-all duration-300 hover:bg-white/10 backdrop-blur-sm fade-in-up"
+            style={{animationDelay: '0.3s'}}
           >
-            <line 
-              x1="0" 
-              y1="0.5" 
-              x2="32" 
-              y2="0.5" 
-              stroke="white" 
-              strokeWidth="1"
-              className="transition-all duration-300"
-            />
-            <line 
-              x1="-32" 
-              y1="0.5" 
-              x2="0" 
-              y2="0.5" 
-              stroke="white" 
-              strokeWidth="2"
-              className="transition-transform duration-500 group-hover:translate-x-[32px]"
-            />
-          </svg>
-        </Link>
+            <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-1">
+              VIEW PORTFOLIO
+            </span>
+            <svg 
+              className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </Link>
+        </div>
       </div>
     </section>
   );

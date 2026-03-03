@@ -96,9 +96,9 @@ export function Menu() {
 
           <div className="absolute bottom-8 md:bottom-12 left-0 right-0 px-6">
             <div className="max-w-2xl mx-auto">
-              <div className="grid md:grid-cols-2 gap-8 text-center md:text-left mb-6">
+              <div className="grid md:grid-cols-2 gap-6 text-center md:text-left glass-effect p-6 rounded-lg">
                 <div className="space-y-3">
-                  <h3 className="text-xs tracking-[0.3em] mb-2 opacity-60 uppercase">Contact</h3>
+                  <h3 className="text-xs tracking-[0.4em] mb-2 opacity-60 uppercase">Contact</h3>
                   <a 
                     href={`mailto:${contactInfo.email}`}
                     className="block text-base md:text-lg hover:opacity-70 transition-opacity"
@@ -111,34 +111,34 @@ export function Menu() {
                   </p>
                 </div>
                 <div className="space-y-3">
-                  <h3 className="text-xs tracking-[0.3em] mb-2 opacity-60 uppercase">Follow Us</h3>
-                  <div className="flex gap-4 justify-center md:justify-start">
+                  <h3 className="text-xs tracking-[0.4em] mb-2 opacity-60 uppercase">Follow Us</h3>
+                  <div className="flex gap-3 justify-center md:justify-start">
                     <Link 
                       href={contactInfo.instagram} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="hover:opacity-70 transition-opacity"
+                      className="p-3 glass-effect rounded-lg hover-lift"
                     >
                       <Image
                         src="/logos/social/instagram.svg"
                         alt="Instagram"
-                        width={28}
-                        height={28}
-                        className="w-7 h-7 filter brightness-0 invert"
+                        width={24}
+                        height={24}
+                        className="w-6 h-6 filter brightness-0 invert"
                       />
                     </Link>
                     <Link 
                       href={contactInfo.linkedin} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="hover:opacity-70 transition-opacity"
+                      className="p-3 glass-effect rounded-lg hover-lift"
                     >
                       <Image
                         src="/logos/social/linkedin.svg"
                         alt="LinkedIn"
-                        width={28}
-                        height={28}
-                        className="w-7 h-7 filter brightness-0 invert"
+                        width={24}
+                        height={24}
+                        className="w-6 h-6 filter brightness-0 invert"
                       />
                     </Link>
                   </div>
