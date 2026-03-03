@@ -18,6 +18,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-y: scroll;
+  overflow-x: hidden;
   -ms-overflow-style: none;   /* IE and Edge */
   scrollbar-width: none;      /* Firefox */
 }
@@ -35,11 +36,8 @@ img, video {
   height: auto;
 }
 
-/* GPU acceleration for transforms */
-.parallax-image,
-[class*="translate"],
-[class*="scale"],
-[class*="rotate"] {
+/* GPU acceleration - only for parallax where it matters */
+.parallax-image {
   will-change: transform;
   transform: translateZ(0);
   backface-visibility: hidden;
@@ -101,7 +99,7 @@ img, video {
 }
 
 .hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1), box-shadow 0.5s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .hover-lift:hover {
@@ -122,7 +120,39 @@ img, video {
 }
 
 .fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
+  animation: fadeInUp 0.7s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  opacity: 0;
+}
+
+/* Section label - small uppercase text above headings */
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  opacity: 0.45;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+/* Consistent hover transition for interactive elements */
+.hover-line {
+  position: relative;
+}
+
+.hover-line::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.hover-line:hover::after {
+  width: 100%;
 }
 
 @layer utilities {

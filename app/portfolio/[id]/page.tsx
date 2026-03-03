@@ -36,10 +36,11 @@ export default async function PortfolioPage({ params }: PageProps) {
           sizes="100vw"
           quality={90}
         />
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-black/50" />
         
         <div className="relative z-10 text-center text-white px-4">
-          <h1 className="heading-hero">
+          <span className="section-label fade-in-up" style={{animationDelay: '0.05s'}}>{photographer.title}</span>
+          <h1 className="heading-hero fade-in-up" style={{animationDelay: '0.15s'}}>
             {photographer.fullName}
           </h1>
         </div>

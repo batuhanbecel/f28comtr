@@ -5,7 +5,7 @@ export default function AIBasedPage() {
   const aiImages = getAIImages();
 
   return (
-    <main className="min-h-screen pt-24 pb-20">
+    <main className="min-h-screen pb-20">
       <div className="w-full">
         {aiImages.length > 0 ? (
           <MasonryGrid images={aiImages} photographerName="AI Based" />

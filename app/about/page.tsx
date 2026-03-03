@@ -19,25 +19,23 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center px-6 md:px-12 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-white rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-white rounded-full blur-3xl" />
-        </div>
+      <section className="min-h-screen flex items-center justify-center px-6 md:px-12 relative overflow-hidden bg-black">
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black to-white/5" />
         <div className="relative z-10 text-center max-w-5xl mx-auto">
-          <h1 className="heading-hero gradient-text mb-12 fade-in-up" style={{animationDelay: '0.1s'}}>
+          <span className="section-label fade-in-up" style={{animationDelay: '0.05s'}}>Istanbul — Since 2008</span>
+          <h1 className="heading-hero gradient-text mb-12 fade-in-up" style={{animationDelay: '0.15s'}}>
             PRODUCTION<br/>IS OUR LIFE
           </h1>
-          <p className="body-text max-w-3xl mx-auto opacity-80 fade-in-up" style={{animationDelay: '0.2s'}}>
+          <p className="body-text max-w-3xl mx-auto opacity-60 fade-in-up" style={{animationDelay: '0.25s'}}>
             Based in Istanbul since 2008, f/2.8 Production delivers high-quality photography and video services through an international portfolio. Working with many leading brands from around the world, the team provides efficient solutions for photography, video, CGI, animation, editing, and motion graphics.
           </p>
         </div>
       </section>
 
       {/* Partner Agencies */}
-      <section className="py-24 px-6 md:px-12 bg-gradient-to-b from-white/5 to-transparent">
+      <section className="py-24 px-6 md:px-12 border-t border-white/5">
         <div className="max-w-7xl mx-auto">
+          <span className="section-label text-center block">Collaborations</span>
           <h2 className="heading-lg text-center mb-16">
             Partner Agencies
           </h2>
@@ -65,8 +63,9 @@ export default function AboutPage() {
       </section>
 
       {/* Clients */}
-      <section className="py-24 px-6 md:px-12">
+      <section className="py-24 px-6 md:px-12 border-t border-white/5">
         <div className="max-w-7xl mx-auto">
+          <span className="section-label text-center block">Who We Work With</span>
           <h2 className="heading-lg text-center mb-16">
             Clients
           </h2>
@@ -96,6 +95,7 @@ export default function AboutPage() {
       {/* Services Section - Bottom */}
       <section className="py-24 px-6 md:px-12 border-t border-white/5">
         <div className="max-w-6xl mx-auto">
+          <span className="section-label text-center block">What We Do</span>
           <h2 className="heading-lg text-center mb-16">
             Services
           </h2>
@@ -103,10 +103,9 @@ export default function AboutPage() {
             {services.map((service, index) => (
               <div
                 key={service}
-                className="text-center p-5 glass-effect rounded-lg hover-lift fade-in-up"
-                style={{animationDelay: `${index * 0.05}s`}}
+                className="text-center p-5 glass-effect rounded-lg hover-lift"
               >
-                <p className="body-text">{service}</p>
+                <p className="label-text opacity-100 normal-case tracking-widest text-sm">{service}</p>
               </div>
             ))}
           </div>
@@ -114,8 +113,9 @@ export default function AboutPage() {
       </section>
 
       {/* Contact Section */}
-      <section className="py-24 px-6 md:px-12 bg-gradient-to-b from-transparent to-white/5">
+      <section className="py-24 px-6 md:px-12 border-t border-white/5">
         <div className="max-w-5xl mx-auto">
+          <span className="section-label text-center block">Contact</span>
           <h2 className="heading-lg text-center mb-16">
             Get in Touch
           </h2>
@@ -130,7 +130,7 @@ export default function AboutPage() {
               </div>
               <div className="glass-effect p-6 rounded-lg">
                 <h3 className="label-text mb-3">Email</h3>
-                <a href={`mailto:${contactInfo.email}`} className="body-text hover:opacity-70 transition-opacity">
+                <a href={`mailto:${contactInfo.email}`} className="body-text hover:opacity-70 transition-all duration-500">
                   {contactInfo.email}
                 </a>
               </div>

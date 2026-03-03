@@ -1,52 +1,67 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useReducer } from 'react';
 
 interface MasonryGridProps {
   images: string[];
   photographerName: string;
 }
 
+function loadedReducer(state: Set<string>, src: string): Set<string> {
+  const next = new Set(state);
+  next.add(src);
+  return next;
+}
+
 export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+  const [loadedImages, dispatch] = useReducer(loadedReducer, new Set<string>());
 
-  const handleImageLoad = (imageSrc: string) => {
-    setLoadedImages(prev => new Set(prev).add(imageSrc));
-  };
+  const handleImageLoad = useCallback((imageSrc: string) => {
+    dispatch(imageSrc);
+  }, []);
 
   const currentIndex = selectedImage ? images.indexOf(selectedImage) : -1;
 
-  const goToNext = (e: React.MouseEvent) => {
+  const goToNext = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    if (currentIndex < images.length - 1) {
-      setSelectedImage(images[currentIndex + 1]);
-    }
-  };
+    setSelectedImage(prev => {
+      const idx = prev ? images.indexOf(prev) : -1;
+      return idx < images.length - 1 ? images[idx + 1] : prev;
+    });
+  }, [images]);
 
-  const goToPrevious = (e: React.MouseEvent) => {
+  const goToPrevious = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    if (currentIndex > 0) {
-      setSelectedImage(images[currentIndex - 1]);
-    }
-  };
+    setSelectedImage(prev => {
+      const idx = prev ? images.indexOf(prev) : -1;
+      return idx > 0 ? images[idx - 1] : prev;
+    });
+  }, [images]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!selectedImage) return;
-      if (e.key === 'ArrowRight' && currentIndex < images.length - 1) {
-        setSelectedImage(images[currentIndex + 1]);
+      if (e.key === 'ArrowRight') {
+        setSelectedImage(prev => {
+          if (!prev) return prev;
+          const idx = images.indexOf(prev);
+          return idx < images.length - 1 ? images[idx + 1] : prev;
+        });
       }
-      if (e.key === 'ArrowLeft' && currentIndex > 0) {
-        setSelectedImage(images[currentIndex - 1]);
+      if (e.key === 'ArrowLeft') {
+        setSelectedImage(prev => {
+          if (!prev) return prev;
+          const idx = images.indexOf(prev);
+          return idx > 0 ? images[idx - 1] : prev;
+        });
       }
       if (e.key === 'Escape') setSelectedImage(null);
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedImage, currentIndex, images]);
+  }, [images]);
 
   return (
     <>
