@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://f28production.com/sitemap.xml
