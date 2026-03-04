@@ -128,10 +128,10 @@
 
 ## Current Status
 
-**Phase**: Production Ready ✅  
-**Server**: Running on http://localhost:3000  
-**Build Status**: Development mode active  
-**Next Milestone**: GitHub backup and deployment to Vercel
+**Phase**: LIVE IN PRODUCTION ✅  
+**URL**: https://www.f28.com.tr  
+**Hosting**: Vercel  
+**Next Milestone**: Visual polish pass (custom cursor, portfolios redesign)
 
 ### Production Readiness
 - ✅ All images converted to WebP format
@@ -143,20 +143,21 @@
 - ✅ Image loading optimized (no flash/pop)
 
 ### Latest Achievements
-- ✅ Modern parallax homepage with 1.5 section layout
-- ✅ Animated page transitions with loader
-- ✅ Header blur effect on scroll
-- ✅ Back to top functionality
-- ✅ Full-width portfolio grids
-- ✅ Refined typography hierarchy
-- ✅ Modern hover animations (animated dash on SEE ALL)
-- ✅ Photographer order finalized
-- ✅ All 7 photographers with titles (PHOTOGRAPHER/RETOUCHER)
-- ✅ Lightbox navigation (next/previous, keyboard shortcuts)
-- ✅ Site-wide performance optimizations (RAF, GPU acceleration)
-- ✅ Image optimization (blur placeholders, WebP conversion script)
-- ✅ Fixed Yonca's corrupted images
-- ✅ Enhanced SEO metadata
+- ✅ Site LIVE at f28.com.tr on Vercel
+- ✅ Redis/Upstash backend for dynamic photographer data
+- ✅ Admin panel (/admin) with login, photographer management, image ordering
+- ✅ AI Based page with admin sorting at /admin/ai-based
+- ✅ Download Portfolio PDF (jsPDF) with cover, photos, end page
+- ✅ Turkish slug fix for PDF filenames
+- ✅ Landing page redesign with cross-panel hover dimming
+- ✅ Production page hero + full-screen height + scroll arrow
+- ✅ AI Based page hero with body text + scroll arrow
+- ✅ Mouse-tracking parallax on all ParallaxSection components
+- ✅ Portfolio hero: photo count + Download button on same line
+- ✅ MasonryGrid: all images eager loaded, blur placeholder
+- ✅ BackgroundPreloader for instant portfolio loads
+- ✅ Image manifest for Vercel (no fs.readdirSync in production)
+- ✅ Vercel Blob storage + /api/blob proxy for uploaded images
 
 ## Known Issues
 
@@ -192,12 +193,17 @@
 - Cumulative layout shift: TBD
 - First input delay: TBD
 
-## Deployment Checklist
-- [ ] Production build successful
-- [ ] All images optimized
-- [ ] Environment variables configured (if needed)
-- [ ] Vercel project created
-- [ ] Domain configured
-- [ ] SSL certificate active
-- [ ] Analytics tracking (optional)
-- [ ] Error monitoring (optional)
+## Environment Variables (Vercel)
+- `ADMIN_PASSWORD` — admin panel login
+- `REDIS_URL`, `KV_REST_API_URL`, `KV_REST_API_TOKEN`, `KV_REST_API_READ_ONLY_TOKEN` — Upstash Redis
+- `BLOB_READ_WRITE_TOKEN` — Vercel Blob (private store `srzew0qzegvhjbvh`)
+
+## API Routes
+- `POST /api/admin/login` — session auth
+- `GET/POST /api/admin/photographers` — list / create
+- `GET/PUT/DELETE /api/admin/photographers/[id]` — single photographer
+- `GET/PUT /api/admin/photographers/[id]/images` — image list / reorder
+- `GET/PUT /api/admin/ai-images` — AI image list
+- `PUT /api/admin/reorder` — photographer display order
+- `POST /api/admin/seed` — seed Redis from static files
+- `GET /api/blob?u=<url>` — private blob proxy

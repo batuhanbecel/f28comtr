@@ -25,8 +25,8 @@ try {
           return false;
         }
       })
-      .map(f => `/portfolios/${photographer}/${f}`)
-      .sort();
+      .sort()
+      .map(f => `/portfolios/${photographer}/${encodeURIComponent(f)}`);
 
     manifest[photographer] = files;
     console.log(`  ${photographer}: ${files.length} images`);
@@ -48,8 +48,8 @@ try {
         return false;
       }
     })
-    .map(f => `/ai-images/${f}`)
-    .sort();
+    .sort()
+    .map(f => `/ai-images/${encodeURIComponent(f)}`);
   manifest['__ai__'] = aiFiles;
   console.log(`  ai-images: ${aiFiles.length} images`);
 } catch {

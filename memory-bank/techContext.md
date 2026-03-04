@@ -16,6 +16,14 @@
 - **Sharp 0.33**: High-performance image optimization
 - **Next.js Image**: Built-in image optimization component
 
+### Data & Storage
+- **Upstash Redis** (`@upstash/redis`): Photographer data, image ordering
+- **Vercel Blob** (`@vercel/blob`): Image uploads (private store)
+- **Image manifest** (`lib/image-manifest.ts`): Build-time static list for Vercel
+
+### PDF Generation
+- **jsPDF**: Client-side PDF generation (dynamically imported)
+
 ### Development Tools
 - **ESLint 9**: Code linting
 - **eslint-config-next**: Next.js-specific linting rules
@@ -66,29 +74,42 @@ npm run lint
 ## File Structure
 ```
 f28comtr/
-├── app/                    # Next.js App Router
-│   ├── about/             # About page
-│   ├── fonts/             # Font files (placeholder)
-│   ├── portfolio/[id]/    # Dynamic portfolio routes
-│   ├── portfolios/        # Portfolios listing
-│   ├── globals.css        # Global styles
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Homepage
-├── components/            # React components
-│   ├── Menu.tsx          # Navigation menu
-│   └── MasonryGrid.tsx   # Portfolio grid
-├── lib/                  # Utilities and data
-│   ├── data.ts          # Photographer data
-│   └── utils.ts         # Helper functions
-├── public/              # Static assets
-│   ├── logos/          # Brand and f/28 logos
-│   ├── portfolios/     # Portfolio images
-│   └── menubg.webp     # Menu background
-├── memory-bank/        # Project documentation
-├── next.config.ts      # Next.js configuration
-├── tailwind.config.ts  # Tailwind configuration
-├── tsconfig.json       # TypeScript configuration
-└── package.json        # Dependencies
+├── app/
+│   ├── about/              # About page
+│   ├── admin/              # Admin dashboard + login + photographers/[id] + ai-based
+│   ├── ai-based/           # AI images gallery
+│   ├── api/admin/          # Auth + CRUD API routes
+│   ├── api/blob/           # Private blob proxy GET
+│   ├── portfolio/[id]/     # Dynamic portfolio pages
+│   ├── portfolios/         # Portfolios listing
+│   ├── production/         # Production page (ParallaxSections)
+│   ├── globals.css         # Global styles + animations
+│   ├── layout.tsx          # Root layout
+│   └── page.tsx            # Landing page (client, cross-panel hover)
+├── components/
+│   ├── Menu.tsx            # Fullscreen nav overlay
+│   ├── MasonryGrid.tsx     # Portfolio grid + lightbox
+│   ├── ParallaxSection.tsx # Scroll + mouse parallax sections
+│   ├── DownloadPortfolio.tsx # jsPDF portfolio generator
+│   ├── BackgroundPreloader.tsx
+│   ├── PageLoader.tsx
+│   ├── Footer.tsx
+│   └── BackToTop.tsx
+├── lib/
+│   ├── auth.ts             # JWT admin auth
+│   ├── data.ts             # Static photographer data (fallback)
+│   ├── db.ts               # Redis CRUD + getAIImages
+│   ├── image-manifest.ts   # Build-time image list
+│   └── utils.ts            # getPortfolioImages, getAIImages (manifest)
+├── scripts/
+│   └── generate-image-manifest.js
+├── public/
+│   ├── logos/f28/          # f28_white.png
+│   ├── portfolios/         # Portfolio images + previews
+│   ├── ai-images/          # AI gallery images
+│   ├── landing-1.webp
+│   └── landing-2.jpg
+└── memory-bank/
 ```
 
 ## Deployment Configuration
@@ -101,7 +122,9 @@ f28comtr/
 - Framework preset: Next.js
 
 ### Environment Variables
-None required for basic deployment
+- `ADMIN_PASSWORD` — admin panel login
+- `REDIS_URL`, `KV_REST_API_URL`, `KV_REST_API_TOKEN`, `KV_REST_API_READ_ONLY_TOKEN` — Upstash Redis
+- `BLOB_READ_WRITE_TOKEN` — Vercel Blob private store
 
 ## Tool Usage Patterns
 

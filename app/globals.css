@@ -36,6 +36,41 @@ img, video {
   height: auto;
 }
 
+/* Custom cursor — only on true pointer devices */
+@media (hover: hover) and (pointer: fine) {
+  *, *::before, *::after { cursor: none !important; }
+}
+
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  transition: width 0.25s, height 0.25s, background 0.25s, opacity 0.2s;
+  opacity: 0.9;
+}
+.cursor-dot[data-hover] {
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  opacity: 0.5;
+}
+.cursor-ring {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 50%;
+  transition: width 0.35s cubic-bezier(0.23,1,0.32,1),
+              height 0.35s cubic-bezier(0.23,1,0.32,1),
+              border-color 0.35s,
+              opacity 0.2s;
+}
+.cursor-ring[data-hover] {
+  width: 52px;
+  height: 52px;
+  border-color: rgba(255,255,255,0.65);
+}
+
 /* GPU acceleration - only for parallax where it matters */
 .parallax-image {
   will-change: transform;

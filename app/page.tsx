@@ -39,13 +39,6 @@ export default function Home() {
           hovered === 'production' ? 'opacity-100' : 'opacity-0'
         }`} />
 
-        {/* Section number */}
-        <div className="absolute top-8 left-8 md:top-10 md:left-10">
-          <span className={`text-[11px] font-mono tracking-[0.4em] transition-all duration-500 ${
-            hovered === 'ai' ? 'text-white/15' : 'text-white/35'
-          }`}>01</span>
-        </div>
-
         {/* Text block */}
         <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 lg:p-14">
           {/* Thin rule */}
@@ -107,13 +100,6 @@ export default function Home() {
         <div className={`absolute inset-0 transition-opacity duration-700 bg-white/[0.03] ${
           hovered === 'ai' ? 'opacity-100' : 'opacity-0'
         }`} />
-
-        {/* Section number */}
-        <div className="absolute top-8 right-8 md:top-10 md:right-10">
-          <span className={`text-[11px] font-mono tracking-[0.4em] transition-all duration-500 ${
-            hovered === 'production' ? 'text-white/15' : 'text-white/35'
-          }`}>02</span>
-        </div>
 
         {/* Text block */}
         <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 lg:p-14">

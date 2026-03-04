@@ -63,6 +63,14 @@ export const photographers: Photographer[] = [
     title: 'RETOUCHER',
     folder: 'dogu-biricik',
     preview: '/portfolios/previews/dogu-biricik.webp'
+  },
+  {
+    id: 'batuhan-becel',
+    name: 'Batuhan',
+    fullName: 'BATUHAN BECEL',
+    title: 'RETOUCHER',
+    folder: 'batuhan-becel',
+    preview: '/portfolios/previews/batuhan-becel.jpg'
   }
 ];
 

@@ -176,7 +176,7 @@ export default function EditPhotographer() {
           <span className="text-white/50 text-[10px] tracking-[0.3em] uppercase">{photographer.fullName}</span>
         </div>
         <Link
-          href={`/portfolio/${id}`}
+          href={`/${id}`}
           target="_blank"
           className="text-white/30 text-[10px] tracking-[0.25em] uppercase hover:text-white/60 transition-colors px-3 py-2 hover:bg-white/5"
         >

@@ -27,7 +27,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     await setPhotographers(photographers);
 
     revalidatePath('/production');
-    revalidatePath(`/portfolio/${id}`);
+    revalidatePath(`/${id}`);
 
     return NextResponse.json(photographers[index]);
   } catch (e: unknown) {

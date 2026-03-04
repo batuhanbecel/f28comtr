@@ -79,8 +79,8 @@ export function ParallaxSection({ photographer, index, total }: ParallaxSectionP
     if (!rect) return;
     const cx = (e.clientX - rect.left) / rect.width - 0.5;   // -0.5 … 0.5
     const cy = (e.clientY - rect.top) / rect.height - 0.5;
-    mouseTarget.current.x = -cx * 28;  // opposite direction = depth feel
-    mouseTarget.current.y = -cy * 14;
+    mouseTarget.current.x = -cx * 18;  // opposite direction = depth feel
+    mouseTarget.current.y = -cy * 10;
   };
 
   const handleMouseLeave = () => {
@@ -113,7 +113,7 @@ export function ParallaxSection({ photographer, index, total }: ParallaxSectionP
       onMouseLeave={handleMouseLeave}
       className="relative h-[66vh] w-full flex items-center overflow-hidden"
     >
-      <div ref={imageRef} className="absolute -inset-y-[10%] inset-x-0 w-full h-[120%] parallax-image bg-black">
+      <div ref={imageRef} className="absolute -inset-[8%] parallax-image bg-black">
         <Image
           src={photographer.preview}
           alt={photographer.fullName}
@@ -190,7 +190,7 @@ export function ParallaxSection({ photographer, index, total }: ParallaxSectionP
             }}
           >
             <Link
-              href={`/portfolio/${photographer.id}`}
+              href={`/${photographer.id}`}
               className="group inline-flex items-center gap-3 md:gap-4 label-text px-5 md:px-7 py-3 border border-white/25 hover:border-white/55 transition-all duration-500 hover:bg-white/10"
             >
               {isRight && (

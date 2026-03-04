@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
 interface MasonryGridProps {
   images: string[];
@@ -11,6 +11,35 @@ interface MasonryGridProps {
 export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [lightboxVisible, setLightboxVisible] = useState(false);
+  const [numCols, setNumCols] = useState(4);
+
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w < 768) setNumCols(1);
+      else if (w < 1024) setNumCols(2);
+      else if (w < 1280) setNumCols(3);
+      else setNumCols(4);
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  // Transpose images so CSS columns (col-first fill) produces row-first visual order:
+  // reordered[c * rowsPerCol + r] = images[r * numCols + c]
+  const reorderedImages = useMemo(() => {
+    const N = images.length;
+    const rowsPerCol = Math.ceil(N / numCols);
+    const result: string[] = [];
+    for (let c = 0; c < numCols; c++) {
+      for (let r = 0; r < rowsPerCol; r++) {
+        const idx = r * numCols + c;
+        if (idx < N) result.push(images[idx]);
+      }
+    }
+    return result;
+  }, [images, numCols]);
 
   const currentIndex = selectedImage ? images.indexOf(selectedImage) : -1;
 
@@ -66,7 +95,7 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
   return (
     <>
       <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-2 space-y-2 px-2">
-        {images.map((image, index) => (
+        {reorderedImages.map((image) => (
           <div
             key={image}
             className="break-inside-avoid cursor-pointer group relative overflow-hidden"
@@ -74,7 +103,7 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
           >
             <Image
               src={image}
-              alt={`${photographerName} - ${index + 1}`}
+              alt={`${photographerName}`}
               width={800}
               height={1200}
               className="w-full h-auto transition-transform duration-500 group-hover:scale-105"

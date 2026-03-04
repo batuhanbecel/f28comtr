@@ -1,69 +1,45 @@
 # Active Context: f/28 Website Development
 
 ## Current Work Focus
-f/28 production agency website complete and production-ready. All images converted to WebP, full performance optimizations implemented, and ready for deployment.
+f/28 website is LIVE at https://www.f28.com.tr (Vercel). Full admin panel, Redis backend, AI Based section, Download Portfolio PDF, and mouse-interactive production page are all working in production.
 
-## Recent Changes (Latest Session)
-1. **Homepage Design Refinements**
-   - Implemented parallax scrolling effect on background images (200px translation range)
-   - Redesigned section layout to show 1.5 sections at a time (66vh height)
-   - Enhanced typography hierarchy with bold PHOTOGRAPHER/RETOUCHER titles
-   - Created modern "SEE ALL" link with animated dash effect
-   - Adjusted photographer name sizes for better visual balance
+## Recent Changes (Current Session)
+1. **Landing Page Redesign**
+   - `'use client'` component with cross-panel hover dimming (useState)
+   - Hovering one side dims opposite to bg-black/75
+   - Section numbers 01/02, expanding thin rules, always-visible labels
+   - Enter CTA slides up on hover with horizontal line prefix
+   - Bottom strip: `Istanbul — f28.com.tr`
 
-2. **Header Enhancements**
-   - Increased logo size from 80x40 to 120x60 (50% larger)
-   - Added blur-on-scroll effect with dark overlay (backdrop-blur-md)
-   - Smooth transitions when scrolling past 50px
+2. **Production Page Hero + Mouse Parallax**
+   - Full-screen hero section with description text
+   - Each ParallaxSection now has mouse-tracking parallax
+   - RAF lerp loop: image drifts ±28px X / ±14px Y opposite to cursor
+   - Scroll Y and mouse Y combined on single translate3d
 
-3. **Navigation & UX Improvements**
-   - Added PageLoader component with modern scale-fade animation
-   - Implemented BackToTop button (appears after 500px scroll)
-   - Full-width masonry grid on portfolio pages
-   - Darker preview image overlays (60% opacity) for better text readability
+3. **AI Based Page Hero + Body Text**
+   - min-h-screen hero with label, heading, body text, works count
+   - Animated bounce scroll arrow at bottom
 
-4. **Image Optimization & Gallery**
-   - Fixed Yonca's broken images (filtered out 0-byte corrupted files)
-   - Added blur placeholders to all images
-   - Implemented next/previous navigation in lightbox
-   - Keyboard navigation (Arrow keys, Escape)
-   - Image counter display in lightbox
-   - Created WebP conversion script
+4. **Admin Panel**
+   - Stats bar (photographer count, quick links)
+   - ★ Set as Preview button on image hover overlay
+   - Drag-to-reorder images, move ±1 arrows, remove button
 
-5. **Site-Wide Performance Optimizations**
-   - RequestAnimationFrame for all scroll listeners (60fps smooth scrolling)
-   - GPU acceleration with translate3d and will-change
-   - Passive scroll event listeners
-   - Image format optimization (WebP + AVIF)
-   - Gzip compression enabled
-   - Console removal in production
-   - CSS optimization enabled
-   - Enhanced SEO metadata
-   - All portfolio images converted to WebP format
-   - Original JPEG/PNG files removed
-   - Eager loading for all preview images to prevent flash
-   - All portfolio images converted to WebP format
-   - Original JPEG/PNG files removed
-   - Eager loading for all preview images to prevent flash
+5. **Download Portfolio PDF (jsPDF)**
+   - Cover: preview image (58%), centered text, centered f/2.8 logo
+   - Per-photo pages with page counter
+   - End page: THANK YOU + photographer name + centered logo
+   - Turkish character slug: ç→c, ğ→g, ı→i, ö→o, ş→s, ü→u
 
-6. **Photographer Order & Data**
-   - Reordered: Ozan, Emre, Berkin, Yonca, Ömür, Kerem, Doğu
-   - Added title field (PHOTOGRAPHER/RETOUCHER) to data structure
-   - Updated contact email to info@f28.com.tr
-
-7. **Components Created**
-   - ParallaxSection: Optimized parallax with RAF
-   - PageLoader: Modern loading animation with f28 logo
-   - BackToTop: Optimized scroll detection
-   - Menu: Fullscreen hamburger with optimized blur effect
-   - MasonryGrid: Full-width 3-column with lightbox navigation
+6. **MasonryGrid**
+   - All images eager loaded
+   - Removed custom opacity loading state; Next.js blur placeholder used
 
 ## Next Steps
-1. **Testing**: Verify all pages load correctly
-2. **Image Optimization**: Ensure all images are WebP format
-3. **Performance Check**: Test loading times and responsiveness
-4. **Content Updates**: Update contact information with real data
-5. **Deployment**: Deploy to Vercel
+1. Visual polish: custom cursor, portfolios listing redesign, micro-animations
+2. Contact info completion
+3. Mobile testing
 
 ## Active Decisions and Considerations
 

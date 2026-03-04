@@ -22,7 +22,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     await setPhotographerImages(id, images);
-    revalidatePath(`/portfolio/${id}`);
+    revalidatePath(`/${id}`);
 
     return NextResponse.json({ success: true, count: images.length });
   } catch (e: unknown) {

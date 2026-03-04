@@ -59,12 +59,6 @@ export default async function PortfolioPage({ params }: PageProps) {
       </section>
 
       <section className="py-12">
-        <div className="px-4 mb-8 flex items-center gap-4">
-          <span className="text-white/20 text-[10px] font-mono tracking-[0.3em]">
-            {String(images.length).padStart(2, '0')} IMAGES
-          </span>
-          <div className="flex-1 h-px bg-white/[0.06]" />
-        </div>
         <MasonryGrid images={images} photographerName={photographer.fullName} />
       </section>
       <Footer />
