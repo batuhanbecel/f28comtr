@@ -66,7 +66,6 @@ export default function AdminDashboard() {
     if (targetIndex < 0 || targetIndex >= newList.length) return;
     [newList[index], newList[targetIndex]] = [newList[targetIndex], newList[index]];
     setPhotographers(newList);
-
     setSaving(true);
     try {
       const res = await fetch('/api/admin/reorder', {
@@ -128,151 +127,183 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="border-b border-white/10 px-6 py-4 flex items-center justify-between sticky top-0 bg-[#080808] z-10">
-        <div className="flex items-center gap-6">
-          <Image src="/logos/f28/f28_white.png" alt="f/2.8" width={80} height={40} className="h-7 w-auto opacity-80" />
-          <span className="text-white/30 text-xs tracking-[0.25em] uppercase">Admin</span>
+      <header className="border-b border-white/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-[#080808]/95 backdrop-blur-sm z-10">
+        <div className="flex items-center gap-5">
+          <Image src="/logos/f28/f28_white.png" alt="f/2.8" width={80} height={40} className="h-7 w-auto opacity-70" />
+          <div className="w-px h-4 bg-white/10" />
+          <span className="text-white/25 text-[10px] tracking-[0.4em] uppercase font-medium">Dashboard</span>
         </div>
-        <div className="flex items-center gap-3">
-          <Link href="/" target="_blank" className="text-white/40 text-xs tracking-widest uppercase hover:text-white/70 transition-colors px-3 py-1.5 border border-white/10 hover:border-white/20">
-            View Site
+        <div className="flex items-center gap-2">
+          <Link href="/" target="_blank" className="text-white/30 text-[10px] tracking-[0.25em] uppercase hover:text-white/60 transition-colors px-3 py-2 hover:bg-white/5 rounded">
+            View Site ↗
           </Link>
-          <button onClick={handleLogout} className="text-white/40 text-xs tracking-widest uppercase hover:text-white/70 transition-colors px-3 py-1.5 border border-white/10 hover:border-white/20">
+          <button onClick={handleLogout} className="text-white/30 text-[10px] tracking-[0.25em] uppercase hover:text-white/60 transition-colors px-3 py-2 hover:bg-white/5 rounded">
             Logout
           </button>
         </div>
       </header>
 
-      <div className="max-w-5xl mx-auto px-6 py-10">
-        {/* Status message */}
+      <div className="max-w-6xl mx-auto px-8 py-12">
+        {/* Status toast */}
         {message && (
-          <div className="mb-6 px-4 py-3 bg-white/5 border border-white/10 text-white/80 text-sm">
+          <div className="fixed bottom-8 right-8 z-50 px-5 py-3 bg-white/10 backdrop-blur border border-white/20 text-white text-sm tracking-wide shadow-2xl">
             {message}
           </div>
         )}
 
-        {/* Section header */}
-        <div className="flex items-center justify-between mb-8">
+        {/* Page header */}
+        <div className="flex items-end justify-between mb-10">
           <div>
-            <p className="text-white/30 text-xs tracking-[0.3em] uppercase mb-1">Manage</p>
-            <h1 className="text-2xl font-black tracking-tight">PHOTOGRAPHERS</h1>
+            <p className="text-white/20 text-[10px] tracking-[0.5em] uppercase mb-2">Production / Photographers</p>
+            <h1 className="text-3xl font-black tracking-tighter">LINEUP</h1>
+            <p className="text-white/30 text-xs mt-1">{photographers.length} photographers &mdash; drag cards to reorder display order</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <button
               onClick={handleSeed}
               disabled={seeding}
-              className="text-white/40 text-xs tracking-widest uppercase hover:text-white/70 transition-colors px-3 py-2 border border-white/10 hover:border-white/20 disabled:opacity-30"
+              className="text-white/30 text-[10px] tracking-[0.3em] uppercase hover:text-white/60 transition-colors px-4 py-2.5 border border-white/[0.07] hover:border-white/15 disabled:opacity-30"
             >
               {seeding ? 'Seeding...' : 'Seed from Files'}
             </button>
             <button
               onClick={() => setShowAddForm(v => !v)}
-              className="bg-white text-black text-xs font-semibold tracking-[0.2em] uppercase px-4 py-2 hover:bg-white/90 transition-colors"
+              className={`text-[10px] font-semibold tracking-[0.3em] uppercase px-4 py-2.5 transition-colors ${
+                showAddForm
+                  ? 'bg-white/10 text-white border border-white/20'
+                  : 'bg-white text-black hover:bg-white/90'
+              }`}
             >
-              + Add New
+              {showAddForm ? '✕ Cancel' : '+ New'}
             </button>
           </div>
         </div>
 
         {/* Add form */}
         {showAddForm && (
-          <form onSubmit={handleAdd} className="mb-8 p-6 border border-white/10 bg-white/[0.02] space-y-4">
-            <h3 className="text-xs tracking-[0.3em] uppercase text-white/50 mb-4">New Photographer</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <input
-                required
-                placeholder="ID (e.g. john-doe)"
-                value={newPhotographer.id}
-                onChange={e => setNewPhotographer(v => ({ ...v, id: e.target.value.toLowerCase().replace(/\s+/g, '-') }))}
-                className="bg-white/5 border border-white/10 text-white placeholder-white/20 px-3 py-2 text-sm focus:outline-none focus:border-white/30"
-              />
-              <input
-                required
-                placeholder="Full Name (e.g. JOHN DOE)"
-                value={newPhotographer.fullName}
-                onChange={e => setNewPhotographer(v => ({ ...v, fullName: e.target.value.toUpperCase() }))}
-                className="bg-white/5 border border-white/10 text-white placeholder-white/20 px-3 py-2 text-sm focus:outline-none focus:border-white/30"
-              />
-              <input
-                required
-                placeholder="Title (e.g. PHOTOGRAPHER)"
-                value={newPhotographer.title}
-                onChange={e => setNewPhotographer(v => ({ ...v, title: e.target.value.toUpperCase() }))}
-                className="bg-white/5 border border-white/10 text-white placeholder-white/20 px-3 py-2 text-sm focus:outline-none focus:border-white/30"
-              />
-              <input
-                placeholder="Preview image path (optional)"
-                value={newPhotographer.preview}
-                onChange={e => setNewPhotographer(v => ({ ...v, preview: e.target.value }))}
-                className="bg-white/5 border border-white/10 text-white placeholder-white/20 px-3 py-2 text-sm focus:outline-none focus:border-white/30"
-              />
+          <form onSubmit={handleAdd} className="mb-10 p-6 border border-white/[0.07] bg-white/[0.015] space-y-4">
+            <p className="text-[10px] tracking-[0.4em] uppercase text-white/30 mb-5">New Photographer</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-[10px] tracking-widest uppercase text-white/25 block mb-1.5">ID / Folder Name</label>
+                <input
+                  required
+                  placeholder="e.g. john-doe"
+                  value={newPhotographer.id}
+                  onChange={e => setNewPhotographer(v => ({ ...v, id: e.target.value.toLowerCase().replace(/\s+/g, '-') }))}
+                  className="w-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-white/15 px-3 py-2.5 text-sm focus:outline-none focus:border-white/25 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] tracking-widest uppercase text-white/25 block mb-1.5">Full Name</label>
+                <input
+                  required
+                  placeholder="e.g. JOHN DOE"
+                  value={newPhotographer.fullName}
+                  onChange={e => setNewPhotographer(v => ({ ...v, fullName: e.target.value.toUpperCase() }))}
+                  className="w-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-white/15 px-3 py-2.5 text-sm focus:outline-none focus:border-white/25 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] tracking-widest uppercase text-white/25 block mb-1.5">Title</label>
+                <input
+                  required
+                  placeholder="PHOTOGRAPHER"
+                  value={newPhotographer.title}
+                  onChange={e => setNewPhotographer(v => ({ ...v, title: e.target.value.toUpperCase() }))}
+                  className="w-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-white/15 px-3 py-2.5 text-sm focus:outline-none focus:border-white/25 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] tracking-widest uppercase text-white/25 block mb-1.5">Preview Path (optional)</label>
+                <input
+                  placeholder="/portfolios/previews/name.webp"
+                  value={newPhotographer.preview}
+                  onChange={e => setNewPhotographer(v => ({ ...v, preview: e.target.value }))}
+                  className="w-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-white/15 px-3 py-2.5 text-sm focus:outline-none focus:border-white/25 transition-colors"
+                />
+              </div>
             </div>
-            <div className="flex gap-3 pt-2">
-              <button type="submit" className="bg-white text-black text-xs font-semibold tracking-[0.2em] uppercase px-4 py-2 hover:bg-white/90 transition-colors">
-                Create
-              </button>
-              <button type="button" onClick={() => setShowAddForm(false)} className="text-white/40 text-xs tracking-widest uppercase px-4 py-2 border border-white/10 hover:border-white/20 transition-colors">
-                Cancel
-              </button>
-            </div>
+            <button type="submit" className="bg-white text-black text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-white/90 transition-colors mt-2">
+              Create Photographer
+            </button>
           </form>
         )}
 
-        {/* Photographer list */}
+        {/* Photographer grid */}
         {loading ? (
-          <div className="space-y-3">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-20 bg-white/5 animate-pulse" />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {[...Array(7)].map((_, i) => (
+              <div key={i} className="aspect-[3/4] bg-white/[0.03] animate-pulse" />
             ))}
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {photographers.map((p, index) => (
-              <div key={p.id} className="flex items-center gap-4 p-4 border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors group">
-                {/* Preview */}
-                <div className="relative w-14 h-14 flex-shrink-0 overflow-hidden bg-white/5">
-                  <Image src={p.preview} alt={p.fullName} fill className="object-cover" sizes="56px" />
-                </div>
+              <div key={p.id} className="group relative aspect-[3/4] overflow-hidden bg-white/[0.03] border border-white/[0.06] hover:border-white/15 transition-all duration-300">
+                {/* Preview image */}
+                <Image
+                  src={p.preview}
+                  alt={p.fullName}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                />
 
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <p className="text-white font-bold text-sm tracking-tight truncate">{p.fullName}</p>
-                  <p className="text-white/40 text-xs tracking-widest mt-0.5">{p.title}</p>
+                {/* Gradient overlay always visible */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+
+                {/* Info at bottom */}
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <p className="text-white/40 text-[9px] tracking-[0.3em] uppercase mb-1">{p.title}</p>
+                  <p className="text-white font-bold text-sm tracking-tight leading-tight">{p.fullName}</p>
                 </div>
 
                 {/* Position badge */}
-                <span className="text-white/20 text-xs font-mono w-6 text-center">{index + 1}</span>
+                <div className="absolute top-3 left-3 w-6 h-6 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+                  <span className="text-white/50 text-[10px] font-mono">{index + 1}</span>
+                </div>
 
-                {/* Actions */}
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button
-                    onClick={() => movePhotographer(index, -1)}
-                    disabled={index === 0 || saving}
-                    className="p-2 text-white/40 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-20"
-                    title="Move up"
-                  >
-                    ↑
-                  </button>
-                  <button
-                    onClick={() => movePhotographer(index, 1)}
-                    disabled={index === photographers.length - 1 || saving}
-                    className="p-2 text-white/40 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-20"
-                    title="Move down"
-                  >
-                    ↓
-                  </button>
-                  <Link
-                    href={`/admin/photographers/${p.id}`}
-                    className="px-3 py-1.5 text-white/40 text-xs tracking-widest uppercase hover:text-white hover:bg-white/10 transition-colors border border-white/10"
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(p.id, p.fullName)}
-                    className="px-3 py-1.5 text-red-400/60 text-xs tracking-widest uppercase hover:text-red-400 hover:bg-red-400/10 transition-colors border border-red-400/10"
-                  >
-                    Delete
-                  </button>
+                {/* Hover actions overlay */}
+                <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-between p-3">
+                  {/* Top: reorder controls */}
+                  <div className="flex justify-between items-start">
+                    <span className="text-white/30 text-[9px] tracking-widest uppercase"># {index + 1}</span>
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => movePhotographer(index, -1)}
+                        disabled={index === 0 || saving}
+                        className="w-7 h-7 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/15 transition-colors disabled:opacity-20 text-sm"
+                      >↑</button>
+                      <button
+                        onClick={() => movePhotographer(index, 1)}
+                        disabled={index === photographers.length - 1 || saving}
+                        className="w-7 h-7 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/15 transition-colors disabled:opacity-20 text-sm"
+                      >↓</button>
+                    </div>
+                  </div>
+
+                  {/* Center: name */}
+                  <div className="text-center">
+                    <p className="text-white font-bold text-sm tracking-tight">{p.fullName}</p>
+                    <p className="text-white/40 text-[9px] tracking-widest mt-1">{p.title}</p>
+                  </div>
+
+                  {/* Bottom: actions */}
+                  <div className="flex gap-2">
+                    <Link
+                      href={`/admin/photographers/${p.id}`}
+                      className="flex-1 py-2 text-center text-[9px] font-semibold tracking-[0.2em] uppercase bg-white text-black hover:bg-white/90 transition-colors"
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(p.id, p.fullName)}
+                      className="px-3 py-2 text-[9px] tracking-widest uppercase text-red-400/70 hover:text-red-400 hover:bg-red-400/10 transition-colors border border-red-400/20"
+                    >
+                      ✕
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -280,9 +311,12 @@ export default function AdminDashboard() {
         )}
 
         {!loading && photographers.length === 0 && (
-          <div className="text-center py-20 text-white/30">
-            <p className="text-sm tracking-widest uppercase mb-4">No photographers found</p>
-            <button onClick={handleSeed} className="text-xs tracking-widest uppercase text-white/40 hover:text-white border border-white/10 hover:border-white/20 px-4 py-2 transition-colors">
+          <div className="text-center py-24 border border-white/[0.05]">
+            <p className="text-white/20 text-xs tracking-[0.4em] uppercase mb-6">No photographers found</p>
+            <button
+              onClick={handleSeed}
+              className="text-[10px] tracking-[0.3em] uppercase text-white/40 hover:text-white border border-white/10 hover:border-white/25 px-5 py-2.5 transition-colors"
+            >
               Seed from Static Files
             </button>
           </div>

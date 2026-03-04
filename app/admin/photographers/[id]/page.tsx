@@ -6,6 +6,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Photographer } from '@/lib/data';
 
+const INPUT_CLS = 'w-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-white/15 px-3 py-2.5 text-sm focus:outline-none focus:border-white/25 transition-colors';
+const LABEL_CLS = 'text-[10px] tracking-widest uppercase text-white/25 block mb-1.5';
+
 export default function EditPhotographer() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -135,7 +138,12 @@ export default function EditPhotographer() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-white/30 text-xs tracking-widest uppercase">Loading...</div>
+        <div className="space-y-3 w-full max-w-4xl px-8">
+          <div className="h-10 bg-white/[0.03] animate-pulse w-48" />
+          <div className="grid grid-cols-5 gap-2 mt-8">
+            {[...Array(15)].map((_, i) => <div key={i} className="aspect-square bg-white/[0.03] animate-pulse" />)}
+          </div>
+        </div>
       </div>
     );
   }
@@ -144,8 +152,8 @@ export default function EditPhotographer() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-white/30 text-sm mb-4">Photographer not found</p>
-          <Link href="/admin" className="text-white/50 text-xs tracking-widest uppercase hover:text-white">← Back</Link>
+          <p className="text-white/20 text-xs tracking-[0.4em] uppercase mb-4">Photographer not found</p>
+          <Link href="/admin" className="text-white/40 text-[10px] tracking-widest uppercase hover:text-white transition-colors">← Dashboard</Link>
         </div>
       </div>
     );
@@ -154,105 +162,115 @@ export default function EditPhotographer() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="border-b border-white/10 px-6 py-4 flex items-center justify-between sticky top-0 bg-[#080808] z-10">
+      <header className="border-b border-white/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-[#080808]/95 backdrop-blur-sm z-10">
         <div className="flex items-center gap-4">
-          <Link href="/admin" className="text-white/30 text-xs tracking-widest uppercase hover:text-white/70 transition-colors">
-            ← Dashboard
+          <Link href="/admin" className="text-white/25 text-[10px] tracking-[0.3em] uppercase hover:text-white/60 transition-colors">
+            ← Lineup
           </Link>
-          <span className="text-white/10">|</span>
-          <span className="text-white/50 text-xs tracking-widest uppercase">{photographer.fullName}</span>
+          <div className="w-px h-3 bg-white/10" />
+          <span className="text-white/50 text-[10px] tracking-[0.3em] uppercase">{photographer.fullName}</span>
         </div>
-        <Link href={`/portfolio/${id}`} target="_blank" className="text-white/30 text-xs tracking-widest uppercase hover:text-white/70 transition-colors border border-white/10 hover:border-white/20 px-3 py-1.5">
-          View Portfolio
+        <Link
+          href={`/portfolio/${id}`}
+          target="_blank"
+          className="text-white/30 text-[10px] tracking-[0.25em] uppercase hover:text-white/60 transition-colors px-3 py-2 hover:bg-white/5"
+        >
+          View Portfolio ↗
         </Link>
       </header>
 
-      <div className="max-w-5xl mx-auto px-6 py-10 space-y-12">
-        {/* Status message */}
-        {message && (
-          <div className={`px-4 py-3 border text-sm ${isError ? 'bg-red-500/10 border-red-500/20 text-red-400' : 'bg-white/5 border-white/10 text-white/80'}`}>
-            {message}
-          </div>
-        )}
+      {/* Toast */}
+      {message && (
+        <div className={`fixed bottom-8 right-8 z-50 px-5 py-3 backdrop-blur border text-sm tracking-wide shadow-2xl ${
+          isError ? 'bg-red-500/20 border-red-500/30 text-red-300' : 'bg-white/10 border-white/20 text-white'
+        }`}>
+          {message}
+        </div>
+      )}
+
+      <div className="max-w-7xl mx-auto px-8 py-10 space-y-14">
 
         {/* Info Form */}
         <section>
-          <div className="mb-6">
-            <p className="text-white/30 text-xs tracking-[0.3em] uppercase mb-1">Photographer Info</p>
-            <h2 className="text-xl font-black tracking-tight">{photographer.fullName}</h2>
-          </div>
-
-          <form onSubmit={handleSaveInfo} className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-white/30 text-xs tracking-widest uppercase block mb-2">Full Name</label>
-                <input
-                  value={formData.fullName}
-                  onChange={e => setFormData(v => ({ ...v, fullName: e.target.value.toUpperCase() }))}
-                  className="w-full bg-white/5 border border-white/10 text-white px-3 py-2.5 text-sm focus:outline-none focus:border-white/30 transition-colors"
-                />
-              </div>
-              <div>
-                <label className="text-white/30 text-xs tracking-widest uppercase block mb-2">Title</label>
-                <input
-                  value={formData.title}
-                  onChange={e => setFormData(v => ({ ...v, title: e.target.value.toUpperCase() }))}
-                  className="w-full bg-white/5 border border-white/10 text-white px-3 py-2.5 text-sm focus:outline-none focus:border-white/30 transition-colors"
-                />
-              </div>
-            </div>
+          <div className="flex items-end justify-between mb-8">
             <div>
-              <label className="text-white/30 text-xs tracking-widest uppercase block mb-2">Preview Image Path</label>
-              <div className="flex gap-3 items-center">
-                <input
-                  value={formData.preview}
-                  onChange={e => setFormData(v => ({ ...v, preview: e.target.value }))}
-                  className="flex-1 bg-white/5 border border-white/10 text-white px-3 py-2.5 text-sm focus:outline-none focus:border-white/30 transition-colors"
-                  placeholder="/portfolios/previews/name.webp"
-                />
-                {formData.preview && (
-                  <div className="relative w-12 h-12 flex-shrink-0 overflow-hidden border border-white/10">
-                    <Image src={formData.preview} alt="Preview" fill className="object-cover" sizes="48px" />
-                  </div>
-                )}
-              </div>
+              <p className="text-white/20 text-[10px] tracking-[0.5em] uppercase mb-2">Photographer</p>
+              <h1 className="text-3xl font-black tracking-tighter">{photographer.fullName}</h1>
             </div>
-
             <button
+              form="info-form"
               type="submit"
               disabled={saving}
-              className="bg-white text-black text-xs font-semibold tracking-[0.2em] uppercase px-6 py-2.5 hover:bg-white/90 transition-colors disabled:opacity-50"
+              className="bg-white text-black text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-white/90 transition-colors disabled:opacity-50"
             >
               {saving ? 'Saving...' : 'Save Info'}
             </button>
+          </div>
+
+          <form id="info-form" onSubmit={handleSaveInfo}>
+            <div className="grid md:grid-cols-3 gap-4">
+              <div>
+                <label className={LABEL_CLS}>Full Name</label>
+                <input
+                  value={formData.fullName}
+                  onChange={e => setFormData(v => ({ ...v, fullName: e.target.value.toUpperCase() }))}
+                  className={INPUT_CLS}
+                />
+              </div>
+              <div>
+                <label className={LABEL_CLS}>Title</label>
+                <input
+                  value={formData.title}
+                  onChange={e => setFormData(v => ({ ...v, title: e.target.value.toUpperCase() }))}
+                  className={INPUT_CLS}
+                />
+              </div>
+              <div>
+                <label className={LABEL_CLS}>Preview Image Path</label>
+                <div className="flex gap-2">
+                  <input
+                    value={formData.preview}
+                    onChange={e => setFormData(v => ({ ...v, preview: e.target.value }))}
+                    placeholder="/portfolios/previews/name.webp"
+                    className={INPUT_CLS}
+                  />
+                  {formData.preview && (
+                    <div className="relative w-11 h-11 flex-shrink-0 overflow-hidden border border-white/10">
+                      <Image src={formData.preview} alt="Preview" fill className="object-cover" sizes="44px" />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </form>
         </section>
 
-        {/* Image Order */}
+        {/* Gallery Image Order */}
         <section>
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-end justify-between mb-8">
             <div>
-              <p className="text-white/30 text-xs tracking-[0.3em] uppercase mb-1">Image Order</p>
-              <h2 className="text-xl font-black tracking-tight">PORTFOLIO IMAGES</h2>
+              <p className="text-white/20 text-[10px] tracking-[0.5em] uppercase mb-2">Portfolio</p>
+              <h2 className="text-3xl font-black tracking-tighter">IMAGE ORDER</h2>
+              <p className="text-white/25 text-xs mt-1">
+                {images.length} images &mdash; drag to reorder, hover for controls
+              </p>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-white/30 text-xs">{images.length} images</span>
-              <button
-                onClick={handleSaveImages}
-                disabled={savingImages}
-                className="bg-white text-black text-xs font-semibold tracking-[0.2em] uppercase px-4 py-2 hover:bg-white/90 transition-colors disabled:opacity-50"
-              >
-                {savingImages ? 'Saving...' : 'Save Order'}
-              </button>
-            </div>
+            <button
+              onClick={handleSaveImages}
+              disabled={savingImages}
+              className="bg-white text-black text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-white/90 transition-colors disabled:opacity-50"
+            >
+              {savingImages ? 'Saving...' : 'Save Order'}
+            </button>
           </div>
 
-          <p className="text-white/20 text-xs tracking-wide mb-4">Drag rows to reorder • Use arrows for precise control</p>
-
-          <div className="space-y-1">
-            {images.map((img, index) => {
-              const filename = img.split('/').pop() || img;
-              return (
+          {images.length === 0 ? (
+            <div className="text-center py-20 border border-white/[0.05]">
+              <p className="text-white/20 text-xs tracking-[0.4em] uppercase">No images found</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-1.5">
+              {images.map((img, index) => (
                 <div
                   key={img}
                   draggable
@@ -260,69 +278,69 @@ export default function EditPhotographer() {
                   onDragEnter={() => onDragEnter(index)}
                   onDragEnd={onDragEnd}
                   onDragOver={e => e.preventDefault()}
-                  className={`flex items-center gap-3 p-3 border transition-colors cursor-grab active:cursor-grabbing select-none ${
+                  className={`group relative aspect-square overflow-hidden cursor-grab active:cursor-grabbing select-none transition-all duration-150 ${
                     dragIndex === index
-                      ? 'border-white/30 bg-white/10'
-                      : 'border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10'
+                      ? 'opacity-40 scale-95 ring-1 ring-white/30'
+                      : 'opacity-100'
                   }`}
                 >
-                  {/* Drag handle */}
-                  <div className="text-white/20 text-sm font-mono w-4 flex-shrink-0 cursor-grab">⠿</div>
-
-                  {/* Index */}
-                  <span className="text-white/20 text-xs font-mono w-6 text-right flex-shrink-0">{index + 1}</span>
-
                   {/* Thumbnail */}
-                  <div className="relative w-10 h-10 flex-shrink-0 overflow-hidden bg-white/5">
-                    <Image src={img} alt={filename} fill className="object-cover" sizes="40px" />
+                  <Image
+                    src={img}
+                    alt={`${index + 1}`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 33vw, (max-width: 1024px) 20vw, 15vw"
+                  />
+
+                  {/* Position number — always visible */}
+                  <div className="absolute top-1 left-1 bg-black/70 px-1.5 py-0.5">
+                    <span className="text-white/60 text-[9px] font-mono">{index + 1}</span>
                   </div>
 
-                  {/* Filename */}
-                  <span className="text-white/60 text-xs font-mono flex-1 truncate">{filename}</span>
+                  {/* Hover overlay with controls */}
+                  <div className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex flex-col justify-between p-1.5">
+                    {/* Top row: move up/down */}
+                    <div className="flex justify-end gap-0.5">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); moveImage(index, -1); }}
+                        disabled={index === 0}
+                        className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/20 transition-colors disabled:opacity-20 text-xs"
+                        title="Move left"
+                      >←</button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); moveImage(index, 1); }}
+                        disabled={index === images.length - 1}
+                        className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/20 transition-colors disabled:opacity-20 text-xs"
+                        title="Move right"
+                      >→</button>
+                    </div>
 
-                  {/* Controls */}
-                  <div className="flex items-center gap-1 flex-shrink-0">
-                    <button
-                      onClick={() => moveImage(index, -1)}
-                      disabled={index === 0}
-                      className="p-1.5 text-white/30 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-20 text-xs"
-                      title="Move up"
-                    >
-                      ↑
-                    </button>
-                    <button
-                      onClick={() => moveImage(index, 1)}
-                      disabled={index === images.length - 1}
-                      className="p-1.5 text-white/30 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-20 text-xs"
-                      title="Move down"
-                    >
-                      ↓
-                    </button>
-                    <button
-                      onClick={() => removeImage(index)}
-                      className="p-1.5 text-red-400/40 hover:text-red-400 hover:bg-red-400/10 transition-colors text-xs ml-1"
-                      title="Remove from list"
-                    >
-                      ×
-                    </button>
+                    {/* Center: position */}
+                    <div className="text-center">
+                      <span className="text-white/40 text-[9px] font-mono">{index + 1} / {images.length}</span>
+                    </div>
+
+                    {/* Bottom: remove */}
+                    <div className="flex justify-end">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); removeImage(index); }}
+                        className="w-6 h-6 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-400/20 transition-colors text-xs"
+                        title="Remove"
+                      >✕</button>
+                    </div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-
-          {images.length === 0 && (
-            <div className="text-center py-10 border border-white/5 text-white/20 text-sm">
-              No images found in this portfolio folder
+              ))}
             </div>
           )}
 
-          {images.length > 0 && (
-            <div className="mt-4 flex justify-end">
+          {images.length > 12 && (
+            <div className="mt-6 flex justify-end">
               <button
                 onClick={handleSaveImages}
                 disabled={savingImages}
-                className="bg-white text-black text-xs font-semibold tracking-[0.2em] uppercase px-6 py-2.5 hover:bg-white/90 transition-colors disabled:opacity-50"
+                className="bg-white text-black text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-white/90 transition-colors disabled:opacity-50"
               >
                 {savingImages ? 'Saving...' : 'Save Order'}
               </button>
