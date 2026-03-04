@@ -81,9 +81,9 @@ img, video {
 
 /* Typography System */
 .heading-hero {
-  font-size: clamp(2rem, 8vw, 6rem);
+  font-size: clamp(1.75rem, 7vw, 5.5rem);
   font-weight: 900;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.025em;
   line-height: 1.1;
   overflow: visible;
 }

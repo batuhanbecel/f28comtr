@@ -46,6 +46,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preload" href="/_next/static/css/app/layout.css" as="style" />
+      </head>
       <body className="antialiased bg-black text-white">
         <LanguageProvider>
           <SmoothScrollProvider>

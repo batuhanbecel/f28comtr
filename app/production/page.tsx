@@ -10,7 +10,11 @@ export default async function ProductionPage() {
   const photographers = await getPhotographers();
 
   return (
-    <ProductionSnapContainer>
+    <>
+      {photographers[0] && (
+        <link rel="preload" as="image" href={photographers[0].preview} imageSrcSet={`${photographers[0].preview}?w=640&q=85 640w, ${photographers[0].preview}?w=750&q=85 750w`} />
+      )}
+      <ProductionSnapContainer>
       {/* Hero — snap point 1 */}
       <section
         className="h-screen flex flex-col items-center justify-center px-6 md:px-12 relative overflow-hidden"
@@ -44,5 +48,6 @@ export default async function ProductionPage() {
         <Footer />
       </div>
     </ProductionSnapContainer>
+    </>
   );
 }

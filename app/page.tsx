@@ -79,7 +79,8 @@ function Panel({
           fill
           className="object-cover"
           priority
-          quality={90}
+          fetchPriority="high"
+          quality={85}
           sizes="(max-width: 768px) 100vw, 50vw"
         />
       </div>
@@ -96,7 +97,7 @@ function Panel({
 
       {/* Text block */}
       <div
-        className="absolute bottom-0 left-0 right-0 p-8 sm:p-10 md:p-12 lg:p-16"
+        className="absolute bottom-0 left-0 right-0 p-8 sm:p-10 md:p-12 lg:p-16 overflow-hidden whitespace-nowrap"
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? 'translateY(0)' : 'translateY(28px)',
@@ -119,7 +120,7 @@ function Panel({
 
         {/* Main heading */}
         <h2
-          className="heading-hero transition-all duration-700"
+          className="heading-hero transition-all duration-700 whitespace-nowrap"
           style={{ color: isDimmed ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,1)' }}
         >
           {heading}
