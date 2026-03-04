@@ -31,28 +31,26 @@ export default async function PortfolioPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen">
-      <section className="relative h-[70vh] md:h-[80vh] w-full flex items-center justify-center">
+      <section className="relative h-[80vh] md:h-screen w-full flex items-end justify-center pb-16 md:pb-24 vignette overflow-hidden">
         <Image
           src={photographer.preview}
           alt={photographer.fullName}
           fill
-          className="object-cover"
+          className="object-cover scale-[1.02]"
           priority
           sizes="100vw"
           quality={90}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-transparent h-1/3" />
 
         <div className="relative z-10 text-center text-white px-4">
-          <span className="section-label fade-in-up" style={{animationDelay: '0.05s'}}>{photographer.title}</span>
-          <h1 className="heading-hero fade-in-up" style={{animationDelay: '0.15s'}}>
+          <div className="hero-rule fade-in-up" style={{animationDelay: '0.05s'}} />
+          <span className="section-label fade-in-up" style={{animationDelay: '0.1s'}}>{photographer.title}</span>
+          <h1 className="heading-hero fade-in-up mt-2" style={{animationDelay: '0.2s'}}>
             {photographer.fullName}
           </h1>
-          <div className="flex items-center justify-center gap-5 mt-6 fade-in-up" style={{animationDelay: '0.25s'}}>
-            <span className="text-white/55 text-[11px] tracking-[0.45em] uppercase">
-              {images.length} Photos
-            </span>
-            <span className="w-px h-3.5 bg-white/20" />
+          <div className="mt-8 fade-in-up" style={{animationDelay: '0.3s'}}>
             <DownloadPortfolio images={images} photographer={photographer} />
           </div>
         </div>

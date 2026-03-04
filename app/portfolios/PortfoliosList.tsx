@@ -5,12 +5,14 @@ import Link from 'next/link';
 import { useState } from 'react';
 import type { Photographer } from '@/lib/data';
 import { Footer } from '@/components/Footer';
+import { useLanguage } from '@/context/LanguageContext';
 
 const BLUR = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q==";
 
 export function PortfoliosList({ photographers }: { photographers: Photographer[] }) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const active = photographers.find(p => p.id === hoveredId);
+  const { t } = useLanguage();
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -49,11 +51,8 @@ export function PortfoliosList({ photographers }: { photographers: Photographer[
 
         {/* Header */}
         <div className="px-8 md:px-16 mb-16">
-          <span className="section-label">Our Work</span>
-          <h1 className="heading-hero mt-3">PORTFOLIOS</h1>
-          <p className="text-white/30 text-sm tracking-widest mt-4 uppercase">
-            {photographers.length} Photographers
-          </p>
+          <span className="section-label">{t.portfolios.sectionLabel}</span>
+          <h1 className="heading-hero mt-3">{t.portfolios.heading}</h1>
         </div>
 
         <div className="mx-8 md:mx-16 h-px bg-white/10 mb-0" />
@@ -77,7 +76,7 @@ export function PortfoliosList({ photographers }: { photographers: Photographer[
                   <p className={`text-[9px] tracking-[0.55em] uppercase mb-2 transition-all duration-300 ${
                     hoveredId === p.id ? 'text-white/60 translate-x-1' : 'text-white/25'
                   }`}>
-                    {p.title}
+                    {(t.titleMap as Record<string, string>)[p.title] ?? p.title}
                   </p>
                   <h2 className={`font-black tracking-tighter leading-none transition-all duration-300 ${
                     hoveredId === p.id ? 'text-white translate-x-1' : 'text-white/70'

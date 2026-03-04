@@ -1,6 +1,8 @@
 import { getPhotographers } from '@/lib/db';
 import { ParallaxSection } from '@/components/ParallaxSection';
 import { Footer } from '@/components/Footer';
+import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
+import { LocalizedHero } from '@/components/LocalizedHero';
 
 export const revalidate = 60;
 
@@ -8,18 +10,13 @@ export default async function ProductionPage() {
   const photographers = await getPhotographers();
 
   return (
-    <main className="min-h-screen">
-      {/* Hero */}
-      <section className="min-h-screen flex flex-col items-center justify-center px-6 md:px-12 relative overflow-hidden">
-        <div className="text-center max-w-5xl mx-auto">
-          <span className="section-label fade-in-up" style={{animationDelay: '0.05s'}}>Istanbul — Since 2008</span>
-          <h1 className="heading-hero gradient-text fade-in-up" style={{animationDelay: '0.15s'}}>
-            PRODUCTION
-          </h1>
-          <p className="body-text max-w-3xl mx-auto opacity-50 mt-8 fade-in-up" style={{animationDelay: '0.25s'}}>
-            Based in Istanbul since 2008, f/2.8 Production delivers high-quality photography and video services through an international portfolio. Working with many leading brands from around the world, the team provides efficient solutions for photography, video, CGI, animation, editing, and motion graphics.
-          </p>
-        </div>
+    <ProductionSnapContainer>
+      {/* Hero — snap point 1 */}
+      <section
+        className="h-screen flex flex-col items-center justify-center px-6 md:px-12 relative overflow-hidden"
+        style={{ scrollSnapAlign: 'start' }}
+      >
+        <LocalizedHero page="production" />
         {/* Scroll arrow */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 fade-in-up" style={{animationDelay: '0.5s'}}>
           <div className="flex flex-col items-center gap-2 animate-bounce">
@@ -31,15 +28,21 @@ export default async function ProductionPage() {
         </div>
       </section>
 
+      {/* One snap point per photographer */}
       {photographers.map((photographer, index) => (
         <ParallaxSection
           key={photographer.id}
           photographer={photographer}
           index={index}
           total={photographers.length}
+          fullscreen
         />
       ))}
-      <Footer />
-    </main>
+
+      {/* Footer — final snap point */}
+      <div style={{ scrollSnapAlign: 'start' }}>
+        <Footer />
+      </div>
+    </ProductionSnapContainer>
   );
 }

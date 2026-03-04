@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface ParallaxSectionProps {
   photographer: {
@@ -13,14 +14,16 @@ interface ParallaxSectionProps {
   };
   index: number;
   total?: number;
+  fullscreen?: boolean;
 }
 
-export function ParallaxSection({ photographer, index, total }: ParallaxSectionProps) {
+export function ParallaxSection({ photographer, index, total, fullscreen }: ParallaxSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const [textVisible, setTextVisible] = useState(false);
   const isRight = index % 2 === 1;
+  const { t } = useLanguage();
 
   // Scroll parallax Y (existing)
   const scrollY = useRef(0);
@@ -30,16 +33,26 @@ export function ParallaxSection({ photographer, index, total }: ParallaxSectionP
   const rafId = useRef<number | null>(null);
 
   useEffect(() => {
-    let ticking = false;
+    // In fullscreen snap mode the scroll happens on the container, not window
+    let scrollTarget: HTMLElement | Window = window;
+    if (fullscreen && sectionRef.current) {
+      let el: HTMLElement | null = sectionRef.current.parentElement;
+      while (el) {
+        const oy = getComputedStyle(el).overflowY;
+        if (oy === 'scroll' || oy === 'auto') { scrollTarget = el; break; }
+        el = el.parentElement;
+      }
+    }
 
+    let ticking = false;
     const handleScroll = () => {
       if (!ticking) {
-        window.requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
           if (!sectionRef.current) { ticking = false; return; }
           const rect = sectionRef.current.getBoundingClientRect();
           const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
           if (progress >= 0 && progress <= 1) {
-            const intensity = window.innerWidth < 768 ? 80 : 200;
+            const intensity = window.innerWidth < 768 ? 60 : 160;
             scrollY.current = (progress - 0.5) * intensity;
           }
           ticking = false;
@@ -48,10 +61,10 @@ export function ParallaxSection({ photographer, index, total }: ParallaxSectionP
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    scrollTarget.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    return () => scrollTarget.removeEventListener('scroll', handleScroll);
+  }, [fullscreen]);
 
   // Mouse-tracking parallax with lerp loop
   useEffect(() => {
@@ -97,7 +110,7 @@ export function ParallaxSection({ photographer, index, total }: ParallaxSectionP
           observer.unobserve(el);
         }
       },
-      { threshold: 0.2 }
+      { threshold: fullscreen ? 0.15 : 0.2 }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -111,7 +124,8 @@ export function ParallaxSection({ photographer, index, total }: ParallaxSectionP
       ref={sectionRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative h-[66vh] w-full flex items-center overflow-hidden"
+      className={`relative ${fullscreen ? 'h-screen' : 'h-[66vh]'} w-full flex items-center overflow-hidden`}
+      style={fullscreen ? { scrollSnapAlign: 'start', scrollSnapStop: 'always' } : undefined}
     >
       <div ref={imageRef} className="absolute -inset-[8%] parallax-image bg-black">
         <Image
@@ -144,25 +158,28 @@ export function ParallaxSection({ photographer, index, total }: ParallaxSectionP
         </span>
       </div>
 
-      {/* Text content — alternates left/right */}
+      {/* Text content — centered on mobile, alternates left/right on desktop */}
       <div
         ref={textRef}
-        className={`relative z-10 text-white w-full px-6 md:px-16 lg:px-24 ${
-          isRight ? 'flex justify-end' : ''
+        className={`relative z-10 text-white w-full px-6 md:px-16 lg:px-24 flex justify-center md:block ${
+          isRight ? 'md:flex md:justify-end' : ''
         }`}
       >
-        <div className={`max-w-2xl ${ isRight ? 'text-right' : '' }`}>
+        <div className={`max-w-2xl text-center md:text-left ${ isRight ? 'md:text-right' : '' }`}>
 
           {/* Label row: title + counter on same line */}
           <div
-            className={`flex items-center gap-4 mb-5 md:mb-7 ${ isRight ? 'justify-end' : '' }`}
+            className={`flex items-center justify-center gap-4 mb-5 md:mb-7 md:justify-start ${ isRight ? 'md:justify-end' : '' }`}
             style={{
               opacity: textVisible ? 1 : 0,
               transform: textVisible ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 0.55s cubic-bezier(0.76,0,0.24,1) 0s, transform 0.55s cubic-bezier(0.76,0,0.24,1) 0s',
+              transition: `opacity 0.5s cubic-bezier(0.76,0,0.24,1) ${fullscreen ? '0s' : '0s'}, transform 0.5s cubic-bezier(0.76,0,0.24,1) ${fullscreen ? '0s' : '0s'}`,
+
             }}
           >
-            <span className="label-text opacity-70">{photographer.title}</span>
+            <span className="label-text opacity-70">
+              {(t.titleMap as Record<string, string>)[photographer.title] ?? photographer.title}
+            </span>
             <span className="text-white/15 text-[10px] font-mono tracking-widest">
               {numLabel}{totalLabel && ` / ${totalLabel}`}
             </span>
@@ -174,7 +191,8 @@ export function ParallaxSection({ photographer, index, total }: ParallaxSectionP
             style={{
               opacity: textVisible ? 1 : 0,
               transform: textVisible ? 'translateY(0)' : 'translateY(24px)',
-              transition: 'opacity 0.6s cubic-bezier(0.76,0,0.24,1) 0.15s, transform 0.6s cubic-bezier(0.76,0,0.24,1) 0.15s',
+              transition: `opacity 0.6s cubic-bezier(0.76,0,0.24,1) ${fullscreen ? '0.07s' : '0.15s'}, transform 0.6s cubic-bezier(0.76,0,0.24,1) ${fullscreen ? '0.07s' : '0.15s'}`,
+
               paddingTop: '0.1em',
             }}
           >
@@ -186,7 +204,8 @@ export function ParallaxSection({ photographer, index, total }: ParallaxSectionP
             style={{
               opacity: textVisible ? 1 : 0,
               transform: textVisible ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 0.55s cubic-bezier(0.76,0,0.24,1) 0.3s, transform 0.55s cubic-bezier(0.76,0,0.24,1) 0.3s',
+              transition: `opacity 0.5s cubic-bezier(0.76,0,0.24,1) ${fullscreen ? '0.15s' : '0.3s'}, transform 0.5s cubic-bezier(0.76,0,0.24,1) ${fullscreen ? '0.15s' : '0.3s'}`,
+
             }}
           >
             <Link
@@ -199,7 +218,7 @@ export function ParallaxSection({ photographer, index, total }: ParallaxSectionP
                 </svg>
               )}
               <span className={`transition-transform duration-300 ${ isRight ? 'group-hover:-translate-x-1' : 'group-hover:translate-x-1' }`}>
-                VIEW PORTFOLIO
+                {t.common.viewPortfolio}
               </span>
               {!isRight && (
                 <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

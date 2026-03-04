@@ -1,9 +1,17 @@
 import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { SiteChrome } from "@/components/SiteChrome";
 import { CustomCursor } from "@/components/CustomCursor";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
+import { LanguageProvider } from "@/context/LanguageContext";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "f/2.8 Production Agency | Photography & Retouching",
@@ -36,13 +44,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <body className="antialiased bg-black text-white">
-        <CustomCursor />
-        <SiteChrome />
-        {children}
-        <SpeedInsights />
-        <Analytics />
+        <LanguageProvider>
+          <CustomCursor />
+          <SiteChrome />
+          {children}
+          <SpeedInsights />
+          <Analytics />
+        </LanguageProvider>
       </body>
     </html>
   );
