@@ -69,7 +69,7 @@ export function DownloadPortfolio({ images, photographer }: Props) {
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
       // ── COVER ─────────────────────────────────────────────────────
-      const coverSplit = PH * 0.62; // image occupies top 62%
+      const coverSplit = PH * 0.58; // image occupies top 58%
       setProgress(2);
 
       const cover = await loadImg(photographer.preview, 2200, 0.88);
@@ -79,42 +79,49 @@ export function DownloadPortfolio({ images, photographer }: Props) {
       pdf.setFillColor(0, 0, 0);
       pdf.rect(0, 0, PW, PH, 'F');
 
-      // Preview image — fills top portion, cropped to width
+      // Preview image — fills width, clips at split
       const coverAspect = cover.w / cover.h;
       const coverImgH = PW / coverAspect;
-      // If image is taller than the split area, position so it fills width and clips at split
-      const coverY = 0;
-      pdf.addImage(cover.dataUrl, 'JPEG', 0, coverY, PW, Math.min(coverImgH, coverSplit), undefined, 'FAST');
+      pdf.addImage(cover.dataUrl, 'JPEG', 0, 0, PW, Math.min(coverImgH, coverSplit + 10), undefined, 'FAST');
 
-      // Thin separator line
-      pdf.setDrawColor(30, 30, 30);
-      pdf.setLineWidth(0.3);
-      pdf.line(M, coverSplit + 0.15, PW - M, coverSplit + 0.15);
+      // Fade strip at bottom of image (3 dark rects for gradient effect)
+      pdf.setFillColor(0, 0, 0);
+      pdf.rect(0, coverSplit - 30, PW, 40, 'F');
 
-      // Text in lower section
-      const ty = coverSplit + 22;
-      pdf.setTextColor(70, 70, 70);
+      // Thin white separator line — centered
+      const lineW = 28;
+      pdf.setDrawColor(60, 60, 60);
+      pdf.setLineWidth(0.25);
+      pdf.line((PW - lineW) / 2, coverSplit + 8, (PW + lineW) / 2, coverSplit + 8);
+
+      // ── Centered text block ──
+      const cx = PW / 2; // horizontal center
+
+      // Photographer title (label)
+      pdf.setTextColor(80, 80, 80);
       pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(7);
-      pdf.text(photographer.title.toUpperCase(), M, ty);
+      pdf.setFontSize(7.5);
+      pdf.text(photographer.title.toUpperCase(), cx, coverSplit + 22, { align: 'center' });
 
-      pdf.setTextColor(240, 240, 240);
+      // Full name — large, bold, centered
+      pdf.setTextColor(245, 245, 245);
       pdf.setFont('helvetica', 'bold');
-      pdf.setFontSize(26);
-      pdf.text(photographer.fullName.toUpperCase(), M, ty + 14);
+      pdf.setFontSize(34);
+      pdf.text(photographer.fullName.toUpperCase(), cx, coverSplit + 40, { align: 'center' });
 
-      pdf.setTextColor(50, 50, 50);
+      // Image count
+      pdf.setTextColor(55, 55, 55);
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(7);
-      pdf.text(`${String(images.length).padStart(2, '0')} IMAGES`, M, ty + 26);
+      pdf.text(`${String(images.length).padStart(2, '0')}\u2002IMAGES`, cx, coverSplit + 53, { align: 'center' });
 
-      // f/2.8 logo — bottom right
+      // f/2.8 logo — centered at bottom
       const logo = await loadImg('/logos/f28/f28_white.png', 500, 0.92);
-      const logoW = 24;
+      const logoW = 26;
       const logoH = (logoW * logo.h) / logo.w;
       pdf.addImage(
         logo.dataUrl, 'PNG',
-        PW - M - logoW, PH - M - logoH,
+        (PW - logoW) / 2, PH - M - logoH,
         logoW, logoH, undefined, 'FAST',
       );
       setProgress(10);
@@ -145,17 +152,31 @@ export function DownloadPortfolio({ images, photographer }: Props) {
       pdf.setFillColor(0, 0, 0);
       pdf.rect(0, 0, PW, PH, 'F');
 
+      // Thin divider line centered
+      const endLineW = 28;
+      pdf.setDrawColor(45, 45, 45);
+      pdf.setLineWidth(0.25);
+      pdf.line((PW - endLineW) / 2, PH / 2 - 28, (PW + endLineW) / 2, PH / 2 - 28);
+
+      // THANK YOU — large, bold, centered
       pdf.setTextColor(255, 255, 255);
       pdf.setFont('helvetica', 'bold');
-      pdf.setFontSize(36);
-      pdf.text('THANK YOU', PW / 2, PH / 2 - 12, { align: 'center' });
+      pdf.setFontSize(42);
+      pdf.text('THANK YOU', PW / 2, PH / 2 - 8, { align: 'center' });
 
+      // Photographer name — smaller, below
+      pdf.setTextColor(55, 55, 55);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(8);
+      pdf.text(photographer.fullName.toUpperCase(), PW / 2, PH / 2 + 8, { align: 'center' });
+
+      // f/2.8 logo — centered below text
       const logoEnd = await loadImg('/logos/f28/f28_white.png', 500, 0.92);
-      const leW = 28;
+      const leW = 26;
       const leH = (leW * logoEnd.h) / logoEnd.w;
       pdf.addImage(
         logoEnd.dataUrl, 'PNG',
-        (PW - leW) / 2, PH / 2 + 6,
+        (PW - leW) / 2, PH / 2 + 22,
         leW, leH, undefined, 'FAST',
       );
 
@@ -163,6 +184,8 @@ export function DownloadPortfolio({ images, photographer }: Props) {
 
       const slug = photographer.fullName
         .toLowerCase()
+        .replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ı/g, 'i').replace(/i̇/g, 'i')
+        .replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u')
         .replace(/\s+/g, '-')
         .replace(/[^a-z0-9-]/g, '');
       pdf.save(`${slug}-portfolio.pdf`);
@@ -180,8 +203,7 @@ export function DownloadPortfolio({ images, photographer }: Props) {
     <button
       onClick={generate}
       disabled={phase === 'working'}
-      className="inline-flex items-center gap-3 text-white/35 text-[10px] tracking-[0.4em] uppercase hover:text-white/70 border border-white/[0.12] hover:border-white/30 px-6 py-3 transition-all duration-300 disabled:cursor-wait disabled:opacity-60 mt-4 fade-in-up"
-      style={{ animationDelay: '0.35s' }}
+      className="inline-flex items-center gap-2.5 text-white/60 text-[10px] tracking-[0.4em] uppercase hover:text-white border border-white/25 hover:border-white/60 px-5 py-2.5 transition-all duration-300 disabled:cursor-wait disabled:opacity-50"
     >
       {phase === 'idle' && (
         <>

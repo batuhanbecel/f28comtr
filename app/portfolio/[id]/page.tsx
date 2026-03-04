@@ -48,10 +48,13 @@ export default async function PortfolioPage({ params }: PageProps) {
           <h1 className="heading-hero fade-in-up" style={{animationDelay: '0.15s'}}>
             {photographer.fullName}
           </h1>
-          <p className="text-white/35 text-[11px] tracking-[0.4em] uppercase mt-4 fade-in-up" style={{animationDelay: '0.25s'}}>
-            {images.length} photos
-          </p>
-          <DownloadPortfolio images={images} photographer={photographer} />
+          <div className="flex items-center justify-center gap-5 mt-6 fade-in-up" style={{animationDelay: '0.25s'}}>
+            <span className="text-white/55 text-[11px] tracking-[0.45em] uppercase">
+              {images.length} Photos
+            </span>
+            <span className="w-px h-3.5 bg-white/20" />
+            <DownloadPortfolio images={images} photographer={photographer} />
+          </div>
         </div>
       </section>
 

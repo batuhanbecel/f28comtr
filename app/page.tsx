@@ -84,19 +84,6 @@ export default function Home() {
 
       {/* Center divider — vertical on desktop, horizontal on mobile */}
       <div className="absolute left-0 md:left-1/2 top-1/2 md:top-0 right-0 md:right-auto bottom-auto md:bottom-0 w-full md:w-px h-px md:h-full bg-gradient-to-r md:bg-gradient-to-b from-transparent via-white/20 to-transparent -translate-y-1/2 md:translate-y-0 md:-translate-x-1/2 pointer-events-none" />
-
-      {/* Centered f/2.8 brand mark at divider — desktop only */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center pointer-events-none">
-        <div className="bg-black/80 backdrop-blur-sm border border-white/10 px-4 py-3">
-          <Image
-            src="/logos/f28/f28_white.png"
-            alt="f/2.8"
-            width={56}
-            height={28}
-            className="h-6 w-auto opacity-50"
-          />
-        </div>
-      </div>
     </main>
   );
 }
