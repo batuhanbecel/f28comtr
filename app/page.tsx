@@ -172,7 +172,7 @@ export default function Home() {
 
       <Panel
         href="/ai-based"
-        imageSrc="/landing-2.jpg"
+        imageSrc="/landing-2.webp"
         imageAlt="AI Based"
         label={t.landing.aiLabel}
         heading={t.nav.aiBased}
