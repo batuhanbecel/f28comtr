@@ -49,7 +49,7 @@ export function Menu() {
     <>
       {/* Header */}
       <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-5 md:px-10 md:py-7 transition-all duration-500 ${
-        isScrolled ? 'backdrop-blur-xl bg-black/50 border-b border-white/[0.06]' : ''
+        isScrolled ? 'backdrop-blur-xl bg-black/50' : ''
       }`}>
         <Link href="/" className="relative z-50 transition-opacity duration-300 hover:opacity-70">
           <Image

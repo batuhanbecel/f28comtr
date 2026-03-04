@@ -51,6 +51,7 @@ export function ProductionSnapContainer({ children }: { children: React.ReactNod
   return (
     <main
       ref={containerRef}
+      data-snap-container
       className="fixed inset-0 overflow-y-scroll [&::-webkit-scrollbar]:hidden"
       style={{
         scrollSnapType: 'y mandatory',

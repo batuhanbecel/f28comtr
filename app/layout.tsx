@@ -6,6 +6,7 @@ import { CustomCursor } from "@/components/CustomCursor";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -47,11 +48,13 @@ export default function RootLayout({
     <html lang="en" className={inter.variable}>
       <body className="antialiased bg-black text-white">
         <LanguageProvider>
-          <CustomCursor />
-          <SiteChrome />
-          {children}
-          <SpeedInsights />
-          <Analytics />
+          <SmoothScrollProvider>
+            <CustomCursor />
+            <SiteChrome />
+            {children}
+            <SpeedInsights />
+            <Analytics />
+          </SmoothScrollProvider>
         </LanguageProvider>
       </body>
     </html>
