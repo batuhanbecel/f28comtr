@@ -1,20 +1,24 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { photographers } from '@/lib/data';
+import { Footer } from '@/components/Footer';
 
 export default function PortfoliosPage() {
   return (
-    <main className="min-h-screen pt-24 pb-12 px-6 md:px-12">
-      <h1 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-wider text-center mb-16">
-        PORTFOLIOS
-      </h1>
+    <main className="min-h-screen pt-36 pb-20 px-6 md:px-12">
+      <div className="text-center mb-16">
+        <span className="section-label">Our Work</span>
+        <h1 className="heading-hero gradient-text">
+          PORTFOLIOS
+        </h1>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
         {photographers.map((photographer, index) => (
           <Link
             key={photographer.id}
             href={`/portfolio/${photographer.id}`}
-            className="group relative aspect-[4/5] overflow-hidden bg-gray-900 hover-lift rounded-sm"
+            className="group relative aspect-[4/5] overflow-hidden bg-black hover-lift"
           >
             <Image
               src={photographer.preview}
@@ -41,6 +45,7 @@ export default function PortfoliosPage() {
           </Link>
         ))}
       </div>
+      <Footer />
     </main>
   );
 }

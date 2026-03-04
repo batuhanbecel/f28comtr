@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getPartnerLogos, getClientLogos } from '@/lib/utils';
 import { contactInfo } from '@/lib/data';
+import { Footer } from '@/components/Footer';
 
 export default function AboutPage() {
   const partnerLogos = getPartnerLogos();
@@ -20,7 +21,7 @@ export default function AboutPage() {
     <main className="min-h-screen">
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center px-6 md:px-12 relative overflow-hidden bg-black">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black to-white/5" />
+        <div className="absolute inset-0 bg-black" />
         <div className="relative z-10 text-center max-w-5xl mx-auto">
           <span className="section-label fade-in-up" style={{animationDelay: '0.05s'}}>Istanbul — Since 2008</span>
           <h1 className="heading-hero gradient-text mb-12 fade-in-up" style={{animationDelay: '0.15s'}}>
@@ -45,7 +46,7 @@ export default function AboutPage() {
               return (
                 <div
                   key={logo}
-                  className="relative aspect-square flex items-center justify-center p-6 rounded-lg glass-effect hover-lift"
+                  className="relative aspect-square flex items-center justify-center p-6 glass-effect hover-lift"
                 >
                   <Image
                     src={logo}
@@ -75,7 +76,7 @@ export default function AboutPage() {
               return (
                 <div
                   key={logo}
-                  className="relative aspect-square flex items-center justify-center p-4 rounded-lg glass-effect hover-lift"
+                  className="relative aspect-square flex items-center justify-center p-4 glass-effect hover-lift"
                 >
                   <Image
                     src={logo}
@@ -100,10 +101,10 @@ export default function AboutPage() {
             Services
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            {services.map((service, index) => (
+            {services.map((service) => (
               <div
                 key={service}
-                className="text-center p-4 md:p-5 glass-effect rounded-lg hover-lift"
+                className="text-center p-4 md:p-5 glass-effect hover-lift"
               >
                 <p className="label-text opacity-100 normal-case tracking-widest text-xs md:text-sm">{service}</p>
               </div>
@@ -121,24 +122,24 @@ export default function AboutPage() {
           </h2>
           <div className="grid md:grid-cols-2 gap-12 md:gap-16">
             <div className="space-y-8">
-              <div className="glass-effect p-6 rounded-lg">
+              <div className="glass-effect p-6">
                 <h3 className="label-text mb-3">Address</h3>
                 <p className="body-text opacity-90">
                   {contactInfo.address}<br/>
                   {contactInfo.city}
                 </p>
               </div>
-              <div className="glass-effect p-6 rounded-lg">
+              <div className="glass-effect p-6">
                 <h3 className="label-text mb-3">Email</h3>
                 <a href={`mailto:${contactInfo.email}`} className="body-text hover:opacity-70 transition-all duration-500">
                   {contactInfo.email}
                 </a>
               </div>
             </div>
-            <div className="glass-effect p-6 rounded-lg">
+            <div className="glass-effect p-6">
               <h3 className="label-text mb-6">Follow Us</h3>
               <div className="flex gap-4">
-                <Link href={contactInfo.instagram} target="_blank" rel="noopener noreferrer" className="p-4 glass-effect rounded-lg hover-lift">
+                <Link href={contactInfo.instagram} target="_blank" rel="noopener noreferrer" className="p-4 glass-effect hover-lift">
                   <Image
                     src="/logos/social/instagram.svg"
                     alt="Instagram"
@@ -147,7 +148,7 @@ export default function AboutPage() {
                     className="w-7 h-7 filter brightness-0 invert"
                   />
                 </Link>
-                <Link href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer" className="p-4 glass-effect rounded-lg hover-lift">
+                <Link href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer" className="p-4 glass-effect hover-lift">
                   <Image
                     src="/logos/social/linkedin.svg"
                     alt="LinkedIn"
@@ -161,6 +162,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

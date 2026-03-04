@@ -559,5 +559,25 @@ export const imageManifest: Record<string, string[]> = {
     "/portfolios/yonca-muslubas/F28XYONCA-368-scaled.jpg.webp",
     "/portfolios/yonca-muslubas/F28XYONCA-369-scaled.jpg.webp",
     "/portfolios/yonca-muslubas/F28XYONCA-53-scaled.jpg.webp"
+  ],
+  "__ai__": [
+    "/ai-images/01.webp",
+    "/ai-images/02.webp",
+    "/ai-images/04....webp",
+    "/ai-images/04..webp",
+    "/ai-images/04.webp",
+    "/ai-images/05.webp",
+    "/ai-images/06.webp",
+    "/ai-images/07..webp",
+    "/ai-images/07.webp",
+    "/ai-images/13.webp",
+    "/ai-images/14.webp",
+    "/ai-images/15.webp",
+    "/ai-images/16..webp",
+    "/ai-images/16.webp",
+    "/ai-images/17.webp",
+    "/ai-images/18.webp",
+    "/ai-images/19.webp",
+    "/ai-images/20.webp"
   ]
 };

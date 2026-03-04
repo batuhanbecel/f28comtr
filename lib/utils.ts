@@ -72,23 +72,25 @@ export function getClientLogos(): string[] {
 }
 
 export function getAIImages(): string[] {
+  // Use pre-built manifest first
+  if (imageManifest['__ai__'] && imageManifest['__ai__'].length > 0) {
+    return imageManifest['__ai__'];
+  }
+
+  // Fallback: filesystem (local dev)
   const aiImagesPath = path.join(process.cwd(), 'public', 'ai-images');
-  
   try {
     const files = fs.readdirSync(aiImagesPath);
     return files
       .filter(file => {
         if (!/\.(jpg|jpeg|png|webp)$/i.test(file)) return false;
-        
-        // Filter out 0-byte corrupted files
         const filePath = path.join(aiImagesPath, file);
         const stats = fs.statSync(filePath);
-        return stats.size > 1024; // Only include files larger than 1KB
+        return stats.size > 1024;
       })
       .map(file => `/ai-images/${file}`)
       .sort();
-  } catch (error) {
-    console.error('Error reading AI images:', error);
+  } catch {
     return [];
   }
 }

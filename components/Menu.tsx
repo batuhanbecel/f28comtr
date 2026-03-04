@@ -145,7 +145,7 @@ export function Menu() {
                 href={contactInfo.instagram} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-4 border border-white/20 rounded-lg hover:border-white/40 hover:bg-white/5 hover:scale-110 transition-all duration-300"
+                className="p-4 border border-white/20 hover:border-white/40 hover:bg-white/5 hover:scale-110 transition-all duration-300"
               >
                 <Image
                   src="/logos/social/instagram.svg"
@@ -159,7 +159,7 @@ export function Menu() {
                 href={contactInfo.linkedin} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-4 border border-white/20 rounded-lg hover:border-white/40 hover:bg-white/5 hover:scale-110 transition-all duration-300"
+                className="p-4 border border-white/20 hover:border-white/40 hover:bg-white/5 hover:scale-110 transition-all duration-300"
               >
                 <Image
                   src="/logos/social/linkedin.svg"

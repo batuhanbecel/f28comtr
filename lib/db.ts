@@ -1,5 +1,5 @@
 import { photographers as staticPhotographers, Photographer } from './data';
-import { getPortfolioImages } from './utils';
+import { getPortfolioImages, getAIImages as getStaticAIImages } from './utils';
 
 function getRedis() {
   const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
@@ -59,6 +59,23 @@ export async function seedFromStatic(): Promise<{ photographers: number; imageSe
   }
 
   return { photographers: staticPhotographers.length, imageSets };
+}
+
+export async function getAIImages(): Promise<string[]> {
+  const redis = getRedis();
+  if (redis) {
+    try {
+      const images = await redis.get('ai:images');
+      if (images && Array.isArray(images) && images.length > 0) return images as string[];
+    } catch {}
+  }
+  return getStaticAIImages();
+}
+
+export async function setAIImages(images: string[]): Promise<void> {
+  const redis = getRedis();
+  if (!redis) throw new Error('Redis is not configured.');
+  await redis.set('ai:images', JSON.stringify(images));
 }
 
 export function isRedisConfigured(): boolean {
