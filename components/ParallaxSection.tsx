@@ -22,26 +22,26 @@ export function ParallaxSection({ photographer, index, total }: ParallaxSectionP
   const [textVisible, setTextVisible] = useState(false);
   const isRight = index % 2 === 1;
 
+  // Scroll parallax Y (existing)
+  const scrollY = useRef(0);
+  // Mouse parallax target + current (lerped)
+  const mouseTarget = useRef({ x: 0, y: 0 });
+  const mouseCurrent = useRef({ x: 0, y: 0 });
+  const rafId = useRef<number | null>(null);
+
   useEffect(() => {
     let ticking = false;
 
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          if (!sectionRef.current || !imageRef.current) {
-            ticking = false;
-            return;
-          }
-
+          if (!sectionRef.current) { ticking = false; return; }
           const rect = sectionRef.current.getBoundingClientRect();
-          const scrollProgress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
-          
-          if (scrollProgress >= 0 && scrollProgress <= 1) {
+          const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+          if (progress >= 0 && progress <= 1) {
             const intensity = window.innerWidth < 768 ? 80 : 200;
-            const translateY = (scrollProgress - 0.5) * intensity;
-            imageRef.current.style.transform = `translate3d(0, ${translateY}px, 0)`;
+            scrollY.current = (progress - 0.5) * intensity;
           }
-          
           ticking = false;
         });
         ticking = true;
@@ -50,9 +50,42 @@ export function ParallaxSection({ photographer, index, total }: ParallaxSectionP
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Mouse-tracking parallax with lerp loop
+  useEffect(() => {
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+    const FACTOR = 0.07;
+
+    const tick = () => {
+      mouseCurrent.current.x = lerp(mouseCurrent.current.x, mouseTarget.current.x, FACTOR);
+      mouseCurrent.current.y = lerp(mouseCurrent.current.y, mouseTarget.current.y, FACTOR);
+
+      if (imageRef.current) {
+        const tx = mouseCurrent.current.x;
+        const ty = scrollY.current + mouseCurrent.current.y;
+        imageRef.current.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
+      }
+      rafId.current = requestAnimationFrame(tick);
+    };
+
+    rafId.current = requestAnimationFrame(tick);
+    return () => { if (rafId.current) cancelAnimationFrame(rafId.current); };
+  }, []);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = sectionRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const cx = (e.clientX - rect.left) / rect.width - 0.5;   // -0.5 … 0.5
+    const cy = (e.clientY - rect.top) / rect.height - 0.5;
+    mouseTarget.current.x = -cx * 28;  // opposite direction = depth feel
+    mouseTarget.current.y = -cy * 14;
+  };
+
+  const handleMouseLeave = () => {
+    mouseTarget.current = { x: 0, y: 0 };
+  };
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -76,6 +109,8 @@ export function ParallaxSection({ photographer, index, total }: ParallaxSectionP
   return (
     <section
       ref={sectionRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       className="relative h-[66vh] w-full flex items-center overflow-hidden"
     >
       <div ref={imageRef} className="absolute -inset-y-[10%] inset-x-0 w-full h-[120%] parallax-image bg-black">

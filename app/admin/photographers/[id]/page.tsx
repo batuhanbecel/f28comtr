@@ -113,6 +113,11 @@ export default function EditPhotographer() {
     setImages(prev => prev.filter((_, i) => i !== index));
   };
 
+  const setPreview = (url: string) => {
+    setFormData(v => ({ ...v, preview: url }));
+    showMsg('Preview image updated — click Save Info to apply');
+  };
+
   // Drag and drop handlers
   const onDragStart = (index: number) => {
     dragItem.current = index;
@@ -247,10 +252,10 @@ export default function EditPhotographer() {
 
         {/* Gallery Image Order */}
         <section>
-          <div className="flex items-end justify-between mb-8">
+          <div className="flex items-end justify-between mb-6">
             <div>
               <p className="text-white/20 text-[10px] tracking-[0.5em] uppercase mb-2">Portfolio</p>
-              <h2 className="text-3xl font-black tracking-tighter">IMAGE ORDER</h2>
+              <h2 className="text-3xl font-black tracking-tighter">IMAGES</h2>
               <p className="text-white/25 text-xs mt-1">
                 {images.length} images &mdash; drag to reorder, hover for controls
               </p>
@@ -300,20 +305,31 @@ export default function EditPhotographer() {
 
                   {/* Hover overlay with controls */}
                   <div className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex flex-col justify-between p-1.5">
-                    {/* Top row: move up/down */}
-                    <div className="flex justify-end gap-0.5">
+                    {/* Top row: move + set preview */}
+                    <div className="flex justify-between gap-0.5">
                       <button
-                        onClick={(e) => { e.stopPropagation(); moveImage(index, -1); }}
-                        disabled={index === 0}
-                        className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/20 transition-colors disabled:opacity-20 text-xs"
-                        title="Move left"
-                      >←</button>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); moveImage(index, 1); }}
-                        disabled={index === images.length - 1}
-                        className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/20 transition-colors disabled:opacity-20 text-xs"
-                        title="Move right"
-                      >→</button>
+                        onClick={(e) => { e.stopPropagation(); setPreview(img); }}
+                        className={`w-6 h-6 flex items-center justify-center transition-colors text-[9px] ${
+                          formData.preview === img
+                            ? 'text-white bg-white/20'
+                            : 'text-white/30 hover:text-yellow-300 hover:bg-yellow-300/10'
+                        }`}
+                        title="Set as preview"
+                      >★</button>
+                      <div className="flex gap-0.5">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); moveImage(index, -1); }}
+                          disabled={index === 0}
+                          className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/20 transition-colors disabled:opacity-20 text-xs"
+                          title="Move left"
+                        >←</button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); moveImage(index, 1); }}
+                          disabled={index === images.length - 1}
+                          className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/20 transition-colors disabled:opacity-20 text-xs"
+                          title="Move right"
+                        >→</button>
+                      </div>
                     </div>
 
                     {/* Center: position */}

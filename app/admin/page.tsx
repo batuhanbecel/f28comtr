@@ -151,6 +151,34 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* Stats bar */}
+        {!loading && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-px border border-white/[0.06] mb-10 bg-white/[0.03]">
+            <div className="bg-[#080808] px-5 py-4">
+              <p className="text-white/20 text-[9px] tracking-[0.45em] uppercase mb-1">Photographers</p>
+              <p className="text-2xl font-black tracking-tighter">{photographers.length}</p>
+            </div>
+            <div className="bg-[#080808] px-5 py-4">
+              <p className="text-white/20 text-[9px] tracking-[0.45em] uppercase mb-1">AI Images</p>
+              <Link href="/admin/ai-based" className="block group">
+                <p className="text-2xl font-black tracking-tighter group-hover:text-white/70 transition-colors">→</p>
+              </Link>
+            </div>
+            <div className="bg-[#080808] px-5 py-4">
+              <p className="text-white/20 text-[9px] tracking-[0.45em] uppercase mb-1">View Site</p>
+              <Link href="/" target="_blank" className="block group">
+                <p className="text-2xl font-black tracking-tighter group-hover:text-white/70 transition-colors">↗</p>
+              </Link>
+            </div>
+            <div className="bg-[#080808] px-5 py-4">
+              <p className="text-white/20 text-[9px] tracking-[0.45em] uppercase mb-1">Session</p>
+              <button onClick={handleLogout} className="block group text-left">
+                <p className="text-2xl font-black tracking-tighter group-hover:text-red-400/70 transition-colors text-white/40">✕</p>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Page header */}
         <div className="flex items-end justify-between mb-10">
           <div>
