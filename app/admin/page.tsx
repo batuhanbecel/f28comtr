@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Photographer } from '@/lib/data';
+import { isBlobProxy } from '@/lib/blob';
 
 export default function AdminDashboard() {
   const [photographers, setPhotographers] = useState<Photographer[]>([]);
@@ -282,6 +283,7 @@ export default function AdminDashboard() {
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                  unoptimized={isBlobProxy(p.preview)}
                 />
 
                 {/* Gradient overlay always visible */}

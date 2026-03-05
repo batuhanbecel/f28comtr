@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useDeferredValue } from 'react';
+import { isBlobProxy } from '@/lib/blob';
 
 interface MasonryGridProps {
   images: string[];
@@ -13,33 +14,25 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
   const [lightboxVisible, setLightboxVisible] = useState(false);
   const [numCols, setNumCols] = useState(4);
 
+  // React 19: defer rendering of large image lists for smoother transitions
+  const deferredImages = useDeferredValue(images);
+
   useEffect(() => {
     const update = () => {
       const w = window.innerWidth;
-      if (w < 768) setNumCols(1);
-      else if (w < 1024) setNumCols(2);
-      else if (w < 1280) setNumCols(3);
-      else setNumCols(4);
+      setNumCols(w >= 1280 ? 4 : w >= 1024 ? 3 : w >= 768 ? 2 : 1);
     };
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
   }, []);
 
-  // Transpose images so CSS columns (col-first fill) produces row-first visual order:
-  // reordered[c * rowsPerCol + r] = images[r * numCols + c]
-  const reorderedImages = useMemo(() => {
-    const N = images.length;
-    const rowsPerCol = Math.ceil(N / numCols);
-    const result: string[] = [];
-    for (let c = 0; c < numCols; c++) {
-      for (let r = 0; r < rowsPerCol; r++) {
-        const idx = r * numCols + c;
-        if (idx < N) result.push(images[idx]);
-      }
-    }
-    return result;
-  }, [images, numCols]);
+  // Distribute images into columns in row-first (round-robin) order
+  const columns = React.useMemo(() => {
+    const cols: string[][] = Array.from({ length: numCols }, () => []);
+    deferredImages.forEach((img, i) => cols[i % numCols].push(img));
+    return cols;
+  }, [deferredImages, numCols]);
 
   const currentIndex = selectedImage ? images.indexOf(selectedImage) : -1;
 
@@ -94,31 +87,36 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
 
   return (
     <>
-      <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-2 space-y-2 px-2">
-        {reorderedImages.map((image) => (
-          <div
-            key={image}
-            className="break-inside-avoid cursor-pointer group relative overflow-hidden"
-            onClick={() => openLightbox(image)}
-          >
-            <Image
-              src={image}
-              alt={`${photographerName}`}
-              width={800}
-              height={1200}
-              className="w-full h-auto transition-transform duration-500 group-hover:scale-105"
-              loading="eager"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, (max-width: 1920px) 33vw, 25vw"
-              placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-            />
+      <div className="flex gap-2 px-2">
+        {columns.map((col, colIdx) => (
+          <div key={colIdx} className="flex-1 flex flex-col gap-2">
+            {col.map((image) => (
+              <div
+                key={image}
+                className="cursor-pointer group relative overflow-hidden"
+                onClick={() => openLightbox(image)}
+              >
+                <Image
+                  src={image}
+                  alt={`${photographerName}`}
+                  width={800}
+                  height={1200}
+                  className="w-full h-auto transition-transform duration-500 group-hover:scale-105"
+                  loading="eager"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, (max-width: 1920px) 33vw, 25vw"
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                  unoptimized={isBlobProxy(image)}
+                />
+              </div>
+            ))}
           </div>
         ))}
       </div>
 
       {selectedImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
+          className="fixed inset-0 z-[60] flex items-center justify-center"
           style={{
             backgroundColor: `rgba(0,0,0,${lightboxVisible ? 0.97 : 0})`,
             transition: 'background-color 0.35s ease',
@@ -181,6 +179,7 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
               className="object-contain"
               sizes="100vw"
               quality={95}
+              unoptimized={isBlobProxy(selectedImage)}
             />
           </div>
         </div>

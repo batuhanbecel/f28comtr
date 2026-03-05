@@ -1,10 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import { photographers } from '@/lib/data';
-import { imageManifest } from '@/lib/image-manifest';
 
-const PORTFOLIO_PRELOAD_COUNT = 8;
+const PORTFOLIO_PRELOAD_COUNT = 6;
 let hasRun = false;
 
 function idleRun(fn: () => void, delay = 0) {
@@ -20,6 +18,7 @@ function idleRun(fn: () => void, delay = 0) {
 
 function preloadSrc(src: string) {
   const img = new window.Image();
+  img.crossOrigin = 'anonymous';
   img.src = src;
 }
 
@@ -41,20 +40,31 @@ export function BackgroundPreloader() {
     if (hasRun) return;
     hasRun = true;
 
-    // Phase 1: preload all preview images after 800ms (small files, high value)
-    idleRun(() => {
-      photographers.forEach(p => preloadSrc(p.preview));
-    }, 800);
+    // Fetch photographers from API, then preload previews + first N portfolio images
+    idleRun(async () => {
+      try {
+        const res = await fetch('/api/admin/photographers');
+        if (!res.ok) return;
+        const photographers: { id: string; preview: string }[] = await res.json();
 
-    // Phase 2: preload first N portfolio images per photographer during idle
-    idleRun(() => {
-      const portfolioImages: string[] = [];
-      for (const photographer of photographers) {
-        const images = imageManifest[photographer.id] || [];
-        portfolioImages.push(...images.slice(0, PORTFOLIO_PRELOAD_COUNT));
-      }
-      preloadBatch(portfolioImages, 4, 400);
-    }, 3000);
+        // Phase 1: preload preview images
+        photographers.forEach(p => preloadSrc(p.preview));
+
+        // Phase 2: preload first N portfolio images per photographer
+        idleRun(async () => {
+          const portfolioImages: string[] = [];
+          for (const p of photographers.slice(0, 4)) {
+            try {
+              const iRes = await fetch(`/api/admin/photographers/${p.id}/images`);
+              if (!iRes.ok) continue;
+              const images: string[] = await iRes.json();
+              portfolioImages.push(...images.slice(0, PORTFOLIO_PRELOAD_COUNT));
+            } catch {}
+          }
+          if (portfolioImages.length > 0) preloadBatch(portfolioImages, 4, 400);
+        }, 1500);
+      } catch {}
+    }, 800);
   }, []);
 
   return null;

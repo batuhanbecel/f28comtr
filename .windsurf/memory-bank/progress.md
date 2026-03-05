@@ -69,6 +69,11 @@
 ### Known Issues
 - None currently reported
 
+### March 5, 2026 — Masonry Grid Fix
+- Fixed broken masonry layout on portfolio pages and AI-based page
+- Root cause: CSS Grid (`grid grid-cols-*`) creates equal-height rows, not true masonry
+- Solution: Switched to CSS `columns` with `break-inside-avoid` for proper masonry packing
+
 ## Pending/Future Work
 
 ### Potential Enhancements

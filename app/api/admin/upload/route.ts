@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
   try {
     const blob = await put(name, file, { access: 'private' });
-    // Return a same-origin proxy URL so images load regardless of store access type
+    // Private store: return proxy URL so images load in browser
     const proxyUrl = `/api/blob?u=${encodeURIComponent(blob.url)}`;
     return NextResponse.json({ url: proxyUrl });
   } catch (err) {

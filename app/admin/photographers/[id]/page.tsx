@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Photographer } from '@/lib/data';
+import { isBlobProxy } from '@/lib/blob';
 
 const INPUT_CLS = 'w-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-white/15 px-3 py-2.5 text-sm focus:outline-none focus:border-white/25 transition-colors';
 const LABEL_CLS = 'text-[10px] tracking-widest uppercase text-white/25 block mb-1.5';
@@ -241,7 +242,7 @@ export default function EditPhotographer() {
                   />
                   {formData.preview && (
                     <div className="relative w-11 h-11 flex-shrink-0 overflow-hidden border border-white/10">
-                      <Image src={formData.preview} alt="Preview" fill className="object-cover" sizes="44px" />
+                      <Image src={formData.preview} alt="Preview" fill className="object-cover" sizes="44px" unoptimized={isBlobProxy(formData.preview)} />
                     </div>
                   )}
                 </div>
@@ -296,6 +297,7 @@ export default function EditPhotographer() {
                     fill
                     className="object-cover"
                     sizes="(max-width: 640px) 33vw, (max-width: 1024px) 20vw, 15vw"
+                    unoptimized={isBlobProxy(img)}
                   />
 
                   {/* Position number — always visible */}

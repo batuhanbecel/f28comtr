@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
+import { isBlobProxy } from '@/lib/blob';
 
 interface ParallaxSectionProps {
   photographer: {
@@ -70,8 +71,10 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
   useEffect(() => {
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
     const FACTOR = 0.07;
+    let alive = true;
 
     const tick = () => {
+      if (!alive) return;
       mouseCurrent.current.x = lerp(mouseCurrent.current.x, mouseTarget.current.x, FACTOR);
       mouseCurrent.current.y = lerp(mouseCurrent.current.y, mouseTarget.current.y, FACTOR);
 
@@ -84,7 +87,7 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
     };
 
     rafId.current = requestAnimationFrame(tick);
-    return () => { if (rafId.current) cancelAnimationFrame(rafId.current); };
+    return () => { alive = false; if (rafId.current) cancelAnimationFrame(rafId.current); };
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
@@ -114,7 +117,7 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [fullscreen]);
 
   const numLabel = String(index + 1).padStart(2, '0');
   const totalLabel = total ? String(total).padStart(2, '0') : '';
@@ -139,6 +142,7 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
           quality={85}
           placeholder="blur"
           blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+          unoptimized={isBlobProxy(photographer.preview)}
         />
       </div>
 

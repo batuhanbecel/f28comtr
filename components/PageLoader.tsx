@@ -1,43 +1,34 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { usePathname } from 'next/navigation';
 
 export function PageLoader() {
-  const [width, setWidth] = useState(0);
-  const [opacity, setOpacity] = useState(1);
+  const [visible, setVisible] = useState(false);
+  const [isPending] = useTransition();
   const pathname = usePathname();
 
   useEffect(() => {
-    setWidth(0);
-    setOpacity(1);
-
-    const t1 = setTimeout(() => setWidth(72), 40);
-    const t2 = setTimeout(() => setWidth(100), 380);
-    const t3 = setTimeout(() => setOpacity(0), 560);
-
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-    };
+    setVisible(true);
+    const t = setTimeout(() => setVisible(false), 500);
+    return () => clearTimeout(t);
   }, [pathname]);
+
+  const show = visible || isPending;
 
   return (
     <div
       className="fixed top-0 left-0 right-0 z-[200] h-[1.5px] pointer-events-none"
-      style={{ opacity, transition: opacity === 0 ? 'opacity 0.25s ease' : 'none' }}
+      style={{
+        opacity: show ? 1 : 0,
+        transition: 'opacity 0.2s ease',
+      }}
     >
       <div
-        className="h-full bg-white"
+        className="h-full bg-white origin-left"
         style={{
-          width: `${width}%`,
-          transition: width === 0
-            ? 'none'
-            : width === 72
-              ? 'width 0.34s cubic-bezier(0.4, 0, 0.2, 1)'
-              : 'width 0.18s ease-in',
-          transformOrigin: 'left',
+          animation: show ? 'page-load 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards' : 'none',
+          width: '0%',
         }}
       />
     </div>

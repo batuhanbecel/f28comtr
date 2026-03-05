@@ -32,13 +32,24 @@ f/28 website is LIVE at https://www.f28.com.tr (Vercel). Full admin panel, Redis
    - End page: THANK YOU + photographer name + centered logo
    - Turkish character slug: ç→c, ğ→g, ı→i, ö→o, ş→s, ü→u
 
-6. **MasonryGrid**
-   - All images eager loaded
-   - Removed custom opacity loading state; Next.js blur placeholder used
+6. **MasonryGrid Fix + Modernization (March 5, 2026)**
+   - Fixed broken masonry: CSS Grid → manual flex columns with round-robin distribution
+   - Preserves admin panel sort order (row-first visual order)
+   - Added `useDeferredValue` (React 19) for large image sets
+
+7. **Full Next.js 16.1 / React 19 Modernization (March 5, 2026)**
+   - View Transitions API: `viewTransition: true` + CSS `::view-transition-*` animations
+   - React 19 `use()` hook replaces `useContext()` in LanguageContext
+   - `useTransition` in PageLoader, `useDeferredValue` in MasonryGrid
+   - `useCallback` in all handlers (Menu, BackToTop, ProductionSnapContainer, etc.)
+   - MutationObserver replaces interval polling in Menu scroll detection
+   - Fixed useEffect missing deps in ParallaxSection
+   - Metadata API: all pages now export `metadata` or `generateMetadata`
+   - CSS: page-load keyframe, view-transition fade+blur animations
 
 ## Next Steps
-1. Visual polish: custom cursor, portfolios listing redesign, micro-animations
-2. Contact info completion
+1. Deploy updated code to Vercel
+2. Visual polish: micro-animations
 3. Mobile testing
 
 ## Active Decisions and Considerations

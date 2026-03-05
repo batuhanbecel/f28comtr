@@ -2,10 +2,11 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import type { Photographer } from '@/lib/data';
 import { Footer } from '@/components/Footer';
 import { useLanguage } from '@/context/LanguageContext';
+import { isBlobProxy } from '@/lib/blob';
 
 const BLUR = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q==";
 
@@ -33,6 +34,7 @@ export function PortfoliosList({ photographers }: { photographers: Photographer[
               quality={80}
               placeholder="blur"
               blurDataURL={BLUR}
+              unoptimized={isBlobProxy(p.preview)}
             />
             <div className="absolute inset-0 bg-black/30" />
           </div>
@@ -97,6 +99,7 @@ export function PortfoliosList({ photographers }: { photographers: Photographer[
                     quality={60}
                     placeholder="blur"
                     blurDataURL={BLUR}
+                    unoptimized={isBlobProxy(p.preview)}
                   />
                 </div>
 

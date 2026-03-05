@@ -51,20 +51,48 @@ export async function seedFromStatic(): Promise<{ photographers: number; imageSe
 
   let imageSets = 0;
   for (const photographer of staticPhotographers) {
-    const images = getPortfolioImages(photographer.id);
-    if (images.length > 0) {
-      await redis.set(`photographer:${photographer.id}:images`, JSON.stringify(images));
-      imageSets++;
-    }
+    const manifestImages = getPortfolioImages(photographer.id);
+    if (manifestImages.length === 0) continue;
+
+    // Preserve existing Redis order: keep ordered images, append new ones, remove deleted
+    let existing: string[] = [];
+    try {
+      const stored = await redis.get(`photographer:${photographer.id}:images`);
+      if (stored && Array.isArray(stored)) existing = stored as string[];
+    } catch {}
+
+    const manifestSet = new Set(manifestImages);
+    const existingSet = new Set(existing);
+
+    // Keep existing order, remove files no longer in manifest
+    const ordered = existing.filter(img => manifestSet.has(img));
+    // Append new files not yet in Redis
+    const newImages = manifestImages.filter(img => !existingSet.has(img));
+    const merged = [...ordered, ...newImages];
+
+    await redis.set(`photographer:${photographer.id}:images`, JSON.stringify(merged));
+    imageSets++;
   }
 
-  // Seed AI images
-  const aiImages = getStaticAIImages();
-  if (aiImages.length > 0) {
-    await redis.set('ai:images', JSON.stringify(aiImages));
+  // Seed AI images (same merge logic)
+  const manifestAI = getStaticAIImages();
+  if (manifestAI.length > 0) {
+    let existingAI: string[] = [];
+    try {
+      const stored = await redis.get('ai:images');
+      if (stored && Array.isArray(stored)) existingAI = stored as string[];
+    } catch {}
+
+    const manifestSet = new Set(manifestAI);
+    const existingSet = new Set(existingAI);
+    const ordered = existingAI.filter(img => manifestSet.has(img));
+    const newImages = manifestAI.filter(img => !existingSet.has(img));
+    const merged = [...ordered, ...newImages];
+
+    await redis.set('ai:images', JSON.stringify(merged));
   }
 
-  return { photographers: staticPhotographers.length, imageSets, aiImages: aiImages.length };
+  return { photographers: staticPhotographers.length, imageSets, aiImages: manifestAI.length };
 }
 
 export async function getAIImages(): Promise<string[]> {

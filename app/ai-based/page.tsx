@@ -1,8 +1,14 @@
+import type { Metadata } from 'next';
 import { MasonryGrid } from '@/components/MasonryGrid';
 import { getAIImages } from '@/lib/db';
 import { LocalizedHero } from '@/components/LocalizedHero';
 import { Footer } from '@/components/Footer';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
+
+export const metadata: Metadata = {
+  title: 'AI Based | f/2.8 Production Agency',
+  description: 'Creative visual and video content powered by the latest generative AI models.',
+};
 
 export const revalidate = 60;
 
@@ -10,7 +16,7 @@ export default async function AIBasedPage() {
   const aiImages = await getAIImages();
 
   return (
-    <ProductionSnapContainer snapMode="proximity">
+    <ProductionSnapContainer snapMode="heroSnap">
       {/* Hero — snap point */}
       <section
         className="h-screen flex flex-col items-center justify-center px-6 md:px-12 text-center relative overflow-hidden"
