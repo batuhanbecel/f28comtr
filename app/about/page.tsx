@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { getPartnerLogos, getClientLogos } from '@/lib/utils';
+import { getPhotographers } from '@/lib/db';
 import { Footer } from '@/components/Footer';
 import { LocalizedHero } from '@/components/LocalizedHero';
 import { LocalizedAboutBrands } from '@/components/LocalizedAboutBrands';
+import { AboutStats } from '@/components/AboutStats';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 
 export const metadata: Metadata = {
@@ -10,11 +12,14 @@ export const metadata: Metadata = {
   description: 'Istanbul-based photography and production agency since 2008. Photography, video, CGI, animation, editing, and motion graphics.',
 };
 
+export const revalidate = 60;
+
 const SERVICES = ['Photography', 'Videography', 'CGI', 'Animation', 'Editing', 'Motion Graphics'];
 
-export default function AboutPage() {
+export default async function AboutPage() {
   const partnerLogos = getPartnerLogos();
   const clientLogos = getClientLogos();
+  const photographers = await getPhotographers();
 
   return (
     <ProductionSnapContainer snapMode="heroSnap">
@@ -47,6 +52,14 @@ export default function AboutPage() {
 
       {/* Content — snap point (scrolls freely after snap) */}
       <div style={{ scrollSnapAlign: 'start' }}>
+        {/* Stats strip */}
+        <AboutStats
+          photographerCount={photographers.length}
+          clientCount={clientLogos.length}
+          partnerCount={partnerLogos.length}
+        />
+
+        {/* Brands & Clients */}
         <LocalizedAboutBrands partnerLogos={partnerLogos} clientLogos={clientLogos} />
         <Footer />
       </div>
