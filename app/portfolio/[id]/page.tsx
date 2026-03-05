@@ -5,6 +5,7 @@ import { getPhotographers, getPhotographerImages } from '@/lib/db';
 import { MasonryGrid } from '@/components/MasonryGrid';
 import { Footer } from '@/components/Footer';
 import { DownloadPortfolio } from '@/components/DownloadPortfolio';
+import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 
 export const revalidate = 60;
 
@@ -30,8 +31,12 @@ export default async function PortfolioPage({ params }: PageProps) {
   const images = await getPhotographerImages(id);
 
   return (
-    <main className="min-h-screen">
-      <section className="relative h-[80vh] md:h-screen w-full flex items-end justify-center pb-16 md:pb-24 vignette overflow-hidden">
+    <ProductionSnapContainer snapMode="proximity">
+      {/* Hero — snap point */}
+      <section
+        className="relative h-[80vh] md:h-screen w-full flex items-end justify-center pb-16 md:pb-24 vignette overflow-hidden"
+        style={{ scrollSnapAlign: 'start' }}
+      >
         <Image
           src={photographer.preview}
           alt={photographer.fullName}
@@ -56,10 +61,13 @@ export default async function PortfolioPage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="py-12">
-        <MasonryGrid images={images} photographerName={photographer.fullName} />
-      </section>
-      <Footer />
-    </main>
+      {/* Grid — snap point (grid itself scrolls freely) */}
+      <div style={{ scrollSnapAlign: 'start' }}>
+        <section className="py-12">
+          <MasonryGrid images={images} photographerName={photographer.fullName} />
+        </section>
+        <Footer />
+      </div>
+    </ProductionSnapContainer>
   );
 }

@@ -2,7 +2,12 @@
 
 import { useEffect, useRef } from 'react';
 
-export function ProductionSnapContainer({ children }: { children: React.ReactNode }) {
+interface Props {
+  children: React.ReactNode;
+  snapMode?: 'mandatory' | 'proximity';
+}
+
+export function ProductionSnapContainer({ children, snapMode = 'mandatory' }: Props) {
   const containerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -14,18 +19,20 @@ export function ProductionSnapContainer({ children }: { children: React.ReactNod
     };
   }, []);
 
+  // Wheel-based snap navigation only for mandatory mode (production page)
   useEffect(() => {
+    if (snapMode !== 'mandatory') return;
     const container = containerRef.current;
     if (!container) return;
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       const direction = e.deltaY > 0 ? 1 : -1;
-      const children = Array.from(container.children) as HTMLElement[];
+      const kids = Array.from(container.children) as HTMLElement[];
       const currentScroll = container.scrollTop;
       let targetIndex = 0;
       let closestDist = Infinity;
-      children.forEach((child, i) => {
+      kids.forEach((child, i) => {
         const rect = child.getBoundingClientRect();
         const top = rect.top + currentScroll;
         const dist = Math.abs(top - currentScroll);
@@ -34,10 +41,9 @@ export function ProductionSnapContainer({ children }: { children: React.ReactNod
           targetIndex = i;
         }
       });
-      targetIndex = Math.max(0, Math.min(children.length - 1, targetIndex + direction));
-      const target = children[targetIndex];
+      targetIndex = Math.max(0, Math.min(kids.length - 1, targetIndex + direction));
+      const target = kids[targetIndex];
       if (target) {
-        // Slower smooth scroll by delaying the scrollIntoView slightly
         setTimeout(() => {
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 0);
@@ -46,7 +52,7 @@ export function ProductionSnapContainer({ children }: { children: React.ReactNod
 
     container.addEventListener('wheel', handleWheel, { passive: false });
     return () => container.removeEventListener('wheel', handleWheel);
-  }, []);
+  }, [snapMode]);
 
   return (
     <main
@@ -54,7 +60,7 @@ export function ProductionSnapContainer({ children }: { children: React.ReactNod
       data-snap-container
       className="fixed inset-0 overflow-y-scroll [&::-webkit-scrollbar]:hidden"
       style={{
-        scrollSnapType: 'y mandatory',
+        scrollSnapType: `y ${snapMode}`,
         scrollBehavior: 'smooth',
         scrollbarWidth: 'none',
         overscrollBehaviorY: 'contain',

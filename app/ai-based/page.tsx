@@ -2,6 +2,7 @@ import { MasonryGrid } from '@/components/MasonryGrid';
 import { getAIImages } from '@/lib/db';
 import { LocalizedHero } from '@/components/LocalizedHero';
 import { Footer } from '@/components/Footer';
+import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 
 export const revalidate = 60;
 
@@ -9,9 +10,12 @@ export default async function AIBasedPage() {
   const aiImages = await getAIImages();
 
   return (
-    <main className="min-h-screen pb-20">
-      {/* Hero */}
-      <section className="min-h-screen flex flex-col items-center justify-center px-6 md:px-12 text-center relative overflow-hidden">
+    <ProductionSnapContainer snapMode="proximity">
+      {/* Hero — snap point */}
+      <section
+        className="h-screen flex flex-col items-center justify-center px-6 md:px-12 text-center relative overflow-hidden"
+        style={{ scrollSnapAlign: 'start' }}
+      >
         <div className="max-w-4xl mx-auto">
           <LocalizedHero page="aiBased" imageCount={aiImages.length} />
         </div>
@@ -26,7 +30,8 @@ export default async function AIBasedPage() {
         </div>
       </section>
 
-      <div className="w-full">
+      {/* Grid — snap point (grid itself scrolls freely) */}
+      <div style={{ scrollSnapAlign: 'start' }}>
         {aiImages.length > 0 ? (
           <MasonryGrid images={aiImages} photographerName="AI Based" />
         ) : (
@@ -37,8 +42,8 @@ export default async function AIBasedPage() {
             </div>
           </div>
         )}
+        <Footer />
       </div>
-      <Footer />
-    </main>
+    </ProductionSnapContainer>
   );
 }

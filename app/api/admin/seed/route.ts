@@ -14,6 +14,8 @@ export async function POST() {
     const result = await seedFromStatic();
     revalidatePath('/production');
     revalidatePath('/');
+    revalidatePath('/ai-based');
+    revalidatePath('/portfolios');
     return NextResponse.json({ success: true, ...result });
   } catch (e: unknown) {
     const message = e instanceof Error ? e.message : 'Failed to seed data';

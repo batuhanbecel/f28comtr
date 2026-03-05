@@ -43,7 +43,7 @@ export async function setPhotographerImages(photographerId: string, images: stri
   await redis.set(`photographer:${photographerId}:images`, JSON.stringify(images));
 }
 
-export async function seedFromStatic(): Promise<{ photographers: number; imageSets: number }> {
+export async function seedFromStatic(): Promise<{ photographers: number; imageSets: number; aiImages: number }> {
   const redis = getRedis();
   if (!redis) throw new Error('Redis is not configured.');
 
@@ -58,7 +58,13 @@ export async function seedFromStatic(): Promise<{ photographers: number; imageSe
     }
   }
 
-  return { photographers: staticPhotographers.length, imageSets };
+  // Seed AI images
+  const aiImages = getStaticAIImages();
+  if (aiImages.length > 0) {
+    await redis.set('ai:images', JSON.stringify(aiImages));
+  }
+
+  return { photographers: staticPhotographers.length, imageSets, aiImages: aiImages.length };
 }
 
 export async function getAIImages(): Promise<string[]> {
