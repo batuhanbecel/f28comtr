@@ -43,28 +43,60 @@ export async function setPhotographerImages(photographerId: string, images: stri
   await redis.set(`photographer:${photographerId}:images`, JSON.stringify(images));
 }
 
-export async function seedFromStatic(): Promise<{ photographers: number; imageSets: number; aiImages: number }> {
+export async function seedFromStatic(): Promise<{ photographers: number; imageSets: number; aiImages: number; newImages: number }> {
   const redis = getRedis();
   if (!redis) throw new Error('Redis is not configured.');
 
   await redis.set('photographers', JSON.stringify(staticPhotographers));
 
   let imageSets = 0;
+  let newImagesCount = 0;
+  
   for (const photographer of staticPhotographers) {
-    const images = getPortfolioImages(photographer.id);
-    if (images.length > 0) {
-      await redis.set(`photographer:${photographer.id}:images`, JSON.stringify(images));
+    const filesystemImages = getPortfolioImages(photographer.id);
+    
+    if (filesystemImages.length > 0) {
+      // Get existing order from Redis
+      const existingImages = await redis.get(`photographer:${photographer.id}:images`) as string[] | null;
+      
+      if (existingImages && Array.isArray(existingImages)) {
+        // Preserve existing order and only add new images at the end
+        const existingSet = new Set(existingImages);
+        const newImages = filesystemImages.filter(img => !existingSet.has(img));
+        
+        // Remove images that no longer exist in filesystem
+        const filesystemSet = new Set(filesystemImages);
+        const validExisting = existingImages.filter(img => filesystemSet.has(img));
+        
+        const mergedImages = [...validExisting, ...newImages];
+        await redis.set(`photographer:${photographer.id}:images`, JSON.stringify(mergedImages));
+        newImagesCount += newImages.length;
+      } else {
+        // No existing order, use filesystem order
+        await redis.set(`photographer:${photographer.id}:images`, JSON.stringify(filesystemImages));
+      }
       imageSets++;
     }
   }
 
-  // Seed AI images
-  const aiImages = getStaticAIImages();
-  if (aiImages.length > 0) {
-    await redis.set('ai:images', JSON.stringify(aiImages));
+  // Seed AI images (preserve order here too)
+  const filesystemAIImages = getStaticAIImages();
+  if (filesystemAIImages.length > 0) {
+    const existingAI = await redis.get('ai:images') as string[] | null;
+    
+    if (existingAI && Array.isArray(existingAI)) {
+      const existingSet = new Set(existingAI);
+      const newAI = filesystemAIImages.filter(img => !existingSet.has(img));
+      const filesystemSet = new Set(filesystemAIImages);
+      const validExisting = existingAI.filter(img => filesystemSet.has(img));
+      const mergedAI = [...validExisting, ...newAI];
+      await redis.set('ai:images', JSON.stringify(mergedAI));
+    } else {
+      await redis.set('ai:images', JSON.stringify(filesystemAIImages));
+    }
   }
 
-  return { photographers: staticPhotographers.length, imageSets, aiImages: aiImages.length };
+  return { photographers: staticPhotographers.length, imageSets, aiImages: filesystemAIImages.length, newImages: newImagesCount };
 }
 
 export async function getAIImages(): Promise<string[]> {

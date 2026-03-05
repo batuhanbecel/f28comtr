@@ -12,6 +12,9 @@
     "convert-images": "node scripts/convert-to-webp.js"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@upstash/redis": "^1.36.3",
     "@vercel/analytics": "^1.6.1",
     "@vercel/blob": "^2.3.0",
@@ -20,7 +23,9 @@
     "next": "16.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "sharp": "^0.33.5"
+    "react-hot-toast": "^2.6.0",
+    "sharp": "^0.33.5",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@types/estree": "^1.0.8",
