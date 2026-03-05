@@ -1,49 +1,45 @@
 # Active Context
 
 ## Current Work Focus
-Recently completed a major redesign of the hamburger menu navigation system and improvements to the AI-based page.
+Completed full Next.js 16.1 / React 19 modernization of all components and pages. Site is LIVE at https://www.f28.com.tr (Vercel).
 
-## Recent Changes (March 3, 2026)
+## Recent Changes (March 5, 2026)
 
-### Hamburger Menu Redesign
-- **New Design**: Slide-in panel from right side (not fullscreen overlay)
-- **Opening Animation**: Smooth 700ms slide-in with opacity fade
-- **Responsive Width**: Full on mobile, 2/3 on tablet, 1/2 on desktop
-- **Background**: Uses `menubg.webp` with gradient overlay
-- **Navigation Links**: 
-  - Staggered entrance animation (100ms delay per item)
-  - Simple hover: slide right 2px + fade to 70% opacity
-  - Clean white text (removed gradient effects)
-  - Removed arrow and underline animations per user request
-- **Hamburger Icon**: Circular border with scale hover effect
-- **Backdrop**: Dark overlay with blur, click-to-close functionality
-- **Fixed Issues**: Menu visibility bug (added opacity-0 when closed)
+### Next.js 16.1 / React 19 Modernization
+1. **View Transitions API** — Enabled `viewTransition: true` in `next.config.ts`, added `::view-transition-*` CSS animations for smooth cross-page fade+blur transitions
+2. **React 19 `use()` hook** — Replaced `useContext()` with `use()` in `LanguageContext.tsx`
+3. **React 19 `useDeferredValue`** — Applied to MasonryGrid for large image lists (smoother transitions)
+4. **React 19 `useTransition`** — Applied to PageLoader for transition-aware progress bar
+5. **`useCallback` everywhere** — Menu (toggleMenu, closeMenu), BackToTop, ProductionSnapContainer (handleWheel), LanguageProvider (setLang)
+6. **MutationObserver** — Replaced interval polling in Menu.tsx scroll detection
+7. **useEffect cleanup** — Fixed missing deps in ParallaxSection (fullscreen), proper alive flag in RAF loops
+8. **Metadata API** — Added static `metadata` exports to all pages (about, ai-based, production, portfolios) and dynamic `generateMetadata` for `[id]` pages
+9. **PageLoader** — Simplified with CSS `@keyframes page-load` animation instead of manual setTimeout chain
+10. **CSS animations** — Added `page-load` keyframe, `vt-fade-in/out` for View Transitions
 
-### AI-Based Page Updates
-- **Image Loading**: Now uses `getAIImages()` function to dynamically load from `/public/ai-images/`
-- **Layout**: Removed heading and description text for cleaner look
-- **Masonry Grid**: Fullwidth layout displaying AI-generated images
-- **Padding**: Reduced from pt-32 to pt-24
+### Masonry Grid Fix (earlier same session)
+- Fixed broken layout: CSS Grid → manual flex columns with round-robin distribution
+- Preserves admin panel sort order (row-first visual order)
+- Uses `useDeferredValue` for large image sets
 
 ### Navigation Structure
-Current menu items (Portfolios removed):
+Current menu items:
 - HOME (/)
 - PRODUCTION (/production)
 - AI BASED (/ai-based)
+- PORTFOLIOS (/portfolios)
 - ABOUT US (/about)
 
-### Header/Navbar
-- Simple backdrop-blur-xl with black/40 background on scroll
-- Clean shadow-lg effect
-- No iOS liquid glass effects (reverted per user request)
-
 ## Next Steps
-- Monitor for any issues with hamburger menu functionality
-- Add AI images to `/public/ai-images/` folder when ready
-- Continue refining animations and user experience
+- Deploy updated code to Vercel
+- Visual polish: micro-animations
+- Mobile testing
 
 ## Important Patterns
-- Menu uses pointer-events control for proper show/hide behavior
-- Typography system uses utility classes (heading-hero, body-text, label-text)
-- All animations use smooth transitions with appropriate durations
-- Background images optimized with Next.js Image component
+- **MasonryGrid**: Manual flex columns with round-robin distribution (not CSS columns/grid) — preserves admin sort order
+- **View Transitions**: `viewTransition: true` in config + CSS `::view-transition-*` pseudo-elements
+- **React 19**: `use()` for context, `useDeferredValue` for large lists, `useTransition` for navigation awareness
+- **All handlers**: Wrapped in `useCallback` for referential stability
+- **Menu scroll detection**: Uses MutationObserver (not setInterval) to detect snap container mount
+- **Typography system**: utility classes (heading-hero, body-text, label-text)
+- **All pages**: Have proper `metadata` or `generateMetadata` exports

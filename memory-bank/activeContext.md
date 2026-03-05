@@ -3,150 +3,76 @@
 ## Current Work Focus
 f/28 website is LIVE at https://www.f28.com.tr (Vercel). Full admin panel, Redis backend, AI Based section, Download Portfolio PDF, and mouse-interactive production page are all working in production.
 
-## Recent Changes (Current Session)
-1. **Landing Page Redesign**
-   - `'use client'` component with cross-panel hover dimming (useState)
-   - Hovering one side dims opposite to bg-black/75
-   - Section numbers 01/02, expanding thin rules, always-visible labels
-   - Enter CTA slides up on hover with horizontal line prefix
-   - Bottom strip: `Istanbul — f28.com.tr`
+## Recent Changes (March 5, 2026 Session)
+1. **Grid System Audit & Fix**
+   - MasonryGrid updated to 4 columns desktop / 2 columns mobile (was 3/2/1)
+   - Round-robin distribution preserves admin panel ordering
+   - Gap reduced to 1px for gapless look
+   - `shouldSkipOptimization()` was disabling Next.js Image optimization for ALL local images — fixed
 
-2. **Production Page Hero + Mouse Parallax**
-   - Full-screen hero section with description text
-   - Each ParallaxSection now has mouse-tracking parallax
-   - RAF lerp loop: image drifts ±28px X / ±14px Y opposite to cursor
-   - Scroll Y and mouse Y combined on single translate3d
+2. **Title i18n Bug Fix**
+   - `data.ts` titles are UPPERCASE (`'PHOTOGRAPHER'`) but `titleMap` keys were Title Case (`'Photographer'`)
+   - Added uppercase keys to titleMap so translation lookup works
 
-3. **AI Based Page Hero + Body Text**
-   - min-h-screen hero with label, heading, body text, works count
-   - Animated bounce scroll arrow at bottom
+3. **BackToTop snap-container awareness**
+   - BackToTop now detects `[data-snap-container]` scrollTop instead of only `window.scrollY`
 
-4. **Admin Panel**
-   - Stats bar (photographer count, quick links)
-   - ★ Set as Preview button on image hover overlay
-   - Drag-to-reorder images, move ±1 arrows, remove button
+4. **Unused dependencies flagged**
+   - `react-xmasonry` and `zustand` in package.json but never imported
 
-5. **Download Portfolio PDF (jsPDF)**
-   - Cover: preview image (58%), centered text, centered f/2.8 logo
-   - Per-photo pages with page counter
-   - End page: THANK YOU + photographer name + centered logo
-   - Turkish character slug: ç→c, ğ→g, ı→i, ö→o, ş→s, ü→u
+5. **Grain z-index conflict resolved**
+   - Grain was z-[9998], same as cursor-ring — lowered to z-[9990]
 
-6. **MasonryGrid**
-   - All images eager loaded
-   - Removed custom opacity loading state; Next.js blur placeholder used
-
-## Next Steps
-1. Visual polish: custom cursor, portfolios listing redesign, micro-animations
-2. Contact info completion
-3. Mobile testing
+## Architecture Snapshot
+- **Landing** (`/`): Two-panel split (Production / AI Based) with mouse parallax
+- **Production** (`/production`): Hero + snap-scroll photographer sections (ParallaxSection)
+- **AI Based** (`/ai-based`): Hero + MasonryGrid of AI images
+- **Portfolio** (`/[id]`): Hero + MasonryGrid of photographer images
+- **Portfolios** (`/portfolios`): List with right-panel preview (desktop)
+- **About** (`/about`): Hero + partner/client logo grids
+- **Admin** (`/admin`): Dashboard, photographer editor, AI image manager, settings
 
 ## Active Decisions and Considerations
 
 ### Font Strategy
-- Using system fonts instead of custom Geist fonts
-- Fallback: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto
-- Can be upgraded to custom fonts later if needed
+- Inter font via `next/font/google`
+- Fallback: system fonts
 
 ### Image Handling
-- All portfolio images served from `/public/portfolios/`
-- Preview images in `/portfolios/previews/` subfolder
-- Next.js Image component handles optimization automatically
-- Lazy loading for portfolio grids, priority for hero images
+- Portfolio images: `/public/portfolios/{photographer-id}/`
+- Preview images: `/portfolios/previews/`
+- Next.js Image optimization ON for local paths (fixed)
+- Blob images via Vercel Blob + `/api/blob` proxy
+- Image manifest for Vercel serverless (no fs.readdirSync)
 
-### Routing Structure
-- Static generation for all pages
-- Dynamic routes for individual portfolios
-- Pre-rendering at build time for optimal performance
+### Data Flow
+- Redis (Upstash) stores photographer list + per-photographer image order + AI images
+- Fallback to static `data.ts` + `image-manifest.ts` when Redis unavailable
+- `revalidate = 60` on dynamic pages for ISR
 
-## Important Patterns and Preferences
+## Important Patterns
 
 ### Code Style
-- TypeScript for type safety
-- Functional components with hooks
-- Server Components by default, Client Components when needed
-- Tailwind for all styling (no CSS modules)
-
-### Performance Priorities
-1. Fast initial load
-2. Smooth scrolling
-3. Optimized images
-4. No layout shifts
-5. Mobile-first responsive design
+- TypeScript strict, functional components with hooks
+- Server Components by default, `'use client'` when needed
+- Tailwind for all styling, no CSS modules
+- React 19: `use()` for context, `useDeferredValue`, `useTransition`
 
 ### Component Organization
-- Keep components focused and single-purpose
-- Use composition over inheritance
-- Separate client and server components clearly
-- Minimal prop drilling
-
-## Learnings and Project Insights
-
-### Next.js 16.1 Specifics
-- Requires ESLint 9+ (not 8)
-- App Router is default and preferred
-- Turbopack enabled for faster dev builds
-- React 19 compatibility
-
-### Image Optimization
-- Sharp handles automatic WebP conversion
-- Next.js Image component requires explicit sizes or fill
-- Priority prop crucial for above-fold images
-- Responsive sizes improve performance significantly
-
-### Portfolio Structure
-- 7 photographers with varying portfolio sizes
-- Yonca Muslubaş: 363 images (largest)
-- Ömür Temel: 180 images
-- Doğu Biricik: 122 images
-- Others: 35-74 images each
-
-### Asset Formats
-- Preview images: Mixed (webp, jpg, png)
-- Brand logos: All PNG format
-- Menu background: WebP format
-- Portfolio images: Mixed formats (to be optimized)
-
-## Design Decisions
-
-### Homepage Layout
-- **Section Height**: 66vh (shows 1.5 sections for visual interest)
-- **Parallax Effect**: Images move 200px range with 120% container height
-- **Typography Hierarchy**:
-  - Title (PHOTOGRAPHER/RETOUCHER): text-3xl, font-black, wide tracking
-  - Name: text-7xl, font-bold
-  - SEE ALL: text-lg, font-bold with animated dash
-- **Overlay**: 60% black opacity for text readability
-
-### Animations & Interactions
-- **Page Transitions**: 1s loader with scale-fade animation
-- **Parallax**: Smooth scroll-based image movement
-- **SEE ALL Hover**: Animated SVG dash sliding left to right
-- **Header Blur**: Activates on scroll with smooth transition
-- **Back to Top**: Fades in after 500px scroll
-
-### Performance Optimizations
-- Full-width masonry grid (no max-width constraints)
-- Object-center positioning for consistent image cropping
-- Priority loading for first section images
-- Lazy loading for portfolio grids
+- `SiteChrome` wraps Menu + PageLoader + BackToTop + BackgroundPreloader + Grain
+- `ProductionSnapContainer` provides custom scroll-snap with wheel interception
+- `MasonryGrid` is shared by portfolio pages and AI Based page
 
 ## Known Issues
-- Font files are placeholders (using system fonts)
-- Contact phone number uses placeholder ("+90 XXX XXX XX XX")
-- npm audit shows 1 high severity vulnerability (to be reviewed)
-- Some preview images in mixed formats (jpg, png, webp)
+- Unused deps: `react-xmasonry`, `zustand` (should remove)
+- npm audit: 1 high severity vulnerability
+- `BackgroundPreloader` hits `/api/admin/photographers` without auth (silent fail OK but wasteful)
 
 ## Current Status
-✅ Project structure complete
-✅ All pages implemented and refined
-✅ Modern UI/UX with animations
-✅ Parallax effects working
-✅ Page loader implemented
-✅ Back to top functionality
-✅ Header blur on scroll
-✅ Full-width portfolio grids
-✅ Development server running
-✅ Photographer order finalized
-⏳ Deployment to Vercel pending
-⏳ Contact info needs completion
+✅ Site LIVE at f28.com.tr on Vercel
+✅ Admin panel fully functional
+✅ Grid system: 4 cols desktop, 2 cols mobile, order-compatible
+✅ i18n: EN/TR with LanguageContext
+✅ PDF download working
+✅ All pages with metadata
+⏳ CDN image strategy (not yet implemented)

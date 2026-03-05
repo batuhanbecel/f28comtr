@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export function BackToTop() {
   const [isVisible, setIsVisible] = useState(false);
@@ -11,23 +11,27 @@ export function BackToTop() {
     const toggleVisibility = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          setIsVisible(window.scrollY > 500);
+          const snap = document.querySelector('[data-snap-container]') as HTMLElement | null;
+          const scrollTop = snap ? snap.scrollTop : window.scrollY;
+          setIsVisible(scrollTop > 500);
           ticking = false;
         });
         ticking = true;
       }
     };
 
-    window.addEventListener('scroll', toggleVisibility, { passive: true });
-    return () => window.removeEventListener('scroll', toggleVisibility);
+    document.addEventListener('scroll', toggleVisibility, { passive: true, capture: true });
+    return () => document.removeEventListener('scroll', toggleVisibility, { capture: true });
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
+  const scrollToTop = useCallback(() => {
+    const snap = document.querySelector('[data-snap-container]') as HTMLElement | null;
+    if (snap) {
+      snap.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
 
   return (
     <button

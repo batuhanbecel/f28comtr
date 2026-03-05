@@ -1,22 +1,27 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
+const BLOB_DOMAIN_RE = /^https:\/\/[a-z0-9]+\.(public|private)\.blob\.vercel-storage\.com\//;
+
 export async function GET(request: NextRequest) {
   const u = request.nextUrl.searchParams.get('u');
   if (!u) return new NextResponse('Missing url param', { status: 400 });
 
   const blobUrl = decodeURIComponent(u);
 
-  const ALLOWED_STORE = 'srzew0qzegvhjbvh.private.blob.vercel-storage.com';
-  if (!blobUrl.startsWith(`https://${ALLOWED_STORE}/`)) {
+  if (!BLOB_DOMAIN_RE.test(blobUrl)) {
     return new NextResponse('Invalid blob URL', { status: 400 });
   }
 
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
-  if (!token) return new NextResponse('Storage not configured', { status: 500 });
+  const isPrivate = blobUrl.includes('.private.blob.vercel-storage.com');
 
-  const res = await fetch(blobUrl, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  const headers: HeadersInit = {};
+  if (isPrivate) {
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
+    if (!token) return new NextResponse('Storage not configured', { status: 500 });
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const res = await fetch(blobUrl, { headers });
 
   if (!res.ok) {
     return new NextResponse('Blob not found', { status: res.status });

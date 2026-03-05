@@ -295,7 +295,6 @@ export const imageManifest: Record<string, string[]> = {
     "/portfolios/emre-yunusoglu/a%20(31).webp",
     "/portfolios/emre-yunusoglu/a%20(32).webp",
     "/portfolios/emre-yunusoglu/a%20(33).webp",
-    "/portfolios/emre-yunusoglu/a%20(34).webp",
     "/portfolios/emre-yunusoglu/a%20(35).webp",
     "/portfolios/emre-yunusoglu/a%20(36).webp",
     "/portfolios/emre-yunusoglu/a%20(38).webp",

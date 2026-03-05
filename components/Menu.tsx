@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -20,22 +20,37 @@ export function Menu() {
   }, [pathname]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+    const checkScroll = () => {
+      const snapContainer = document.querySelector('[data-snap-container]');
+      const scrollTop = snapContainer ? (snapContainer as HTMLElement).scrollTop : window.scrollY;
+      setIsScrolled(scrollTop > 50);
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+
+    setIsScrolled(false);
+    // Use capture phase on document to catch scroll from snap container or window
+    document.addEventListener('scroll', checkScroll, { passive: true, capture: true });
+    // Also check immediately in case page already scrolled
+    checkScroll();
+
+    return () => {
+      document.removeEventListener('scroll', checkScroll, { capture: true });
+    };
+  }, [pathname]);
 
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      setTimeout(() => setIsVisible(true), 20);
+      const t = setTimeout(() => setIsVisible(true), 20);
+      return () => clearTimeout(t);
     } else {
       setIsVisible(false);
-      setTimeout(() => document.body.style.overflow = 'unset', 600);
+      const t = setTimeout(() => { document.body.style.overflow = 'unset'; }, 600);
+      return () => clearTimeout(t);
     }
   }, [isOpen]);
+
+  const toggleMenu = useCallback(() => setIsOpen(prev => !prev), []);
+  const closeMenu = useCallback(() => setIsOpen(false), []);
 
   const menuItems = [
     { href: '/', label: t.nav.home, num: '01' },
@@ -65,7 +80,7 @@ export function Menu() {
         <div className="flex items-center gap-5">
           <LanguageSwitcher />
           <button
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={toggleMenu}
             className="relative z-50 flex flex-col gap-[5px] w-7 py-1 group"
             aria-label="Toggle menu"
           >
@@ -129,7 +144,7 @@ export function Menu() {
               >
                 <Link
                   href={item.href}
-                  onClick={() => setIsOpen(false)}
+                  onClick={closeMenu}
                   className="group flex items-baseline gap-4 md:gap-6 py-4 md:py-5"
                 >
                   <span className="text-white/20 font-mono text-[10px] tracking-[0.3em] w-6 flex-shrink-0">{item.num}</span>

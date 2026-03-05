@@ -1,14 +1,19 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
 interface Props {
   children: React.ReactNode;
-  snapMode?: 'mandatory' | 'proximity';
+  /**
+   * 'mandatory' — every section snaps (production page)
+   * 'heroSnap'  — only first scroll snaps hero→grid, grid scrolls freely
+   */
+  snapMode?: 'mandatory' | 'heroSnap';
 }
 
 export function ProductionSnapContainer({ children, snapMode = 'mandatory' }: Props) {
   const containerRef = useRef<HTMLElement>(null);
+  const isAnimating = useRef(false);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -19,40 +24,65 @@ export function ProductionSnapContainer({ children, snapMode = 'mandatory' }: Pr
     };
   }, []);
 
-  // Wheel-based snap navigation only for mandatory mode (production page)
-  useEffect(() => {
-    if (snapMode !== 'mandatory') return;
+  const scrollTo = useCallback((top: number) => {
+    const container = containerRef.current;
+    if (!container) return;
+    container.scrollTo({ top, behavior: 'smooth' });
+    setTimeout(() => { isAnimating.current = false; }, 900);
+  }, []);
+
+  const handleWheel = useCallback((e: WheelEvent) => {
     const container = containerRef.current;
     if (!container) return;
 
-    const handleWheel = (e: WheelEvent) => {
+    if (snapMode === 'mandatory') {
       e.preventDefault();
+      if (isAnimating.current) return;
+      isAnimating.current = true;
+
       const direction = e.deltaY > 0 ? 1 : -1;
       const kids = Array.from(container.children) as HTMLElement[];
       const currentScroll = container.scrollTop;
       let targetIndex = 0;
       let closestDist = Infinity;
       kids.forEach((child, i) => {
-        const rect = child.getBoundingClientRect();
-        const top = rect.top + currentScroll;
-        const dist = Math.abs(top - currentScroll);
-        if (dist < closestDist) {
-          closestDist = dist;
-          targetIndex = i;
-        }
+        const dist = Math.abs(child.offsetTop - currentScroll);
+        if (dist < closestDist) { closestDist = dist; targetIndex = i; }
       });
       targetIndex = Math.max(0, Math.min(kids.length - 1, targetIndex + direction));
       const target = kids[targetIndex];
       if (target) {
-        setTimeout(() => {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 0);
+        scrollTo(target.offsetTop);
+      } else {
+        isAnimating.current = false;
       }
-    };
+    } else {
+      // heroSnap: only intercept wheel while on the hero section
+      const firstChild = container.children[0] as HTMLElement | undefined;
+      if (!firstChild) return;
+      const heroBottom = firstChild.offsetHeight;
+      const isOnHero = container.scrollTop < heroBottom - 50;
 
+      if (isOnHero) {
+        e.preventDefault();
+        if (isAnimating.current) return;
+        isAnimating.current = true;
+        if (e.deltaY > 0) {
+          const secondChild = container.children[1] as HTMLElement | undefined;
+          scrollTo(secondChild ? secondChild.offsetTop : heroBottom);
+        } else {
+          scrollTo(0);
+        }
+      }
+    }
+  }, [snapMode, scrollTo]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
     container.addEventListener('wheel', handleWheel, { passive: false });
     return () => container.removeEventListener('wheel', handleWheel);
-  }, [snapMode]);
+  }, [handleWheel]);
 
   return (
     <main
@@ -60,7 +90,6 @@ export function ProductionSnapContainer({ children, snapMode = 'mandatory' }: Pr
       data-snap-container
       className="fixed inset-0 overflow-y-scroll [&::-webkit-scrollbar]:hidden"
       style={{
-        scrollSnapType: `y ${snapMode}`,
         scrollBehavior: 'smooth',
         scrollbarWidth: 'none',
         overscrollBehaviorY: 'contain',

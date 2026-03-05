@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { shouldSkipOptimization } from '@/lib/blob';
 
 export default function AdminAIBased() {
   const router = useRouter();
@@ -176,6 +177,7 @@ export default function AdminAIBased() {
                   fill
                   className="object-cover"
                   sizes="(max-width: 640px) 33vw, (max-width: 1024px) 20vw, 15vw"
+                  unoptimized={shouldSkipOptimization(img)}
                 />
                 <div className="absolute top-1 left-1 bg-black/70 px-1.5 py-0.5">
                   <span className="text-white/60 text-[9px] font-mono">{index + 1}</span>

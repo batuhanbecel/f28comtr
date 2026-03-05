@@ -1,8 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { verifyAdminToken, COOKIE_NAME } from '@/lib/auth';
 import { getPhotographers, setPhotographers } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
+async function checkAuth() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(COOKIE_NAME)?.value;
+  if (!token) return false;
+  return verifyAdminToken(token);
+}
+
 export async function PUT(request: NextRequest) {
+  if (!await checkAuth()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const { ids } = await request.json();
     if (!Array.isArray(ids)) {

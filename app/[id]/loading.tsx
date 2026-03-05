@@ -11,12 +11,12 @@ export default function PortfolioLoading() {
         </div>
       </section>
 
-      <section className="py-12 px-2">
-        <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-2 space-y-2">
+      <section className="py-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-[3px]">
           {[320, 240, 410, 260, 180, 380, 220, 305, 440, 195, 360, 275].map((h, i) => (
             <div
               key={i}
-              className="break-inside-avoid bg-white/[0.04] animate-pulse"
+              className="bg-white/[0.04] animate-pulse"
               style={{ height: h, animationDelay: `${i * 0.04}s` }}
             />
           ))}

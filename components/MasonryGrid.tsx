@@ -1,7 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useDeferredValue, useRef } from 'react';
+import { BalancedMasonryGrid as MasonryGridLib, Frame } from '@masonry-grid/react';
+import { shouldSkipOptimization } from '@/lib/blob';
 
 interface MasonryGridProps {
   images: string[];
@@ -11,45 +13,54 @@ interface MasonryGridProps {
 export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [lightboxVisible, setLightboxVisible] = useState(false);
-  const [numCols, setNumCols] = useState(4);
+  const [frameWidth, setFrameWidth] = useState(300);
+  const containerRef = useRef<HTMLDivElement>(null);
 
+  const deferredImages = useDeferredValue(images);
+
+  // Track real image dimensions as they load
+  const [dims, setDims] = useState<Record<string, { w: number; h: number }>>({});
+
+  const handleImageLoad = useCallback((url: string, e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    if (img.naturalWidth && img.naturalHeight) {
+      setDims(prev => {
+        if (prev[url]) return prev;
+        return { ...prev, [url]: { w: img.naturalWidth, h: img.naturalHeight } };
+      });
+    }
+  }, []);
+
+  // Responsive frameWidth: targets 4 cols desktop, 2 cols mobile
   useEffect(() => {
     const update = () => {
-      const w = window.innerWidth;
-      if (w < 768) setNumCols(1);
-      else if (w < 1024) setNumCols(2);
-      else if (w < 1280) setNumCols(3);
-      else setNumCols(4);
+      const w = containerRef.current?.clientWidth || window.innerWidth;
+      const cols = w >= 1024 ? 4 : 2;
+      setFrameWidth(Math.floor(w / cols));
     };
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
   }, []);
 
-  // Transpose images so CSS columns (col-first fill) produces row-first visual order:
-  // reordered[c * rowsPerCol + r] = images[r * numCols + c]
-  const reorderedImages = useMemo(() => {
-    const N = images.length;
-    const rowsPerCol = Math.ceil(N / numCols);
-    const result: string[] = [];
-    for (let c = 0; c < numCols; c++) {
-      for (let r = 0; r < rowsPerCol; r++) {
-        const idx = r * numCols + c;
-        if (idx < N) result.push(images[idx]);
-      }
-    }
-    return result;
-  }, [images, numCols]);
+  const [erroredImages, setErroredImages] = useState<Set<string>>(new Set());
+  const handleImageError = useCallback((img: string) => {
+    setErroredImages(prev => new Set([...prev, img]));
+  }, []);
+
+  const validImages = deferredImages.filter(img => !erroredImages.has(img));
 
   const currentIndex = selectedImage ? images.indexOf(selectedImage) : -1;
 
   const openLightbox = useCallback((img: string) => {
     setSelectedImage(img);
+    document.body.dataset.lightboxOpen = 'true';
     setTimeout(() => setLightboxVisible(true), 10);
   }, []);
 
   const closeLightbox = useCallback(() => {
     setLightboxVisible(false);
+    delete document.body.dataset.lightboxOpen;
     setTimeout(() => setSelectedImage(null), 350);
   }, []);
 
@@ -94,31 +105,39 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
 
   return (
     <>
-      <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-2 space-y-2 px-2">
-        {reorderedImages.map((image) => (
-          <div
-            key={image}
-            className="break-inside-avoid cursor-pointer group relative overflow-hidden"
-            onClick={() => openLightbox(image)}
-          >
-            <Image
-              src={image}
-              alt={`${photographerName}`}
-              width={800}
-              height={1200}
-              className="w-full h-auto transition-transform duration-500 group-hover:scale-105"
-              loading="eager"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, (max-width: 1920px) 33vw, 25vw"
-              placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-            />
-          </div>
-        ))}
+      <div ref={containerRef}>
+        <MasonryGridLib frameWidth={frameWidth} gap={3}>
+          {validImages.map((image, idx) => {
+            const d = dims[image] || { w: 4, h: 3 };
+            return (
+              <Frame key={image} width={d.w} height={d.h}>
+                <div
+                  className="relative w-full h-full cursor-pointer group overflow-hidden bg-white/5"
+                  onClick={() => openLightbox(image)}
+                >
+                  <Image
+                    src={image}
+                    alt={photographerName}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading={idx < 8 ? 'eager' : 'lazy'}
+                    priority={idx === 0}
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                    quality={85}
+                    unoptimized={shouldSkipOptimization(image)}
+                    onLoad={(e) => handleImageLoad(image, e)}
+                    onError={() => handleImageError(image)}
+                  />
+                </div>
+              </Frame>
+            );
+          })}
+        </MasonryGridLib>
       </div>
 
       {selectedImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
+          className="fixed inset-0 z-[60] flex items-center justify-center"
           style={{
             backgroundColor: `rgba(0,0,0,${lightboxVisible ? 0.97 : 0})`,
             transition: 'background-color 0.35s ease',
@@ -181,6 +200,7 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
               className="object-contain"
               sizes="100vw"
               quality={95}
+              unoptimized={shouldSkipOptimization(selectedImage)}
             />
           </div>
         </div>

@@ -53,50 +53,40 @@ export async function seedFromStatic(): Promise<{ photographers: number; imageSe
   let newImagesCount = 0;
   
   for (const photographer of staticPhotographers) {
-    const filesystemImages = getPortfolioImages(photographer.id);
-    
-    if (filesystemImages.length > 0) {
-      // Get existing order from Redis
-      const existingImages = await redis.get(`photographer:${photographer.id}:images`) as string[] | null;
-      
-      if (existingImages && Array.isArray(existingImages)) {
-        // Preserve existing order and only add new images at the end
-        const existingSet = new Set(existingImages);
-        const newImages = filesystemImages.filter(img => !existingSet.has(img));
-        
-        // Remove images that no longer exist in filesystem
-        const filesystemSet = new Set(filesystemImages);
-        const validExisting = existingImages.filter(img => filesystemSet.has(img));
-        
-        const mergedImages = [...validExisting, ...newImages];
-        await redis.set(`photographer:${photographer.id}:images`, JSON.stringify(mergedImages));
-        newImagesCount += newImages.length;
-      } else {
-        // No existing order, use filesystem order
-        await redis.set(`photographer:${photographer.id}:images`, JSON.stringify(filesystemImages));
-      }
-      imageSets++;
-    }
+    const manifestImages = getPortfolioImages(photographer.id);
+    if (manifestImages.length === 0) continue;
+
+    let existing: string[] = [];
+    try {
+      const stored = await redis.get(`photographer:${photographer.id}:images`);
+      if (stored && Array.isArray(stored)) existing = stored as string[];
+    } catch {}
+
+    const manifestSet = new Set(manifestImages);
+    const existingSet = new Set(existing);
+    const ordered = existing.filter(img => manifestSet.has(img));
+    const newImgs = manifestImages.filter(img => !existingSet.has(img));
+    newImagesCount += newImgs.length;
+    await redis.set(`photographer:${photographer.id}:images`, JSON.stringify([...ordered, ...newImgs]));
+    imageSets++;
   }
 
-  // Seed AI images (preserve order here too)
-  const filesystemAIImages = getStaticAIImages();
-  if (filesystemAIImages.length > 0) {
-    const existingAI = await redis.get('ai:images') as string[] | null;
-    
-    if (existingAI && Array.isArray(existingAI)) {
-      const existingSet = new Set(existingAI);
-      const newAI = filesystemAIImages.filter(img => !existingSet.has(img));
-      const filesystemSet = new Set(filesystemAIImages);
-      const validExisting = existingAI.filter(img => filesystemSet.has(img));
-      const mergedAI = [...validExisting, ...newAI];
-      await redis.set('ai:images', JSON.stringify(mergedAI));
-    } else {
-      await redis.set('ai:images', JSON.stringify(filesystemAIImages));
-    }
+  const manifestAI = getStaticAIImages();
+  if (manifestAI.length > 0) {
+    let existingAI: string[] = [];
+    try {
+      const stored = await redis.get('ai:images');
+      if (stored && Array.isArray(stored)) existingAI = stored as string[];
+    } catch {}
+
+    const manifestSet = new Set(manifestAI);
+    const existingSet = new Set(existingAI);
+    const ordered = existingAI.filter(img => manifestSet.has(img));
+    const newImgs = manifestAI.filter(img => !existingSet.has(img));
+    await redis.set('ai:images', JSON.stringify([...ordered, ...newImgs]));
   }
 
-  return { photographers: staticPhotographers.length, imageSets, aiImages: filesystemAIImages.length, newImages: newImagesCount };
+  return { photographers: staticPhotographers.length, imageSets, aiImages: manifestAI.length, newImages: newImagesCount };
 }
 
 export async function getAIImages(): Promise<string[]> {

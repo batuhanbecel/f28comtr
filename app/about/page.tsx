@@ -1,7 +1,14 @@
+import type { Metadata } from 'next';
 import { getPartnerLogos, getClientLogos } from '@/lib/utils';
 import { Footer } from '@/components/Footer';
 import { LocalizedHero } from '@/components/LocalizedHero';
 import { LocalizedAboutBrands } from '@/components/LocalizedAboutBrands';
+import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
+
+export const metadata: Metadata = {
+  title: 'About Us | f/2.8 Production Agency',
+  description: 'Istanbul-based photography and production agency since 2008. Photography, video, CGI, animation, editing, and motion graphics.',
+};
 
 const SERVICES = ['Photography', 'Videography', 'CGI', 'Animation', 'Editing', 'Motion Graphics'];
 
@@ -10,10 +17,12 @@ export default function AboutPage() {
   const clientLogos = getClientLogos();
 
   return (
-    <main className="min-h-screen bg-black text-white">
-
-      {/* Hero — matches production / AI Based style */}
-      <section className="min-h-screen flex flex-col items-center justify-center px-6 md:px-12 text-center relative overflow-hidden">
+    <ProductionSnapContainer snapMode="heroSnap">
+      {/* Hero — snap point */}
+      <section
+        className="h-screen flex flex-col items-center justify-center px-6 md:px-12 text-center relative overflow-hidden"
+        style={{ scrollSnapAlign: 'start' }}
+      >
         <div className="max-w-4xl mx-auto">
           <LocalizedHero page="about" />
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 mt-10 fade-in-up" style={{ animationDelay: '0.35s' }}>
@@ -36,9 +45,11 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <LocalizedAboutBrands partnerLogos={partnerLogos} clientLogos={clientLogos} />
-
-      <Footer />
-    </main>
+      {/* Content — snap point (scrolls freely after snap) */}
+      <div style={{ scrollSnapAlign: 'start' }}>
+        <LocalizedAboutBrands partnerLogos={partnerLogos} clientLogos={clientLogos} />
+        <Footer />
+      </div>
+    </ProductionSnapContainer>
   );
 }
