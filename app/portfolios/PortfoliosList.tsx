@@ -23,12 +23,10 @@ export function PortfoliosList({ photographers }: { photographers: Photographer[
   return (
     <main className="min-h-screen bg-black text-white">
 
-      {/* Hero */}
-      <section className="relative h-[50vh] md:h-[60vh] flex items-end overflow-hidden">
-        <div className="absolute inset-0 bg-white/[0.02]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/30" />
-        <div
-          className="relative z-10 w-full px-8 md:px-16 pb-14"
+      {/* Photographer Grid */}
+      <section className="pt-32 md:pt-40 px-4 md:px-8 lg:px-12 pb-8">
+        {/* Header */}
+        <div className="px-4 md:px-8 mb-12"
           style={{
             opacity: visible ? 1 : 0,
             transform: visible ? 'translateY(0)' : 'translateY(28px)',
@@ -38,14 +36,8 @@ export function PortfoliosList({ photographers }: { photographers: Photographer[
           <div className="hero-rule !ml-0" />
           <span className="section-label">{t.portfolios.sectionLabel}</span>
           <h1 className="heading-hero gradient-text mt-2">{t.portfolios.heading}</h1>
-          <p className="text-white/25 text-[10px] tracking-[0.5em] uppercase mt-4">
-            {String(photographers.length).padStart(2, '0')} Artists
-          </p>
         </div>
-      </section>
 
-      {/* Photographer Grid */}
-      <section className="px-4 md:px-8 lg:px-12 pb-8">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-[3px]">
           {photographers.map((p, i) => (
             <Link

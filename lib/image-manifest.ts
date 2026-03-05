@@ -12,7 +12,6 @@ export const imageManifest: Record<string, string[]> = {
     "/portfolios/batuhan-becel/CEMYILMAZ8735.tif%20copy%203.webp",
     "/portfolios/batuhan-becel/CEMYILMAZ8795.webp",
     "/portfolios/batuhan-becel/ELECTRIFYNITRO%20RUNNING.webp",
-    "/portfolios/batuhan-becel/ERSIN_TATAR_KKTC1468%20copy.webp",
     "/portfolios/batuhan-becel/FB_Forma0106202412361%20copy.webp",
     "/portfolios/batuhan-becel/FB_Forma0106202412435%20copy.webp",
     "/portfolios/batuhan-becel/FB_Forma0106202412732%20copy.webp",
@@ -604,7 +603,6 @@ export const imageManifest: Record<string, string[]> = {
     "/portfolios/ozan-cakmak/WhatsApp-Image-2024-10-28-at-15.32.31.webp"
   ],
   "yonca-muslubas": [
-    "/portfolios/yonca-muslubas/F28XYONCA-2.jpg.jpeg",
     "/portfolios/yonca-muslubas/F28XYONCA-21.jpg.webp",
     "/portfolios/yonca-muslubas/F28XYONCA-211-scaled.jpg.webp",
     "/portfolios/yonca-muslubas/F28XYONCA-304-scaled.jpg.webp",
@@ -659,5 +657,35 @@ export const imageManifest: Record<string, string[]> = {
     "/ai-images/VOD-3.png",
     "/ai-images/hopi-1.webp",
     "/ai-images/hopi-2.webp"
+  ],
+  "__partners__": [
+    "/logos/brands/partners/alamet.png",
+    "/logos/brands/partners/bbdo.png",
+    "/logos/brands/partners/fcb.png",
+    "/logos/brands/partners/havas.png",
+    "/logos/brands/partners/rafineri.png",
+    "/logos/brands/partners/tbwa.png",
+    "/logos/brands/partners/tribal.png",
+    "/logos/brands/partners/wmlyr.png",
+    "/logos/brands/partners/zer.png"
+  ],
+  "__clients__": [
+    "/logos/brands/clients/ar%C3%A7elik.png",
+    "/logos/brands/clients/fiat.png",
+    "/logos/brands/clients/ford.png",
+    "/logos/brands/clients/garanti.png",
+    "/logos/brands/clients/lassa.png",
+    "/logos/brands/clients/nike.png",
+    "/logos/brands/clients/nissan.png",
+    "/logos/brands/clients/opet.png",
+    "/logos/brands/clients/po.png",
+    "/logos/brands/clients/qnb.png",
+    "/logos/brands/clients/sahibinden.png",
+    "/logos/brands/clients/thy.png",
+    "/logos/brands/clients/total.png",
+    "/logos/brands/clients/trendyol.png",
+    "/logos/brands/clients/turkcell.png",
+    "/logos/brands/clients/vodafone.png",
+    "/logos/brands/clients/yapikredi.png"
   ]
 };

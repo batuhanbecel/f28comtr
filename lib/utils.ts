@@ -42,6 +42,10 @@ export function getBrandLogos(): string[] {
 }
 
 export function getPartnerLogos(): string[] {
+  if (imageManifest['__partners__'] && imageManifest['__partners__'].length > 0) {
+    return imageManifest['__partners__'];
+  }
+
   const logosPath = path.join(process.cwd(), 'public', 'logos', 'brands', 'partners');
   
   try {
@@ -57,6 +61,10 @@ export function getPartnerLogos(): string[] {
 }
 
 export function getClientLogos(): string[] {
+  if (imageManifest['__clients__'] && imageManifest['__clients__'].length > 0) {
+    return imageManifest['__clients__'];
+  }
+
   const logosPath = path.join(process.cwd(), 'public', 'logos', 'brands', 'clients');
   
   try {
