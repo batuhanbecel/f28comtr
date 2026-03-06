@@ -178,7 +178,7 @@ export function DownloadPortfolio({ images, photographer }: Props) {
       pdf.setTextColor(70, 70, 70);
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(6.5);
-      pdf.text(photographer.title.toUpperCase(), cx, coverSplit + 26, { align: 'center', charSpace: 2 });
+      pdf.text(photographer.title.toUpperCase(), cx, coverSplit + 26, { align: 'center' });
 
       // Photographer name
       pdf.setTextColor(240, 240, 240);
@@ -190,7 +190,7 @@ export function DownloadPortfolio({ images, photographer }: Props) {
       pdf.setTextColor(45, 45, 45);
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(6);
-      pdf.text(`${String(images.length).padStart(2, '0')}\u2002IMAGES`, cx, coverSplit + 57, { align: 'center', charSpace: 1.5 });
+      pdf.text(`${String(images.length).padStart(2, '0')}\u2002IMAGES`, cx, coverSplit + 57, { align: 'center' });
 
       // f/2.8 logo at bottom
       let logo: Img | null = null;
@@ -202,7 +202,7 @@ export function DownloadPortfolio({ images, photographer }: Props) {
       pdf.setTextColor(25, 25, 25);
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(5);
-      pdf.text('f28.com.tr', cx, PH - M, { align: 'center', charSpace: 1.5 });
+      pdf.text('f28.com.tr', cx, PH - M, { align: 'center' });
 
       setProgress(8);
 
@@ -249,7 +249,7 @@ export function DownloadPortfolio({ images, photographer }: Props) {
       pdf.setTextColor(50, 50, 50);
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(7);
-      pdf.text(photographer.fullName.toUpperCase(), cx, PH / 2 + 6, { align: 'center', charSpace: 2 });
+      pdf.text(photographer.fullName.toUpperCase(), cx, PH / 2 + 6, { align: 'center' });
 
       if (logo && logo.w > 0) {
         const lw = 22, lh = (lw * logo.h) / logo.w;
@@ -259,7 +259,7 @@ export function DownloadPortfolio({ images, photographer }: Props) {
       pdf.setTextColor(25, 25, 25);
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(5);
-      pdf.text('f28.com.tr', cx, PH / 2 + 44, { align: 'center', charSpace: 1.5 });
+      pdf.text('f28.com.tr', cx, PH / 2 + 44, { align: 'center' });
 
       setProgress(100);
 
