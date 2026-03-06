@@ -140,20 +140,31 @@ export function DownloadPortfolio({ images, photographer }: Props) {
       setProgress(10);
 
       // ── PORTFOLIO PAGES ───────────────────────────────────────────
+      let pageNum = 0;
       for (let i = 0; i < images.length; i++) {
+        let img;
+        try {
+          img = await loadImg(images[i], 1600, 0.75);
+        } catch {
+          // Skip images that fail to load (deleted, 404, CORS)
+          console.warn(`Skipping image ${i + 1}: ${images[i]}`);
+          setProgress(10 + Math.round(((i + 1) / images.length) * 84));
+          continue;
+        }
+
         pdf.addPage();
         pdf.setFillColor(0, 0, 0);
         pdf.rect(0, 0, PW, PH, 'F');
 
-        const img = await loadImg(images[i], 1600, 0.75);
         placeImage(pdf, img.dataUrl, img.w, img.h, PW, PH, M);
+        pageNum++;
 
         // Page counter — bottom right
         pdf.setTextColor(45, 45, 45);
         pdf.setFont('helvetica', 'normal');
         pdf.setFontSize(6);
         pdf.text(
-          `${String(i + 1).padStart(2, '0')} / ${String(images.length).padStart(2, '0')}`,
+          `${String(pageNum).padStart(2, '0')} / ${String(images.length).padStart(2, '0')}`,
           PW - M, PH - 7, { align: 'right' },
         );
 
