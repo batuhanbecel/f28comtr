@@ -7,6 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,6 +30,11 @@ export const metadata: Metadata = {
     description: "Professional photography and retouching production agency",
     type: "website",
     locale: "en_US",
+    url: "https://www.f28.com.tr",
+    siteName: "f/2.8 Production Agency",
+  },
+  alternates: {
+    canonical: "https://www.f28.com.tr",
   },
 };
 
@@ -49,6 +55,34 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="manifest" href="/manifest.json" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'f/2.8 Production Agency',
+              url: 'https://www.f28.com.tr',
+              logo: 'https://www.f28.com.tr/logos/f28/f28_white.png',
+              description: 'Professional photography and retouching production agency in Istanbul.',
+              address: {
+                '@type': 'PostalAddress',
+                streetAddress: 'Mecidiyeköy, Kuştepe Mahallesi, Yoncalı Sokak, No: 1',
+                addressLocality: 'Şişli',
+                addressRegion: 'İstanbul',
+                postalCode: '34387',
+                addressCountry: 'TR',
+              },
+              sameAs: [
+                'https://www.instagram.com/f28production',
+                'https://linkedin.com/company/f-2-8-production/',
+              ],
+              foundingDate: '2008',
+              knowsAbout: ['Photography', 'Retouching', 'AI Visual Content', 'Commercial Photography'],
+            }),
+          }}
+        />
       </head>
       <body className="antialiased bg-black text-white">
         <LanguageProvider>
@@ -58,6 +92,7 @@ export default function RootLayout({
             {children}
             <SpeedInsights />
             <Analytics />
+            <ServiceWorkerRegister />
           </SmoothScrollProvider>
         </LanguageProvider>
       </body>

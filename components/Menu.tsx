@@ -109,7 +109,7 @@ export function Menu() {
       >
         {/* Background */}
         <div className="absolute inset-0">
-          <Image src="/menubg.webp" alt="" fill className="object-cover" priority quality={85} />
+          <Image src="/menubg.webp" alt="" fill className="object-cover" quality={85} loading="lazy" />
           <div className="absolute inset-0 bg-black/75" />
         </div>
 

@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 export function SiteSettingsClient() {
   const [seeding, setSeeding] = useState(false);
   const [clearing, setClearing] = useState(false);
+  const [cleaning, setCleaning] = useState(false);
   const router = useRouter();
 
   const handleSeed = async () => {
@@ -36,6 +37,22 @@ export function SiteSettingsClient() {
     finally { setClearing(false); }
   };
 
+  const handleCleanup = async () => {
+    if (!confirm('Scan all image URLs in Redis and remove broken (404) references? This may take a minute.')) return;
+    setCleaning(true);
+    try {
+      const res = await fetch('/api/admin/cleanup', { method: 'POST' });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(data.message);
+        if (data.totalRemoved > 0) router.refresh();
+      } else {
+        toast.error(data.error || 'Cleanup failed');
+      }
+    } catch { toast.error('Cleanup failed'); }
+    finally { setCleaning(false); }
+  };
+
   const actions = [
     {
       label: 'Seed from Files',
@@ -51,6 +68,14 @@ export function SiteSettingsClient() {
       action: handleClearCache,
       loading: clearing,
       loadingLabel: 'Clearing...',
+      primary: false,
+    },
+    {
+      label: 'Cleanup Images',
+      desc: 'Scan Redis for broken image URLs (404) and remove them automatically.',
+      action: handleCleanup,
+      loading: cleaning,
+      loadingLabel: 'Scanning...',
       primary: false,
     },
   ];

@@ -1,0 +1,22 @@
+{
+  "name": "f/2.8 Production Agency",
+  "short_name": "f/2.8",
+  "description": "Professional photography and retouching production agency in Istanbul.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/logos/f28/favicon.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/logos/f28/favicon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

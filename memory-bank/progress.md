@@ -82,90 +82,58 @@
 - [x] Menu background in `/public/`
 - [x] Preview images accessible
 
-## What's Left to Build
+## What's Left to Build / Potential Improvements
 
-### 🔄 Performance Optimization
-- [ ] Convert remaining portfolio images to WebP
-- [ ] Optimize large image file sizes
-- [ ] Test loading performance across all pages
-- [ ] Verify smooth parallax on different devices
+### 🔄 Cleanup
+- [ ] Remove unused deps: `react-xmasonry`, `zustand`
+- [ ] Review npm audit vulnerability
+- [ ] Clean stale image references from Redis via admin panel
+- [ ] Delete redundant `app/portfolio/[id]/page.tsx` (redirect handles this route)
+
+### 🔄 Performance
+- [ ] CDN image optimization strategy
+- [ ] Lighthouse audit + Core Web Vitals optimization
 - [ ] Mobile performance testing
 
-### 🔄 Content Updates
-- [x] Email updated to info@f28.com.tr
-- [ ] Replace placeholder contact information
-  - Update Instagram handle if different
-  - Update phone number (currently "+90 XXX XXX XX XX")
-  - Confirm address details
-
-### 🔄 Font Enhancement (Optional)
-- [ ] Download Geist fonts or choose alternative
-- [ ] Update font configuration
-- [ ] Test typography across pages
-
-### 🔄 Testing & QA
-- [ ] Test all navigation links
-- [ ] Verify all portfolio pages load
-- [ ] Test menu functionality
-- [ ] Test image lightbox
-- [ ] Mobile responsiveness check
-- [ ] Cross-browser testing
-
-### 🔄 Deployment
-- [ ] Create Vercel account/project
-- [ ] Configure deployment settings
-- [ ] Deploy to production
-- [ ] Verify production build
-- [ ] Set up custom domain (if applicable)
-
-### 🔄 Polish
-- [ ] Review npm audit vulnerability
-- [ ] Add loading states
-- [ ] Add error boundaries
-- [ ] SEO optimization (meta tags)
-- [ ] Add favicon
-- [ ] Analytics integration (optional)
+### 🔄 Content
+- [ ] Verify contact info is current (phone, address)
 
 ## Current Status
 
 **Phase**: LIVE IN PRODUCTION ✅  
 **URL**: https://www.f28.com.tr  
-**Hosting**: Vercel  
-**Next Milestone**: Visual polish pass (custom cursor, portfolios redesign)
+**Hosting**: Vercel (CLI deploy via `vercel --prod`)  
+**Git**: github.com/batuhanbecel/f28comtr (master branch)
 
-### Production Readiness
-- ✅ All images converted to WebP format
-- ✅ Performance optimizations complete
-- ✅ Typography standardized site-wide
-- ✅ SEO metadata implemented
-- ✅ Contact information updated
-- ✅ Social media integration complete
-- ✅ Image loading optimized (no flash/pop)
+### Latest Achievements (March 6, 2026)
+- ✅ PDF download fixed: manual blob download, CORS fallback, skip 404 images
+- ✅ PDF multi-image layouts: 2, 3, 4 images per page with orientation-aware grouping
+- ✅ PDF cover/end pages redesigned to match site style
+- ✅ About page redesigned with stats section + refined logo grids
+- ✅ Portfolios page redesigned with visual photographer cards
+- ✅ Image manifest extended for partner/client logos (Vercel serverless)
+- ✅ `charSpace` alignment bug fixed in jsPDF
 
-### Latest Achievements
+### Previous Achievements
 - ✅ Site LIVE at f28.com.tr on Vercel
 - ✅ Redis/Upstash backend for dynamic photographer data
 - ✅ Admin panel (/admin) with login, photographer management, image ordering
-- ✅ AI Based page with admin sorting at /admin/ai-based
-- ✅ Download Portfolio PDF (jsPDF) with cover, photos, end page
-- ✅ Turkish slug fix for PDF filenames
-- ✅ Landing page redesign with cross-panel hover dimming
+- ✅ AI Based page with admin sorting
+- ✅ Landing page with cross-panel hover dimming
 - ✅ Production page hero + full-screen height + scroll arrow
-- ✅ AI Based page hero with body text + scroll arrow
 - ✅ Mouse-tracking parallax on all ParallaxSection components
-- ✅ Portfolio hero: photo count + Download button on same line
-- ✅ MasonryGrid: all images eager loaded, blur placeholder
+- ✅ MasonryGrid: 4 cols desktop, 2 cols mobile, eager loaded, blur placeholder
 - ✅ BackgroundPreloader for instant portfolio loads
-- ✅ Image manifest for Vercel (no fs.readdirSync in production)
 - ✅ Vercel Blob storage + /api/blob proxy for uploaded images
+- ✅ i18n: EN/TR with LanguageContext
 
 ## Known Issues
 
-1. **Font Files**: Empty placeholder files need replacement
-2. **Contact Info**: Using placeholder data
-3. **Image Formats**: Some previews not in WebP
-4. **Security**: 1 high severity npm vulnerability to review
-5. **TypeScript**: Some lint errors expected until dependencies fully resolve
+1. **Unused deps**: `react-xmasonry`, `zustand` still in package.json
+2. **npm audit**: 1 high severity vulnerability
+3. **Stale Redis data**: Deleted images may still be referenced in Redis
+4. **BackgroundPreloader**: Hits `/api/admin/photographers` without auth
+5. **Vercel Git deploy**: May need branch config verification — user deploys via CLI
 
 ## Evolution of Project Decisions
 

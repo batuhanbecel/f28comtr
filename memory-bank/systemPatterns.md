@@ -1,120 +1,98 @@
 # System Patterns: f/28 Website Architecture
 
 ## Architecture Overview
-Next.js 16.1 App Router architecture with static generation for optimal performance.
+Next.js 16.1 App Router with ISR (revalidate=60), Redis backend, Vercel Blob storage, and image manifest for serverless compatibility.
 
 ## Key Technical Decisions
 
 ### 1. App Router Structure
 ```
 app/
-├── layout.tsx          # Root layout with Menu
-├── page.tsx            # Homepage
-├── portfolios/page.tsx # Portfolios listing
-├── portfolio/[id]/     # Dynamic portfolio pages
-└── about/page.tsx      # About page
+├── layout.tsx              # Root layout (SiteChrome, CustomCursor, providers)
+├── page.tsx                # Landing (two-panel split)
+├── production/page.tsx     # Production page (snap-scroll ParallaxSections)
+├── ai-based/page.tsx       # AI gallery (MasonryGrid)
+├── [id]/page.tsx           # Dynamic portfolio (hero + MasonryGrid + DownloadPortfolio)
+├── portfolios/             # Photographer card grid + text index
+├── about/page.tsx          # Stats + partner/client logo grids
+├── admin/                  # Dashboard, photographer CRUD, AI image manager
+├── api/admin/              # Auth + CRUD API routes
+└── api/blob/               # Private blob proxy
 ```
 
 ### 2. Data Management
-- **Static Data**: Photographer information in `/lib/data.ts`
-- **File System**: Portfolio images read from `/public/portfolios/`
-- **Server-Side**: Image lists generated at build time using `fs` module
+- **Redis (Upstash)**: Primary store for photographer list, image ordering, AI images
+- **Static Fallback**: `lib/data.ts` + `lib/image-manifest.ts` when Redis unavailable
+- **Image Manifest**: Build-time generated list of all images/logos for Vercel serverless (no `fs.readdirSync`)
+- **ISR**: `revalidate = 60` on dynamic pages
 
 ### 3. Image Optimization Strategy
-- **Next.js Image Component**: Automatic optimization and responsive images
-- **WebP Format**: All images stored/converted to WebP
-- **Lazy Loading**: Images below fold loaded on demand
-- **Priority Loading**: First homepage section and hero images loaded with priority
-- **Responsive Sizes**: Configured sizes for different viewport widths
+- Next.js Image component with optimization ON for local paths
+- `shouldSkipOptimization()` only skips blob proxy URLs
+- Blob images proxied via `/api/blob?u=<url>` for private Vercel Blob
+- Image manifest includes: portfolios, AI images, partner logos, client logos
 
 ### 4. Component Relationships
 ```
 RootLayout
-├── PageLoader (transition animations)
-├── Menu (global navigation with blur effect)
-├── BackToTop (scroll utility)
+├── SiteChrome
+│   ├── Menu (fullscreen nav overlay)
+│   ├── PageLoader (route transition)
+│   ├── BackToTop (snap-container aware)
+│   ├── BackgroundPreloader
+│   └── Grain (film grain overlay, z-9990)
+├── CustomCursor
 └── Page Content
-    ├── Homepage: ParallaxSection components
-    ├── Portfolios: Grid of photographers
-    ├── Portfolio/[id]: Hero + MasonryGrid
-    └── About: Company info + brand logos
+    ├── Landing: Two-panel split with mouse parallax
+    ├── Production: ProductionSnapContainer + ParallaxSections
+    ├── AI Based: ProductionSnapContainer + MasonryGrid
+    ├── Portfolio/[id]: Hero + DownloadPortfolio + MasonryGrid
+    ├── Portfolios: Photographer card grid + text index
+    └── About: AboutStats + LocalizedAboutBrands
 ```
 
 ## Design Patterns
 
-### 1. Server Components (Default)
-- All pages are Server Components by default
-- Fetch data at build time
-- Generate static paths for portfolio pages
+### Server vs Client Components
+- **Server**: All pages, data fetching, static generation
+- **Client** (`'use client'`): Menu, MasonryGrid, ParallaxSection, DownloadPortfolio, PageLoader, BackToTop, CustomCursor, AboutStats, LanguageProvider
 
-### 2. Client Components
-- `Menu.tsx`: Interactive hamburger menu with scroll detection and blur effect
-- `MasonryGrid.tsx`: Interactive image gallery with lightbox
-- `ParallaxSection.tsx`: Parallax scrolling effect with scroll event listeners
-- `PageLoader.tsx`: Page transition animations with pathname detection
-- `BackToTop.tsx`: Scroll-to-top button with visibility state
+### PDF Generation Pattern (DownloadPortfolio)
+1. Dynamic import `jspdf` (client-side only)
+2. Load all images with CORS fallback (`crossOrigin` → retry without)
+3. Skip failed/404 images (don't crash)
+4. Group images by orientation into multi-image pages (1, 2, 3, or 4 per page)
+5. Render cover → portfolio pages → end page
+6. Download via manual blob + anchor (not `pdf.save()` — browser blocks after long async)
 
-### 3. Dynamic Routing
-- `/portfolio/[id]`: Dynamic routes for each photographer
-- `generateStaticParams()`: Pre-render all portfolio pages at build time
+### Scroll Snap Pattern (ProductionSnapContainer)
+- Custom wheel event interception for controlled snap-scroll
+- `[data-snap-container]` attribute for BackToTop detection
+- `snapMode="heroSnap"` for portfolio pages (hero snaps, grid scrolls freely)
 
-### 4. Utility Functions
-- `getPortfolioImages()`: Read portfolio images from file system
-- `getBrandLogos()`: Read brand logos from file system
+### i18n Pattern
+- `LanguageContext` with `lang` ('en'|'tr') + `setLang`
+- `lib/translations.ts` with `titleMap` (both Title Case and UPPERCASE keys)
+- Stored in `localStorage`
 
 ## Critical Implementation Paths
 
-### Homepage Flow
-1. Import photographer data from `/lib/data.ts` (ordered array)
-2. Map over photographers array
-3. Render ParallaxSection for each (66vh height)
-4. ParallaxSection sets up scroll event listener
-5. On scroll, calculate progress and translate image
-6. Display title (PHOTOGRAPHER/RETOUCHER), name, and SEE ALL link
-7. Animated dash on hover for SEE ALL
+### Image Manifest Generation
+1. `scripts/generate-image-manifest.js` scans `/public/portfolios/`, `/public/ai-images/`, `/public/logos/brands/`
+2. Writes `lib/image-manifest.ts` with all file paths
+3. Must be run before deploy: `node scripts/generate-image-manifest.js`
+4. `lib/utils.ts` uses manifest as primary source, `fs.readdirSync` as fallback
 
-### Portfolio Page Flow
-1. Receive `id` parameter from URL
-2. Find photographer in data array
-3. Call `getPortfolioImages()` to get image list
-4. Render hero section with bold photographer name
-5. Pass images to MasonryGrid component
-6. MasonryGrid renders full-width 3-column layout (gap-2)
-7. Click handler opens lightbox overlay
-
-### Menu Flow
-1. useState manages open/closed state
-2. useEffect monitors scroll position
-3. Apply blur effect when scrollY > 50px
-4. Toggle button in fixed header
-5. Fullscreen overlay with menubg.webp background
-6. Navigation links close menu on click
-7. Contact info displayed at bottom
-
-### Page Transition Flow
-1. PageLoader monitors pathname changes with usePathname
-2. On route change, show loader with scale-fade animation
-3. Display f28 logo with ping effect
-4. After 600ms, trigger exit animation
-5. After 1000ms, hide loader completely
-
-### Parallax Effect Implementation
-1. ParallaxSection creates refs for section and image container
-2. useEffect sets up scroll event listener (passive)
-3. On scroll, calculate section position relative to viewport
-4. Compute scroll progress (0 to 1)
-5. Translate image based on progress: (progress - 0.5) * 200px
-6. Image container is 120% height to allow movement without gaps
+### Admin Panel Flow
+1. Login via `/api/admin/login` → JWT cookie
+2. All write routes check `checkAuth()` middleware
+3. CRUD operations update Redis
+4. Image reorder via drag-and-drop (dnd-kit)
 
 ## Performance Optimizations
-1. **Static Generation**: All pages pre-rendered at build time
-2. **Image Optimization**: Next.js automatic optimization
-3. **Code Splitting**: Automatic per-route code splitting
-4. **Lazy Loading**: Images loaded as needed
-5. **CSS-in-JS**: Tailwind CSS for minimal runtime overhead
-6. **Turbopack**: Fast development builds
-
-## State Management
-- Minimal state usage (only Menu component)
-- No global state management needed
-- Server-side data fetching at build time
+1. **ISR**: Pages revalidate every 60s
+2. **Image Optimization**: Next.js automatic + responsive sizes
+3. **Code Splitting**: Per-route + dynamic imports (jsPDF)
+4. **BackgroundPreloader**: Pre-fetches photographer data
+5. **Eager Loading**: MasonryGrid images loaded eagerly with blur placeholder
+6. **Vercel Analytics + SpeedInsights**: Integrated

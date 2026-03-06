@@ -47,8 +47,26 @@ export default async function PortfolioPage({ params }: PageProps) {
 
   const images = await getPhotographerImages(id);
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: photographer.fullName,
+    jobTitle: photographer.title,
+    image: `https://www.f28.com.tr${photographer.preview}`,
+    url: `https://www.f28.com.tr/${photographer.id}`,
+    worksFor: {
+      '@type': 'Organization',
+      name: 'f/2.8 Production Agency',
+      url: 'https://www.f28.com.tr',
+    },
+  };
+
   return (
     <ProductionSnapContainer snapMode="heroSnap">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero — snap point */}
       <section
         className="relative h-[80vh] md:h-screen w-full flex items-end justify-center pb-16 md:pb-24 vignette overflow-hidden"
