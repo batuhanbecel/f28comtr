@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
-import type { Photographer } from '@/lib/data';
+import type { Photographer, PhotographerTag } from '@/lib/data';
+import { AVAILABLE_TAGS } from '@/lib/data';
 
 interface PhotographerInfoFormProps {
   photographer: Photographer;
@@ -16,6 +17,7 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
     fullName: photographer.fullName,
     title: photographer.title,
     preview: photographer.preview,
+    tags: (photographer.tags ?? []) as PhotographerTag[],
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,6 +79,35 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
               placeholder="/portfolios/previews/name.webp"
               className="w-full bg-white/5 border border-white/20 rounded px-3 py-2 focus:outline-none focus:border-white/40"
             />
+          </div>
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-2">Tags</label>
+          <div className="flex flex-wrap gap-2">
+            {AVAILABLE_TAGS.map((tag) => {
+              const active = formData.tags.includes(tag);
+              return (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      tags: active
+                        ? prev.tags.filter((t) => t !== tag)
+                        : [...prev.tags, tag],
+                    }))
+                  }
+                  className={`px-3 py-1 text-xs tracking-wider uppercase rounded-full border transition-colors ${
+                    active
+                      ? 'bg-white text-black border-white'
+                      : 'bg-transparent text-white/40 border-white/15 hover:border-white/30 hover:text-white/70'
+                  }`}
+                >
+                  {tag}
+                </button>
+              );
+            })}
           </div>
         </div>
         <button
