@@ -14,23 +14,36 @@ interface Props {
 }
 
 async function loadImg(src: string, maxDim = 1600, quality = 0.78): Promise<{ dataUrl: string; w: number; h: number }> {
-  return new Promise((resolve, reject) => {
-    const img = new window.Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      const scale = Math.min(1, maxDim / Math.max(img.naturalWidth, img.naturalHeight));
-      const w = Math.round(img.naturalWidth * scale);
-      const h = Math.round(img.naturalHeight * scale);
-      const canvas = document.createElement('canvas');
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext('2d')!;
-      ctx.drawImage(img, 0, 0, w, h);
-      resolve({ dataUrl: canvas.toDataURL('image/jpeg', quality), w, h });
-    };
-    img.onerror = () => reject(new Error(`Failed to load ${src}`));
-    img.src = src;
-  });
+  const attempt = (useCors: boolean): Promise<{ dataUrl: string; w: number; h: number }> =>
+    new Promise((resolve, reject) => {
+      const img = new window.Image();
+      if (useCors) img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        try {
+          const scale = Math.min(1, maxDim / Math.max(img.naturalWidth, img.naturalHeight));
+          const w = Math.round(img.naturalWidth * scale);
+          const h = Math.round(img.naturalHeight * scale);
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d')!;
+          ctx.drawImage(img, 0, 0, w, h);
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve({ dataUrl, w, h });
+        } catch (e) {
+          reject(e);
+        }
+      };
+      img.onerror = () => reject(new Error(`Failed to load ${src}`));
+      img.src = src;
+    });
+
+  try {
+    return await attempt(true);
+  } catch {
+    // CORS taint — retry without crossOrigin (same-origin images)
+    return attempt(false);
+  }
 }
 
 function placeImage(
@@ -53,7 +66,7 @@ function placeImage(
 }
 
 export function DownloadPortfolio({ images, photographer }: Props) {
-  const [phase, setPhase] = useState<'idle' | 'working' | 'done'>('idle');
+  const [phase, setPhase] = useState<'idle' | 'working' | 'done' | 'error'>('idle');
   const [progress, setProgress] = useState(0);
 
   const generate = useCallback(async () => {
@@ -188,14 +201,24 @@ export function DownloadPortfolio({ images, photographer }: Props) {
         .replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u')
         .replace(/\s+/g, '-')
         .replace(/[^a-z0-9-]/g, '');
-      pdf.save(`${slug}-portfolio.pdf`);
+
+      // Manual blob download — avoids browser blocking after long async
+      const blob = pdf.output('blob');
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${slug}-portfolio.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
 
       setPhase('done');
       setTimeout(() => { setPhase('idle'); setProgress(0); }, 3500);
     } catch (err) {
       console.error('PDF generation failed:', err);
-      setPhase('idle');
-      setProgress(0);
+      setPhase('error');
+      setTimeout(() => { setPhase('idle'); setProgress(0); }, 4000);
     }
   }, [images, photographer]);
 
@@ -225,6 +248,14 @@ export function DownloadPortfolio({ images, photographer }: Props) {
             <path strokeLinecap="square" d="M5 13l4 4L19 7" />
           </svg>
           Downloaded
+        </>
+      )}
+      {phase === 'error' && (
+        <>
+          <svg className="w-3.5 h-3.5 flex-shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="square" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          <span className="text-red-400">Failed — try again</span>
         </>
       )}
     </button>
