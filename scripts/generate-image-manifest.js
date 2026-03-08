@@ -76,6 +76,14 @@ try {
 try {
   const clientFiles = fs.readdirSync(clientLogosPath)
     .filter(f => /\.(jpg|jpeg|png|webp|svg)$/i.test(f))
+    .filter(f => {
+      try {
+        const stat = fs.statSync(path.join(clientLogosPath, f));
+        return stat.size > 512; // Skip very small files
+      } catch {
+        return false;
+      }
+    })
     .sort()
     .map(f => `/logos/brands/clients/${encodeURIComponent(f)}`);
   manifest['__clients__'] = clientFiles;

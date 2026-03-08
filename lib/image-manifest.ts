@@ -670,6 +670,7 @@ export const imageManifest: Record<string, string[]> = {
     "/logos/brands/partners/zer.png"
   ],
   "__clients__": [
+    "/logos/brands/clients/0_puma.png",
     "/logos/brands/clients/ar%C3%A7elik.png",
     "/logos/brands/clients/fiat.png",
     "/logos/brands/clients/ford.png",
