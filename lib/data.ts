@@ -63,7 +63,7 @@ export const photographers: Photographer[] = [
   {
     id: 'haldun-kirkbir',
     name: 'Haldun',
-    fullName: 'HALDUN KIRKBIR',
+    fullName: 'HALDUN KIRKBİR',
     title: 'PHOTOGRAPHER',
     folder: 'haldun-kirkbir',
     preview: '/portfolios/previews/haldun-kirkbir.webp',
