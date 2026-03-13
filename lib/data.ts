@@ -61,6 +61,15 @@ export const photographers: Photographer[] = [
     tags: ['fashion', 'beauty', 'editorial']
   },
   {
+    id: 'haldun-kirkbir',
+    name: 'Haldun',
+    fullName: 'HALDUN KIRKBIR',
+    title: 'PHOTOGRAPHER',
+    folder: 'haldun-kirkbir',
+    preview: '/portfolios/previews/haldun-kirkbir.webp',
+    tags: ['commercial', 'portrait']
+  },
+  {
     id: 'omur-temel',
     name: 'Ömür',
     fullName: 'ÖMÜR TEMEL',
