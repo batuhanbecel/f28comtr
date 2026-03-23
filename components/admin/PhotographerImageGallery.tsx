@@ -28,6 +28,48 @@ function formatBytes(bytes: number): string {
   return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
 }
 
+const MAX_CLIENT_SIZE = 3.5 * 1024 * 1024; // 3.5MB — stay under Vercel's 4.5MB limit
+const MAX_CLIENT_DIMENSION = 3000;
+
+async function compressImage(file: File): Promise<File> {
+  // If already small enough, skip compression
+  if (file.size <= MAX_CLIENT_SIZE) return file;
+
+  return new Promise((resolve, reject) => {
+    const img = new window.Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+
+      // Scale down if needed
+      if (width > MAX_CLIENT_DIMENSION || height > MAX_CLIENT_DIMENSION) {
+        const ratio = Math.min(MAX_CLIENT_DIMENSION / width, MAX_CLIENT_DIMENSION / height);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) { resolve(file); return; }
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) { resolve(file); return; }
+          resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
+        },
+        'image/jpeg',
+        0.85
+      );
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Failed to load image')); };
+    img.src = url;
+  });
+}
+
 function SortableImage({ id, image, photographerName }: { id: string; image: string; photographerName: string }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
@@ -173,8 +215,16 @@ export function PhotographerImageGallery({ images: initialImages, photographerId
         idx === i ? { ...item, status: 'uploading' } : item
       ));
 
+      // Compress on client side to stay under Vercel's 4.5MB body limit
+      let fileToUpload: File;
+      try {
+        fileToUpload = await compressImage(imageFiles[i]);
+      } catch {
+        fileToUpload = imageFiles[i];
+      }
+
       const formData = new FormData();
-      formData.append('file', imageFiles[i]);
+      formData.append('file', fileToUpload);
       formData.append('photographerId', photographerId);
 
       try {
