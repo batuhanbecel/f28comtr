@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyAdminToken, COOKIE_NAME } from '@/lib/auth';
+import { Redis } from '@upstash/redis';
 
 const LOGO_CATEGORIES = [
   { key: 'logos_clients', name: 'Clients', description: 'Client brand logos' },
@@ -19,7 +20,7 @@ async function checkAuth() {
 export async function GET() {
   if (!await checkAuth()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   
-  const redis = require('@upstash/redis').create({
+  const redis = new Redis({
     url: process.env.KV_REST_API_URL,
     token: process.env.KV_REST_API_TOKEN,
   });

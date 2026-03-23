@@ -4,6 +4,7 @@ import { put, del } from '@vercel/blob';
 import sharp from 'sharp';
 import { verifyAdminToken, COOKIE_NAME } from '@/lib/auth';
 import { getPhotographerImages, setPhotographerImages, getAIImages, setAIImages } from '@/lib/db';
+import { Redis } from '@upstash/redis';
 
 // Redis keys for new upload types
 const REDIS_KEYS = {
@@ -109,7 +110,7 @@ export async function POST(request: Request) {
     });
 
     // Store in appropriate Redis key
-    const redis = require('@upstash/redis').create({
+    const redis = new Redis({
       url: process.env.KV_REST_API_URL,
       token: process.env.KV_REST_API_TOKEN,
     });
@@ -192,7 +193,7 @@ export async function DELETE(request: Request) {
     }
 
     // Remove from appropriate Redis key
-    const redis = require('@upstash/redis').create({
+    const redis = new Redis({
       url: process.env.KV_REST_API_URL,
       token: process.env.KV_REST_API_TOKEN,
     });

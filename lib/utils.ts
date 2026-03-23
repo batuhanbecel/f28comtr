@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { imageManifest } from './image-manifest';
+import { Redis } from '@upstash/redis';
 
 export function getPortfolioImages(photographerId: string): string[] {
   // Use pre-built manifest (works on Vercel serverless where fs can't access public/)
@@ -44,7 +45,6 @@ export function getBrandLogos(): string[] {
 export async function getPartnerLogos(): Promise<string[]> {
   // Try Redis first
   try {
-    const { Redis } = require('@upstash/redis');
     const redis = new Redis({
       url: process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL,
       token: process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN,
@@ -79,7 +79,6 @@ export async function getPartnerLogos(): Promise<string[]> {
 export async function getClientLogos(): Promise<string[]> {
   // Try Redis first
   try {
-    const { Redis } = require('@upstash/redis');
     const redis = new Redis({
       url: process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL,
       token: process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN,
