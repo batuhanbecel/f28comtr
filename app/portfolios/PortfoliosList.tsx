@@ -3,8 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import type { Photographer, PhotographerTag } from '@/lib/data';
-import { AVAILABLE_TAGS } from '@/lib/data';
+import type { Photographer } from '@/lib/data';
 import { Footer } from '@/components/Footer';
 import { useLanguage } from '@/context/LanguageContext';
 import { shouldSkipOptimization } from '@/lib/blob';
@@ -14,17 +13,9 @@ const BLUR = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAY
 export function PortfoliosList({ photographers }: { photographers: Photographer[] }) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
-  const [activeTag, setActiveTag] = useState<PhotographerTag | null>(null);
   const { t } = useLanguage();
 
-  // Collect only tags that at least one photographer has
-  const usedTags = AVAILABLE_TAGS.filter((tag) =>
-    photographers.some((p) => p.tags?.includes(tag))
-  );
-
-  const filtered = activeTag
-    ? photographers.filter((p) => p.tags?.includes(activeTag))
-    : photographers;
+  const filtered = photographers;
 
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 100);
@@ -48,42 +39,6 @@ export function PortfoliosList({ photographers }: { photographers: Photographer[
           <span className="section-label">{t.portfolios.sectionLabel}</span>
           <h1 className="heading-hero gradient-text mt-2">{t.portfolios.heading}</h1>
         </div>
-
-        {/* Tag filter pills */}
-        {usedTags.length > 0 && (
-          <div
-            className="px-4 md:px-8 mb-8 flex flex-wrap gap-2"
-            style={{
-              opacity: visible ? 1 : 0,
-              transform: visible ? 'translateY(0)' : 'translateY(16px)',
-              transition: 'all 0.7s cubic-bezier(0.76,0,0.24,1) 0.2s',
-            }}
-          >
-            <button
-              onClick={() => setActiveTag(null)}
-              className={`px-4 py-1.5 text-[10px] tracking-[0.3em] uppercase rounded-full border transition-all duration-300 ${
-                activeTag === null
-                  ? 'bg-white text-black border-white'
-                  : 'bg-transparent text-white/35 border-white/10 hover:border-white/25 hover:text-white/60'
-              }`}
-            >
-              All
-            </button>
-            {usedTags.map((tag) => (
-              <button
-                key={tag}
-                onClick={() => setActiveTag(activeTag === tag ? null : tag)}
-                className={`px-4 py-1.5 text-[10px] tracking-[0.3em] uppercase rounded-full border transition-all duration-300 ${
-                  activeTag === tag
-                    ? 'bg-white text-black border-white'
-                    : 'bg-transparent text-white/35 border-white/10 hover:border-white/25 hover:text-white/60'
-                }`}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
-        )}
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-[3px]">
           {filtered.map((p, i) => (
