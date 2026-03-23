@@ -1,7 +1,15 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { put } from '@vercel/blob';
+import { put, del } from '@vercel/blob';
+import sharp from 'sharp';
 import { verifyAdminToken, COOKIE_NAME } from '@/lib/auth';
+import { getPhotographerImages, setPhotographerImages } from '@/lib/db';
+import { revalidatePath } from 'next/cache';
+
+export const maxDuration = 30; // seconds (Sharp processing can take time for large files)
+
+const MAX_DIMENSION = 2400;
+const WEBP_QUALITY = 82;
 
 async function checkAuth() {
   const cookieStore = await cookies();
@@ -15,29 +23,99 @@ export async function POST(request: Request) {
 
   const form = await request.formData();
   const file = form.get('file') as File | null;
-  const folder = (form.get('folder') as string | null) ?? 'uploads';
+  const photographerId = form.get('photographerId') as string | null;
 
   if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+  if (!photographerId) return NextResponse.json({ error: 'No photographerId provided' }, { status: 400 });
 
-  const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+  const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/tiff', 'image/avif', 'image/heic', 'image/heif'];
   if (!allowed.includes(file.type)) {
-    return NextResponse.json({ error: 'Only JPEG, PNG and WebP allowed' }, { status: 400 });
+    return NextResponse.json({ error: 'Unsupported image format' }, { status: 400 });
   }
-
-  const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg';
-  const name = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     return NextResponse.json({ error: 'BLOB_READ_WRITE_TOKEN not configured' }, { status: 500 });
   }
 
   try {
-    const blob = await put(name, file, { access: 'private' });
-    // Private store: return proxy URL so images load in browser
-    const proxyUrl = `/api/blob?u=${encodeURIComponent(blob.url)}`;
-    return NextResponse.json({ url: proxyUrl });
+    // Read file buffer
+    const arrayBuffer = await file.arrayBuffer();
+    const inputBuffer = Buffer.from(arrayBuffer);
+
+    // Optimize with Sharp: resize + convert to WebP
+    const optimized = await sharp(inputBuffer)
+      .rotate() // auto-rotate based on EXIF
+      .resize(MAX_DIMENSION, MAX_DIMENSION, {
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .webp({ quality: WEBP_QUALITY })
+      .toBuffer();
+
+    // Generate unique filename
+    const baseName = file.name.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 60);
+    const uniqueId = `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    const blobPath = `portfolios/${photographerId}/${baseName}-${uniqueId}.webp`;
+
+    // Upload to Vercel Blob (public access — direct CDN URL)
+    const blob = await put(blobPath, optimized, {
+      access: 'public',
+      contentType: 'image/webp',
+    });
+
+    // Append to photographer's image list in Redis
+    const currentImages = await getPhotographerImages(photographerId);
+    const updatedImages = [...currentImages, blob.url];
+    await setPhotographerImages(photographerId, updatedImages);
+
+    // Revalidate the photographer's page
+    revalidatePath(`/${photographerId}`);
+    revalidatePath('/production');
+    revalidatePath('/portfolios');
+
+    return NextResponse.json({
+      url: blob.url,
+      originalSize: inputBuffer.length,
+      optimizedSize: optimized.length,
+      totalImages: updatedImages.length,
+    });
   } catch (err) {
-    console.error('[upload] put() failed:', err);
+    console.error('[upload] failed:', err);
     return NextResponse.json({ error: (err as Error).message ?? 'Upload failed' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  if (!await checkAuth()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const { url, photographerId } = await request.json();
+
+    if (!url || !photographerId) {
+      return NextResponse.json({ error: 'url and photographerId required' }, { status: 400 });
+    }
+
+    // Delete from Vercel Blob (only if it's a blob URL)
+    if (url.includes('.blob.vercel-storage.com')) {
+      try {
+        await del(url);
+      } catch (e) {
+        console.warn('[upload/delete] blob del failed (may already be deleted):', e);
+      }
+    }
+
+    // Remove from Redis image list
+    const currentImages = await getPhotographerImages(photographerId);
+    const updatedImages = currentImages.filter(img => img !== url);
+    await setPhotographerImages(photographerId, updatedImages);
+
+    revalidatePath(`/${photographerId}`);
+    revalidatePath('/production');
+    revalidatePath('/portfolios');
+
+    return NextResponse.json({ success: true, totalImages: updatedImages.length });
+  } catch (err) {
+    console.error('[upload/delete] failed:', err);
+    return NextResponse.json({ error: (err as Error).message ?? 'Delete failed' }, { status: 500 });
   }
 }
