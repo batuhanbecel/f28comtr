@@ -17,8 +17,10 @@ export const revalidate = 60;
 const SERVICES = ['Photography', 'Videography', 'CGI', 'Animation', 'Editing', 'Motion Graphics'];
 
 export default async function AboutPage() {
-  const partnerLogos = getPartnerLogos();
-  const clientLogos = getClientLogos();
+  const [partnerLogos, clientLogos] = await Promise.all([
+    getPartnerLogos(),
+    getClientLogos()
+  ]);
   const photographers = await getPhotographers();
 
   return (

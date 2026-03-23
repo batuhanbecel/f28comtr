@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import type { Photographer } from '@/lib/data';
+import Image from 'next/image';
 
 interface PhotographerInfoFormProps {
   photographer: Photographer;
@@ -12,11 +13,27 @@ interface PhotographerInfoFormProps {
 export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps) {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     fullName: photographer.fullName,
     title: photographer.title,
     preview: photographer.preview,
   });
+
+  useEffect(() => {
+    const fetchPreviews = async () => {
+      try {
+        const res = await fetch('/api/admin/preview-images');
+        if (res.ok) {
+          const data = await res.json();
+          setPreviewImages(data.images || []);
+        }
+      } catch {
+        console.error('Failed to fetch preview images');
+      }
+    };
+    fetchPreviews();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,14 +86,30 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Preview Image Path</label>
-            <input
-              type="text"
+            <label className="block text-sm font-medium mb-2">Preview Image</label>
+            <select
               value={formData.preview}
               onChange={(e) => setFormData({ ...formData, preview: e.target.value })}
-              placeholder="/portfolios/previews/name.webp"
-              className="w-full bg-white/5 border border-white/20 rounded px-3 py-2 focus:outline-none focus:border-white/40"
-            />
+              className="w-full bg-white/5 border border-white/20 rounded px-3 py-2 focus:outline-none focus:border-white/40 text-white"
+            >
+              <option value="">Select a preview image</option>
+              {previewImages.map((img, index) => (
+                <option key={img} value={img}>
+                  Preview {index + 1}
+                </option>
+              ))}
+            </select>
+            {formData.preview && (
+              <div className="mt-2 relative h-20 w-20 border border-white/10 rounded overflow-hidden">
+                <Image
+                  src={formData.preview}
+                  alt="Preview"
+                  fill
+                  className="object-cover"
+                  sizes="80px"
+                />
+              </div>
+            )}
           </div>
         </div>
         <button

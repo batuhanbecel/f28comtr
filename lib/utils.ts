@@ -41,11 +41,27 @@ export function getBrandLogos(): string[] {
   }
 }
 
-export function getPartnerLogos(): string[] {
+export async function getPartnerLogos(): Promise<string[]> {
+  // Try Redis first
+  try {
+    const { Redis } = require('@upstash/redis');
+    const redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN,
+    });
+    
+    const logos = await redis.get('site:logos:partners');
+    if (logos && Array.isArray(logos) && logos.length > 0) {
+      return logos as string[];
+    }
+  } catch {}
+
+  // Fallback to manifest
   if (imageManifest['__partners__'] && imageManifest['__partners__'].length > 0) {
     return imageManifest['__partners__'];
   }
 
+  // Fallback to filesystem
   const logosPath = path.join(process.cwd(), 'public', 'logos', 'brands', 'partners');
   
   try {
@@ -60,11 +76,27 @@ export function getPartnerLogos(): string[] {
   }
 }
 
-export function getClientLogos(): string[] {
+export async function getClientLogos(): Promise<string[]> {
+  // Try Redis first
+  try {
+    const { Redis } = require('@upstash/redis');
+    const redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN,
+    });
+    
+    const logos = await redis.get('site:logos:clients');
+    if (logos && Array.isArray(logos) && logos.length > 0) {
+      return logos as string[];
+    }
+  } catch {}
+
+  // Fallback to manifest
   if (imageManifest['__clients__'] && imageManifest['__clients__'].length > 0) {
     return imageManifest['__clients__'];
   }
 
+  // Fallback to filesystem
   const logosPath = path.join(process.cwd(), 'public', 'logos', 'brands', 'clients');
   
   try {

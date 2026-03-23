@@ -11,13 +11,35 @@ function getRedis() {
 
 export async function getPhotographers(): Promise<Photographer[]> {
   const redis = getRedis();
+  let photographers = [...staticPhotographers];
+  
   if (redis) {
     try {
+      // Get photographer list from Redis if available
       const list = await redis.get('photographers');
-      if (list && Array.isArray(list) && list.length > 0) return list as Photographer[];
+      if (list && Array.isArray(list) && list.length > 0) {
+        photographers = list as Photographer[];
+      }
+      
+      // Get preview images from Redis and update photographers
+      const previewImages = await redis.get('site:preview') || [];
+      const previewUrls = Array.isArray(previewImages) ? previewImages : [];
+      
+      if (previewUrls.length > 0) {
+        photographers = photographers.map((photographer, index) => {
+          if (previewUrls[index]) {
+            return {
+              ...photographer,
+              preview: previewUrls[index]
+            };
+          }
+          return photographer;
+        });
+      }
     } catch {}
   }
-  return [...staticPhotographers];
+  
+  return photographers;
 }
 
 export async function setPhotographers(list: Photographer[]): Promise<void> {

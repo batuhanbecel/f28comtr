@@ -7,7 +7,10 @@ import { useState } from 'react';
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: '📊' },
   { href: '/admin/photographers', label: 'Photographers', icon: '👥' },
-  { href: '/admin/ai-images', label: 'AI Images', icon: '🤖' },
+  { href: '/admin/ai-based', label: 'AI Images', icon: '🤖' },
+  { href: '/admin/landing', label: 'Landing', icon: '🏠' },
+  { href: '/admin/logos', label: 'Logos', icon: '🎨' },
+  { href: '/admin/previews', label: 'Previews', icon: '🖼️' },
   { href: '/admin/settings', label: 'Settings', icon: '⚙️' },
 ];
 
