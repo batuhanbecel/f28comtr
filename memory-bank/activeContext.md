@@ -1,33 +1,34 @@
 # Active Context: f/28 Website Development
 
 ## Current Work Focus
-f/28 website is LIVE at https://www.f28.com.tr (Vercel). Full admin panel, Redis backend, AI Based section, Download Portfolio PDF with multi-image layouts, and mouse-interactive production page are all working in production.
+f/28 website is LIVE at https://www.f28.com.tr (Vercel). Full admin panel, Redis backend, AI Based section, Download Portfolio PDF with multi-image layouts, and mouse-interactive production page are all working in production. Now 9 photographers including Haldun Kırkbir.
 
-## Recent Changes (March 6, 2026 Session)
-1. **PDF Download Fix & Redesign**
-   - Fixed PDF not downloading: replaced `pdf.save()` with manual blob + anchor download (browser was blocking after long async)
-   - Added CORS fallback in `loadImg`: tries `crossOrigin='anonymous'` first, retries without on canvas taint error
-   - Added error state UI: "Failed — try again" with red X icon
-   - Skip 404/broken images instead of crashing entire PDF generation
-   - **Multi-image layouts**: 2 (side-by-side or stacked), 3 (1+2 or 2+1), 4 (2×2 grid) images per page
-   - Smart grouping: first image = hero, then groups of 4, occasional solo "feature" pages for breathing room
-   - Orientation-aware layouts: portrait pairs → side by side, landscapes → stacked, mixed 3s → adaptive
-   - Refined cover page: preview image top 55%, separator line, title label, bold name, image count, f/2.8 logo + URL
-   - Refined end page: separator, "THANK YOU", name, logo, URL
-   - Fixed `charSpace` misalignment: removed `charSpace` from all `pdf.text()` calls (breaks `align:'center'` in jsPDF)
+## Recent Changes (March 23, 2026 Session)
+1. **New Photographer: Haldun Kırkbir**
+   - Added to `lib/data.ts` with id `haldun-kirkbir`, tags: commercial, portrait
+   - 149 portfolio images across 6 categorized subfolders
 
-2. **About Page Redesign**
-   - Added `AboutStats` component (6 stats: established year, artists, clients, partners, services, location)
-   - Redesigned `LocalizedAboutBrands`: max-width container, section headers with count, refined logo grids
+2. **Subfolder Support for Image Manifest**
+   - `scripts/generate-image-manifest.js` now supports subfolders within photographer directories
+   - If subfolders exist, images are collected in subfolder sort order (alphabetic/numeric prefix)
+   - Loose root files appended after subfolder images
+   - Photographers without subfolders continue to work in flat mode (backward compatible)
+   - Haldun's subfolders: `01_PEOPLE`, `02_KOZMETIK`, `03_STILLIFE`, `04_FOOD_CHOCLATE`, `05_MUCEVHER_SAAT`, `06_TEKSTIL_AYAKKABI_AKSESUAR`
 
-3. **Portfolios Page Redesign**
-   - Visual photographer grid with cards (aspect 3:4, hover effects, index numbers)
-   - Text index list below grid
-   - Hero section replaced with simple heading above grid
+3. **Portfolios Page: Filters Removed**
+   - Removed tag filter pills from `/portfolios` page (`PortfoliosList.tsx`)
+   - Removed unused imports: `PhotographerTag`, `AVAILABLE_TAGS`
+   - All photographers shown without filtering
 
-4. **Image Manifest Update**
-   - Extended `generate-image-manifest.js` to include partner logos (`__partners__`) and client logos (`__clients__`)
-   - Updated `getPartnerLogos()` and `getClientLogos()` in `lib/utils.ts` to use manifest fallback for Vercel serverless
+4. **AI Based Description Updated**
+   - Updated EN/TR translations for AI Based section description
+   - New copy emphasizes hybrid production process blending traditional retouching with generative AI
+
+## Previous Changes (March 6, 2026 Session)
+1. **PDF Download Fix & Redesign** — manual blob download, CORS fallback, multi-image layouts
+2. **About Page Redesign** — AboutStats + refined logo grids
+3. **Portfolios Page Redesign** — Visual photographer cards + text index
+4. **Image Manifest Update** — Extended for partner/client logos
 
 ## Architecture Snapshot
 - **Landing** (`/`): Two-panel split (Production / AI Based) with mouse parallax
@@ -83,14 +84,16 @@ f/28 website is LIVE at https://www.f28.com.tr (Vercel). Full admin panel, Redis
 - `BackgroundPreloader` hits `/api/admin/photographers` without auth (silent fail OK but wasteful)
 - Redis may hold references to deleted images (404s) — needs admin panel cleanup
 - Vercel Git auto-deploy may need branch verification (user deploys via CLI `vercel --prod`)
+- Haldun's images stored in Redis may need re-seeding after subfolder restructure
 
 ## Current Status
 ✅ Site LIVE at f28.com.tr on Vercel
+✅ 9 photographers including Haldun Kırkbir
 ✅ Admin panel fully functional
 ✅ Grid system: 4 cols desktop, 2 cols mobile, order-compatible
 ✅ i18n: EN/TR with LanguageContext
 ✅ PDF download working with multi-image layouts
 ✅ All pages with metadata + viewport properly separated
 ✅ About page with stats + logo grids
-✅ Portfolios page with visual photographer cards
-✅ Image manifest covers portfolios, AI, partner/client logos
+✅ Portfolios page with visual photographer cards (filters removed)
+✅ Image manifest covers portfolios (with subfolder support), AI, partner/client logos

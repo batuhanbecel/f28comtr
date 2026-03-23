@@ -19,12 +19,13 @@ The website consists of 3 main pages:
 3. **About Us** - Company information and brand partnerships
 
 ### Photographers
-Eight photographers/retouchers featured:
+Nine photographers/retouchers featured:
 - Batuhan Becel
 - Yonca Muslubaş
 - Berkin Metin
 - Doğu Biricik
 - Emre Yunusoğlu
+- Haldun Kırkbir
 - Kerem Çakmak
 - Ömür Temel
 - Ozan Çakmak

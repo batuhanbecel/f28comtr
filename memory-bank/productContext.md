@@ -1,7 +1,7 @@
 # Product Context: f/28 Production Agency Website
 
 ## Purpose
-The f/28 website serves as a digital portfolio and showcase platform for a production agency specializing in photography, retouching, and AI-based visual content. It presents the work of 8 photographers/retouchers and the agency's AI capabilities.
+The f/28 website serves as a digital portfolio and showcase platform for a production agency specializing in photography, retouching, and AI-based visual content. It presents the work of 9 photographers/retouchers and the agency's AI capabilities.
 
 ## Problems It Solves
 1. **Portfolio Presentation**: Centralized platform to showcase high-quality photography and AI-generated work

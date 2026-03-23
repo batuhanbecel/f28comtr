@@ -105,7 +105,13 @@
 **Hosting**: Vercel (CLI deploy via `vercel --prod`)  
 **Git**: github.com/batuhanbecel/f28comtr (master branch)
 
-### Latest Achievements (March 6, 2026)
+### Latest Achievements (March 23, 2026)
+- ✅ New photographer added: Haldun Kırkbir (149 images, 6 subfolders)
+- ✅ Image manifest generator now supports subfolders for photographer-controlled image ordering
+- ✅ Portfolios page: tag filter pills removed (all photographers shown without filtering)
+- ✅ AI Based section description updated (hybrid production process copy, EN/TR)
+
+### Previous Achievements (March 6, 2026)
 - ✅ PDF download fixed: manual blob download, CORS fallback, skip 404 images
 - ✅ PDF multi-image layouts: 2, 3, 4 images per page with orientation-aware grouping
 - ✅ PDF cover/end pages redesigned to match site style
@@ -114,7 +120,7 @@
 - ✅ Image manifest extended for partner/client logos (Vercel serverless)
 - ✅ `charSpace` alignment bug fixed in jsPDF
 
-### Previous Achievements
+### Earlier Achievements
 - ✅ Site LIVE at f28.com.tr on Vercel
 - ✅ Redis/Upstash backend for dynamic photographer data
 - ✅ Admin panel (/admin) with login, photographer management, image ordering

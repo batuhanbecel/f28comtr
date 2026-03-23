@@ -157,7 +157,7 @@ const files = fs.readdirSync(path);
 ```
 
 ## Dependencies Summary
-- **Production**: next, react, react-dom, sharp, @upstash/redis, @vercel/blob, @vercel/analytics, @vercel/speed-insights, jspdf, @masonry-grid/react, dnd-kit, react-hot-toast
+- **Production**: next, react, react-dom, sharp, @upstash/redis, @vercel/blob, @vercel/analytics, @vercel/speed-insights, jspdf, dnd-kit, react-hot-toast
 - **Development**: TypeScript, Tailwind, ESLint, PostCSS
 - **Unused** (should remove): react-xmasonry, zustand
 - **Total packages**: ~389 packages

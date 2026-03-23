@@ -82,6 +82,7 @@ RootLayout
 2. Writes `lib/image-manifest.ts` with all file paths
 3. Must be run before deploy: `node scripts/generate-image-manifest.js`
 4. `lib/utils.ts` uses manifest as primary source, `fs.readdirSync` as fallback
+5. **Subfolder support**: If a photographer folder contains subfolders, images are collected in subfolder sort order (e.g. `01_PEOPLE`, `02_KOZMETIK`), then loose root files appended. Photographers without subfolders use flat mode. This allows photographers to control image ordering via numeric-prefixed subfolder names.
 
 ### Admin Panel Flow
 1. Login via `/api/admin/login` → JWT cookie
