@@ -15,23 +15,52 @@ try {
     return stat.isDirectory();
   });
 
+  const isImage = f => /\.(jpg|jpeg|png|webp)$/i.test(f);
+  const isLargeEnough = (fullPath) => {
+    try { return fs.statSync(fullPath).size > 1024; } catch { return false; }
+  };
+
   for (const photographer of photographers) {
     const folderPath = path.join(portfoliosPath, photographer);
-    const files = fs.readdirSync(folderPath)
-      .filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f))
-      .filter(f => {
-        try {
-          const stat = fs.statSync(path.join(folderPath, f));
-          return stat.size > 1024;
-        } catch {
-          return false;
-        }
+    const entries = fs.readdirSync(folderPath);
+
+    // Check for subfolders
+    const subfolders = entries
+      .filter(e => {
+        const stat = fs.statSync(path.join(folderPath, e));
+        return stat.isDirectory();
       })
+      .sort();
+
+    // Loose images in the root folder
+    const rootFiles = entries
+      .filter(f => isImage(f) && isLargeEnough(path.join(folderPath, f)))
       .sort()
       .map(f => `/portfolios/${photographer}/${encodeURIComponent(f)}`);
 
-    manifest[photographer] = files;
-    console.log(`  ${photographer}: ${files.length} images`);
+    if (subfolders.length > 0) {
+      // Subfolder mode: collect images in subfolder sort order, then root files
+      const allFiles = [];
+      for (const sub of subfolders) {
+        const subPath = path.join(folderPath, sub);
+        const subFiles = fs.readdirSync(subPath)
+          .filter(f => isImage(f) && isLargeEnough(path.join(subPath, f)))
+          .sort()
+          .map(f => `/portfolios/${photographer}/${encodeURIComponent(sub)}/${encodeURIComponent(f)}`);
+        allFiles.push(...subFiles);
+        if (subFiles.length > 0) {
+          console.log(`    ${sub}: ${subFiles.length} images`);
+        }
+      }
+      // Append any loose root files after subfolder images
+      allFiles.push(...rootFiles);
+      manifest[photographer] = allFiles;
+      console.log(`  ${photographer}: ${allFiles.length} images (${subfolders.length} subfolders)`);
+    } else {
+      // Flat mode: no subfolders
+      manifest[photographer] = rootFiles;
+      console.log(`  ${photographer}: ${rootFiles.length} images`);
+    }
   }
 } catch (err) {
   console.error('Error reading portfolios directory:', err.message);

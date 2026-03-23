@@ -44,7 +44,7 @@ export const translations = {
       sectionLabel: 'Artificial Intelligence & Creativity',
       heading: 'AI BASED',
       description:
-        'Using the latest generative AI models that meet industry standards, we produce creative visual and video content, offering innovative and effective solutions to our brands in their production processes.',
+        'We offer a hybrid production process by blending traditional retouching disciplines with the latest generative AI models. By combining our industry-standard craftsmanship with innovative technologies, we produce both creative and highly efficient visual and video content for our brands.',
       worksLabel: 'works',
     },
     about: {
@@ -116,7 +116,7 @@ export const translations = {
       sectionLabel: 'Yapay Zeka & Yaratıcılık',
       heading: 'YAPAY ZEKA',
       description:
-        'Sektör standartlarındaki en güncel üretken yapay zeka modellerini kullanarak yaratıcı görsel ve video içerikler üretiyor, markalarımıza prodüksiyon süreçlerinde yenilikçi ve etkili çözümler sunuyoruz.',
+        'Geleneksel retouch disiplinini en güncel üretken yapay zeka modelleriyle harmanlayarak hibrit bir üretim süreci sunuyoruz. Sektör standartlarındaki ustalığımızı inovatif teknolojilerle birleştirerek, markalarımız için hem yaratıcı hem de yüksek verimli görsel ve video içerikler üretiyoruz.',
       worksLabel: 'eser',
     },
     about: {
