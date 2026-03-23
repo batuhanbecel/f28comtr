@@ -6,6 +6,37 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { shouldSkipOptimization } from '@/lib/blob';
 
+interface UploadProgress {
+  fileName: string;
+  status: 'pending' | 'uploading' | 'done' | 'error';
+  error?: string;
+}
+
+const MAX_CLIENT_SIZE = 3.5 * 1024 * 1024;
+const MAX_CLIENT_DIM = 3000;
+
+async function compressImage(file: File): Promise<File> {
+  if (file.size <= MAX_CLIENT_SIZE) return file;
+  return new Promise((resolve) => {
+    const img = new window.Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+      if (width > MAX_CLIENT_DIM || height > MAX_CLIENT_DIM) {
+        const r = Math.min(MAX_CLIENT_DIM / width, MAX_CLIENT_DIM / height);
+        width = Math.round(width * r); height = Math.round(height * r);
+      }
+      const c = document.createElement('canvas'); c.width = width; c.height = height;
+      const ctx = c.getContext('2d'); if (!ctx) { resolve(file); return; }
+      ctx.drawImage(img, 0, 0, width, height);
+      c.toBlob((b) => { if (!b) { resolve(file); return; } resolve(new File([b], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' })); }, 'image/jpeg', 0.85);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+    img.src = url;
+  });
+}
+
 export default function AdminAIBased() {
   const router = useRouter();
   const [images, setImages] = useState<string[]>([]);
@@ -16,6 +47,11 @@ export default function AdminAIBased() {
   const dragItem = useRef<number | null>(null);
   const dragOver = useRef<number | null>(null);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadQueue, setUploadQueue] = useState<UploadProgress[]>([]);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const abortRef = useRef(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const showMsg = (msg: string, error = false) => {
     setMessage(msg);
@@ -37,6 +73,57 @@ export default function AdminAIBased() {
   }, [router]);
 
   useEffect(() => { fetchImages(); }, [fetchImages]);
+
+  const uploadFiles = useCallback(async (files: File[]) => {
+    const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/tiff', 'image/avif', 'image/heic', 'image/heif'];
+    const imageFiles = files.filter(f => allowed.includes(f.type));
+    if (imageFiles.length === 0) { showMsg('No valid image files', true); return; }
+    abortRef.current = false;
+    setIsUploading(true);
+    const queue: UploadProgress[] = imageFiles.map(f => ({ fileName: f.name, status: 'pending' as const }));
+    setUploadQueue(queue);
+    let successCount = 0;
+    for (let i = 0; i < imageFiles.length; i++) {
+      if (abortRef.current) break;
+      setUploadQueue(prev => prev.map((item, idx) => idx === i ? { ...item, status: 'uploading' } : item));
+      let fileToUpload: File;
+      try { fileToUpload = await compressImage(imageFiles[i]); } catch { fileToUpload = imageFiles[i]; }
+      const formData = new FormData();
+      formData.append('file', fileToUpload);
+      formData.append('type', 'ai');
+      try {
+        const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
+        if (res.ok) {
+          const data = await res.json();
+          setImages(prev => [...prev, data.url]);
+          setUploadQueue(prev => prev.map((item, idx) => idx === i ? { ...item, status: 'done' } : item));
+          successCount++;
+        } else {
+          const data = await res.json().catch(() => ({ error: 'Upload failed' }));
+          setUploadQueue(prev => prev.map((item, idx) => idx === i ? { ...item, status: 'error', error: data.error } : item));
+        }
+      } catch {
+        setUploadQueue(prev => prev.map((item, idx) => idx === i ? { ...item, status: 'error', error: 'Network error' } : item));
+      }
+    }
+    setIsUploading(false);
+    if (successCount > 0) showMsg(`${successCount} AI image${successCount > 1 ? 's' : ''} uploaded`);
+  }, []);
+
+  const handleDeleteImage = async (img: string, index: number) => {
+    if (!confirm('Delete this AI image?')) return;
+    try {
+      const res = await fetch('/api/admin/upload', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: img, type: 'ai' }),
+      });
+      if (res.ok) {
+        setImages(prev => prev.filter((_, i) => i !== index));
+        showMsg('Image deleted');
+      } else showMsg('Delete failed', true);
+    } catch { showMsg('Delete failed', true); }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -143,19 +230,66 @@ export default function AdminAIBased() {
               {images.length} images — drag to reorder, hover for controls
             </p>
           </div>
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="bg-white text-black text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-white/90 transition-colors disabled:opacity-50"
-          >
-            {saving ? 'Saving...' : 'Save Order'}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className="text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 border border-white/[0.15] text-white/60 hover:text-white hover:border-white/30 transition-colors disabled:opacity-40"
+            >
+              + Upload
+            </button>
+            <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden"
+              onChange={e => { if (e.target.files) uploadFiles(Array.from(e.target.files)); e.target.value = ''; }} />
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="bg-white text-black text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-white/90 transition-colors disabled:opacity-50"
+            >
+              {saving ? 'Saving...' : 'Save Order'}
+            </button>
+          </div>
         </div>
+
+        {/* Upload dropzone */}
+        <div
+          onDragOver={e => { e.preventDefault(); setIsDragOver(true); }}
+          onDragLeave={() => setIsDragOver(false)}
+          onDrop={e => { e.preventDefault(); setIsDragOver(false); if (e.dataTransfer.files.length) uploadFiles(Array.from(e.dataTransfer.files)); }}
+          className={`mb-6 border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+            isDragOver ? 'border-white/40 bg-white/[0.06]' : 'border-white/[0.08] hover:border-white/15'
+          }`}
+        >
+          <p className="text-white/30 text-xs tracking-wide">Drop AI images here or click Upload</p>
+        </div>
+
+        {/* Upload progress */}
+        {uploadQueue.length > 0 && (
+          <div className="mb-6 border border-white/[0.08] rounded-lg divide-y divide-white/[0.05] max-h-48 overflow-y-auto">
+            {isUploading && (
+              <div className="px-4 py-2 flex justify-between items-center bg-white/[0.02]">
+                <span className="text-white/40 text-[10px] tracking-widest uppercase">
+                  Uploading {uploadQueue.filter(q => q.status === 'done').length}/{uploadQueue.length}
+                </span>
+                <button onClick={() => abortRef.current = true} className="text-red-400/60 hover:text-red-400 text-[10px] tracking-widest uppercase">Cancel</button>
+              </div>
+            )}
+            {uploadQueue.map((item, i) => (
+              <div key={i} className="px-4 py-2 flex items-center justify-between text-xs">
+                <span className="text-white/50 truncate max-w-[60%]">{item.fileName}</span>
+                <span className={`text-[10px] tracking-wider ${
+                  item.status === 'done' ? 'text-green-400/70' : item.status === 'error' ? 'text-red-400/70' : item.status === 'uploading' ? 'text-white/50' : 'text-white/20'
+                }`}>
+                  {item.status === 'uploading' ? 'Uploading...' : item.status === 'done' ? '✓' : item.status === 'error' ? item.error || 'Failed' : 'Pending'}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
 
         {images.length === 0 ? (
           <div className="text-center py-20 border border-white/[0.05]">
             <p className="text-white/20 text-xs tracking-[0.4em] uppercase">No AI images found</p>
-            <p className="text-white/10 text-xs mt-2">Add images to /public/ai-images/ and rebuild</p>
+            <p className="text-white/10 text-xs mt-2">Drop images above or click Upload to add AI images</p>
           </div>
         ) : (
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-1.5">
@@ -200,7 +334,7 @@ export default function AdminAIBased() {
                   </div>
                   <div className="flex justify-end">
                     <button
-                      onClick={(e) => { e.stopPropagation(); removeImage(index); }}
+                      onClick={(e) => { e.stopPropagation(); handleDeleteImage(img, index); }}
                       className="w-6 h-6 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-400/20 transition-colors text-xs"
                     >✕</button>
                   </div>

@@ -15,7 +15,6 @@ export default function PhotographersPage() {
   const [photographers, setPhotographers] = useState<Photographer[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [seeding, setSeeding] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newP, setNewP] = useState({ id: '', fullName: '', title: 'PHOTOGRAPHER', preview: '' });
   const router = useRouter();
@@ -76,17 +75,6 @@ export default function PhotographersPage() {
     } catch { toast.error('Failed to add'); }
   };
 
-  const handleSeed = async () => {
-    if (!confirm('Seed from files? Preserves custom ordering.')) return;
-    setSeeding(true);
-    try {
-      const res = await fetch('/api/admin/seed', { method: 'POST' });
-      const data = await res.json();
-      if (res.ok) { toast.success(`Seeded — ${data.newImages ?? 0} new images`); load(); }
-      else toast.error(data.error || 'Seed failed');
-    } catch { toast.error('Seed failed'); }
-    finally { setSeeding(false); }
-  };
 
   return (
     <div className="min-h-screen">
@@ -99,10 +87,6 @@ export default function PhotographersPage() {
           <span className="text-white/25 text-[10px] tracking-[0.3em] uppercase">Photographers</span>
         </div>
         <div className="flex gap-2">
-          <button onClick={handleSeed} disabled={seeding}
-            className="text-white/30 text-[10px] tracking-[0.3em] uppercase hover:text-white/60 transition-colors px-4 py-2 border border-white/[0.07] hover:border-white/15 disabled:opacity-30 rounded">
-            {seeding ? 'Seeding...' : 'Seed Files'}
-          </button>
           <button onClick={() => setShowAddForm(v => !v)}
             className={`text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2 transition-colors rounded ${
               showAddForm ? 'bg-white/10 border border-white/20' : 'bg-white text-black hover:bg-white/90'
@@ -207,9 +191,9 @@ export default function PhotographersPage() {
         {!loading && photographers.length === 0 && (
           <div className="text-center py-24 border border-white/[0.05] rounded-lg">
             <p className="text-white/20 text-xs tracking-[0.4em] uppercase mb-6">No photographers found</p>
-            <button onClick={handleSeed}
+            <button onClick={() => setShowAddForm(true)}
               className="text-[10px] tracking-[0.3em] uppercase text-white/40 hover:text-white border border-white/10 hover:border-white/25 px-5 py-2.5 transition-colors rounded">
-              Seed from Files
+              + Add Photographer
             </button>
           </div>
         )}

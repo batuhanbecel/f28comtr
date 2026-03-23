@@ -1,4 +1,4 @@
-const CACHE_NAME = 'f28-v1';
+const CACHE_NAME = 'f28-v2';
 const PRECACHE = ['/', '/production', '/ai-based', '/portfolios', '/about'];
 
 self.addEventListener('install', (e) => {
@@ -56,6 +56,6 @@ self.addEventListener('fetch', (e) => {
         }
         return res;
       })
-      .catch(() => caches.match(request))
+      .catch(() => caches.match(request).then((r) => r || new Response('Offline', { status: 503 })))
   );
 });

@@ -5,26 +5,9 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 
 export function SiteSettingsClient() {
-  const [seeding, setSeeding] = useState(false);
   const [clearing, setClearing] = useState(false);
   const [cleaning, setCleaning] = useState(false);
   const router = useRouter();
-
-  const handleSeed = async () => {
-    if (!confirm('Seed from filesystem? Preserves your custom ordering.')) return;
-    setSeeding(true);
-    try {
-      const res = await fetch('/api/admin/seed', { method: 'POST' });
-      const data = await res.json();
-      if (res.ok) {
-        toast.success(`Seeded — ${data.newImages ?? 0} new images added`);
-        router.refresh();
-      } else {
-        toast.error(data.error || 'Seed failed');
-      }
-    } catch { toast.error('Seed failed'); }
-    finally { setSeeding(false); }
-  };
 
   const handleClearCache = async () => {
     if (!confirm('Clear Redis cache? Data will reload from filesystem on next request.')) return;
@@ -54,14 +37,6 @@ export function SiteSettingsClient() {
   };
 
   const actions = [
-    {
-      label: 'Seed from Files',
-      desc: 'Import new images from filesystem. Preserves your custom image ordering.',
-      action: handleSeed,
-      loading: seeding,
-      loadingLabel: 'Seeding...',
-      primary: true,
-    },
     {
       label: 'Clear Cache',
       desc: 'Force-refresh all cached data. Use if changes are not reflecting on site.',

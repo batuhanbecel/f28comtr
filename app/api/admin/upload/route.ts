@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { put, del } from '@vercel/blob';
 import sharp from 'sharp';
 import { verifyAdminToken, COOKIE_NAME } from '@/lib/auth';
-import { getPhotographerImages, setPhotographerImages } from '@/lib/db';
+import { getPhotographerImages, setPhotographerImages, getAIImages, setAIImages } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
 export const maxDuration = 30; // seconds (Sharp processing can take time for large files)
@@ -23,10 +23,11 @@ export async function POST(request: Request) {
 
   const form = await request.formData();
   const file = form.get('file') as File | null;
+  const uploadType = (form.get('type') as string) || 'portfolio';
   const photographerId = form.get('photographerId') as string | null;
 
   if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 });
-  if (!photographerId) return NextResponse.json({ error: 'No photographerId provided' }, { status: 400 });
+  if (uploadType !== 'ai' && !photographerId) return NextResponse.json({ error: 'No photographerId provided' }, { status: 400 });
 
   const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/tiff', 'image/avif', 'image/heic', 'image/heif'];
   if (!allowed.includes(file.type)) {
@@ -55,7 +56,8 @@ export async function POST(request: Request) {
     // Generate unique filename
     const baseName = file.name.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 60);
     const uniqueId = `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-    const blobPath = `portfolios/${photographerId}/${baseName}-${uniqueId}.webp`;
+    const folder = uploadType === 'ai' ? 'ai-images' : `portfolios/${photographerId}`;
+    const blobPath = `${folder}/${baseName}-${uniqueId}.webp`;
 
     // Upload to Vercel Blob (public access — direct CDN URL)
     const blob = await put(blobPath, optimized, {
@@ -63,15 +65,21 @@ export async function POST(request: Request) {
       contentType: 'image/webp',
     });
 
-    // Append to photographer's image list in Redis
-    const currentImages = await getPhotographerImages(photographerId);
-    const updatedImages = [...currentImages, blob.url];
-    await setPhotographerImages(photographerId, updatedImages);
-
-    // Revalidate the photographer's page
-    revalidatePath(`/${photographerId}`);
-    revalidatePath('/production');
-    revalidatePath('/portfolios');
+    // Append to the appropriate Redis image list
+    let updatedImages: string[];
+    if (uploadType === 'ai') {
+      const currentImages = await getAIImages();
+      updatedImages = [...currentImages, blob.url];
+      await setAIImages(updatedImages);
+      revalidatePath('/ai-based');
+    } else {
+      const currentImages = await getPhotographerImages(photographerId!);
+      updatedImages = [...currentImages, blob.url];
+      await setPhotographerImages(photographerId!, updatedImages);
+      revalidatePath(`/${photographerId}`);
+      revalidatePath('/production');
+      revalidatePath('/portfolios');
+    }
 
     return NextResponse.json({
       url: blob.url,
@@ -89,10 +97,14 @@ export async function DELETE(request: Request) {
   if (!await checkAuth()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    const { url, photographerId } = await request.json();
+    const { url, photographerId, type } = await request.json();
+    const deleteType = type || 'portfolio';
 
-    if (!url || !photographerId) {
-      return NextResponse.json({ error: 'url and photographerId required' }, { status: 400 });
+    if (!url) {
+      return NextResponse.json({ error: 'url required' }, { status: 400 });
+    }
+    if (deleteType !== 'ai' && !photographerId) {
+      return NextResponse.json({ error: 'photographerId required for portfolio images' }, { status: 400 });
     }
 
     // Delete from Vercel Blob (only if it's a blob URL)
@@ -104,14 +116,21 @@ export async function DELETE(request: Request) {
       }
     }
 
-    // Remove from Redis image list
-    const currentImages = await getPhotographerImages(photographerId);
-    const updatedImages = currentImages.filter(img => img !== url);
-    await setPhotographerImages(photographerId, updatedImages);
-
-    revalidatePath(`/${photographerId}`);
-    revalidatePath('/production');
-    revalidatePath('/portfolios');
+    // Remove from the appropriate Redis image list
+    let updatedImages: string[];
+    if (deleteType === 'ai') {
+      const currentImages = await getAIImages();
+      updatedImages = currentImages.filter(img => img !== url);
+      await setAIImages(updatedImages);
+      revalidatePath('/ai-based');
+    } else {
+      const currentImages = await getPhotographerImages(photographerId);
+      updatedImages = currentImages.filter(img => img !== url);
+      await setPhotographerImages(photographerId, updatedImages);
+      revalidatePath(`/${photographerId}`);
+      revalidatePath('/production');
+      revalidatePath('/portfolios');
+    }
 
     return NextResponse.json({ success: true, totalImages: updatedImages.length });
   } catch (err) {
