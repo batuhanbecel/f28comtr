@@ -21,16 +21,23 @@ export async function getPhotographers(): Promise<Photographer[]> {
         photographers = list as Photographer[];
       }
       
-      // Get preview images from Redis and update photographers
+      // Get preview images from Redis and map them correctly to photographers
       const previewImages = await redis.get('site:preview') || [];
       const previewUrls = Array.isArray(previewImages) ? previewImages : [];
       
       if (previewUrls.length > 0) {
-        photographers = photographers.map((photographer, index) => {
-          if (previewUrls[index]) {
+        photographers = photographers.map((photographer) => {
+          // Find preview image that matches this photographer's ID
+          const matchingPreview = previewUrls.find(url => 
+            url.includes(photographer.id) || 
+            url.includes(photographer.name.toLowerCase()) ||
+            url.includes(photographer.fullName.toLowerCase().replace(/\s+/g, '-').toLowerCase())
+          );
+          
+          if (matchingPreview) {
             return {
               ...photographer,
-              preview: previewUrls[index]
+              preview: matchingPreview
             };
           }
           return photographer;

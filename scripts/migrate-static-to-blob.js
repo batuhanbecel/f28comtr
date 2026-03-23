@@ -126,7 +126,7 @@ async function migrateCategory(category) {
 
   // Get current images from Redis
   const currentImages = await redis.get(category.redisKey) || [];
-  const currentUrls = Array.isArray(currentImages) ? currentImages : [];
+  let currentUrls = Array.isArray(currentImages) ? currentImages : [];
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
@@ -169,9 +169,9 @@ async function migrateCategory(category) {
         contentType: 'image/webp',
       });
 
-      // Add to Redis
-      const updatedUrls = [...currentUrls, blob.url];
-      await redis.set(category.redisKey, JSON.stringify(updatedUrls));
+      // Add to currentUrls array
+      currentUrls.push(blob.url);
+      await redis.set(category.redisKey, JSON.stringify(currentUrls));
 
       uploaded++;
       console.log(`  [${i + 1}/${files.length}] ✓ ${file} (${(originalSize/1024).toFixed(0)}KB → ${(optimized.length/1024).toFixed(0)}KB)`);

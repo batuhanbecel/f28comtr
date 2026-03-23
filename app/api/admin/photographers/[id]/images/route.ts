@@ -12,10 +12,12 @@ async function checkAuth() {
 }
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  if (!await checkAuth()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  
   try {
     const { id } = await params;
     const images = await getPhotographerImages(id);
-    return NextResponse.json(images);
+    return NextResponse.json({ images: images || [] });
   } catch {
     return NextResponse.json({ error: 'Failed to fetch images' }, { status: 500 });
   }
