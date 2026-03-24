@@ -17,11 +17,6 @@ export default {
           'fg': 'rgb(var(--c-fg) / <alpha-value>)',
           'surface': 'rgb(var(--c-surface) / <alpha-value>)',
         },
-        'th': {
-          'bg': 'rgb(var(--c-bg) / <alpha-value>)',
-          'fg': 'rgb(var(--c-fg) / <alpha-value>)',
-          'surface': 'rgb(var(--c-surface) / <alpha-value>)',
-        },
       },
     },
   },
