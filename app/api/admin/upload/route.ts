@@ -18,8 +18,8 @@ const REDIS_KEYS = {
 
 export const maxDuration = 30;
 
-const MAX_DIMENSION = 2400;
-const WEBP_QUALITY = 82;
+const MAX_DIMENSION = 3200;
+const WEBP_QUALITY = 90;
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
 
 export async function POST(request: Request) {

@@ -28,27 +28,33 @@ export default function EditPhotographerPage({ params }: PageProps) {
 
   useEffect(() => {
     if (!photographerId) return;
-    
+
     const loadData = async () => {
       try {
         const [photographersRes, imagesRes] = await Promise.all([
           fetch('/api/admin/photographers'),
           fetch(`/api/admin/photographers/${photographerId}/images`)
         ]);
-        
-        if (!photographersRes.ok || !imagesRes.ok) {
-          throw new Error('Failed to fetch data');
+
+        if (imagesRes.status === 401 || photographersRes.status === 401) {
+          router.push('/admin/login');
+          return;
         }
-        
+
+        if (!photographersRes.ok || !imagesRes.ok) {
+          router.push('/admin/photographers');
+          return;
+        }
+
         const photographersData = await photographersRes.json();
         const imagesData = await imagesRes.json();
-        
+
         const foundPhotographer = photographersData.find((p: Photographer) => p.id === photographerId);
         if (!foundPhotographer) {
           router.push('/admin/photographers');
           return;
         }
-        
+
         setPhotographer(foundPhotographer);
         setImages(imagesData.images || []);
       } catch {

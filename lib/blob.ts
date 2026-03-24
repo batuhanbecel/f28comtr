@@ -37,6 +37,10 @@ export function isExternal(url: string): boolean {
  * - External blob URLs should go through optimization (remotePatterns configured)
  */
 export function shouldSkipOptimization(url: string): boolean {
-  return isBlobProxy(url);
+  // Skip Next.js re-optimization for:
+  // - Proxy URLs: double-optimization adds latency with no benefit
+  // - Direct blob URLs: already optimized by Sharp on upload; Vercel Blob CDN
+  //   serves them at the edge so re-encoding them degrades quality twice.
+  return isBlobProxy(url) || isBlobUrl(url);
 }
 

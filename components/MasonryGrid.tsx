@@ -125,7 +125,7 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
                     loading={idx < 8 ? 'eager' : 'lazy'}
                     priority={idx === 0}
                     sizes="(max-width: 768px) 50vw, 25vw"
-                    quality={85}
+                    quality={90}
                     unoptimized={shouldSkipOptimization(image)}
                     onLoad={(e) => handleImageLoad(image, e)}
                     onError={() => handleImageError(image)}

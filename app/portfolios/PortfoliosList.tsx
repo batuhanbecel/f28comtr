@@ -60,7 +60,7 @@ export function PortfoliosList({ photographers }: { photographers: Photographer[
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 sizes="(max-width: 768px) 50vw, 25vw"
-                quality={80}
+                quality={90}
                 placeholder="blur"
                 blurDataURL={BLUR}
                 unoptimized={shouldSkipOptimization(p.preview)}
