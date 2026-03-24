@@ -21,17 +21,21 @@ export async function getPhotographers(): Promise<Photographer[]> {
         photographers = list as Photographer[];
       }
       
-      // Get preview images from Redis and map them correctly to photographers
+      // Get migrated preview images from Redis
       const previewImages = await redis.get('site:preview') || [];
       const previewUrls = Array.isArray(previewImages) ? previewImages : [];
       
       if (previewUrls.length > 0) {
         photographers = photographers.map((photographer) => {
+          // Only apply blob preview if photographer still has a local path
+          // If preview is already a blob URL, the admin has set it — don't overwrite
+          if (photographer.preview && photographer.preview.includes('.blob.vercel-storage.com')) {
+            return photographer;
+          }
+          
           // Find preview image that matches this photographer's ID
-          const matchingPreview = previewUrls.find(url => 
-            url.includes(photographer.id) || 
-            url.includes(photographer.name.toLowerCase()) ||
-            url.includes(photographer.fullName.toLowerCase().replace(/\s+/g, '-').toLowerCase())
+          const matchingPreview = previewUrls.find((url: string) => 
+            url.includes(photographer.id)
           );
           
           if (matchingPreview) {

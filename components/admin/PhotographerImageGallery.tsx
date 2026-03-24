@@ -12,6 +12,8 @@ interface PhotographerImageGalleryProps {
   images: string[];
   photographerId: string;
   photographerName: string;
+  currentPreview?: string;
+  onPreviewSelect?: (imageUrl: string) => void;
 }
 
 interface UploadProgress {
@@ -103,7 +105,13 @@ function SortableImage({ id, image, photographerName }: { id: string; image: str
   );
 }
 
-export function PhotographerImageGallery({ images: initialImages, photographerId, photographerName }: PhotographerImageGalleryProps) {
+export function PhotographerImageGallery({ 
+  images: initialImages, 
+  photographerId, 
+  photographerName, 
+  currentPreview,
+  onPreviewSelect 
+}: PhotographerImageGalleryProps) {
   const [images, setImages] = useState(initialImages);
   const [isSaving, setIsSaving] = useState(false);
   const [isReorderMode, setIsReorderMode] = useState(false);
@@ -460,7 +468,22 @@ export function PhotographerImageGallery({ images: initialImages, photographerId
                 className="object-cover"
                 sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
               />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-colors opacity-0 group-hover:opacity-100 flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-colors opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2">
+                {/* Preview seçme yıldızı */}
+                {onPreviewSelect && (
+                  <button
+                    onClick={() => onPreviewSelect(image)}
+                    className={`w-10 h-10 flex items-center justify-center rounded-full transition-all ${
+                      currentPreview === image
+                        ? 'bg-yellow-500 text-yellow-900'
+                        : 'bg-white/20 text-white/60 hover:bg-yellow-500/20 hover:text-yellow-400'
+                    }`}
+                    title={currentPreview === image ? 'Current preview' : 'Set as preview'}
+                  >
+                    <span className="text-lg">⭐</span>
+                  </button>
+                )}
+                {/* Delete butonu */}
                 <button
                   onClick={() => handleDelete(image)}
                   disabled={isDeleting === image}

@@ -4,10 +4,10 @@ import { verifyAdminToken, COOKIE_NAME } from '@/lib/auth';
 import { Redis } from '@upstash/redis';
 
 const LOGO_CATEGORIES = [
-  { key: 'logos_clients', name: 'Clients', description: 'Client brand logos' },
-  { key: 'logos_partners', name: 'Partners', description: 'Partner agency logos' },
-  { key: 'logos_f28', name: 'F/28', description: 'F/28 agency logos and favicon' },
-  { key: 'logos_social', name: 'Social', description: 'Social media icons' },
+  { key: 'site:logos:clients', uploadKey: 'logos_clients', name: 'Clients', description: 'Client brand logos' },
+  { key: 'site:logos:partners', uploadKey: 'logos_partners', name: 'Partners', description: 'Partner agency logos' },
+  { key: 'site:logos:f28', uploadKey: 'logos_f28', name: 'F/28', description: 'F/28 agency logos and favicon' },
+  { key: 'site:logos:social', uploadKey: 'logos_social', name: 'Social', description: 'Social media icons' },
 ] as const;
 
 async function checkAuth() {
@@ -29,7 +29,7 @@ export async function GET() {
     LOGO_CATEGORIES.map(async (cat) => {
       const images = await redis.get(cat.key) || [];
       return {
-        key: cat.key,
+        key: cat.uploadKey,
         name: cat.name,
         description: cat.description,
         images: Array.isArray(images) ? images : [],

@@ -13,61 +13,23 @@ interface PhotographerInfoFormProps {
 export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps) {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
-  const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     fullName: photographer.fullName,
     title: photographer.title,
     preview: photographer.preview,
   });
 
+  // Listen for preview updates from the star button in gallery
   useEffect(() => {
-    const fetchImages = async () => {
-      console.log('Fetching images for photographer:', photographer.id);
-      
-      try {
-        // Fetch both dedicated preview images and portfolio images
-        const [previewRes, portfolioRes] = await Promise.all([
-          fetch('/api/admin/preview-images'),
-          fetch(`/api/admin/photographers/${photographer.id}/images`)
-        ]);
-        
-        console.log('Preview API response:', previewRes.status);
-        console.log('Portfolio API response:', portfolioRes.status);
-        
-        let allImages: string[] = [];
-        
-        // Add portfolio images first
-        if (portfolioRes.ok) {
-          const portfolioData = await portfolioRes.json();
-          console.log('Portfolio data:', portfolioData);
-          allImages = [...allImages, ...(portfolioData.images || [])];
-        } else {
-          console.error('Portfolio API failed:', portfolioRes.status);
-          const errorData = await portfolioRes.json().catch(() => ({}));
-          console.error('Portfolio error:', errorData);
-        }
-        
-        // Add dedicated preview images
-        if (previewRes.ok) {
-          const previewData = await previewRes.json();
-          console.log('Preview data:', previewData);
-          allImages = [...allImages, ...(previewData.images || [])];
-        } else {
-          console.error('Preview API failed:', previewRes.status);
-          const errorData = await previewRes.json().catch(() => ({}));
-          console.error('Preview error:', errorData);
-        }
-        
-        // Remove duplicates
-        const uniqueImages = Array.from(new Set(allImages));
-        console.log('Total unique images:', uniqueImages.length);
-        setPreviewImages(uniqueImages);
-      } catch (error) {
-        console.error('Failed to fetch images:', error);
-      }
+    const handlePreviewUpdate = (event: CustomEvent) => {
+      setFormData(prev => ({ ...prev, preview: event.detail }));
     };
-    fetchImages();
-  }, [photographer.id]);
+
+    window.addEventListener('preview-updated', handlePreviewUpdate as EventListener);
+    return () => {
+      window.removeEventListener('preview-updated', handlePreviewUpdate as EventListener);
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,7 +49,7 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
         const data = await res.json();
         toast.error(data.error || 'Failed to update');
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to update photographer');
     } finally {
       setIsSaving(false);
@@ -121,55 +83,21 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">Preview Image</label>
-            <select
-              value={formData.preview}
-              onChange={(e) => setFormData({ ...formData, preview: e.target.value })}
-              className="w-full bg-white/5 border border-white/20 rounded px-3 py-2 focus:outline-none focus:border-white/40 text-white"
-            >
-              <option value="">Select an image</option>
-              {previewImages.map((img, index) => (
-                <option key={img} value={img}>
-                  Image {index + 1}
-                </option>
-              ))}
-            </select>
-            {formData.preview && (
-              <div className="mt-2 relative h-20 w-20 border border-white/10 rounded overflow-hidden">
-                <Image
-                  src={formData.preview}
-                  alt="Preview"
-                  fill
-                  className="object-cover"
-                  sizes="80px"
-                />
-              </div>
-            )}
-            {previewImages.length > 0 && (
-              <div className="mt-3">
-                <p className="text-xs text-white/40 mb-2">Available images (portfolio + previews):</p>
-                <div className="grid grid-cols-6 gap-1">
-                  {previewImages.map((img, index) => (
-                    <button
-                      key={img}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, preview: img })}
-                      className={`relative aspect-square border rounded overflow-hidden transition-all ${
-                        formData.preview === img 
-                          ? 'border-white/40 ring-1 ring-white/20' 
-                          : 'border-white/10 hover:border-white/20'
-                      }`}
-                    >
-                      <Image
-                        src={img}
-                        alt={`Image ${index + 1}`}
-                        fill
-                        className="object-cover"
-                        sizes="40px"
-                      />
-                    </button>
-                  ))}
+            {formData.preview ? (
+              <div className="flex items-center gap-3">
+                <div className="relative h-16 w-16 border border-white/10 rounded overflow-hidden flex-shrink-0">
+                  <Image
+                    src={formData.preview}
+                    alt="Preview"
+                    fill
+                    className="object-cover"
+                    sizes="64px"
+                  />
                 </div>
+                <p className="text-xs text-white/40">Use ⭐ on portfolio images below to change</p>
               </div>
+            ) : (
+              <p className="text-sm text-white/30 py-2">Use ⭐ on portfolio images below to set preview</p>
             )}
           </div>
         </div>
