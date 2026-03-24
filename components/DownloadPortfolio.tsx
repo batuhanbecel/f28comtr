@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface Photographer {
   fullName: string;
@@ -143,6 +144,7 @@ function renderPage(pdf: PDF, imgs: Img[], label: string) {
 export function DownloadPortfolio({ images, photographer }: Props) {
   const [phase, setPhase] = useState<'idle' | 'working' | 'done' | 'error'>('idle');
   const [progress, setProgress] = useState(0);
+  const { t } = useLanguage();
   const { t } = useLanguage();
 
   const generate = useCallback(async () => {
@@ -296,7 +298,7 @@ export function DownloadPortfolio({ images, photographer }: Props) {
     <button
       onClick={generate}
       disabled={phase === 'working'}
-      className="inline-flex items-center gap-2.5 text-white/60 text-[10px] tracking-[0.4em] uppercase hover:text-white border border-white/25 hover:border-white/55 hover:bg-white/10 px-5 py-2.5 transition-all duration-300 disabled:cursor-wait disabled:opacity-50"
+      className="inline-flex items-center gap-2.5 text-th-fg/60 text-[10px] tracking-[0.4em] uppercase hover:text-th-fg border border-th-fg/25 hover:border-th-fg/55 hover:bg-th-fg/10 px-5 py-2.5 transition-all duration-300 disabled:cursor-wait disabled:opacity-50"
     >
       {phase === 'idle' && (
         <>

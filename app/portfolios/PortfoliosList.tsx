@@ -71,24 +71,24 @@ export function PortfoliosList({ photographers }: { photographers: Photographer[
 
               {/* Index */}
               <div className="absolute top-4 left-4">
-                <span className="font-mono text-[10px] tracking-[0.3em] text-white/30 group-hover:text-white/60 transition-colors duration-300">
+                <span className="font-mono text-[10px] tracking-[0.3em] text-th-fg/30 group-hover:text-th-fg/60 transition-colors duration-300">
                   {String(i + 1).padStart(2, '0')}
                 </span>
               </div>
 
               {/* Arrow */}
               <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-500">
-                <svg className="w-4 h-4 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <svg className="w-4 h-4 text-th-fg/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="square" d="M7 17L17 7M17 7H7M17 7v10" />
                 </svg>
               </div>
 
               {/* Info */}
               <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 transform translate-y-1 group-hover:translate-y-0 transition-transform duration-500">
-                <p className="text-[8px] tracking-[0.5em] uppercase text-white/40 group-hover:text-white/60 transition-colors duration-300 mb-1.5">
+                <p className="text-[8px] tracking-[0.5em] uppercase text-th-fg/40 group-hover:text-th-fg/60 transition-colors duration-300 mb-1.5">
                   {(t.titleMap as Record<string, string>)[p.title] ?? p.title}
                 </p>
-                <h2 className="text-lg md:text-xl font-black tracking-tight leading-tight text-white/80 group-hover:text-white transition-colors duration-300">
+                <h2 className="text-lg md:text-xl font-black tracking-tight leading-tight text-th-fg/80 group-hover:text-th-fg transition-colors duration-300">
                   {p.fullName}
                 </h2>
               </div>

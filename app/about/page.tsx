@@ -7,6 +7,7 @@ import { LocalizedAboutBrands } from '@/components/LocalizedAboutBrands';
 import { AboutStats } from '@/components/AboutStats';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 import { ScrollIndicator } from '@/components/ScrollIndicator';
+import { ScrollIndicator } from '@/components/ScrollIndicator';
 
 export const metadata: Metadata = {
   title: 'About Us | f/2.8 Production Agency',
