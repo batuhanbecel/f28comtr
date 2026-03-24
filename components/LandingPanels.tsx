@@ -163,9 +163,7 @@ export function LandingPanels() {
           const data = await res.json();
           setLandingImages(data.images || []);
         }
-      } catch {
-        console.error('Failed to fetch landing images');
-      }
+      } catch {}
     };
     fetchLandingImages();
   }, []);

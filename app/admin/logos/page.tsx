@@ -64,17 +64,12 @@ export default function AdminLogos() {
   };
 
   const fetchLogos = useCallback(async () => {
-    console.log('Fetching logos...');
     try {
       const res = await fetch('/api/admin/logos');
-      console.log('Logos API response status:', res.status);
       if (res.status === 401) { router.push('/admin/login'); return; }
       const data = await res.json();
-      console.log('Logos API data:', data);
       setCategories(data.categories || []);
-      console.log('Categories set:', data.categories?.length || 0);
-    } catch (error) {
-      console.error('Failed to fetch logos:', error);
+    } catch {
       showMsg('Failed to load logos', true);
     } finally {
       setLoading(false);

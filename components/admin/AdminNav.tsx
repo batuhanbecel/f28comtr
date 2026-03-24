@@ -1,17 +1,18 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
 const navItems = [
-  { href: '/admin', label: 'Dashboard', icon: '📊' },
-  { href: '/admin/photographers', label: 'Photographers', icon: '👥' },
-  { href: '/admin/ai-based', label: 'AI Images', icon: '🤖' },
-  { href: '/admin/landing', label: 'Landing', icon: '🏠' },
-  { href: '/admin/logos', label: 'Logos', icon: '🎨' },
-  { href: '/admin/previews', label: 'Previews', icon: '🖼️' },
-  { href: '/admin/settings', label: 'Settings', icon: '⚙️' },
+  { href: '/admin', label: 'Dashboard' },
+  { href: '/admin/photographers', label: 'Photographers' },
+  { href: '/admin/ai-based', label: 'AI Images' },
+  { href: '/admin/landing', label: 'Landing' },
+  { href: '/admin/logos', label: 'Logos' },
+  { href: '/admin/previews', label: 'Previews' },
+  { href: '/admin/settings', label: 'Settings' },
 ];
 
 export function AdminNav() {
@@ -23,26 +24,28 @@ export function AdminNav() {
       {/* Mobile menu button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white/10 backdrop-blur-sm rounded-lg"
+        className="lg:hidden fixed top-5 left-5 z-50 flex flex-col gap-[5px] w-6 py-1"
+        aria-label="Toggle menu"
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
+        <span className={`h-px bg-white transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-[7px] w-full' : 'w-full opacity-60'}`} />
+        <span className={`h-px bg-white transition-all duration-300 ${isOpen ? 'opacity-0 w-0' : 'w-3/4 opacity-40'}`} />
+        <span className={`h-px bg-white transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-[7px] w-full' : 'w-1/2 opacity-25'}`} />
       </button>
 
       {/* Sidebar */}
       <nav className={`
-        fixed top-0 left-0 h-full w-64 bg-[#0a0a0a] border-r border-white/10 z-40
+        fixed top-0 left-0 h-full w-64 bg-[#080808] border-r border-white/[0.06] z-40
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
-        <div className="p-6">
-          <Link href="/" className="flex items-center gap-2 mb-8">
-            <span className="text-2xl font-bold">f/2.8</span>
-            <span className="text-xs text-white/40 uppercase tracking-wider">Admin</span>
+        <div className="flex flex-col h-full px-5 py-6">
+          <Link href="/" className="flex items-center gap-3 mb-10">
+            <Image src="/logos/f28/f28_white.png" alt="f/2.8" width={80} height={40} className="h-6 w-auto opacity-60" />
+            <div className="w-px h-3 bg-white/10" />
+            <span className="text-white/25 text-[9px] tracking-[0.3em] uppercase">Admin</span>
           </Link>
 
-          <div className="space-y-1">
+          <div className="space-y-px">
             {navItems.map((item) => {
               const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
               return (
@@ -51,28 +54,26 @@ export function AdminNav() {
                   href={item.href}
                   onClick={() => setIsOpen(false)}
                   className={`
-                    flex items-center gap-3 px-4 py-3 rounded-lg transition-all
+                    block px-3 py-2.5 text-[10px] font-bold tracking-[0.3em] uppercase transition-colors duration-200 rounded
                     ${isActive 
-                      ? 'bg-white/10 text-white' 
-                      : 'text-white/60 hover:bg-white/5 hover:text-white'
+                      ? 'bg-white/[0.06] text-white' 
+                      : 'text-white/30 hover:bg-white/[0.03] hover:text-white/60'
                     }
                   `}
                 >
-                  <span className="text-xl">{item.icon}</span>
-                  <span className="font-medium">{item.label}</span>
+                  {item.label}
                 </Link>
               );
             })}
           </div>
 
-          <div className="mt-8 pt-8 border-t border-white/10">
+          <div className="mt-auto pt-6 border-t border-white/[0.06]">
             <form action="/api/admin/logout" method="POST">
               <button
                 type="submit"
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-white/60 hover:bg-red-500/10 hover:text-red-400 transition-all"
+                className="w-full text-left px-3 py-2.5 text-[10px] font-bold tracking-[0.3em] uppercase text-white/20 hover:text-red-400/70 hover:bg-red-400/[0.05] transition-colors duration-200 rounded"
               >
-                <span className="text-xl">🚪</span>
-                <span className="font-medium">Logout</span>
+                Logout
               </button>
             </form>
           </div>
@@ -82,7 +83,7 @@ export function AdminNav() {
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-30"
+          className="lg:hidden fixed inset-0 bg-black/60 z-30"
           onClick={() => setIsOpen(false)}
         />
       )}

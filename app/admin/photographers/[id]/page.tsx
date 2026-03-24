@@ -51,8 +51,8 @@ export default function EditPhotographerPage({ params }: PageProps) {
         
         setPhotographer(foundPhotographer);
         setImages(imagesData.images || []);
-      } catch (error) {
-        console.error('Failed to load data:', error);
+      } catch {
+        router.push('/admin/photographers');
       } finally {
         setLoading(false);
       }
@@ -63,8 +63,6 @@ export default function EditPhotographerPage({ params }: PageProps) {
 
   const handlePreviewSelect = async (imageUrl: string) => {
     if (!photographer) return;
-    
-    console.log('Setting preview to:', imageUrl);
     
     try {
       const res = await fetch(`/api/admin/photographers/${photographer.id}`, {
@@ -77,31 +75,35 @@ export default function EditPhotographerPage({ params }: PageProps) {
         }),
       });
       
-      console.log('API response status:', res.status);
-      
       if (res.ok) {
-        const data = await res.json();
-        console.log('API response:', data);
-        
         setPhotographer(prev => prev ? { ...prev, preview: imageUrl } : null);
-        // Preview image form'u da güncelle
         const event = new CustomEvent('preview-updated', { detail: imageUrl });
         window.dispatchEvent(event);
-        
-        console.log('Preview updated successfully to:', imageUrl);
-      } else {
-        const errorData = await res.json().catch(() => ({}));
-        console.error('API error:', errorData);
       }
-    } catch (error) {
-      console.error('Failed to update preview:', error);
-    }
+    } catch {}
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen p-8 flex items-center justify-center">
-        <div className="text-white/50">Loading...</div>
+      <div className="min-h-screen">
+        <header className="border-b border-white/[0.06] px-8 py-5 sticky top-0 bg-[#080808]/95 backdrop-blur-sm z-10">
+          <div className="flex items-center gap-4">
+            <span className="text-white/25 text-[10px] tracking-[0.3em] uppercase">← Photographers</span>
+            <div className="w-px h-3 bg-white/10" />
+            <span className="text-white/25 text-[10px] tracking-[0.3em] uppercase">Loading...</span>
+          </div>
+        </header>
+        <div className="max-w-7xl mx-auto px-8 py-10">
+          <div className="space-y-3">
+            <div className="h-4 bg-white/[0.03] animate-pulse w-32" />
+            <div className="h-8 bg-white/[0.03] animate-pulse w-64" />
+            <div className="h-4 bg-white/[0.03] animate-pulse w-48 mb-8" />
+            <div className="h-32 bg-white/[0.03] animate-pulse rounded-lg" />
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-1.5 mt-8">
+              {[...Array(12)].map((_, i) => <div key={i} className="aspect-square bg-white/[0.03] animate-pulse rounded-lg" />)}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -111,23 +113,37 @@ export default function EditPhotographerPage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <Link href="/admin/photographers" className="text-white/50 text-sm mb-2 inline-block hover:text-white">
-            ← Back to Photographers
+    <div className="min-h-screen">
+      <header className="border-b border-white/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-[#080808]/95 backdrop-blur-sm z-10">
+        <div className="flex items-center gap-4">
+          <Link href="/admin/photographers" className="text-white/25 text-[10px] tracking-[0.3em] uppercase hover:text-white/60 transition-colors">
+            ← Photographers
           </Link>
-          <h1 className="text-4xl font-bold mb-2">{photographer.fullName}</h1>
-          <p className="text-white/50">Edit photographer information and manage portfolio images</p>
+          <div className="w-px h-3 bg-white/10" />
+          <span className="text-white/25 text-[10px] tracking-[0.3em] uppercase">{photographer.fullName}</span>
+        </div>
+        <Link
+          href={`/${photographer.id}`}
+          target="_blank"
+          className="text-white/30 text-[10px] tracking-[0.25em] uppercase hover:text-white/60 transition-colors px-3 py-2 hover:bg-white/5 rounded"
+        >
+          View Portfolio ↗
+        </Link>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-8 py-10">
+        <div className="mb-8">
+          <p className="text-white/20 text-[10px] tracking-[0.5em] uppercase mb-2">Edit Photographer</p>
+          <h1 className="text-3xl font-black tracking-tighter">{photographer.fullName}</h1>
+          <p className="text-white/25 text-xs mt-1">
+            {images.length} portfolio images — use ⭐ to set preview
+          </p>
         </div>
 
-        {/* Photographer Info */}
         <PhotographerInfoForm photographer={photographer} />
 
-        {/* Image Gallery */}
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">Portfolio Images</h2>
+        <div className="mt-10">
+          <p className="text-white/20 text-[10px] tracking-[0.5em] uppercase mb-4">Portfolio Images</p>
           <PhotographerImageGallery 
             images={images} 
             photographerId={photographer.id}

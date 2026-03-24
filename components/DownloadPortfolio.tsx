@@ -294,7 +294,7 @@ export function DownloadPortfolio({ images, photographer }: Props) {
     <button
       onClick={generate}
       disabled={phase === 'working'}
-      className="inline-flex items-center gap-2.5 text-white/60 text-[10px] tracking-[0.4em] uppercase hover:text-white border border-white/25 hover:border-white/60 px-5 py-2.5 transition-all duration-300 disabled:cursor-wait disabled:opacity-50"
+      className="inline-flex items-center gap-2.5 text-white/60 text-[10px] tracking-[0.4em] uppercase hover:text-white border border-white/25 hover:border-white/55 hover:bg-white/10 px-5 py-2.5 transition-all duration-300 disabled:cursor-wait disabled:opacity-50"
     >
       {phase === 'idle' && (
         <>

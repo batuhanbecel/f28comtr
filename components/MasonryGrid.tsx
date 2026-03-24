@@ -112,7 +112,7 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
             return (
               <Frame key={image} width={d.w} height={d.h}>
                 <div
-                  className="relative w-full h-full cursor-pointer group overflow-hidden bg-white/5"
+                  className="relative w-full h-full cursor-pointer group overflow-hidden bg-white/[0.03]"
                   onClick={() => openLightbox(image)}
                 >
                   <Image

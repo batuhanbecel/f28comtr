@@ -59,7 +59,7 @@ export default function AdminLogin() {
               placeholder="Password"
               autoFocus
               required
-              className="w-full bg-white/5 border border-white/10 text-white placeholder-white/30 px-4 py-3 text-sm tracking-wide focus:outline-none focus:border-white/40 transition-colors"
+              className="w-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-white/20 px-4 py-3 text-sm tracking-wide focus:outline-none focus:border-white/25 transition-colors rounded"
             />
           </div>
 
@@ -70,7 +70,7 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-white text-black text-xs font-semibold tracking-[0.2em] uppercase py-3 hover:bg-white/90 transition-colors disabled:opacity-50"
+            className="w-full bg-white text-black text-[10px] font-bold tracking-[0.3em] uppercase py-3 hover:bg-white/90 transition-colors disabled:opacity-50 rounded"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>

@@ -218,7 +218,7 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
             >
               {isRight && (
                 <svg className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                  <path strokeLinecap="square" strokeWidth={1.5} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
                 </svg>
               )}
               <span className={`transition-transform duration-300 ${ isRight ? 'group-hover:-translate-x-1' : 'group-hover:translate-x-1' }`}>
@@ -226,7 +226,7 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
               </span>
               {!isRight && (
                 <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  <path strokeLinecap="square" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               )}
             </Link>

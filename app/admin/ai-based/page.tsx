@@ -198,10 +198,10 @@ export default function AdminAIBased() {
       <header className="border-b border-white/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-[#080808]/95 backdrop-blur-sm z-10">
         <div className="flex items-center gap-4">
           <Link href="/admin" className="text-white/25 text-[10px] tracking-[0.3em] uppercase hover:text-white/60 transition-colors">
-            ← Lineup
+            ← Dashboard
           </Link>
           <div className="w-px h-3 bg-white/10" />
-          <span className="text-white/50 text-[10px] tracking-[0.3em] uppercase">AI Based</span>
+          <span className="text-white/25 text-[10px] tracking-[0.3em] uppercase">AI Based</span>
         </div>
         <Link
           href="/ai-based"
@@ -301,7 +301,7 @@ export default function AdminAIBased() {
                 onDragEnter={() => onDragEnter(index)}
                 onDragEnd={onDragEnd}
                 onDragOver={e => e.preventDefault()}
-                className={`group relative aspect-square overflow-hidden cursor-grab active:cursor-grabbing select-none transition-all duration-150 ${
+                className={`group relative aspect-square overflow-hidden cursor-grab active:cursor-grabbing select-none transition-all duration-150 rounded-lg ${
                   dragIndex === index ? 'opacity-40 scale-95 ring-1 ring-white/30' : 'opacity-100'
                 }`}
               >

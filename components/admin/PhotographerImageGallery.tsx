@@ -87,7 +87,7 @@ function SortableImage({ id, image, photographerName }: { id: string; image: str
       style={style}
       {...attributes}
       {...listeners}
-      className="relative aspect-square overflow-hidden bg-white/5 border border-white/10 hover:border-white/20 rounded-lg cursor-move group"
+      className="relative aspect-square overflow-hidden bg-white/[0.03] border border-white/[0.06] hover:border-white/20 rounded-lg cursor-move group"
     >
       <Image
         src={image}
@@ -96,10 +96,8 @@ function SortableImage({ id, image, photographerName }: { id: string; image: str
         className="object-cover"
         sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
       />
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-        <span className="opacity-0 group-hover:opacity-100 text-white text-sm font-semibold">
-          Drag to reorder
-        </span>
+      <div className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex items-center justify-center">
+        <span className="text-white/40 text-[9px] tracking-widest uppercase">Drag</span>
       </div>
     </div>
   );
@@ -309,145 +307,98 @@ export function PhotographerImageGallery({
   return (
     <div>
       {/* Upload Zone */}
-      <div className="mb-6">
-        <div
-          onDragOver={handleDropzoneDragOver}
-          onDragLeave={handleDropzoneDragLeave}
-          onDrop={handleDropzoneDrop}
+      <div className="mb-6 flex gap-2 items-center">
+        <button
           onClick={() => !isUploading && fileInputRef.current?.click()}
-          className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
-            isDragOver
-              ? 'border-white bg-white/10'
-              : 'border-white/20 hover:border-white/40 hover:bg-white/5'
-          } ${isUploading ? 'pointer-events-none opacity-60' : ''}`}
+          disabled={isUploading}
+          className="text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 border border-white/[0.15] text-white/60 hover:text-white hover:border-white/30 transition-colors disabled:opacity-40 rounded"
         >
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            accept="image/jpeg,image/png,image/webp,image/tiff,image/avif,image/heic,image/heif"
-            onChange={handleFileSelect}
-            className="hidden"
-          />
-          <div className="text-3xl mb-3">📸</div>
-          <p className="text-white font-semibold mb-1">
-            {isDragOver ? 'Drop images here' : 'Click or drag & drop images to upload'}
-          </p>
-          <p className="text-white/40 text-sm">
-            JPEG, PNG, WebP, TIFF, AVIF, HEIC — auto-converted to optimized WebP
-          </p>
-        </div>
+          + Upload
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          accept="image/jpeg,image/png,image/webp,image/tiff,image/avif,image/heic,image/heif"
+          onChange={handleFileSelect}
+          className="hidden"
+        />
+      </div>
+
+      <div
+        onDragOver={handleDropzoneDragOver}
+        onDragLeave={handleDropzoneDragLeave}
+        onDrop={handleDropzoneDrop}
+        className={`mb-6 border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+          isDragOver ? 'border-white/40 bg-white/[0.06]' : 'border-white/[0.08] hover:border-white/15'
+        } ${isUploading ? 'pointer-events-none opacity-60' : ''}`}
+      >
+        <p className="text-white/30 text-xs tracking-wide">Drop images here or click Upload</p>
       </div>
 
       {/* Upload Progress */}
       {uploadQueue.length > 0 && (
-        <div className="mb-6 bg-white/5 border border-white/10 rounded-xl p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="text-sm font-semibold">
+        <div className="mb-6 border border-white/[0.08] rounded-lg divide-y divide-white/[0.05] max-h-48 overflow-y-auto">
+          <div className="px-4 py-2 flex justify-between items-center bg-white/[0.02]">
+            <span className="text-white/40 text-[10px] tracking-widest uppercase">
               {isUploading
-                ? `Uploading... ${completedCount}/${uploadQueue.length}`
-                : `Upload complete: ${completedCount}/${uploadQueue.length}`
+                ? `Uploading ${completedCount}/${uploadQueue.length}`
+                : `Done ${completedCount}/${uploadQueue.length}`
               }
+              {totalSaved > 0 && ` · ${formatBytes(totalSaved)} saved`}
+            </span>
+            {isUploading ? (
+              <button onClick={() => { abortRef.current = true; }} className="text-red-400/60 hover:text-red-400 text-[10px] tracking-widest uppercase">Cancel</button>
+            ) : (
+              <button onClick={() => setUploadQueue([])} className="text-white/30 hover:text-white/60 text-[10px] tracking-widest uppercase">Dismiss</button>
+            )}
+          </div>
+          {uploadQueue.map((item, i) => (
+            <div key={i} className="px-4 py-2 flex items-center justify-between text-xs">
+              <span className="text-white/50 truncate max-w-[60%]">{item.fileName}</span>
+              <span className={`text-[10px] tracking-wider ${
+                item.status === 'done' ? 'text-green-400/70' : item.status === 'error' ? 'text-red-400/70' : item.status === 'uploading' ? 'text-white/50' : 'text-white/20'
+              }`}>
+                {item.status === 'uploading' ? 'Uploading...' : item.status === 'done' ? '✓' : item.status === 'error' ? item.error || 'Failed' : 'Pending'}
+              </span>
             </div>
-            <div className="flex items-center gap-3">
-              {totalSaved > 0 && (
-                <span className="text-xs text-green-400">
-                  {formatBytes(totalSaved)} saved via optimization
-                </span>
-              )}
-              {isUploading ? (
-                <button
-                  onClick={() => { abortRef.current = true; }}
-                  className="px-3 py-1 text-xs bg-red-500/20 border border-red-400/30 text-red-400 rounded hover:bg-red-500/30"
-                >
-                  Cancel
-                </button>
-              ) : (
-                <button
-                  onClick={() => setUploadQueue([])}
-                  className="px-3 py-1 text-xs bg-white/10 border border-white/20 text-white/60 rounded hover:bg-white/20"
-                >
-                  Dismiss
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Progress bar */}
-          <div className="w-full bg-white/10 rounded-full h-1.5 mb-3">
-            <div
-              className="bg-white h-1.5 rounded-full transition-all duration-300"
-              style={{ width: `${(completedCount / uploadQueue.length) * 100}%` }}
-            />
-          </div>
-
-          {/* File list (collapsed if > 10) */}
-          <div className="max-h-48 overflow-y-auto space-y-1">
-            {uploadQueue.map((item, i) => (
-              <div key={i} className="flex items-center gap-2 text-xs py-0.5">
-                <span className={`w-4 text-center ${
-                  item.status === 'done' ? 'text-green-400' :
-                  item.status === 'error' ? 'text-red-400' :
-                  item.status === 'uploading' ? 'text-yellow-400 animate-pulse' :
-                  'text-white/20'
-                }`}>
-                  {item.status === 'done' ? '✓' :
-                   item.status === 'error' ? '✕' :
-                   item.status === 'uploading' ? '↑' : '·'}
-                </span>
-                <span className="text-white/60 truncate flex-1">{item.fileName}</span>
-                {item.status === 'done' && item.originalSize && item.optimizedSize && (
-                  <span className="text-white/30 flex-shrink-0">
-                    {formatBytes(item.originalSize)} → {formatBytes(item.optimizedSize)}
-                  </span>
-                )}
-                {item.status === 'error' && (
-                  <span className="text-red-400 flex-shrink-0">{item.error}</span>
-                )}
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
       )}
 
       {/* Controls */}
-      <div className="mb-6 flex items-center justify-between bg-white/5 border border-white/10 rounded-lg p-4">
-        <div className="text-sm text-white/50">
-          {isReorderMode ? 'Drag images to reorder them' : `${images.length} portfolio images`}
-        </div>
-        <div className="flex gap-2">
-          {isReorderMode && (
-            <button
-              onClick={handleSaveOrder}
-              disabled={isSaving}
-              className="px-4 py-2 bg-white text-black font-semibold rounded hover:bg-white/90 transition-colors disabled:opacity-50"
-            >
-              {isSaving ? 'Saving...' : 'Save Order'}
-            </button>
-          )}
+      <div className="mb-6 flex items-center justify-end gap-2">
+        {isReorderMode && (
           <button
-            onClick={() => {
-              if (isReorderMode) {
-                setImages(initialImages);
-              }
-              setIsReorderMode(!isReorderMode);
-            }}
-            className={`px-4 py-2 font-semibold rounded transition-colors ${
-              isReorderMode
-                ? 'bg-white/10 border border-white/20 hover:bg-white/20'
-                : 'bg-white text-black hover:bg-white/90'
-            }`}
+            onClick={handleSaveOrder}
+            disabled={isSaving}
+            className="bg-white text-black text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-white/90 transition-colors disabled:opacity-50 rounded"
           >
-            {isReorderMode ? 'Cancel' : 'Reorder Images'}
+            {isSaving ? 'Saving...' : 'Save Order'}
           </button>
-        </div>
+        )}
+        <button
+          onClick={() => {
+            if (isReorderMode) {
+              setImages(initialImages);
+            }
+            setIsReorderMode(!isReorderMode);
+          }}
+          className={`text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 transition-colors rounded ${
+            isReorderMode
+              ? 'bg-white/10 border border-white/20 text-white/60 hover:text-white'
+              : 'border border-white/[0.15] text-white/60 hover:text-white hover:border-white/30'
+          }`}
+        >
+          {isReorderMode ? '✕ Cancel' : 'Reorder'}
+        </button>
       </div>
 
       {/* Gallery */}
       {isReorderMode ? (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={images} strategy={rectSortingStrategy}>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-1.5">
               {images.map((image) => (
                 <SortableImage key={image} id={image} image={image} photographerName={photographerName} />
               ))}
@@ -455,42 +406,41 @@ export function PhotographerImageGallery({
           </SortableContext>
         </DndContext>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-1.5">
           {images.map((image) => (
             <div
               key={image}
-              className="relative aspect-square overflow-hidden bg-white/5 border border-white/10 hover:border-white/20 rounded-lg group"
+              className="group relative aspect-square overflow-hidden bg-white/[0.03] border border-white/[0.06] hover:border-white/20 transition-all duration-300 rounded-lg"
             >
               <Image
                 src={image}
                 alt={photographerName}
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                sizes="(max-width: 640px) 33vw, (max-width: 1024px) 20vw, 15vw"
               />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-colors opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2">
-                {/* Preview seçme yıldızı */}
-                {onPreviewSelect && (
+              {currentPreview === image && (
+                <div className="absolute top-1 left-1 bg-yellow-500/90 rounded px-1.5 py-0.5">
+                  <span className="text-yellow-900 text-[9px] font-bold">⭐</span>
+                </div>
+              )}
+              <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-between p-2">
+                <div className="flex justify-end gap-1">
+                  {onPreviewSelect && currentPreview !== image && (
+                    <button
+                      onClick={() => onPreviewSelect(image)}
+                      className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-yellow-400 hover:bg-yellow-500/15 transition-colors text-sm rounded"
+                      title="Set as preview"
+                    >⭐</button>
+                  )}
+                </div>
+                <div className="flex justify-end">
                   <button
-                    onClick={() => onPreviewSelect(image)}
-                    className={`w-10 h-10 flex items-center justify-center rounded-full transition-all ${
-                      currentPreview === image
-                        ? 'bg-yellow-500 text-yellow-900'
-                        : 'bg-white/20 text-white/60 hover:bg-yellow-500/20 hover:text-yellow-400'
-                    }`}
-                    title={currentPreview === image ? 'Current preview' : 'Set as preview'}
-                  >
-                    <span className="text-lg">⭐</span>
-                  </button>
-                )}
-                {/* Delete butonu */}
-                <button
-                  onClick={() => handleDelete(image)}
-                  disabled={isDeleting === image}
-                  className="px-3 py-2 bg-red-500/20 border border-red-400/30 text-red-400 text-sm font-semibold rounded hover:bg-red-500/30 transition-colors disabled:opacity-50"
-                >
-                  {isDeleting === image ? 'Deleting...' : 'Delete'}
-                </button>
+                    onClick={() => handleDelete(image)}
+                    disabled={isDeleting === image}
+                    className="w-6 h-6 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-400/10 transition-colors text-xs rounded disabled:opacity-50"
+                  >✕</button>
+                </div>
               </div>
             </div>
           ))}
@@ -498,9 +448,9 @@ export function PhotographerImageGallery({
       )}
 
       {images.length === 0 && !isUploading && uploadQueue.length === 0 && (
-        <div className="text-center py-24 border border-white/10 rounded-lg">
-          <p className="text-white/50 text-lg mb-2">No images yet</p>
-          <p className="text-sm text-white/30">Upload images using the drop zone above</p>
+        <div className="text-center py-20 border border-white/[0.05] rounded-lg">
+          <p className="text-white/20 text-xs tracking-[0.4em] uppercase">No images found</p>
+          <p className="text-white/10 text-xs mt-2">Drop images above or click Upload</p>
         </div>
       )}
     </div>

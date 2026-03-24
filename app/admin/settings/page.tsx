@@ -14,7 +14,7 @@ export default async function SettingsPage() {
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-white/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-black/95 backdrop-blur-sm z-10">
+      <header className="border-b border-white/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-[#080808]/95 backdrop-blur-sm z-10">
         <div className="flex items-center gap-4">
           <Link href="/admin" className="text-white/25 text-[10px] tracking-[0.3em] uppercase hover:text-white/60 transition-colors">
             ← Dashboard
