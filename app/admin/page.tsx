@@ -18,7 +18,7 @@ export default async function AdminDashboard() {
 
   const stats = [
     { label: 'Photographers', value: photographers.length, href: '/admin/photographers' },
-    { label: 'AI Images', value: aiImages.length, href: '/admin/ai-images' },
+    { label: 'AI Images', value: aiImages.length, href: '/admin/ai-based' },
     { label: 'Redis', value: isRedisConfigured() ? 'Connected' : 'None', href: '/admin/settings' },
     { label: 'View Site', value: '↗', href: '/', target: '_blank' },
   ];
@@ -82,7 +82,7 @@ export default async function AdminDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px border border-white/[0.05] bg-white/[0.02] mt-10">
           {[
             { href: '/admin/photographers', label: 'Photographers', desc: 'Edit roster, reorder, manage previews', icon: '👥' },
-            { href: '/admin/ai-images', label: 'AI Images', desc: 'Reorder and manage AI-generated images', icon: '⚡' },
+            { href: '/admin/ai-based', label: 'AI Images', desc: 'Reorder and manage AI-generated images', icon: '⚡' },
             { href: '/admin/settings', label: 'Settings', desc: 'Seed data, cache control, environment', icon: '⚙' },
           ].map((item) => (
             <Link key={item.href} href={item.href}

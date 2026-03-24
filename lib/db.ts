@@ -76,52 +76,6 @@ export async function setPhotographerImages(photographerId: string, images: stri
   await redis.set(`photographer:${photographerId}:images`, JSON.stringify(images));
 }
 
-export async function seedFromStatic(): Promise<{ photographers: number; imageSets: number; aiImages: number; newImages: number }> {
-  const redis = getRedis();
-  if (!redis) throw new Error('Redis is not configured.');
-
-  await redis.set('photographers', JSON.stringify(staticPhotographers));
-
-  let imageSets = 0;
-  let newImagesCount = 0;
-  
-  for (const photographer of staticPhotographers) {
-    const manifestImages = getPortfolioImages(photographer.id);
-    if (manifestImages.length === 0) continue;
-
-    let existing: string[] = [];
-    try {
-      const stored = await redis.get(`photographer:${photographer.id}:images`);
-      if (stored && Array.isArray(stored)) existing = stored as string[];
-    } catch {}
-
-    const manifestSet = new Set(manifestImages);
-    const existingSet = new Set(existing);
-    const ordered = existing.filter(img => manifestSet.has(img));
-    const newImgs = manifestImages.filter(img => !existingSet.has(img));
-    newImagesCount += newImgs.length;
-    await redis.set(`photographer:${photographer.id}:images`, JSON.stringify([...ordered, ...newImgs]));
-    imageSets++;
-  }
-
-  const manifestAI = getStaticAIImages();
-  if (manifestAI.length > 0) {
-    let existingAI: string[] = [];
-    try {
-      const stored = await redis.get('ai:images');
-      if (stored && Array.isArray(stored)) existingAI = stored as string[];
-    } catch {}
-
-    const manifestSet = new Set(manifestAI);
-    const existingSet = new Set(existingAI);
-    const ordered = existingAI.filter(img => manifestSet.has(img));
-    const newImgs = manifestAI.filter(img => !existingSet.has(img));
-    await redis.set('ai:images', JSON.stringify([...ordered, ...newImgs]));
-  }
-
-  return { photographers: staticPhotographers.length, imageSets, aiImages: manifestAI.length, newImages: newImagesCount };
-}
-
 export async function getAIImages(): Promise<string[]> {
   const redis = getRedis();
   if (redis) {

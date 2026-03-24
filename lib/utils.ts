@@ -27,21 +27,6 @@ export function getPortfolioImages(photographerId: string): string[] {
   }
 }
 
-export function getBrandLogos(): string[] {
-  const logosPath = path.join(process.cwd(), 'public', 'logos', 'brands');
-  
-  try {
-    const files = fs.readdirSync(logosPath);
-    return files
-      .filter(file => /\.(jpg|jpeg|png|webp|svg)$/i.test(file))
-      .map(file => `/logos/brands/${file}`)
-      .sort();
-  } catch (error) {
-    console.error('Error reading brand logos:', error);
-    return [];
-  }
-}
-
 export async function getPartnerLogos(): Promise<string[]> {
   // Try Redis first
   try {

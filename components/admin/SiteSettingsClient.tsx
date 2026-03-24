@@ -5,20 +5,8 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 
 export function SiteSettingsClient() {
-  const [clearing, setClearing] = useState(false);
   const [cleaning, setCleaning] = useState(false);
   const router = useRouter();
-
-  const handleClearCache = async () => {
-    if (!confirm('Clear Redis cache? Data will reload from filesystem on next request.')) return;
-    setClearing(true);
-    try {
-      const res = await fetch('/api/admin/cache', { method: 'DELETE' });
-      if (res.ok) { toast.success('Cache cleared'); router.refresh(); }
-      else toast.error('Failed to clear cache');
-    } catch { toast.error('Failed to clear cache'); }
-    finally { setClearing(false); }
-  };
 
   const handleCleanup = async () => {
     if (!confirm('Scan all image URLs in Redis and remove broken (404) references? This may take a minute.')) return;
@@ -37,14 +25,6 @@ export function SiteSettingsClient() {
   };
 
   const actions = [
-    {
-      label: 'Clear Cache',
-      desc: 'Force-refresh all cached data. Use if changes are not reflecting on site.',
-      action: handleClearCache,
-      loading: clearing,
-      loadingLabel: 'Clearing...',
-      primary: false,
-    },
     {
       label: 'Cleanup Images',
       desc: 'Scan Redis for broken image URLs (404) and remove them automatically.',
