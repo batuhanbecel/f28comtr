@@ -1,55 +1,35 @@
 import { photographers as staticPhotographers, Photographer } from './data';
 import { getPortfolioImages, getAIImages as getStaticAIImages } from './utils';
-
-function getRedis() {
-  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-  if (!url || !token) return null;
-  const { Redis } = require('@upstash/redis');
-  return new Redis({ url, token });
-}
+import { getRedis } from './redis';
 
 export async function getPhotographers(): Promise<Photographer[]> {
   const redis = getRedis();
   let photographers = [...staticPhotographers];
-  
+
   if (redis) {
     try {
-      // Get photographer list from Redis if available
       const list = await redis.get('photographers');
       if (list && Array.isArray(list) && list.length > 0) {
         photographers = list as Photographer[];
       }
-      
-      // Get migrated preview images from Redis
+
       const previewImages = await redis.get('site:preview') || [];
       const previewUrls = Array.isArray(previewImages) ? previewImages : [];
-      
+
       if (previewUrls.length > 0) {
         photographers = photographers.map((photographer) => {
-          // Only apply blob preview if photographer still has a local path
-          // If preview is already a blob URL, the admin has set it — don't overwrite
-          if (photographer.preview && photographer.preview.includes('.blob.vercel-storage.com')) {
+          if (photographer.preview?.includes('.blob.vercel-storage.com')) {
             return photographer;
           }
-          
-          // Find preview image that matches this photographer's ID
-          const matchingPreview = previewUrls.find((url: string) => 
+          const matchingPreview = previewUrls.find((url: string) =>
             url.includes(photographer.id)
           );
-          
-          if (matchingPreview) {
-            return {
-              ...photographer,
-              preview: matchingPreview
-            };
-          }
-          return photographer;
+          return matchingPreview ? { ...photographer, preview: matchingPreview } : photographer;
         });
       }
     } catch {}
   }
-  
+
   return photographers;
 }
 

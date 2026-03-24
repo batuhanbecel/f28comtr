@@ -1,19 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { verifyAdminToken, COOKIE_NAME } from '@/lib/auth';
+import { checkAuth } from '@/lib/auth';
 import { getPhotographerImages, setPhotographerImages } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
-async function checkAuth() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(COOKIE_NAME)?.value;
-  if (!token) return false;
-  return verifyAdminToken(token);
-}
-
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   if (!await checkAuth()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  
   try {
     const { id } = await params;
     const images = await getPhotographerImages(id);

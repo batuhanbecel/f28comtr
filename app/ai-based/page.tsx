@@ -9,6 +9,11 @@ import { ScrollIndicator } from '@/components/ScrollIndicator';
 export const metadata: Metadata = {
   title: 'AI Based | f/2.8 Production Agency',
   description: 'Creative visual and video content powered by the latest generative AI models.',
+  openGraph: {
+    title: 'AI Based | f/2.8 Production Agency',
+    description: 'Creative visual and video content powered by the latest generative AI models.',
+    url: 'https://www.f28.com.tr/ai-based',
+  },
 };
 
 export const revalidate = 60;

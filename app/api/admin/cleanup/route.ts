@@ -1,18 +1,12 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { verifyAdminToken, COOKIE_NAME } from '@/lib/auth';
+import { checkAuth } from '@/lib/auth';
 import { getPhotographers, getPhotographerImages, setPhotographerImages, getAIImages, setAIImages } from '@/lib/db';
 
-async function checkAuth() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(COOKIE_NAME)?.value;
-  if (!token) return false;
-  return verifyAdminToken(token);
-}
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.f28.com.tr';
 
 async function checkUrl(url: string): Promise<boolean> {
   try {
-    const fullUrl = url.startsWith('http') ? url : `https://www.f28.com.tr${url}`;
+    const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
     const res = await fetch(fullUrl, { method: 'HEAD', redirect: 'follow' });
     return res.ok;
   } catch {
@@ -27,15 +21,13 @@ export async function POST() {
   const results: { photographer: string; removed: string[] }[] = [];
   let totalRemoved = 0;
 
-  // Check each photographer's images
   for (const p of photographers) {
     const images = await getPhotographerImages(p.id);
-    const removed: string[] = [];
     const valid: string[] = [];
+    const removed: string[] = [];
 
     for (const img of images) {
-      const ok = await checkUrl(img);
-      if (ok) {
+      if (await checkUrl(img)) {
         valid.push(img);
       } else {
         removed.push(img);
@@ -49,14 +41,12 @@ export async function POST() {
     }
   }
 
-  // Check AI images
   const aiImages = await getAIImages();
-  const aiRemoved: string[] = [];
   const aiValid: string[] = [];
+  const aiRemoved: string[] = [];
 
   for (const img of aiImages) {
-    const ok = await checkUrl(img);
-    if (ok) {
+    if (await checkUrl(img)) {
       aiValid.push(img);
     } else {
       aiRemoved.push(img);

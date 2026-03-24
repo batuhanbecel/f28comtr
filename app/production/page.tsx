@@ -9,6 +9,11 @@ import { ScrollIndicator } from '@/components/ScrollIndicator';
 export const metadata: Metadata = {
   title: 'Production | f/2.8 Production Agency',
   description: 'Professional photography and retouching by top photographers. Based in Istanbul since 2008.',
+  openGraph: {
+    title: 'Production | f/2.8 Production Agency',
+    description: 'Professional photography and retouching by top photographers. Based in Istanbul since 2008.',
+    url: 'https://www.f28.com.tr/production',
+  },
 };
 
 export const revalidate = 60;
