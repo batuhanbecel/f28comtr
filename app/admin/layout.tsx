@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-th-bg text-th-fg">
       <AdminNav />
       <main className="lg:pl-64">
         {children}
@@ -18,9 +18,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         position="bottom-right"
         toastOptions={{
           style: {
-            background: 'rgba(255,255,255,0.08)',
-            color: '#fff',
-            border: '1px solid rgba(255,255,255,0.06)',
+            background: 'rgb(var(--c-fg) / 0.08)',
+            color: 'var(--foreground)',
+            border: '1px solid rgb(var(--c-fg) / 0.06)',
             backdropFilter: 'blur(12px)',
             fontSize: '13px',
             letterSpacing: '0.02em',

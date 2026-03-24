@@ -27,22 +27,22 @@ export function AdminNav() {
         className="lg:hidden fixed top-5 left-5 z-50 flex flex-col gap-[5px] w-6 py-1"
         aria-label="Toggle menu"
       >
-        <span className={`h-px bg-white transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-[7px] w-full' : 'w-full opacity-60'}`} />
-        <span className={`h-px bg-white transition-all duration-300 ${isOpen ? 'opacity-0 w-0' : 'w-3/4 opacity-40'}`} />
-        <span className={`h-px bg-white transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-[7px] w-full' : 'w-1/2 opacity-25'}`} />
+        <span className={`h-px bg-th-fg transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-[7px] w-full' : 'w-full opacity-60'}`} />
+        <span className={`h-px bg-th-fg transition-all duration-300 ${isOpen ? 'opacity-0 w-0' : 'w-3/4 opacity-40'}`} />
+        <span className={`h-px bg-th-fg transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-[7px] w-full' : 'w-1/2 opacity-25'}`} />
       </button>
 
       {/* Sidebar */}
       <nav className={`
-        fixed top-0 left-0 h-full w-64 bg-[#080808] border-r border-white/[0.06] z-40
+        fixed top-0 left-0 h-full w-64 bg-th-surface border-r border-th-fg/[0.06] z-40
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         <div className="flex flex-col h-full px-5 py-6">
           <Link href="/" className="flex items-center gap-3 mb-10">
             <Image src="/logos/f28/f28_white.png" alt="f/2.8" width={80} height={40} className="h-6 w-auto opacity-60" />
-            <div className="w-px h-3 bg-white/10" />
-            <span className="text-white/25 text-[9px] tracking-[0.3em] uppercase">Admin</span>
+            <div className="w-px h-3 bg-th-fg/10" />
+            <span className="text-th-fg/25 text-[9px] tracking-[0.3em] uppercase">Admin</span>
           </Link>
 
           <div className="space-y-px">
@@ -56,8 +56,8 @@ export function AdminNav() {
                   className={`
                     block px-3 py-2.5 text-[10px] font-bold tracking-[0.3em] uppercase transition-colors duration-200 rounded
                     ${isActive 
-                      ? 'bg-white/[0.06] text-white' 
-                      : 'text-white/30 hover:bg-white/[0.03] hover:text-white/60'
+                      ? 'bg-th-fg/[0.06] text-th-fg' 
+                      : 'text-th-fg/30 hover:bg-th-fg/[0.03] hover:text-th-fg/60'
                     }
                   `}
                 >
@@ -67,11 +67,11 @@ export function AdminNav() {
             })}
           </div>
 
-          <div className="mt-auto pt-6 border-t border-white/[0.06]">
+          <div className="mt-auto pt-6 border-t border-th-fg/[0.06]">
             <form action="/api/admin/logout" method="POST">
               <button
                 type="submit"
-                className="w-full text-left px-3 py-2.5 text-[10px] font-bold tracking-[0.3em] uppercase text-white/20 hover:text-red-400/70 hover:bg-red-400/[0.05] transition-colors duration-200 rounded"
+                className="w-full text-left px-3 py-2.5 text-[10px] font-bold tracking-[0.3em] uppercase text-th-fg/20 hover:text-red-400/70 hover:bg-red-400/[0.05] transition-colors duration-200 rounded"
               >
                 Logout
               </button>

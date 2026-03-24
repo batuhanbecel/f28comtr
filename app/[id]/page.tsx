@@ -7,12 +7,13 @@ import { shouldSkipOptimization } from '@/lib/blob';
 import { MasonryGrid } from '@/components/MasonryGrid';
 import { Footer } from '@/components/Footer';
 import { DownloadPortfolio } from '@/components/DownloadPortfolio';
+import { TitleLabel } from '@/components/TitleLabel';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 
 export const revalidate = 60;
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
 export async function generateStaticParams() {
@@ -22,9 +23,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { id } = await params;
-  const photographers = await getPhotographers();
-  const photographer = photographers.find((p) => p.id === id);
+  const photographer = await getPhotographers().then((photographers) => photographers.find((p) => p.id === params.id));
   if (!photographer) return { title: 'Portfolio | f/2.8 Production' };
   return {
     title: `${photographer.fullName} | f/2.8 Production`,
@@ -37,15 +36,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function PortfolioPage({ params }: PageProps) {
-  const { id } = await params;
-  const photographers = await getPhotographers();
-  const photographer = photographers.find((p) => p.id === id);
-
-  if (!photographer) {
-    notFound();
-  }
-
-  const images = await getPhotographerImages(id);
+  const photographer = await getPhotographers().then((photographers) => photographers.find((p) => p.id === params.id));
+  if (!photographer) return notFound();
+  const images = await getPhotographerImages(params.id);
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -86,8 +79,8 @@ export default async function PortfolioPage({ params }: PageProps) {
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-transparent h-1/3" />
 
         <div className="relative z-10 text-center text-white px-4">
-          <div className="hero-rule fade-in-up" style={{animationDelay: '0.05s'}} />
-          <span className="section-label fade-in-up" style={{animationDelay: '0.1s'}}>{photographer.title}</span>
+          <div className="hero-rule fade-in-up" style={{animationDelay: '0.05s', background: 'rgba(255,255,255,0.25)'}} />
+          <TitleLabel photographer={photographer} />
           <h1 className="heading-hero fade-in-up mt-2" style={{animationDelay: '0.2s'}}>
             {photographer.fullName}
           </h1>

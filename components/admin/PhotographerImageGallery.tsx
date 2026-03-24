@@ -87,7 +87,7 @@ function SortableImage({ id, image, photographerName }: { id: string; image: str
       style={style}
       {...attributes}
       {...listeners}
-      className="relative aspect-square overflow-hidden bg-white/[0.03] border border-white/[0.06] hover:border-white/20 rounded-lg cursor-move group"
+      className="relative aspect-square overflow-hidden bg-th-fg/[0.03] border border-th-fg/[0.06] hover:border-th-fg/20 rounded-lg cursor-move group"
     >
       <Image
         src={image}
@@ -311,7 +311,7 @@ export function PhotographerImageGallery({
         <button
           onClick={() => !isUploading && fileInputRef.current?.click()}
           disabled={isUploading}
-          className="text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 border border-white/[0.15] text-white/60 hover:text-white hover:border-white/30 transition-colors disabled:opacity-40 rounded"
+          className="text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 border border-th-fg/[0.15] text-th-fg/60 hover:text-th-fg hover:border-th-fg/30 transition-colors disabled:opacity-40 rounded"
         >
           + Upload
         </button>
@@ -330,17 +330,17 @@ export function PhotographerImageGallery({
         onDragLeave={handleDropzoneDragLeave}
         onDrop={handleDropzoneDrop}
         className={`mb-6 border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-          isDragOver ? 'border-white/40 bg-white/[0.06]' : 'border-white/[0.08] hover:border-white/15'
+          isDragOver ? 'border-th-fg/40 bg-th-fg/[0.06]' : 'border-th-fg/[0.08] hover:border-th-fg/15'
         } ${isUploading ? 'pointer-events-none opacity-60' : ''}`}
       >
-        <p className="text-white/30 text-xs tracking-wide">Drop images here or click Upload</p>
+        <p className="text-th-fg/30 text-xs tracking-wide">Drop images here or click Upload</p>
       </div>
 
       {/* Upload Progress */}
       {uploadQueue.length > 0 && (
-        <div className="mb-6 border border-white/[0.08] rounded-lg divide-y divide-white/[0.05] max-h-48 overflow-y-auto">
-          <div className="px-4 py-2 flex justify-between items-center bg-white/[0.02]">
-            <span className="text-white/40 text-[10px] tracking-widest uppercase">
+        <div className="mb-6 border border-th-fg/[0.08] rounded-lg divide-y divide-th-fg/[0.05] max-h-48 overflow-y-auto">
+          <div className="px-4 py-2 flex justify-between items-center bg-th-fg/[0.02]">
+            <span className="text-th-fg/40 text-[10px] tracking-widest uppercase">
               {isUploading
                 ? `Uploading ${completedCount}/${uploadQueue.length}`
                 : `Done ${completedCount}/${uploadQueue.length}`
@@ -350,14 +350,14 @@ export function PhotographerImageGallery({
             {isUploading ? (
               <button onClick={() => { abortRef.current = true; }} className="text-red-400/60 hover:text-red-400 text-[10px] tracking-widest uppercase">Cancel</button>
             ) : (
-              <button onClick={() => setUploadQueue([])} className="text-white/30 hover:text-white/60 text-[10px] tracking-widest uppercase">Dismiss</button>
+              <button onClick={() => setUploadQueue([])} className="text-th-fg/30 hover:text-th-fg/60 text-[10px] tracking-widest uppercase">Dismiss</button>
             )}
           </div>
           {uploadQueue.map((item, i) => (
             <div key={i} className="px-4 py-2 flex items-center justify-between text-xs">
-              <span className="text-white/50 truncate max-w-[60%]">{item.fileName}</span>
+              <span className="text-th-fg/50 truncate max-w-[60%]">{item.fileName}</span>
               <span className={`text-[10px] tracking-wider ${
-                item.status === 'done' ? 'text-green-400/70' : item.status === 'error' ? 'text-red-400/70' : item.status === 'uploading' ? 'text-white/50' : 'text-white/20'
+                item.status === 'done' ? 'text-green-400/70' : item.status === 'error' ? 'text-red-400/70' : item.status === 'uploading' ? 'text-th-fg/50' : 'text-th-fg/20'
               }`}>
                 {item.status === 'uploading' ? 'Uploading...' : item.status === 'done' ? '✓' : item.status === 'error' ? item.error || 'Failed' : 'Pending'}
               </span>
@@ -372,7 +372,7 @@ export function PhotographerImageGallery({
           <button
             onClick={handleSaveOrder}
             disabled={isSaving}
-            className="bg-white text-black text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-white/90 transition-colors disabled:opacity-50 rounded"
+            className="bg-th-fg text-th-bg text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-th-fg/90 transition-colors disabled:opacity-50 rounded"
           >
             {isSaving ? 'Saving...' : 'Save Order'}
           </button>
@@ -386,8 +386,8 @@ export function PhotographerImageGallery({
           }}
           className={`text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 transition-colors rounded ${
             isReorderMode
-              ? 'bg-white/10 border border-white/20 text-white/60 hover:text-white'
-              : 'border border-white/[0.15] text-white/60 hover:text-white hover:border-white/30'
+              ? 'bg-th-fg/10 border border-th-fg/20 text-th-fg/60 hover:text-th-fg'
+              : 'border border-th-fg/[0.15] text-th-fg/60 hover:text-th-fg hover:border-th-fg/30'
           }`}
         >
           {isReorderMode ? '✕ Cancel' : 'Reorder'}
@@ -410,7 +410,7 @@ export function PhotographerImageGallery({
           {images.map((image) => (
             <div
               key={image}
-              className="group relative aspect-square overflow-hidden bg-white/[0.03] border border-white/[0.06] hover:border-white/20 transition-all duration-300 rounded-lg"
+              className="group relative aspect-square overflow-hidden bg-th-fg/[0.03] border border-th-fg/[0.06] hover:border-th-fg/20 transition-all duration-300 rounded-lg"
             >
               <Image
                 src={image}
@@ -448,9 +448,9 @@ export function PhotographerImageGallery({
       )}
 
       {images.length === 0 && !isUploading && uploadQueue.length === 0 && (
-        <div className="text-center py-20 border border-white/[0.05] rounded-lg">
-          <p className="text-white/20 text-xs tracking-[0.4em] uppercase">No images found</p>
-          <p className="text-white/10 text-xs mt-2">Drop images above or click Upload</p>
+        <div className="text-center py-20 border border-th-fg/[0.05] rounded-lg">
+          <p className="text-th-fg/20 text-xs tracking-[0.4em] uppercase">No images found</p>
+          <p className="text-th-fg/10 text-xs mt-2">Drop images above or click Upload</p>
         </div>
       )}
     </div>

@@ -17,7 +17,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-black border-t border-white/[0.07]">
+    <footer className="bg-th-bg border-t border-th-fg/[0.07]">
       <div className="max-w-7xl mx-auto px-8 md:px-16">
 
         {/* Main grid */}
@@ -26,23 +26,23 @@ export function Footer() {
           {/* Brand */}
           <div className="flex flex-col gap-6">
             <Link href="/" className="opacity-55 hover:opacity-100 transition-opacity duration-300 w-fit">
-              <Image src="/logos/f28/f28_white.png" alt="f/2.8" width={90} height={45} className="h-8 w-auto" />
+              <Image src="/logos/f28/f28_white.png" alt="f/2.8" width={90} height={45} className="h-8 w-auto dark:invert-0 invert" />
             </Link>
             <div className="space-y-1">
-              <p className="text-white/20 text-[10px] tracking-[0.4em] uppercase">{t.footer.tagline}</p>
-              <p className="text-white/15 text-[10px] tracking-[0.4em] uppercase">{t.footer.location}</p>
+              <p className="text-th-fg/20 text-[10px] tracking-[0.4em] uppercase">{t.footer.tagline}</p>
+              <p className="text-th-fg/15 text-[10px] tracking-[0.4em] uppercase">{t.footer.location}</p>
             </div>
           </div>
 
           {/* Navigation */}
           <div>
-            <p className="text-white/20 text-[9px] tracking-[0.55em] uppercase mb-7">{t.footer.navigation}</p>
+            <p className="text-th-fg/20 text-[9px] tracking-[0.55em] uppercase mb-7">{t.footer.navigation}</p>
             <nav className="flex flex-col gap-3.5">
               {NAV.map(({ href, label }) => (
                 <Link
                   key={href}
                   href={href}
-                  className="text-white/35 text-[13px] tracking-wide hover:text-white/80 transition-colors duration-300 w-fit hover-line"
+                  className="text-th-fg/35 text-[13px] tracking-wide hover:text-th-fg/80 transition-colors duration-300 w-fit hover-line"
                 >
                   {label}
                 </Link>
@@ -52,21 +52,21 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <p className="text-white/20 text-[9px] tracking-[0.55em] uppercase mb-7">{t.footer.contact}</p>
+            <p className="text-th-fg/20 text-[9px] tracking-[0.55em] uppercase mb-7">{t.footer.contact}</p>
             <a
               href={`mailto:${contactInfo.email}`}
-              className="text-white/35 text-[13px] tracking-wide hover:text-white/80 transition-colors duration-300 block mb-8 hover-line w-fit"
+              className="text-th-fg/35 text-[13px] tracking-wide hover:text-th-fg/80 transition-colors duration-300 block mb-8 hover-line w-fit"
             >
               {contactInfo.email}
             </a>
-            <p className="text-white/20 text-[9px] tracking-[0.55em] uppercase mb-4">{t.footer.follow}</p>
+            <p className="text-th-fg/20 text-[9px] tracking-[0.55em] uppercase mb-4">{t.footer.follow}</p>
             <div className="flex gap-5">
               <Link href={contactInfo.instagram} target="_blank" rel="noopener noreferrer"
-                className="text-white/30 text-[10px] tracking-[0.4em] uppercase hover:text-white/70 transition-colors duration-300">
+                className="text-th-fg/30 text-[10px] tracking-[0.4em] uppercase hover:text-th-fg/70 transition-colors duration-300">
                 Instagram
               </Link>
               <Link href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer"
-                className="text-white/30 text-[10px] tracking-[0.4em] uppercase hover:text-white/70 transition-colors duration-300">
+                className="text-th-fg/30 text-[10px] tracking-[0.4em] uppercase hover:text-th-fg/70 transition-colors duration-300">
                 LinkedIn
               </Link>
             </div>
@@ -74,11 +74,11 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-white/[0.06] py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-white/15 text-[9px] tracking-[0.35em] uppercase">
+        <div className="border-t border-th-fg/[0.06] py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-th-fg/15 text-[9px] tracking-[0.35em] uppercase">
             &copy; {new Date().getFullYear()} f/2.8 Production. {t.footer.rights}
           </p>
-          <p className="text-white/10 text-[9px] tracking-[0.3em] uppercase font-mono">
+          <p className="text-th-fg/10 text-[9px] tracking-[0.3em] uppercase font-mono">
             {t.footer.city}
           </p>
         </div>

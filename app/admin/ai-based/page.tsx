@@ -183,9 +183,9 @@ export default function AdminAIBased() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="space-y-3 w-full max-w-4xl px-8">
-          <div className="h-10 bg-white/[0.03] animate-pulse w-48" />
+          <div className="h-10 bg-th-fg/[0.03] animate-pulse w-48" />
           <div className="grid grid-cols-5 gap-2 mt-8">
-            {[...Array(15)].map((_, i) => <div key={i} className="aspect-square bg-white/[0.03] animate-pulse" />)}
+            {[...Array(15)].map((_, i) => <div key={i} className="aspect-square bg-th-fg/[0.03] animate-pulse" />)}
           </div>
         </div>
       </div>
@@ -195,18 +195,18 @@ export default function AdminAIBased() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="border-b border-white/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-[#080808]/95 backdrop-blur-sm z-10">
+      <header className="border-b border-th-fg/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-th-surface/95 backdrop-blur-sm z-10">
         <div className="flex items-center gap-4">
-          <Link href="/admin" className="text-white/25 text-[10px] tracking-[0.3em] uppercase hover:text-white/60 transition-colors">
+          <Link href="/admin" className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase hover:text-th-fg/60 transition-colors">
             ← Dashboard
           </Link>
-          <div className="w-px h-3 bg-white/10" />
-          <span className="text-white/25 text-[10px] tracking-[0.3em] uppercase">AI Based</span>
+          <div className="w-px h-3 bg-th-fg/10" />
+          <span className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase">AI Based</span>
         </div>
         <Link
           href="/ai-based"
           target="_blank"
-          className="text-white/30 text-[10px] tracking-[0.25em] uppercase hover:text-white/60 transition-colors px-3 py-2 hover:bg-white/5"
+          className="text-th-fg/30 text-[10px] tracking-[0.25em] uppercase hover:text-th-fg/60 transition-colors px-3 py-2 hover:bg-th-fg/5"
         >
           View Page ↗
         </Link>
@@ -215,7 +215,7 @@ export default function AdminAIBased() {
       {/* Toast */}
       {message && (
         <div className={`fixed bottom-8 right-8 z-50 px-5 py-3 backdrop-blur border text-sm tracking-wide shadow-2xl ${
-          isError ? 'bg-red-500/20 border-red-500/30 text-red-300' : 'bg-white/10 border-white/20 text-white'
+          isError ? 'bg-red-500/20 border-red-500/30 text-red-300' : 'bg-th-fg/10 border-th-fg/20 text-th-fg'
         }`}>
           {message}
         </div>
@@ -224,9 +224,9 @@ export default function AdminAIBased() {
       <div className="max-w-7xl mx-auto px-8 py-10">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <p className="text-white/20 text-[10px] tracking-[0.5em] uppercase mb-2">AI Based</p>
+            <p className="text-th-fg/20 text-[10px] tracking-[0.5em] uppercase mb-2">AI Based</p>
             <h1 className="text-3xl font-black tracking-tighter">IMAGE ORDER</h1>
-            <p className="text-white/25 text-xs mt-1">
+            <p className="text-th-fg/25 text-xs mt-1">
               {images.length} images — drag to reorder, hover for controls
             </p>
           </div>
@@ -234,8 +234,7 @@ export default function AdminAIBased() {
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
-              className="text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 border border-white/[0.15] text-white/60 hover:text-white hover:border-white/30 transition-colors disabled:opacity-40"
-            >
+              className="text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 border border-th-fg/[0.15] text-th-fg/60 hover:text-th-fg hover:border-th-fg/30 transition-colors disabled:opacity-40">
               + Upload
             </button>
             <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden"
@@ -243,8 +242,7 @@ export default function AdminAIBased() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="bg-white text-black text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-white/90 transition-colors disabled:opacity-50"
-            >
+              className="bg-th-fg text-th-bg text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-th-fg/90 transition-colors disabled:opacity-50">
               {saving ? 'Saving...' : 'Save Order'}
             </button>
           </div>
@@ -256,18 +254,18 @@ export default function AdminAIBased() {
           onDragLeave={() => setIsDragOver(false)}
           onDrop={e => { e.preventDefault(); setIsDragOver(false); if (e.dataTransfer.files.length) uploadFiles(Array.from(e.dataTransfer.files)); }}
           className={`mb-6 border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-            isDragOver ? 'border-white/40 bg-white/[0.06]' : 'border-white/[0.08] hover:border-white/15'
+            isDragOver ? 'border-th-fg/40 bg-th-fg/[0.06]' : 'border-th-fg/[0.08] hover:border-th-fg/15'
           }`}
         >
-          <p className="text-white/30 text-xs tracking-wide">Drop AI images here or click Upload</p>
+          <p className="text-th-fg/30 text-xs tracking-wide">Drop AI images here or click Upload</p>
         </div>
 
         {/* Upload progress */}
         {uploadQueue.length > 0 && (
-          <div className="mb-6 border border-white/[0.08] rounded-lg divide-y divide-white/[0.05] max-h-48 overflow-y-auto">
+          <div className="mb-6 border border-th-fg/[0.08] rounded-lg divide-y divide-th-fg/[0.05] max-h-48 overflow-y-auto">
             {isUploading && (
-              <div className="px-4 py-2 flex justify-between items-center bg-white/[0.02]">
-                <span className="text-white/40 text-[10px] tracking-widest uppercase">
+              <div className="px-4 py-2 flex justify-between items-center bg-th-fg/[0.02]">
+                <span className="text-th-fg/40 text-[10px] tracking-widest uppercase">
                   Uploading {uploadQueue.filter(q => q.status === 'done').length}/{uploadQueue.length}
                 </span>
                 <button onClick={() => abortRef.current = true} className="text-red-400/60 hover:text-red-400 text-[10px] tracking-widest uppercase">Cancel</button>
@@ -275,9 +273,9 @@ export default function AdminAIBased() {
             )}
             {uploadQueue.map((item, i) => (
               <div key={i} className="px-4 py-2 flex items-center justify-between text-xs">
-                <span className="text-white/50 truncate max-w-[60%]">{item.fileName}</span>
+                <span className="text-th-fg/50 truncate max-w-[60%]">{item.fileName}</span>
                 <span className={`text-[10px] tracking-wider ${
-                  item.status === 'done' ? 'text-green-400/70' : item.status === 'error' ? 'text-red-400/70' : item.status === 'uploading' ? 'text-white/50' : 'text-white/20'
+                  item.status === 'done' ? 'text-green-400/70' : item.status === 'error' ? 'text-red-400/70' : item.status === 'uploading' ? 'text-th-fg/50' : 'text-th-fg/20'
                 }`}>
                   {item.status === 'uploading' ? 'Uploading...' : item.status === 'done' ? '✓' : item.status === 'error' ? item.error || 'Failed' : 'Pending'}
                 </span>
@@ -287,9 +285,9 @@ export default function AdminAIBased() {
         )}
 
         {images.length === 0 ? (
-          <div className="text-center py-20 border border-white/[0.05]">
-            <p className="text-white/20 text-xs tracking-[0.4em] uppercase">No AI images found</p>
-            <p className="text-white/10 text-xs mt-2">Drop images above or click Upload to add AI images</p>
+          <div className="text-center py-20 border border-th-fg/[0.05]">
+            <p className="text-th-fg/20 text-xs tracking-[0.4em] uppercase">No AI images found</p>
+            <p className="text-th-fg/10 text-xs mt-2">Drop images above or click Upload to add AI images</p>
           </div>
         ) : (
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-1.5">
@@ -302,7 +300,7 @@ export default function AdminAIBased() {
                 onDragEnd={onDragEnd}
                 onDragOver={e => e.preventDefault()}
                 className={`group relative aspect-square overflow-hidden cursor-grab active:cursor-grabbing select-none transition-all duration-150 rounded-lg ${
-                  dragIndex === index ? 'opacity-40 scale-95 ring-1 ring-white/30' : 'opacity-100'
+                  dragIndex === index ? 'opacity-40 scale-95 ring-1 ring-th-fg/30' : 'opacity-100'
                 }`}
               >
                 <Image
@@ -313,24 +311,24 @@ export default function AdminAIBased() {
                   sizes="(max-width: 640px) 33vw, (max-width: 1024px) 20vw, 15vw"
                   unoptimized={shouldSkipOptimization(img)}
                 />
-                <div className="absolute top-1 left-1 bg-black/70 px-1.5 py-0.5">
-                  <span className="text-white/60 text-[9px] font-mono">{index + 1}</span>
+                <div className="absolute top-1 left-1 bg-th-bg/70 px-1.5 py-0.5">
+                  <span className="text-th-fg/60 text-[9px] font-mono">{index + 1}</span>
                 </div>
-                <div className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex flex-col justify-between p-1.5">
+                <div className="absolute inset-0 bg-th-bg/75 opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex flex-col justify-between p-1.5">
                   <div className="flex justify-end gap-0.5">
                     <button
                       onClick={(e) => { e.stopPropagation(); moveImage(index, -1); }}
                       disabled={index === 0}
-                      className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/20 transition-colors disabled:opacity-20 text-xs"
+                      className="w-6 h-6 flex items-center justify-center text-th-fg/50 hover:text-th-fg hover:bg-th-fg/20 transition-colors disabled:opacity-20 text-xs"
                     >←</button>
                     <button
                       onClick={(e) => { e.stopPropagation(); moveImage(index, 1); }}
                       disabled={index === images.length - 1}
-                      className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/20 transition-colors disabled:opacity-20 text-xs"
+                      className="w-6 h-6 flex items-center justify-center text-th-fg/50 hover:text-th-fg hover:bg-th-fg/20 transition-colors disabled:opacity-20 text-xs"
                     >→</button>
                   </div>
                   <div className="text-center">
-                    <span className="text-white/40 text-[9px] font-mono">{index + 1} / {images.length}</span>
+                    <span className="text-th-fg/40 text-[9px] font-mono">{index + 1} / {images.length}</span>
                   </div>
                   <div className="flex justify-end">
                     <button
@@ -349,7 +347,7 @@ export default function AdminAIBased() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="bg-white text-black text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-white/90 transition-colors disabled:opacity-50"
+              className="bg-th-fg text-th-bg text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-th-fg/90 transition-colors disabled:opacity-50"
             >
               {saving ? 'Saving...' : 'Save Order'}
             </button>

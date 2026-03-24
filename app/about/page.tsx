@@ -6,6 +6,7 @@ import { LocalizedHero } from '@/components/LocalizedHero';
 import { LocalizedAboutBrands } from '@/components/LocalizedAboutBrands';
 import { AboutStats } from '@/components/AboutStats';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
+import { ScrollIndicator } from '@/components/ScrollIndicator';
 
 export const metadata: Metadata = {
   title: 'About Us | f/2.8 Production Agency',
@@ -35,21 +36,13 @@ export default async function AboutPage() {
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 mt-10 fade-in-up" style={{ animationDelay: '0.35s' }}>
             {SERVICES.map((s, i) => (
               <span key={s} className="flex items-center gap-2">
-                <span className="text-white/20 font-mono text-[9px]">{String(i + 1).padStart(2, '0')}</span>
-                <span className="text-white/45 text-[10px] tracking-[0.35em] uppercase">{s}</span>
+                <span className="text-th-fg/20 font-mono text-[9px]">{String(i + 1).padStart(2, '0')}</span>
+                <span className="text-th-fg/45 text-[10px] tracking-[0.35em] uppercase">{s}</span>
               </span>
             ))}
           </div>
         </div>
-        {/* Scroll arrow */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 fade-in-up" style={{ animationDelay: '0.5s' }}>
-          <div className="flex flex-col items-center gap-2 animate-bounce">
-            <span className="text-white/20 text-[9px] tracking-[0.45em] uppercase">Scroll</span>
-            <svg className="w-4 h-4 text-white/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="square" d="M12 5v14M5 13l7 7 7-7" />
-            </svg>
-          </div>
-        </div>
+        <ScrollIndicator />
       </section>
 
       {/* Content — snap point (scrolls freely after snap) */}

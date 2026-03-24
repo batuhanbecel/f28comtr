@@ -46,7 +46,7 @@ export function LocalizedHero({ page, imageCount }: LocalizedHeroProps) {
         {config.description}
       </p>
       {page === 'aiBased' && imageCount != null && imageCount > 0 && (
-        <p className="text-white/20 text-[10px] tracking-[0.5em] uppercase mt-6 fade-in-up" style={{ animationDelay: '0.35s' }}>
+        <p className="text-th-fg/20 text-[10px] tracking-[0.5em] uppercase mt-6 fade-in-up" style={{ animationDelay: '0.35s' }}>
           {imageCount} {t.aiBased.worksLabel}
         </p>
       )}

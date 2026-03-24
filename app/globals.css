@@ -2,11 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+:root, [data-theme="dark"] {
   --background: #000000;
   --foreground: #ffffff;
+  --c-bg: 0 0 0;
+  --c-fg: 255 255 255;
+  --c-surface: 8 8 8;
+  color-scheme: dark;
 }
 
+[data-theme="light"] {
+  --background: #fafafa;
+  --foreground: #141414;
+  --c-bg: 250 250 250;
+  --c-fg: 20 20 20;
+  --c-surface: 240 240 240;
+  color-scheme: light;
+}
 
 * {
   margin: 0;
@@ -31,6 +43,29 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* ─── Mobile: prevent iOS zoom on input focus ─────────────────────────── */
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* ─── Touch targets: ensure minimum 44px on touch devices ─────────────── */
+@media (pointer: coarse) {
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ─── Safe area padding helpers ───────────────────────────────────────── */
+.pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+.px-safe {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
 /* Performance optimizations */
 img, video {
   max-width: 100%;
@@ -45,7 +80,7 @@ img, video {
 .cursor-dot {
   width: 6px;
   height: 6px;
-  background: #fff;
+  background: var(--foreground);
   border-radius: 50%;
   transition: width 0.25s, height 0.25s, background 0.25s, opacity 0.2s;
   opacity: 0.9;
@@ -53,13 +88,13 @@ img, video {
 .cursor-dot[data-hover] {
   width: 4px;
   height: 4px;
-  background: #fff;
+  background: var(--foreground);
   opacity: 0.5;
 }
 .cursor-ring {
   width: 36px;
   height: 36px;
-  border: 1px solid rgba(255,255,255,0.35);
+  border: 1px solid rgb(var(--c-fg) / 0.35);
   border-radius: 50%;
   transition: width 0.35s cubic-bezier(0.23,1,0.32,1),
               height 0.35s cubic-bezier(0.23,1,0.32,1),
@@ -69,7 +104,7 @@ img, video {
 .cursor-ring[data-hover] {
   width: 52px;
   height: 52px;
-  border-color: rgba(255,255,255,0.65);
+  border-color: rgb(var(--c-fg) / 0.65);
 }
 
 /* GPU acceleration - only for parallax where it matters */
@@ -89,7 +124,7 @@ img, video {
 }
 
 .text-shadow-lg {
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 40px rgba(255, 255, 255, 0.1);
+  text-shadow: 0 0 20px rgb(var(--c-fg) / 0.3), 0 0 40px rgb(var(--c-fg) / 0.1);
 }
 
 .heading-xl {
@@ -130,14 +165,14 @@ img, video {
 
 /* Modern design utilities */
 .glass-effect {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgb(var(--c-fg) / 0.05);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgb(var(--c-fg) / 0.1);
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
+  background: linear-gradient(135deg, var(--foreground) 0%, rgb(var(--c-fg) / 0.6) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -219,6 +254,14 @@ img, video {
   .text-balance {
     text-wrap: balance;
   }
+  .h-screen-safe {
+    height: 100vh;
+    height: 100dvh;
+  }
+  .min-h-screen-safe {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
 }
 
 /* ─── Film grain animation ───────────────────────────────────────────────── */
@@ -235,7 +278,7 @@ img, video {
 .hero-rule {
   width: 32px;
   height: 1px;
-  background: rgba(255,255,255,0.25);
+  background: rgb(var(--c-fg) / 0.25);
   margin: 0 auto 1.5rem;
 }
 

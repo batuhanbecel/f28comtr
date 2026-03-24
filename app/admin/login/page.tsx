@@ -37,7 +37,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center px-4">
+    <div className="min-h-screen bg-th-bg flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-12">
           <Image
@@ -47,7 +47,7 @@ export default function AdminLogin() {
             height={50}
             className="h-10 w-auto mx-auto mb-8 opacity-90"
           />
-          <p className="text-white/40 text-xs tracking-[0.3em] uppercase">Admin Dashboard</p>
+          <p className="text-th-fg/40 text-xs tracking-[0.3em] uppercase">Admin Dashboard</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -59,7 +59,7 @@ export default function AdminLogin() {
               placeholder="Password"
               autoFocus
               required
-              className="w-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-white/20 px-4 py-3 text-sm tracking-wide focus:outline-none focus:border-white/25 transition-colors rounded"
+              className="w-full bg-th-fg/[0.04] border border-th-fg/[0.08] text-th-fg placeholder-th-fg/20 px-4 py-3 text-sm tracking-wide focus:outline-none focus:border-th-fg/25 transition-colors rounded"
             />
           </div>
 
@@ -70,7 +70,7 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-white text-black text-[10px] font-bold tracking-[0.3em] uppercase py-3 hover:bg-white/90 transition-colors disabled:opacity-50 rounded"
+            className="w-full bg-th-fg text-th-bg text-[10px] font-bold tracking-[0.3em] uppercase py-3 hover:bg-th-fg/90 transition-colors disabled:opacity-50 rounded"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>

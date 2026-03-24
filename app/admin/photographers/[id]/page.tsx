@@ -86,21 +86,21 @@ export default function EditPhotographerPage({ params }: PageProps) {
   if (loading) {
     return (
       <div className="min-h-screen">
-        <header className="border-b border-white/[0.06] px-8 py-5 sticky top-0 bg-[#080808]/95 backdrop-blur-sm z-10">
+        <header className="border-b border-th-fg/[0.06] px-8 py-5 sticky top-0 bg-th-surface/95 backdrop-blur-sm z-10">
           <div className="flex items-center gap-4">
-            <span className="text-white/25 text-[10px] tracking-[0.3em] uppercase">← Photographers</span>
-            <div className="w-px h-3 bg-white/10" />
-            <span className="text-white/25 text-[10px] tracking-[0.3em] uppercase">Loading...</span>
+            <span className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase">← Photographers</span>
+            <div className="w-px h-3 bg-th-fg/10" />
+            <span className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase">Loading...</span>
           </div>
         </header>
         <div className="max-w-7xl mx-auto px-8 py-10">
           <div className="space-y-3">
-            <div className="h-4 bg-white/[0.03] animate-pulse w-32" />
-            <div className="h-8 bg-white/[0.03] animate-pulse w-64" />
-            <div className="h-4 bg-white/[0.03] animate-pulse w-48 mb-8" />
-            <div className="h-32 bg-white/[0.03] animate-pulse rounded-lg" />
+            <div className="h-4 bg-th-fg/[0.03] animate-pulse w-32" />
+            <div className="h-8 bg-th-fg/[0.03] animate-pulse w-64" />
+            <div className="h-4 bg-th-fg/[0.03] animate-pulse w-48 mb-8" />
+            <div className="h-32 bg-th-fg/[0.03] animate-pulse rounded-lg" />
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-1.5 mt-8">
-              {[...Array(12)].map((_, i) => <div key={i} className="aspect-square bg-white/[0.03] animate-pulse rounded-lg" />)}
+              {[...Array(12)].map((_, i) => <div key={i} className="aspect-square bg-th-fg/[0.03] animate-pulse rounded-lg" />)}
             </div>
           </div>
         </div>
@@ -114,18 +114,18 @@ export default function EditPhotographerPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-white/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-[#080808]/95 backdrop-blur-sm z-10">
+      <header className="border-b border-th-fg/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-th-surface/95 backdrop-blur-sm z-10">
         <div className="flex items-center gap-4">
-          <Link href="/admin/photographers" className="text-white/25 text-[10px] tracking-[0.3em] uppercase hover:text-white/60 transition-colors">
+          <Link href="/admin/photographers" className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase hover:text-th-fg/60 transition-colors">
             ← Photographers
           </Link>
-          <div className="w-px h-3 bg-white/10" />
-          <span className="text-white/25 text-[10px] tracking-[0.3em] uppercase">{photographer.fullName}</span>
+          <div className="w-px h-3 bg-th-fg/10" />
+          <span className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase">{photographer.fullName}</span>
         </div>
         <Link
           href={`/${photographer.id}`}
           target="_blank"
-          className="text-white/30 text-[10px] tracking-[0.25em] uppercase hover:text-white/60 transition-colors px-3 py-2 hover:bg-white/5 rounded"
+          className="text-th-fg/30 text-[10px] tracking-[0.25em] uppercase hover:text-th-fg/60 transition-colors px-3 py-2 hover:bg-th-fg/5 rounded"
         >
           View Portfolio ↗
         </Link>
@@ -133,9 +133,9 @@ export default function EditPhotographerPage({ params }: PageProps) {
 
       <div className="max-w-7xl mx-auto px-8 py-10">
         <div className="mb-8">
-          <p className="text-white/20 text-[10px] tracking-[0.5em] uppercase mb-2">Edit Photographer</p>
+          <p className="text-th-fg/20 text-[10px] tracking-[0.5em] uppercase mb-2">Edit Photographer</p>
           <h1 className="text-3xl font-black tracking-tighter">{photographer.fullName}</h1>
-          <p className="text-white/25 text-xs mt-1">
+          <p className="text-th-fg/25 text-xs mt-1">
             {images.length} portfolio images — use ⭐ to set preview
           </p>
         </div>
@@ -143,7 +143,7 @@ export default function EditPhotographerPage({ params }: PageProps) {
         <PhotographerInfoForm photographer={photographer} />
 
         <div className="mt-10">
-          <p className="text-white/20 text-[10px] tracking-[0.5em] uppercase mb-4">Portfolio Images</p>
+          <p className="text-th-fg/20 text-[10px] tracking-[0.5em] uppercase mb-4">Portfolio Images</p>
           <PhotographerImageGallery 
             images={images} 
             photographerId={photographer.id}

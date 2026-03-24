@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface Photographer {
   fullName: string;
@@ -142,6 +143,7 @@ function renderPage(pdf: PDF, imgs: Img[], label: string) {
 export function DownloadPortfolio({ images, photographer }: Props) {
   const [phase, setPhase] = useState<'idle' | 'working' | 'done' | 'error'>('idle');
   const [progress, setProgress] = useState(0);
+  const { t } = useLanguage();
 
   const generate = useCallback(async () => {
     setPhase('working');
@@ -301,13 +303,13 @@ export function DownloadPortfolio({ images, photographer }: Props) {
           <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="square" d="M12 3v13M7 12l5 5 5-5M4 20h16" />
           </svg>
-          Download Portfolio
+          {t.common.downloadPortfolio}
         </>
       )}
       {phase === 'working' && (
         <>
           <span className="w-3.5 h-3.5 flex-shrink-0 border border-white/20 border-t-white/60 rounded-full animate-spin" />
-          {progress < 8 ? 'Preparing…' : `Building PDF… ${progress}%`}
+          {progress < 8 ? t.common.preparing : `${t.common.buildingPdf} ${progress}%`}
         </>
       )}
       {phase === 'done' && (
@@ -315,7 +317,7 @@ export function DownloadPortfolio({ images, photographer }: Props) {
           <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="square" d="M5 13l4 4L19 7" />
           </svg>
-          Downloaded
+          {t.common.downloaded}
         </>
       )}
       {phase === 'error' && (
@@ -323,7 +325,7 @@ export function DownloadPortfolio({ images, photographer }: Props) {
           <svg className="w-3.5 h-3.5 flex-shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="square" d="M6 18L18 6M6 6l12 12" />
           </svg>
-          <span className="text-red-400">Failed — try again</span>
+          <span className="text-red-400">{t.common.failedRetry}</span>
         </>
       )}
     </button>

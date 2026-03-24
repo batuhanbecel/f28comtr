@@ -23,7 +23,7 @@ export function PortfoliosList({ photographers }: { photographers: Photographer[
   }, []);
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-th-bg text-th-fg">
 
       {/* Photographer Grid */}
       <section className="pt-32 md:pt-40 px-4 md:px-8 lg:px-12 pb-8">
@@ -47,7 +47,7 @@ export function PortfoliosList({ photographers }: { photographers: Photographer[
               href={`/${p.id}`}
               onMouseEnter={() => setHoveredId(p.id)}
               onMouseLeave={() => setHoveredId(null)}
-              className="group relative aspect-[3/4] overflow-hidden bg-white/[0.03] block"
+              className="group relative aspect-[3/4] overflow-hidden bg-th-fg/[0.03] block"
               style={{
                 opacity: visible ? 1 : 0,
                 transform: visible ? 'translateY(0)' : 'translateY(40px)',
@@ -98,11 +98,11 @@ export function PortfoliosList({ photographers }: { photographers: Photographer[
       </section>
 
       {/* Divider + Portfolio text link list */}
-      <section className="px-8 md:px-16 py-16 border-t border-white/[0.06]">
+      <section className="px-8 md:px-16 py-16 border-t border-th-fg/[0.06]">
         <div className="flex items-center justify-between mb-10">
-          <span className="text-white/20 text-[10px] tracking-[0.5em] uppercase">Index</span>
-          <div className="flex-1 mx-6 h-px bg-white/[0.06]" />
-          <span className="text-white/20 text-[10px] tracking-[0.5em] uppercase">{String(filtered.length).padStart(2, '0')}</span>
+          <span className="text-th-fg/20 text-[10px] tracking-[0.5em] uppercase">Index</span>
+          <div className="flex-1 mx-6 h-px bg-th-fg/[0.06]" />
+          <span className="text-th-fg/20 text-[10px] tracking-[0.5em] uppercase">{String(filtered.length).padStart(2, '0')}</span>
         </div>
         <ul className="space-y-0">
           {filtered.map((p, i) => (
@@ -111,20 +111,20 @@ export function PortfoliosList({ photographers }: { photographers: Photographer[
                 href={`/${p.id}`}
                 onMouseEnter={() => setHoveredId(p.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                className="group flex items-center gap-6 py-4 border-b border-white/[0.04] transition-colors duration-300 hover:bg-white/[0.02] -mx-4 px-4"
+                className="group flex items-center gap-6 py-4 border-b border-th-fg/[0.04] transition-colors duration-300 hover:bg-th-fg/[0.02] -mx-4 px-4"
               >
                 <span className={`font-mono text-[10px] tracking-[0.3em] flex-shrink-0 transition-colors duration-300 ${
-                  hoveredId === p.id ? 'text-white/50' : 'text-white/15'
+                  hoveredId === p.id ? 'text-th-fg/50' : 'text-th-fg/15'
                 }`}>
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <span className={`flex-1 text-sm font-bold tracking-tight transition-all duration-300 ${
-                  hoveredId === p.id ? 'text-white translate-x-1' : 'text-white/50'
+                  hoveredId === p.id ? 'text-th-fg translate-x-1' : 'text-th-fg/50'
                 }`}>
                   {p.fullName}
                 </span>
                 <span className={`text-[8px] tracking-[0.4em] uppercase transition-colors duration-300 ${
-                  hoveredId === p.id ? 'text-white/40' : 'text-white/15'
+                  hoveredId === p.id ? 'text-th-fg/40' : 'text-th-fg/15'
                 }`}>
                   {(t.titleMap as Record<string, string>)[p.title] ?? p.title}
                 </span>

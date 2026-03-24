@@ -157,9 +157,9 @@ export default function AdminLogos() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="space-y-3 w-full max-w-4xl px-8">
-          <div className="h-10 bg-white/[0.03] animate-pulse w-48" />
+          <div className="h-10 bg-th-fg/[0.03] animate-pulse w-48" />
           <div className="grid grid-cols-4 gap-2 mt-8">
-            {[...Array(12)].map((_, i) => <div key={i} className="aspect-square bg-white/[0.03] animate-pulse" />)}
+            {[...Array(12)].map((_, i) => <div key={i} className="aspect-square bg-th-fg/[0.03] animate-pulse" />)}
           </div>
         </div>
       </div>
@@ -170,18 +170,18 @@ export default function AdminLogos() {
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-white/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-[#080808]/95 backdrop-blur-sm z-10">
+      <header className="border-b border-th-fg/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-th-surface/95 backdrop-blur-sm z-10">
         <div className="flex items-center gap-4">
-          <Link href="/admin" className="text-white/25 text-[10px] tracking-[0.3em] uppercase hover:text-white/60 transition-colors">
+          <Link href="/admin" className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase hover:text-th-fg/60 transition-colors">
             ← Dashboard
           </Link>
-          <div className="w-px h-3 bg-white/10" />
-          <span className="text-white/25 text-[10px] tracking-[0.3em] uppercase">Logos</span>
+          <div className="w-px h-3 bg-th-fg/10" />
+          <span className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase">Logos</span>
         </div>
         <Link
           href="/about"
           target="_blank"
-          className="text-white/30 text-[10px] tracking-[0.25em] uppercase hover:text-white/60 transition-colors px-3 py-2 hover:bg-white/5"
+          className="text-th-fg/30 text-[10px] tracking-[0.25em] uppercase hover:text-th-fg/60 transition-colors px-3 py-2 hover:bg-th-fg/5"
         >
           View Page ↗
         </Link>
@@ -189,7 +189,7 @@ export default function AdminLogos() {
 
       {message && (
         <div className={`fixed bottom-8 right-8 z-50 px-5 py-3 backdrop-blur border text-sm tracking-wide shadow-2xl ${
-          isError ? 'bg-red-500/20 border-red-500/30 text-red-300' : 'bg-white/10 border-white/20 text-white'
+          isError ? 'bg-red-500/20 border-red-500/30 text-red-300' : 'bg-th-fg/10 border-th-fg/20 text-th-fg'
         }`}>
           {message}
         </div>
@@ -197,9 +197,9 @@ export default function AdminLogos() {
 
       <div className="max-w-7xl mx-auto px-8 py-10">
         <div className="mb-8">
-          <p className="text-white/20 text-[10px] tracking-[0.5em] uppercase mb-2">Logos</p>
+          <p className="text-th-fg/20 text-[10px] tracking-[0.5em] uppercase mb-2">Logos</p>
           <h1 className="text-3xl font-black tracking-tighter">BRAND & AGENCY LOGOS</h1>
-          <p className="text-white/25 text-xs mt-1">
+          <p className="text-th-fg/25 text-xs mt-1">
             Manage client, partner, f28, and social media logos
           </p>
         </div>
@@ -212,8 +212,8 @@ export default function AdminLogos() {
               onClick={() => setSelectedCategory(cat.key)}
               className={`px-4 py-2 text-[10px] font-bold tracking-[0.3em] uppercase transition-colors rounded ${
                 selectedCategory === cat.key
-                  ? 'bg-white text-black'
-                  : 'border border-white/[0.15] text-white/60 hover:text-white hover:border-white/30'
+                  ? 'bg-th-fg text-th-bg'
+                  : 'border border-th-fg/[0.15] text-th-fg/60 hover:text-th-fg hover:border-th-fg/30'
               }`}
             >
               {cat.name}
@@ -224,8 +224,8 @@ export default function AdminLogos() {
         {currentCategory && (
           <>
             <div className="mb-4">
-              <p className="text-white/40 text-sm">{currentCategory.description}</p>
-              <p className="text-white/20 text-xs mt-1">
+              <p className="text-th-fg/40 text-sm">{currentCategory.description}</p>
+              <p className="text-th-fg/20 text-xs mt-1">
                 {currentCategory.images.length} logo{currentCategory.images.length !== 1 ? 's' : ''}
               </p>
             </div>
@@ -234,7 +234,7 @@ export default function AdminLogos() {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploading}
-                className="text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 border border-white/[0.15] text-white/60 hover:text-white hover:border-white/30 transition-colors disabled:opacity-40"
+                className="text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 border border-th-fg/[0.15] text-th-fg/60 hover:text-th-fg hover:border-th-fg/30 transition-colors disabled:opacity-40"
               >
                 + Upload
               </button>
@@ -247,17 +247,17 @@ export default function AdminLogos() {
               onDragLeave={() => setIsDragOver(false)}
               onDrop={e => { e.preventDefault(); setIsDragOver(false); if (e.dataTransfer.files.length) uploadFiles(Array.from(e.dataTransfer.files)); }}
               className={`mb-6 border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                isDragOver ? 'border-white/40 bg-white/[0.06]' : 'border-white/[0.08] hover:border-white/15'
+                isDragOver ? 'border-th-fg/40 bg-th-fg/[0.06]' : 'border-th-fg/[0.08] hover:border-th-fg/15'
               }`}
             >
-              <p className="text-white/30 text-xs tracking-wide">Drop {currentCategory.name} logos here or click Upload</p>
+              <p className="text-th-fg/30 text-xs tracking-wide">Drop {currentCategory.name} logos here or click Upload</p>
             </div>
 
             {uploadQueue.length > 0 && (
-              <div className="mb-6 border border-white/[0.08] rounded-lg divide-y divide-white/[0.05] max-h-48 overflow-y-auto">
+              <div className="mb-6 border border-th-fg/[0.08] rounded-lg divide-y divide-th-fg/[0.05] max-h-48 overflow-y-auto">
                 {isUploading && (
-                  <div className="px-4 py-2 flex justify-between items-center bg-white/[0.02]">
-                    <span className="text-white/40 text-[10px] tracking-widest uppercase">
+                  <div className="px-4 py-2 flex justify-between items-center bg-th-fg/[0.02]">
+                    <span className="text-th-fg/40 text-[10px] tracking-widest uppercase">
                       Uploading {uploadQueue.filter(q => q.status === 'done').length}/{uploadQueue.length}
                     </span>
                     <button onClick={() => abortRef.current = true} className="text-red-400/60 hover:text-red-400 text-[10px] tracking-widest uppercase">Cancel</button>
@@ -265,9 +265,9 @@ export default function AdminLogos() {
                 )}
                 {uploadQueue.map((item, i) => (
                   <div key={i} className="px-4 py-2 flex items-center justify-between text-xs">
-                    <span className="text-white/50 truncate max-w-[60%]">{item.fileName}</span>
+                    <span className="text-th-fg/50 truncate max-w-[60%]">{item.fileName}</span>
                     <span className={`text-[10px] tracking-wider ${
-                      item.status === 'done' ? 'text-green-400/70' : item.status === 'error' ? 'text-red-400/70' : item.status === 'uploading' ? 'text-white/50' : 'text-white/20'
+                      item.status === 'done' ? 'text-green-400/70' : item.status === 'error' ? 'text-red-400/70' : item.status === 'uploading' ? 'text-th-fg/50' : 'text-th-fg/20'
                     }`}>
                       {item.status === 'uploading' ? 'Uploading...' : item.status === 'done' ? '✓' : item.status === 'error' ? item.error || 'Failed' : 'Pending'}
                     </span>
@@ -277,16 +277,16 @@ export default function AdminLogos() {
             )}
 
             {currentCategory.images.length === 0 ? (
-              <div className="text-center py-20 border border-white/[0.05]">
-                <p className="text-white/20 text-xs tracking-[0.4em] uppercase">No {currentCategory.name} logos found</p>
-                <p className="text-white/10 text-xs mt-2">Drop logos above or click Upload to add {currentCategory.name} logos</p>
+              <div className="text-center py-20 border border-th-fg/[0.05]">
+                <p className="text-th-fg/20 text-xs tracking-[0.4em] uppercase">No {currentCategory.name} logos found</p>
+                <p className="text-th-fg/10 text-xs mt-2">Drop logos above or click Upload to add {currentCategory.name} logos</p>
               </div>
             ) : (
               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
                 {currentCategory.images.map((logo, index) => (
                   <div
                     key={logo}
-                    className="group relative aspect-square overflow-hidden bg-white/[0.03] border border-white/[0.06] hover:border-white/20 transition-all duration-300 rounded-lg"
+                    className="group relative aspect-square overflow-hidden bg-th-fg/[0.03] border border-th-fg/[0.06] hover:border-th-fg/20 transition-all duration-300 rounded-lg"
                   >
                     <Image
                       src={logo}

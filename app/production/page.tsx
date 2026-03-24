@@ -4,6 +4,7 @@ import { ParallaxSection } from '@/components/ParallaxSection';
 import { Footer } from '@/components/Footer';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 import { LocalizedHero } from '@/components/LocalizedHero';
+import { ScrollIndicator } from '@/components/ScrollIndicator';
 
 export const metadata: Metadata = {
   title: 'Production | f/2.8 Production Agency',
@@ -23,15 +24,7 @@ export default async function ProductionPage() {
         style={{ scrollSnapAlign: 'start' }}
       >
         <LocalizedHero page="production" />
-        {/* Scroll arrow */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 fade-in-up" style={{animationDelay: '0.5s'}}>
-          <div className="flex flex-col items-center gap-2 animate-bounce">
-            <span className="text-white/20 text-[9px] tracking-[0.45em] uppercase">Scroll</span>
-            <svg className="w-4 h-4 text-white/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="square" d="M12 5v14M5 13l7 7 7-7" />
-            </svg>
-          </div>
-        </div>
+        <ScrollIndicator />
       </section>
 
       {/* One snap point per photographer */}

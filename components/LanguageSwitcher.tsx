@@ -6,25 +6,25 @@ export function LanguageSwitcher() {
   const { lang, setLang } = useLanguage();
 
   return (
-    <div className="flex items-center gap-1 z-50">
+    <div className="flex items-center gap-1.5 z-50">
       <button
         onClick={() => setLang('en')}
-        className={`text-[9px] tracking-[0.35em] uppercase transition-all duration-300 px-1 py-0.5 ${
+        className={`text-[11px] font-medium tracking-[0.25em] uppercase transition-all duration-300 px-1.5 py-1 ${
           lang === 'en'
-            ? 'text-white opacity-90'
-            : 'text-white opacity-20 hover:opacity-50'
+            ? 'text-th-fg opacity-90'
+            : 'text-th-fg opacity-25 hover:opacity-55'
         }`}
         aria-label="Switch to English"
       >
         EN
       </button>
-      <span className="w-px h-3 bg-white/20" />
+      <span className="w-px h-3.5 bg-th-fg/20" />
       <button
         onClick={() => setLang('tr')}
-        className={`text-[9px] tracking-[0.35em] uppercase transition-all duration-300 px-1 py-0.5 ${
+        className={`text-[11px] font-medium tracking-[0.25em] uppercase transition-all duration-300 px-1.5 py-1 ${
           lang === 'tr'
-            ? 'text-white opacity-90'
-            : 'text-white opacity-20 hover:opacity-50'
+            ? 'text-th-fg opacity-90'
+            : 'text-th-fg opacity-25 hover:opacity-55'
         }`}
         aria-label="Türkçe'ye geç"
       >

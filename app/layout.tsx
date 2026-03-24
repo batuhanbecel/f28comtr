@@ -7,6 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
+import { ThemeProvider } from "@/context/ThemeContext";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 
 const inter = Inter({
@@ -42,6 +43,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
+  viewportFit: 'cover',
   themeColor: '#000000',
 };
 
@@ -51,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={inter.variable} data-theme="dark">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -84,17 +86,19 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased bg-black text-white">
-        <LanguageProvider>
-          <SmoothScrollProvider>
-            <CustomCursor />
-            <SiteChrome />
-            {children}
-            <SpeedInsights />
-            <Analytics />
-            <ServiceWorkerRegister />
-          </SmoothScrollProvider>
-        </LanguageProvider>
+      <body className="antialiased bg-th-bg text-th-fg">
+        <ThemeProvider>
+          <LanguageProvider>
+            <SmoothScrollProvider>
+              <CustomCursor />
+              <SiteChrome />
+              {children}
+              <SpeedInsights />
+              <Analytics />
+              <ServiceWorkerRegister />
+            </SmoothScrollProvider>
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { contactInfo } from '@/lib/data';
 import { useLanguage } from '@/context/LanguageContext';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export function Menu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -64,7 +65,7 @@ export function Menu() {
     <>
       {/* Header */}
       <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-5 md:px-10 md:py-7 transition-all duration-500 ${
-        isScrolled ? 'backdrop-blur-xl bg-black/50' : ''
+        isScrolled ? 'backdrop-blur-xl bg-th-bg/50' : ''
       }`}>
         <Link href="/" className="relative z-50 transition-opacity duration-300 hover:opacity-70">
           <Image
@@ -72,25 +73,27 @@ export function Menu() {
             alt="f/2.8"
             width={120}
             height={60}
-            className="h-8 md:h-10 w-auto"
+            className="h-8 md:h-10 w-auto dark:invert-0 invert"
             priority
           />
         </Link>
         
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
+          <span className="w-px h-3 bg-th-fg/15" />
           <LanguageSwitcher />
           <button
             onClick={toggleMenu}
             className="relative z-50 flex flex-col gap-[5px] w-7 py-1 group"
             aria-label="Toggle menu"
           >
-          <span className={`h-px bg-white transition-all duration-500 ease-out origin-center ${
+          <span className={`h-px bg-th-fg transition-all duration-500 ease-out origin-center ${
             isOpen ? 'rotate-45 translate-y-[7px] w-full opacity-100' : 'w-full opacity-60 group-hover:opacity-100'
           }`} />
-          <span className={`h-px bg-white transition-all duration-500 ${
+          <span className={`h-px bg-th-fg transition-all duration-500 ${
             isOpen ? 'opacity-0 w-0' : 'w-3/4 opacity-40 group-hover:w-full group-hover:opacity-80'
           }`} />
-          <span className={`h-px bg-white transition-all duration-500 ease-out origin-center ${
+          <span className={`h-px bg-th-fg transition-all duration-500 ease-out origin-center ${
             isOpen ? '-rotate-45 -translate-y-[7px] w-full opacity-100' : 'w-1/2 opacity-25 group-hover:w-full group-hover:opacity-100'
           }`} />
           </button>

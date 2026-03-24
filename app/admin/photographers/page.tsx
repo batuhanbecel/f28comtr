@@ -8,8 +8,8 @@ import { toast } from 'react-hot-toast';
 import { shouldSkipOptimization } from '@/lib/blob';
 import type { Photographer } from '@/lib/data';
 
-const INPUT = 'w-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-white/15 px-3 py-2.5 text-sm focus:outline-none focus:border-white/25 transition-colors rounded';
-const LABEL = 'text-[10px] tracking-widest uppercase text-white/25 block mb-1.5';
+const INPUT = 'w-full bg-th-fg/[0.04] border border-th-fg/[0.08] text-th-fg placeholder-th-fg/15 px-3 py-2.5 text-sm focus:outline-none focus:border-th-fg/25 transition-colors rounded';
+const LABEL = 'text-[10px] tracking-widest uppercase text-th-fg/25 block mb-1.5';
 
 export default function PhotographersPage() {
   const [photographers, setPhotographers] = useState<Photographer[]>([]);
@@ -78,18 +78,18 @@ export default function PhotographersPage() {
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-white/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-[#080808]/95 backdrop-blur-sm z-10">
+      <header className="border-b border-th-fg/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-th-surface/95 backdrop-blur-sm z-10">
         <div className="flex items-center gap-4">
-          <Link href="/admin" className="text-white/25 text-[10px] tracking-[0.3em] uppercase hover:text-white/60 transition-colors">
+          <Link href="/admin" className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase hover:text-th-fg/60 transition-colors">
             ← Dashboard
           </Link>
-          <div className="w-px h-3 bg-white/10" />
-          <span className="text-white/25 text-[10px] tracking-[0.3em] uppercase">Photographers</span>
+          <div className="w-px h-3 bg-th-fg/10" />
+          <span className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase">Photographers</span>
         </div>
         <div className="flex gap-2">
           <button onClick={() => setShowAddForm(v => !v)}
             className={`text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2 transition-colors rounded ${
-              showAddForm ? 'bg-white/10 border border-white/20' : 'bg-white text-black hover:bg-white/90'
+              showAddForm ? 'bg-th-fg/10 border border-th-fg/20' : 'bg-th-fg text-th-bg hover:bg-th-fg/90'
             }`}>
             {showAddForm ? '✕ Cancel' : '+ Add'}
           </button>
@@ -98,14 +98,14 @@ export default function PhotographersPage() {
 
       <div className="max-w-7xl mx-auto px-8 py-10">
         <div className="mb-8">
-          <p className="text-white/20 text-[10px] tracking-[0.5em] uppercase mb-2">Admin / Photographers</p>
+          <p className="text-th-fg/20 text-[10px] tracking-[0.5em] uppercase mb-2">Admin / Photographers</p>
           <h1 className="text-3xl font-black tracking-tighter">LINEUP</h1>
-          <p className="text-white/25 text-xs mt-1">{photographers.length} photographers — hover to edit or reorder</p>
+          <p className="text-th-fg/25 text-xs mt-1">{photographers.length} photographers — hover to edit or reorder</p>
         </div>
 
         {showAddForm && (
-          <form onSubmit={handleAdd} className="mb-10 p-6 border border-white/[0.07] bg-white/[0.02] space-y-4 rounded-lg">
-            <p className="text-[10px] tracking-[0.4em] uppercase text-white/30">New Photographer</p>
+          <form onSubmit={handleAdd} className="mb-10 p-6 border border-th-fg/[0.07] bg-th-fg/[0.02] space-y-4 rounded-lg">
+            <p className="text-[10px] tracking-[0.4em] uppercase text-th-fg/30">New Photographer</p>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className={LABEL}>ID / Folder</label>
@@ -132,7 +132,7 @@ export default function PhotographersPage() {
                   className={INPUT} />
               </div>
             </div>
-            <button type="submit" className="bg-white text-black text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-white/90 transition-colors rounded">
+            <button type="submit" className="bg-th-fg text-th-bg text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-th-fg/90 transition-colors rounded">
               Create Photographer
             </button>
           </form>
@@ -140,12 +140,12 @@ export default function PhotographersPage() {
 
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {[...Array(8)].map((_, i) => <div key={i} className="aspect-[3/4] bg-white/[0.03] animate-pulse rounded-lg" />)}
+            {[...Array(8)].map((_, i) => <div key={i} className="aspect-[3/4] bg-th-fg/[0.03] animate-pulse rounded-lg" />)}
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {photographers.map((p, index) => (
-              <div key={p.id} className="group relative aspect-[3/4] overflow-hidden bg-white/[0.03] border border-white/[0.06] hover:border-white/20 transition-all duration-300 rounded-lg">
+              <div key={p.id} className="group relative aspect-[3/4] overflow-hidden bg-th-fg/[0.03] border border-th-fg/[0.06] hover:border-th-fg/20 transition-all duration-300 rounded-lg">
                 <Image src={p.preview} alt={p.fullName} fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
@@ -189,10 +189,10 @@ export default function PhotographersPage() {
         )}
 
         {!loading && photographers.length === 0 && (
-          <div className="text-center py-24 border border-white/[0.05] rounded-lg">
-            <p className="text-white/20 text-xs tracking-[0.4em] uppercase mb-6">No photographers found</p>
+          <div className="text-center py-24 border border-th-fg/[0.05] rounded-lg">
+            <p className="text-th-fg/20 text-xs tracking-[0.4em] uppercase mb-6">No photographers found</p>
             <button onClick={() => setShowAddForm(true)}
-              className="text-[10px] tracking-[0.3em] uppercase text-white/40 hover:text-white border border-white/10 hover:border-white/25 px-5 py-2.5 transition-colors rounded">
+              className="text-[10px] tracking-[0.3em] uppercase text-th-fg/40 hover:text-th-fg border border-th-fg/10 hover:border-th-fg/25 px-5 py-2.5 transition-colors rounded">
               + Add Photographer
             </button>
           </div>

@@ -25,7 +25,7 @@ export function PageLoader() {
       }}
     >
       <div
-        className="h-full bg-white origin-left"
+        className="h-full bg-th-fg origin-left"
         style={{
           animation: show ? 'page-load 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards' : 'none',
           width: '0%',

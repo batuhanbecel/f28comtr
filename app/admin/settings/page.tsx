@@ -14,34 +14,34 @@ export default async function SettingsPage() {
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-white/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-[#080808]/95 backdrop-blur-sm z-10">
+      <header className="border-b border-th-fg/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-th-surface/95 backdrop-blur-sm z-10">
         <div className="flex items-center gap-4">
-          <Link href="/admin" className="text-white/25 text-[10px] tracking-[0.3em] uppercase hover:text-white/60 transition-colors">
+          <Link href="/admin" className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase hover:text-th-fg/60 transition-colors">
             ← Dashboard
           </Link>
-          <div className="w-px h-3 bg-white/10" />
-          <span className="text-white/25 text-[10px] tracking-[0.3em] uppercase">Settings</span>
+          <div className="w-px h-3 bg-th-fg/10" />
+          <span className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase">Settings</span>
         </div>
       </header>
 
       <div className="max-w-4xl mx-auto px-8 py-10">
         <div className="mb-10">
-          <p className="text-white/20 text-[10px] tracking-[0.5em] uppercase mb-2">Admin / Settings</p>
+          <p className="text-th-fg/20 text-[10px] tracking-[0.5em] uppercase mb-2">Admin / Settings</p>
           <h1 className="text-3xl font-black tracking-tighter">SETTINGS</h1>
-          <p className="text-white/25 text-xs mt-1">Data management and system configuration</p>
+          <p className="text-th-fg/25 text-xs mt-1">Data management and system configuration</p>
         </div>
 
         {/* Environment status */}
         <section className="mb-8">
-          <p className="text-[10px] tracking-[0.4em] uppercase text-white/20 mb-4">Environment</p>
-          <div className="border border-white/[0.07] bg-white/[0.02] divide-y divide-white/[0.05] rounded-lg">
+          <p className="text-[10px] tracking-[0.4em] uppercase text-th-fg/20 mb-4">Environment</p>
+          <div className="border border-th-fg/[0.07] bg-th-fg/[0.02] divide-y divide-th-fg/[0.05] rounded-lg">
             {[
               { label: 'Redis / Upstash', status: redisOk ? 'Connected' : 'Not configured', ok: redisOk },
               { label: 'Node Env', status: process.env.NODE_ENV ?? 'development', ok: true },
               { label: 'Vercel Blob', status: process.env.BLOB_READ_WRITE_TOKEN ? 'Configured' : 'Not configured', ok: !!process.env.BLOB_READ_WRITE_TOKEN },
             ].map(row => (
               <div key={row.label} className="flex items-center justify-between px-5 py-3.5">
-                <span className="text-white/40 text-sm">{row.label}</span>
+                <span className="text-th-fg/40 text-sm">{row.label}</span>
                 <span className={`text-xs font-mono tracking-wide ${row.ok ? 'text-green-400/80' : 'text-yellow-400/70'}`}>{row.status}</span>
               </div>
             ))}
@@ -52,7 +52,7 @@ export default async function SettingsPage() {
 
         {/* External links */}
         <section className="mt-8">
-          <p className="text-[10px] tracking-[0.4em] uppercase text-white/20 mb-4">External</p>
+          <p className="text-[10px] tracking-[0.4em] uppercase text-th-fg/20 mb-4">External</p>
           <div className="grid grid-cols-2 gap-3">
             {[
               { label: 'Vercel Dashboard', href: 'https://vercel.com/dashboard' },
@@ -60,9 +60,9 @@ export default async function SettingsPage() {
               { label: 'View Live Site', href: '/' },
             ].map(link => (
               <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-between px-4 py-3 border border-white/[0.07] hover:border-white/20 bg-white/[0.02] hover:bg-white/[0.04] transition-colors text-sm text-white/50 hover:text-white/80 rounded">
+                className="flex items-center justify-between px-4 py-3 border border-th-fg/[0.07] hover:border-th-fg/20 bg-th-fg/[0.02] hover:bg-th-fg/[0.04] transition-colors text-sm text-th-fg/50 hover:text-th-fg/80 rounded">
                 {link.label}
-                <span className="text-white/20 text-xs">↗</span>
+                <span className="text-th-fg/20 text-xs">↗</span>
               </a>
             ))}
           </div>

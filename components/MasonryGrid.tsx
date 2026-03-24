@@ -4,6 +4,7 @@ import Image from 'next/image';
 import React, { useState, useEffect, useCallback, useDeferredValue, useRef } from 'react';
 import { BalancedMasonryGrid as MasonryGridLib, Frame } from '@masonry-grid/react';
 import { shouldSkipOptimization } from '@/lib/blob';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface MasonryGridProps {
   images: string[];
@@ -15,6 +16,7 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
   const [lightboxVisible, setLightboxVisible] = useState(false);
   const [frameWidth, setFrameWidth] = useState(300);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   const deferredImages = useDeferredValue(images);
 
@@ -112,7 +114,7 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
             return (
               <Frame key={image} width={d.w} height={d.h}>
                 <div
-                  className="relative w-full h-full cursor-pointer group overflow-hidden bg-white/[0.03]"
+                  className="relative w-full h-full cursor-pointer group overflow-hidden bg-th-fg/[0.03]"
                   onClick={() => openLightbox(image)}
                 >
                   <Image
@@ -149,7 +151,7 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
             className="absolute top-6 right-8 text-white/50 hover:text-white transition-colors z-10 text-[10px] tracking-[0.3em] uppercase"
             onClick={closeLightbox}
           >
-            Close
+            {t.common.close}
           </button>
 
           {/* Counter */}

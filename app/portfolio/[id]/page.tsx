@@ -5,6 +5,7 @@ import { getPhotographers, getPhotographerImages } from '@/lib/db';
 import { MasonryGrid } from '@/components/MasonryGrid';
 import { Footer } from '@/components/Footer';
 import { DownloadPortfolio } from '@/components/DownloadPortfolio';
+import { TitleLabel } from '@/components/TitleLabel';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 
 export const revalidate = 60;
@@ -51,7 +52,7 @@ export default async function PortfolioPage({ params }: PageProps) {
 
         <div className="relative z-10 text-center text-white px-4">
           <div className="hero-rule fade-in-up" style={{animationDelay: '0.05s'}} />
-          <span className="section-label fade-in-up" style={{animationDelay: '0.1s'}}>{photographer.title}</span>
+          <TitleLabel photographer={photographer} />
           <h1 className="heading-hero fade-in-up mt-2" style={{animationDelay: '0.2s'}}>
             {photographer.fullName}
           </h1>
