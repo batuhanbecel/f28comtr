@@ -13,7 +13,7 @@ import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 export const revalidate = 60;
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function generateStaticParams() {
@@ -23,7 +23,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const photographer = await getPhotographers().then((photographers) => photographers.find((p) => p.id === params.id));
+  const { id } = await params;
+  const photographer = await getPhotographers().then((photographers) => photographers.find((p) => p.id === id));
   if (!photographer) return { title: 'Portfolio | f/2.8 Production' };
   return {
     title: `${photographer.fullName} | f/2.8 Production`,
@@ -36,9 +37,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function PortfolioPage({ params }: PageProps) {
-  const photographer = await getPhotographers().then((photographers) => photographers.find((p) => p.id === params.id));
+  const { id } = await params;
+  const photographer = await getPhotographers().then((photographers) => photographers.find((p) => p.id === id));
   if (!photographer) return notFound();
-  const images = await getPhotographerImages(params.id);
+  const images = await getPhotographerImages(id);
 
   const jsonLd = {
     '@context': 'https://schema.org',
