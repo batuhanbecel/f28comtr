@@ -2,7 +2,6 @@
 
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { useLanguage } from '@/context/LanguageContext';
 
 interface Photographer {
   fullName: string;
@@ -144,7 +143,6 @@ function renderPage(pdf: PDF, imgs: Img[], label: string) {
 export function DownloadPortfolio({ images, photographer }: Props) {
   const [phase, setPhase] = useState<'idle' | 'working' | 'done' | 'error'>('idle');
   const [progress, setProgress] = useState(0);
-  const { t } = useLanguage();
   const { t } = useLanguage();
 
   const generate = useCallback(async () => {
