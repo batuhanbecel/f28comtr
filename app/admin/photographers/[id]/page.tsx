@@ -104,9 +104,9 @@ export default function EditPhotographerPage({ params }: PageProps) {
             <div className="h-4 bg-th-fg/[0.03] animate-pulse w-32" />
             <div className="h-8 bg-th-fg/[0.03] animate-pulse w-64" />
             <div className="h-4 bg-th-fg/[0.03] animate-pulse w-48 mb-8" />
-            <div className="h-32 bg-th-fg/[0.03] animate-pulse rounded-lg" />
+            <div className="h-32 bg-th-fg/[0.03] animate-pulse" />
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-1.5 mt-8">
-              {[...Array(12)].map((_, i) => <div key={i} className="aspect-square bg-th-fg/[0.03] animate-pulse rounded-lg" />)}
+              {[...Array(12)].map((_, i) => <div key={i} className="aspect-square bg-th-fg/[0.03] animate-pulse" />)}
             </div>
           </div>
         </div>
@@ -131,7 +131,7 @@ export default function EditPhotographerPage({ params }: PageProps) {
         <Link
           href={`/${photographer.id}`}
           target="_blank"
-          className="text-th-fg/30 text-[10px] tracking-[0.25em] uppercase hover:text-th-fg/60 transition-colors px-3 py-2 hover:bg-th-fg/5 rounded"
+          className="text-th-fg/30 text-[10px] tracking-[0.25em] uppercase hover:text-th-fg/60 transition-colors px-3 py-2 hover:bg-th-fg/5"
         >
           View Portfolio ↗
         </Link>

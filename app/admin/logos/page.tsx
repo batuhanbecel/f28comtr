@@ -54,6 +54,7 @@ export default function AdminLogos() {
   const [uploadQueue, setUploadQueue] = useState<UploadProgress[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('logos_clients');
+  const [saving, setSaving] = useState(false);
   const abortRef = useRef(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -149,8 +150,20 @@ export default function AdminLogos() {
     }));
   };
 
-  const onDragStart = (categoryKey: string, index: number) => {
-    // For simplicity, we'll just use reordering buttons for logos
+  const handleSaveOrder = async () => {
+    if (!currentCategory) return;
+    setSaving(true);
+    try {
+      const res = await fetch('/api/admin/logos', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ categoryKey: selectedCategory, images: currentCategory.images }),
+      });
+      const data = await res.json();
+      if (res.ok) showMsg(`Saved ${data.count} logos`);
+      else showMsg(data.error || 'Save failed', true);
+    } catch { showMsg('Save failed', true); }
+    finally { setSaving(false); }
   };
 
   if (loading) {
@@ -210,7 +223,7 @@ export default function AdminLogos() {
             <button
               key={cat.key}
               onClick={() => setSelectedCategory(cat.key)}
-              className={`px-4 py-2 text-[10px] font-bold tracking-[0.3em] uppercase transition-colors rounded ${
+              className={`px-4 py-2 text-[10px] font-bold tracking-[0.3em] uppercase transition-colors ${
                 selectedCategory === cat.key
                   ? 'bg-th-fg text-th-bg'
                   : 'border border-th-fg/[0.15] text-th-fg/60 hover:text-th-fg hover:border-th-fg/30'
@@ -240,13 +253,20 @@ export default function AdminLogos() {
               </button>
               <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden"
                 onChange={e => { if (e.target.files) uploadFiles(Array.from(e.target.files)); e.target.value = ''; }} />
+              <button
+                onClick={handleSaveOrder}
+                disabled={saving || currentCategory.images.length === 0}
+                className="bg-th-fg text-th-bg text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-th-fg/90 transition-colors disabled:opacity-50"
+              >
+                {saving ? 'Saving...' : 'Save Order'}
+              </button>
             </div>
 
             <div
               onDragOver={e => { e.preventDefault(); setIsDragOver(true); }}
               onDragLeave={() => setIsDragOver(false)}
               onDrop={e => { e.preventDefault(); setIsDragOver(false); if (e.dataTransfer.files.length) uploadFiles(Array.from(e.dataTransfer.files)); }}
-              className={`mb-6 border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+              className={`mb-6 border-2 border-dashed p-6 text-center transition-colors ${
                 isDragOver ? 'border-th-fg/40 bg-th-fg/[0.06]' : 'border-th-fg/[0.08] hover:border-th-fg/15'
               }`}
             >
@@ -254,7 +274,7 @@ export default function AdminLogos() {
             </div>
 
             {uploadQueue.length > 0 && (
-              <div className="mb-6 border border-th-fg/[0.08] rounded-lg divide-y divide-th-fg/[0.05] max-h-48 overflow-y-auto">
+              <div className="mb-6 border border-th-fg/[0.08] divide-y divide-th-fg/[0.05] max-h-48 overflow-y-auto">
                 {isUploading && (
                   <div className="px-4 py-2 flex justify-between items-center bg-th-fg/[0.02]">
                     <span className="text-th-fg/40 text-[10px] tracking-widest uppercase">
@@ -286,7 +306,7 @@ export default function AdminLogos() {
                 {currentCategory.images.map((logo, index) => (
                   <div
                     key={logo}
-                    className="group relative aspect-square overflow-hidden bg-th-fg/[0.03] border border-th-fg/[0.06] hover:border-th-fg/20 transition-all duration-300 rounded-lg"
+                    className="group relative aspect-square overflow-hidden bg-th-fg/[0.03] border border-th-fg/[0.06] hover:border-th-fg/20 transition-all duration-300"
                   >
                     <Image
                       src={logo}
@@ -296,29 +316,29 @@ export default function AdminLogos() {
                       sizes="(max-width: 768px) 33vw, (max-width: 1024px) 20vw, 15vw"
                       unoptimized={shouldSkipOptimization(logo)}
                     />
-                    <div className="absolute top-1 left-1 bg-black/60 backdrop-blur-sm rounded px-1.5 py-0.5">
-                      <span className="text-white/60 text-[9px] font-mono">{index + 1}</span>
+                    <div className="absolute top-1 left-1 bg-th-bg/70 px-1.5 py-0.5">
+                      <span className="text-th-fg/60 text-[9px] font-mono">{index + 1}</span>
                     </div>
-                    <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-between p-2">
+                    <div className="absolute inset-0 bg-th-bg/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-between p-2">
                       <div className="flex justify-between items-start">
-                        <span className="text-white/30 text-[9px] tracking-widest uppercase">#{index + 1}</span>
+                        <span className="text-th-fg/30 text-[9px] tracking-widest uppercase">#{index + 1}</span>
                         <div className="flex gap-1">
                           <button
                             onClick={() => moveLogo(currentCategory.key, index, -1)}
                             disabled={index === 0}
-                            className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/15 transition-colors disabled:opacity-20 text-sm rounded"
+                            className="w-6 h-6 flex items-center justify-center text-th-fg/50 hover:text-th-fg hover:bg-th-fg/15 transition-colors disabled:opacity-20 text-sm"
                           >↑</button>
                           <button
                             onClick={() => moveLogo(currentCategory.key, index, 1)}
                             disabled={index === currentCategory.images.length - 1}
-                            className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/15 transition-colors disabled:opacity-20 text-sm rounded"
+                            className="w-6 h-6 flex items-center justify-center text-th-fg/50 hover:text-th-fg hover:bg-th-fg/15 transition-colors disabled:opacity-20 text-sm"
                           >↓</button>
                         </div>
                       </div>
                       <div className="flex justify-end">
                         <button
                           onClick={() => handleDeleteLogo(currentCategory.key, logo, index)}
-                          className="w-6 h-6 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-400/10 transition-colors text-xs rounded"
+                          className="w-6 h-6 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-400/10 transition-colors text-xs"
                         >✕</button>
                       </div>
                     </div>

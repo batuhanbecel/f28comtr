@@ -57,7 +57,7 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
   };
 
   return (
-    <div className="border border-th-fg/[0.07] bg-th-fg/[0.02] rounded-lg p-6">
+    <div className="border border-th-fg/[0.07] bg-th-fg/[0.02] p-6">
       <p className="text-[10px] tracking-[0.4em] uppercase text-th-fg/20 mb-4">Information</p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -67,7 +67,7 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
               type="text"
               value={formData.fullName}
               onChange={(e) => setFormData({ ...formData, fullName: e.target.value.toUpperCase() })}
-              className="w-full bg-th-fg/[0.04] border border-th-fg/[0.08] text-th-fg placeholder-th-fg/15 px-3 py-2.5 text-sm focus:outline-none focus:border-th-fg/25 transition-colors rounded"
+              className="w-full bg-th-fg/[0.04] border border-th-fg/[0.08] text-th-fg placeholder-th-fg/15 px-3 py-2.5 text-sm focus:outline-none focus:border-th-fg/25 transition-colors"
               required
             />
           </div>
@@ -77,7 +77,7 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
               type="text"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value.toUpperCase() })}
-              className="w-full bg-th-fg/[0.04] border border-th-fg/[0.08] text-th-fg placeholder-th-fg/15 px-3 py-2.5 text-sm focus:outline-none focus:border-th-fg/25 transition-colors rounded"
+              className="w-full bg-th-fg/[0.04] border border-th-fg/[0.08] text-th-fg placeholder-th-fg/15 px-3 py-2.5 text-sm focus:outline-none focus:border-th-fg/25 transition-colors"
               required
             />
           </div>
@@ -85,7 +85,7 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
             <label className="text-[10px] tracking-widest uppercase text-th-fg/25 block mb-1.5">Preview Image</label>
             {formData.preview ? (
               <div className="flex items-center gap-3 mt-1">
-                <div className="relative h-14 w-14 border border-th-fg/[0.08] rounded overflow-hidden flex-shrink-0">
+                <div className="relative h-14 w-14 border border-th-fg/[0.08] overflow-hidden flex-shrink-0">
                   <Image
                     src={formData.preview}
                     alt="Preview"
@@ -104,7 +104,7 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
         <button
           type="submit"
           disabled={isSaving}
-          className="bg-th-fg text-th-bg text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-th-fg/90 transition-colors disabled:opacity-50 rounded"
+          className="bg-th-fg text-th-bg text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-th-fg/90 transition-colors disabled:opacity-50"
         >
           {isSaving ? 'Saving...' : 'Save Changes'}
         </button>

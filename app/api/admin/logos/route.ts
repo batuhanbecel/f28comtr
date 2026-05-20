@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { checkAuth } from '@/lib/auth';
 import { getRedis } from '@/lib/redis';
+import { revalidatePath } from 'next/cache';
 
 const LOGO_CATEGORIES = [
   { key: 'site:logos:clients',  uploadKey: 'logos_clients',  name: 'Clients',  description: 'Client brand logos' },
@@ -28,4 +29,23 @@ export async function GET() {
   );
 
   return NextResponse.json({ categories });
+}
+
+export async function PUT(request: Request) {
+  if (!await checkAuth()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const redis = getRedis();
+  if (!redis) return NextResponse.json({ error: 'Redis not configured' }, { status: 500 });
+
+  const body = await request.json();
+  const { categoryKey, images } = body;
+
+  const category = LOGO_CATEGORIES.find(c => c.uploadKey === categoryKey);
+  if (!category) return NextResponse.json({ error: 'Invalid category' }, { status: 400 });
+  if (!Array.isArray(images)) return NextResponse.json({ error: 'images must be an array' }, { status: 400 });
+
+  await redis.set(category.key, JSON.stringify(images));
+  revalidatePath('/about');
+
+  return NextResponse.json({ success: true, count: images.length });
 }

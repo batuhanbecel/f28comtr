@@ -34,7 +34,7 @@ export default async function SettingsPage() {
         {/* Environment status */}
         <section className="mb-8">
           <p className="text-[10px] tracking-[0.4em] uppercase text-th-fg/20 mb-4">Environment</p>
-          <div className="border border-th-fg/[0.07] bg-th-fg/[0.02] divide-y divide-th-fg/[0.05] rounded-lg">
+          <div className="border border-th-fg/[0.07] bg-th-fg/[0.02] divide-y divide-th-fg/[0.05]">
             {[
               { label: 'Redis / Upstash', status: redisOk ? 'Connected' : 'Not configured', ok: redisOk },
               { label: 'Node Env', status: process.env.NODE_ENV ?? 'development', ok: true },
@@ -60,7 +60,7 @@ export default async function SettingsPage() {
               { label: 'View Live Site', href: '/' },
             ].map(link => (
               <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-between px-4 py-3 border border-th-fg/[0.07] hover:border-th-fg/20 bg-th-fg/[0.02] hover:bg-th-fg/[0.04] transition-colors text-sm text-th-fg/50 hover:text-th-fg/80 rounded">
+                className="flex items-center justify-between px-4 py-3 border border-th-fg/[0.07] hover:border-th-fg/20 bg-th-fg/[0.02] hover:bg-th-fg/[0.04] transition-colors text-sm text-th-fg/50 hover:text-th-fg/80">
                 {link.label}
                 <span className="text-th-fg/20 text-xs">↗</span>
               </a>

@@ -54,7 +54,7 @@ export function AdminNav() {
                   href={item.href}
                   onClick={() => setIsOpen(false)}
                   className={`
-                    block px-3 py-2.5 text-[10px] font-bold tracking-[0.3em] uppercase transition-colors duration-200 rounded
+                    block px-3 py-2.5 text-[10px] font-bold tracking-[0.3em] uppercase transition-colors duration-200
                     ${isActive 
                       ? 'bg-th-fg/[0.06] text-th-fg' 
                       : 'text-th-fg/30 hover:bg-th-fg/[0.03] hover:text-th-fg/60'
@@ -71,7 +71,7 @@ export function AdminNav() {
             <form action="/api/admin/logout" method="POST">
               <button
                 type="submit"
-                className="w-full text-left px-3 py-2.5 text-[10px] font-bold tracking-[0.3em] uppercase text-th-fg/20 hover:text-red-400/70 hover:bg-red-400/[0.05] transition-colors duration-200 rounded"
+                className="w-full text-left px-3 py-2.5 text-[10px] font-bold tracking-[0.3em] uppercase text-th-fg/20 hover:text-red-400/70 hover:bg-red-400/[0.05] transition-colors duration-200"
               >
                 Logout
               </button>

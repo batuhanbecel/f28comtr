@@ -79,12 +79,13 @@ f/28 website is LIVE at https://www.f28.com.tr (Vercel). Full admin panel, Redis
 - `DownloadPortfolio` handles PDF generation with multi-image layouts
 
 ## Known Issues
-- Unused deps: `react-xmasonry`, `zustand` (should remove)
-- npm audit: 1 high severity vulnerability
+- ~~Unused deps: `react-xmasonry`, `zustand` (should remove)~~ — Verified: not in package.json
+- ~~npm audit: 1 high severity vulnerability~~ — Now multiple; run `npm audit fix` on Vercel build env
 - `BackgroundPreloader` hits `/api/admin/photographers` without auth (silent fail OK but wasteful)
-- Redis may hold references to deleted images (404s) — needs admin panel cleanup
+- Redis may hold references to deleted images (404s) — admin panel cleanup button available
 - Vercel Git auto-deploy may need branch verification (user deploys via CLI `vercel --prod`)
-- Haldun's images stored in Redis may need re-seeding after subfolder restructure
+- ~~Haldun's images stored in Redis may need re-seeding after subfolder restructure~~ — Verified working
+- **Windows local build**: Turbopack fails with sharp symlink error; build script now uses `--no-turbopack`
 
 ## Current Status
 ✅ Site LIVE at f28.com.tr on Vercel
@@ -97,3 +98,7 @@ f/28 website is LIVE at https://www.f28.com.tr (Vercel). Full admin panel, Redis
 ✅ About page with stats + logo grids
 ✅ Portfolios page with visual photographer cards (filters removed)
 ✅ Image manifest covers portfolios (with subfolder support), AI, partner/client logos
+✅ Admin panel design unified: no rounded corners, consistent with public site aesthetic
+✅ Duplicate `robots.txt` removed (only `robots.ts` remains)
+✅ `dotenv` version corrected from invalid `^17.3.1` to `^16.4.5`
+✅ `page_new.tsx` dead code deleted

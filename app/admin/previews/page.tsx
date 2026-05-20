@@ -250,7 +250,7 @@ export default function AdminPreviews() {
           onDragOver={e => { e.preventDefault(); setIsDragOver(true); }}
           onDragLeave={() => setIsDragOver(false)}
           onDrop={e => { e.preventDefault(); setIsDragOver(false); if (e.dataTransfer.files.length) uploadFiles(Array.from(e.dataTransfer.files)); }}
-          className={`mb-6 border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+          className={`mb-6 border-2 border-dashed p-6 text-center transition-colors ${
             isDragOver ? 'border-th-fg/40 bg-th-fg/[0.06]' : 'border-th-fg/[0.08] hover:border-th-fg/15'
           }`}
         >
@@ -258,7 +258,7 @@ export default function AdminPreviews() {
         </div>
 
         {uploadQueue.length > 0 && (
-          <div className="mb-6 border border-th-fg/[0.08] rounded-lg divide-y divide-th-fg/[0.05] max-h-48 overflow-y-auto">
+          <div className="mb-6 border border-th-fg/[0.08] divide-y divide-th-fg/[0.05] max-h-48 overflow-y-auto">
             {isUploading && (
               <div className="px-4 py-2 flex justify-between items-center bg-th-fg/[0.02]">
                 <span className="text-th-fg/40 text-[10px] tracking-widest uppercase">
@@ -295,7 +295,7 @@ export default function AdminPreviews() {
                 onDragEnter={() => onDragEnter(index)}
                 onDragEnd={onDragEnd}
                 onDragOver={e => e.preventDefault()}
-                className={`group relative aspect-[3/4] overflow-hidden cursor-grab active:cursor-grabbing select-none transition-all duration-150 rounded-lg ${
+                className={`group relative aspect-[3/4] overflow-hidden cursor-grab active:cursor-grabbing select-none transition-all duration-150 ${
                   dragIndex === index ? 'opacity-40 scale-95 ring-1 ring-th-fg/30' : 'opacity-100'
                 }`}
               >

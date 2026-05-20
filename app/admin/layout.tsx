@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { AdminNav } from '@/components/admin/AdminNav';
+import { AdminShell } from '@/components/admin/AdminShell';
 import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
@@ -10,10 +10,7 @@ export const metadata: Metadata = {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-th-bg text-th-fg">
-      <AdminNav />
-      <main className="lg:pl-64">
-        {children}
-      </main>
+      <AdminShell>{children}</AdminShell>
       <Toaster
         position="bottom-right"
         toastOptions={{

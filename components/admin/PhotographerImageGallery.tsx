@@ -87,7 +87,7 @@ function SortableImage({ id, image, photographerName }: { id: string; image: str
       style={style}
       {...attributes}
       {...listeners}
-      className="relative aspect-square overflow-hidden bg-th-fg/[0.03] border border-th-fg/[0.06] hover:border-th-fg/20 rounded-lg cursor-move group"
+      className="relative aspect-square overflow-hidden bg-th-fg/[0.03] border border-th-fg/[0.06] hover:border-th-fg/20 cursor-move group"
     >
       <Image
         src={image}
@@ -311,7 +311,7 @@ export function PhotographerImageGallery({
         <button
           onClick={() => !isUploading && fileInputRef.current?.click()}
           disabled={isUploading}
-          className="text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 border border-th-fg/[0.15] text-th-fg/60 hover:text-th-fg hover:border-th-fg/30 transition-colors disabled:opacity-40 rounded"
+          className="text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 border border-th-fg/[0.15] text-th-fg/60 hover:text-th-fg hover:border-th-fg/30 transition-colors disabled:opacity-40"
         >
           + Upload
         </button>
@@ -329,16 +329,16 @@ export function PhotographerImageGallery({
         onDragOver={handleDropzoneDragOver}
         onDragLeave={handleDropzoneDragLeave}
         onDrop={handleDropzoneDrop}
-        className={`mb-6 border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-          isDragOver ? 'border-th-fg/40 bg-th-fg/[0.06]' : 'border-th-fg/[0.08] hover:border-th-fg/15'
-        } ${isUploading ? 'pointer-events-none opacity-60' : ''}`}
-      >
-        <p className="text-th-fg/30 text-xs tracking-wide">Drop images here or click Upload</p>
-      </div>
+          className={`mb-6 border-2 border-dashed p-6 text-center transition-colors ${
+            isDragOver ? 'border-th-fg/40 bg-th-fg/[0.06]' : 'border-th-fg/[0.08] hover:border-th-fg/15'
+          } ${isUploading ? 'pointer-events-none opacity-60' : ''}`}
+        >
+          <p className="text-th-fg/30 text-xs tracking-wide">Drop images here or click Upload</p>
+        </div>
 
-      {/* Upload Progress */}
-      {uploadQueue.length > 0 && (
-        <div className="mb-6 border border-th-fg/[0.08] rounded-lg divide-y divide-th-fg/[0.05] max-h-48 overflow-y-auto">
+        {/* Upload Progress */}
+        {uploadQueue.length > 0 && (
+          <div className="mb-6 border border-th-fg/[0.08] divide-y divide-th-fg/[0.05] max-h-48 overflow-y-auto">
           <div className="px-4 py-2 flex justify-between items-center bg-th-fg/[0.02]">
             <span className="text-th-fg/40 text-[10px] tracking-widest uppercase">
               {isUploading
@@ -372,24 +372,24 @@ export function PhotographerImageGallery({
           <button
             onClick={handleSaveOrder}
             disabled={isSaving}
-            className="bg-th-fg text-th-bg text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-th-fg/90 transition-colors disabled:opacity-50 rounded"
+            className="bg-th-fg text-th-bg text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-th-fg/90 transition-colors disabled:opacity-50"
           >
             {isSaving ? 'Saving...' : 'Save Order'}
           </button>
         )}
-        <button
-          onClick={() => {
-            if (isReorderMode) {
-              setImages(initialImages);
-            }
-            setIsReorderMode(!isReorderMode);
-          }}
-          className={`text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 transition-colors rounded ${
-            isReorderMode
-              ? 'bg-th-fg/10 border border-th-fg/20 text-th-fg/60 hover:text-th-fg'
-              : 'border border-th-fg/[0.15] text-th-fg/60 hover:text-th-fg hover:border-th-fg/30'
-          }`}
-        >
+          <button
+            onClick={() => {
+              if (isReorderMode) {
+                setImages(initialImages);
+              }
+              setIsReorderMode(!isReorderMode);
+            }}
+            className={`text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 transition-colors ${
+              isReorderMode
+                ? 'bg-th-fg/10 border border-th-fg/20 text-th-fg/60 hover:text-th-fg'
+                : 'border border-th-fg/[0.15] text-th-fg/60 hover:text-th-fg hover:border-th-fg/30'
+            }`}
+          >
           {isReorderMode ? '✕ Cancel' : 'Reorder'}
         </button>
       </div>
@@ -410,7 +410,7 @@ export function PhotographerImageGallery({
           {images.map((image) => (
             <div
               key={image}
-              className="group relative aspect-square overflow-hidden bg-th-fg/[0.03] border border-th-fg/[0.06] hover:border-th-fg/20 transition-all duration-300 rounded-lg"
+              className="group relative aspect-square overflow-hidden bg-th-fg/[0.03] border border-th-fg/[0.06] hover:border-th-fg/20 transition-all duration-300"
             >
               <Image
                 src={image}
@@ -420,7 +420,7 @@ export function PhotographerImageGallery({
                 sizes="(max-width: 640px) 33vw, (max-width: 1024px) 20vw, 15vw"
               />
               {currentPreview === image && (
-                <div className="absolute top-1 left-1 bg-yellow-500/90 rounded px-1.5 py-0.5">
+                <div className="absolute top-1 left-1 bg-yellow-500/90 px-1.5 py-0.5">
                   <span className="text-yellow-900 text-[9px] font-bold">⭐</span>
                 </div>
               )}
@@ -429,7 +429,7 @@ export function PhotographerImageGallery({
                   {onPreviewSelect && currentPreview !== image && (
                     <button
                       onClick={() => onPreviewSelect(image)}
-                      className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-yellow-400 hover:bg-yellow-500/15 transition-colors text-sm rounded"
+                      className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-yellow-400 hover:bg-yellow-500/15 transition-colors text-sm"
                       title="Set as preview"
                     >⭐</button>
                   )}
@@ -438,7 +438,7 @@ export function PhotographerImageGallery({
                   <button
                     onClick={() => handleDelete(image)}
                     disabled={isDeleting === image}
-                    className="w-6 h-6 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-400/10 transition-colors text-xs rounded disabled:opacity-50"
+                    className="w-6 h-6 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-400/10 transition-colors text-xs disabled:opacity-50"
                   >✕</button>
                 </div>
               </div>
@@ -448,7 +448,7 @@ export function PhotographerImageGallery({
       )}
 
       {images.length === 0 && !isUploading && uploadQueue.length === 0 && (
-        <div className="text-center py-20 border border-th-fg/[0.05] rounded-lg">
+        <div className="text-center py-20 border border-th-fg/[0.05]">
           <p className="text-th-fg/20 text-xs tracking-[0.4em] uppercase">No images found</p>
           <p className="text-th-fg/10 text-xs mt-2">Drop images above or click Upload</p>
         </div>

@@ -135,11 +135,12 @@
 
 ## Known Issues
 
-1. **Unused deps**: `react-xmasonry`, `zustand` still in package.json
-2. **npm audit**: 1 high severity vulnerability
+1. ~~Unused deps: `react-xmasonry`, `zustand` still in package.json~~ — Fixed: they were not actually in package.json, only noted in older versions
+2. **npm audit**: Multiple vulnerabilities in transitive deps (dompurify, flatted, jspdf, next, picomatch, postcss, undici) — run `npm audit fix` on production environment
 3. **Stale Redis data**: Deleted images may still be referenced in Redis
-4. **BackgroundPreloader**: Hits `/api/admin/photographers` without auth
+4. **BackgroundPreloader**: Hits `/api/admin/photographers` without auth (silent fail is OK)
 5. **Vercel Git deploy**: May need branch config verification — user deploys via CLI
+6. **Windows build**: Turbopack fails locally due to sharp symlink permissions; build script now uses `--no-turbopack` for local builds
 
 ## Evolution of Project Decisions
 

@@ -38,7 +38,7 @@ export function SiteSettingsClient() {
   return (
     <section>
       <p className="text-[10px] tracking-[0.4em] uppercase text-th-fg/20 mb-4">Data Management</p>
-      <div className="border border-th-fg/[0.07] bg-th-fg/[0.02] divide-y divide-th-fg/[0.05] rounded-lg">
+      <div className="border border-th-fg/[0.07] bg-th-fg/[0.02] divide-y divide-th-fg/[0.05]">
         {actions.map(a => (
           <div key={a.label} className="flex items-center justify-between px-5 py-4">
             <div>
@@ -48,7 +48,7 @@ export function SiteSettingsClient() {
             <button
               onClick={a.action}
               disabled={a.loading}
-              className={`ml-4 flex-shrink-0 text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2 transition-colors disabled:opacity-40 rounded ${
+              className={`ml-4 flex-shrink-0 text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2 transition-colors disabled:opacity-40 ${
                 a.primary
                   ? 'bg-th-fg text-th-bg hover:bg-th-fg/90'
                   : 'border border-th-fg/[0.15] text-th-fg/60 hover:text-th-fg hover:border-th-fg/30'

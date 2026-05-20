@@ -39,7 +39,7 @@ export default async function AdminDashboard() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-px border border-th-fg/[0.06] bg-th-fg/[0.03] mb-14">
           {stats.map((s) => (
             <Link key={s.label} href={s.href} target={s.target as '_blank' | undefined}
-              className="bg-th-bg px-6 py-5 group hover:bg-th-fg/[0.03] transition-colors">
+              className="bg-th-bg px-6 py-5 group hover:bg-th-fg/[0.03] transition-colors block">
               <p className="text-th-fg/20 text-[9px] tracking-[0.45em] uppercase mb-2">{s.label}</p>
               <p className="text-3xl font-black tracking-tighter group-hover:text-th-fg/70 transition-colors">{s.value}</p>
             </Link>
@@ -54,14 +54,14 @@ export default async function AdminDashboard() {
               <h2 className="text-2xl font-black tracking-tighter">PHOTOGRAPHERS</h2>
             </div>
             <Link href="/admin/photographers"
-              className="text-[10px] tracking-[0.3em] uppercase text-th-fg/40 hover:text-th-fg transition-colors border border-th-fg/[0.07] hover:border-th-fg/25 px-4 py-2.5 rounded">
+              className="text-[10px] tracking-[0.3em] uppercase text-th-fg/40 hover:text-th-fg transition-colors border border-th-fg/[0.07] hover:border-th-fg/25 px-4 py-2.5">
               Manage All →
             </Link>
           </div>
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-2">
             {photographers.slice(0, 7).map((p) => (
               <Link key={p.id} href={`/admin/photographers/${p.id}`}
-                className="group relative aspect-[3/4] overflow-hidden bg-th-fg/[0.03] border border-th-fg/[0.05] hover:border-th-fg/20 transition-all duration-300 rounded">
+                className="group relative aspect-[3/4] overflow-hidden bg-th-fg/[0.03] border border-th-fg/[0.05] hover:border-th-fg/20 transition-all duration-300">
                 <Image src={p.preview} alt={p.fullName} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="15vw" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-2">
@@ -71,7 +71,7 @@ export default async function AdminDashboard() {
             ))}
             {photographers.length > 7 && (
               <Link href="/admin/photographers"
-                className="aspect-[3/4] border border-th-fg/[0.05] hover:border-th-fg/20 flex items-center justify-center text-th-fg/30 hover:text-th-fg text-[9px] tracking-[0.3em] uppercase transition-colors rounded">
+                className="aspect-[3/4] border border-th-fg/[0.05] hover:border-th-fg/20 flex items-center justify-center text-th-fg/30 hover:text-th-fg text-[9px] tracking-[0.3em] uppercase transition-colors">
                 +{photographers.length - 7}
               </Link>
             )}
