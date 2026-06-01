@@ -8,6 +8,7 @@ import { contactInfo } from '@/lib/data';
 import { useLanguage } from '@/context/LanguageContext';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { MENU_BG_SIZES } from '@/lib/imageSizes';
 
 export function Menu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,16 +22,20 @@ export function Menu() {
   }, [pathname]);
 
   useEffect(() => {
+    let ticking = false;
     const checkScroll = () => {
-      const snapContainer = document.querySelector('[data-snap-container]');
-      const scrollTop = snapContainer ? (snapContainer as HTMLElement).scrollTop : window.scrollY;
-      setIsScrolled(scrollTop > 50);
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const snapContainer = document.querySelector('[data-snap-container]');
+        const scrollTop = snapContainer ? (snapContainer as HTMLElement).scrollTop : window.scrollY;
+        setIsScrolled(scrollTop > 50);
+        ticking = false;
+      });
     };
 
     setIsScrolled(false);
-    // Use capture phase on document to catch scroll from snap container or window
     document.addEventListener('scroll', checkScroll, { passive: true, capture: true });
-    // Also check immediately in case page already scrolled
     checkScroll();
 
     return () => {
@@ -64,17 +69,17 @@ export function Menu() {
   return (
     <>
       {/* Header */}
-      <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-5 md:px-10 md:py-7 transition-all duration-500 ${
-        isScrolled ? 'backdrop-blur-xl bg-th-bg/50' : ''
+      <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-5 md:px-10 md:py-7 transition-all duration-hover ease-brand ${
+        isScrolled ? 'bg-th-bg/90 border-b border-th-fg/10 backdrop-blur-md' : 'border-b border-transparent'
       }`}>
-        <Link href="/" className="relative z-50 transition-opacity duration-300 hover:opacity-70">
+        <Link href="/" className="relative z-50 transition-opacity duration-hover hover:opacity-70">
           <Image
             src="/logos/f28/f28_white.png"
             alt="f/2.8"
             width={120}
             height={60}
             className="h-8 md:h-10 w-auto dark:invert-0 invert"
-            priority
+            loading="eager"
           />
         </Link>
         
@@ -107,12 +112,12 @@ export function Menu() {
           clipPath: isVisible
             ? 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
             : 'polygon(0 0, 100% 0, 100% 0, 0 0)',
-          transition: 'clip-path 0.65s cubic-bezier(0.76, 0, 0.24, 1)',
+          transition: 'clip-path var(--duration-reveal) var(--ease-brand)',
         }}
       >
         {/* Background */}
         <div className="absolute inset-0">
-          <Image src="/menubg.webp" alt="" fill className="object-cover" quality={85} loading="lazy" />
+          <Image src="/menubg.webp" alt="" fill className="object-cover" quality={85} loading="lazy" sizes={MENU_BG_SIZES} />
           <div className="absolute inset-0 bg-black/75" />
         </div>
 
@@ -127,12 +132,12 @@ export function Menu() {
               transition: isVisible ? 'opacity 0.4s ease 0.2s' : 'opacity 0.15s ease',
             }}
           >
-            <span className="text-white/20 text-[9px] tracking-[0.55em] uppercase">Istanbul, Turkey</span>
-            <span className="text-white/15 text-[9px] tracking-[0.55em] font-mono">f/2.8</span>
+            <span className="section-label text-white/25">Istanbul, Turkey</span>
+            <span className="mono-label text-white/20">f/2.8</span>
           </div>
 
           {/* Nav items */}
-          <nav className="flex flex-col my-auto py-10">
+          <nav className="flex flex-col my-auto py-10 gap-1">
             {menuItems.map((item, index) => (
               <div
                 key={item.href}
@@ -141,20 +146,17 @@ export function Menu() {
                   opacity: isVisible ? 1 : 0,
                   transform: isVisible ? 'translateY(0px)' : 'translateY(32px)',
                   transition: isVisible
-                    ? `opacity 0.55s cubic-bezier(0.76,0,0.24,1) ${index * 0.07 + 0.25}s, transform 0.55s cubic-bezier(0.76,0,0.24,1) ${index * 0.07 + 0.25}s`
-                    : `opacity 0.18s ease ${(menuItems.length - 1 - index) * 0.04}s, transform 0.18s ease ${(menuItems.length - 1 - index) * 0.04}s`,
+                    ? `opacity var(--duration-reveal) var(--ease-brand) ${index * 0.07 + 0.25}s, transform var(--duration-reveal) var(--ease-brand) ${index * 0.07 + 0.25}s`
+                    : `opacity var(--duration-ui) var(--ease-brand) ${(menuItems.length - 1 - index) * 0.04}s, transform var(--duration-ui) var(--ease-brand) ${(menuItems.length - 1 - index) * 0.04}s`,
                 }}
               >
                 <Link
                   href={item.href}
                   onClick={closeMenu}
-                  className="group flex items-baseline gap-4 md:gap-6 py-4 md:py-5"
+                  className="group flex items-baseline gap-5 md:gap-8 py-5 md:py-6"
                 >
-                  <span className="text-white/20 font-mono text-[10px] tracking-[0.3em] w-6 flex-shrink-0">{item.num}</span>
-                  <span
-                    className="text-white font-black tracking-tight leading-none transition-all duration-300 group-hover:text-white/50 group-hover:translate-x-2"
-                    style={{ fontSize: 'clamp(2rem, 7vw, 5.5rem)' }}
-                  >
+                  <span className="mono-label text-white/25 w-8 flex-shrink-0">{item.num}</span>
+                  <span className="heading-section text-white transition-all duration-300 group-hover:text-white/50 group-hover:translate-x-2">
                     {item.label}
                   </span>
                 </Link>
@@ -169,23 +171,23 @@ export function Menu() {
               opacity: isVisible ? 1 : 0,
               transform: isVisible ? 'translateY(0px)' : 'translateY(20px)',
               transition: isVisible
-                ? 'opacity 0.5s ease 0.7s, transform 0.5s ease 0.7s'
-                : 'opacity 0.15s ease',
+                ? 'opacity var(--duration-reveal) var(--ease-brand) 0.7s, transform var(--duration-reveal) var(--ease-brand) 0.7s'
+                : 'opacity var(--duration-ui) var(--ease-brand)',
             }}
           >
             <div className="flex items-center gap-6">
               <Link href={contactInfo.instagram} target="_blank" rel="noopener noreferrer"
-                className="text-white/30 text-[10px] tracking-[0.4em] uppercase hover:text-white/70 transition-colors duration-300">
+                className="section-label text-white/30 hover:text-white/70 transition-colors duration-ui hover-line">
                 Instagram
               </Link>
               <span className="w-px h-3 bg-white/10" />
               <Link href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer"
-                className="text-white/30 text-[10px] tracking-[0.4em] uppercase hover:text-white/70 transition-colors duration-300">
+                className="section-label text-white/30 hover:text-white/70 transition-colors duration-ui hover-line">
                 LinkedIn
               </Link>
             </div>
             <a href={`mailto:${contactInfo.email}`}
-              className="text-white/30 text-[11px] tracking-[0.2em] hover:text-white/70 transition-colors duration-300">
+              className="section-label text-white/30 hover:text-white/70 transition-colors duration-ui hover-line">
               {contactInfo.email}
             </a>
           </div>

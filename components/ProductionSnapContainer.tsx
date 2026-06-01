@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface Props {
   children: React.ReactNode;
@@ -11,9 +11,9 @@ interface Props {
   snapMode?: 'mandatory' | 'heroSnap';
 }
 
+/** Native CSS scroll-snap — no wheel interception (GPU-friendly, no main-thread jank). */
 export function ProductionSnapContainer({ children, snapMode = 'mandatory' }: Props) {
   const containerRef = useRef<HTMLElement>(null);
-  const isAnimating = useRef(false);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -24,76 +24,15 @@ export function ProductionSnapContainer({ children, snapMode = 'mandatory' }: Pr
     };
   }, []);
 
-  const scrollTo = useCallback((top: number) => {
-    const container = containerRef.current;
-    if (!container) return;
-    container.scrollTo({ top, behavior: 'smooth' });
-    setTimeout(() => { isAnimating.current = false; }, 900);
-  }, []);
-
-  const handleWheel = useCallback((e: WheelEvent) => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    if (snapMode === 'mandatory') {
-      e.preventDefault();
-      if (isAnimating.current) return;
-      isAnimating.current = true;
-
-      const direction = e.deltaY > 0 ? 1 : -1;
-      const kids = Array.from(container.children) as HTMLElement[];
-      const currentScroll = container.scrollTop;
-      let targetIndex = 0;
-      let closestDist = Infinity;
-      kids.forEach((child, i) => {
-        const dist = Math.abs(child.offsetTop - currentScroll);
-        if (dist < closestDist) { closestDist = dist; targetIndex = i; }
-      });
-      targetIndex = Math.max(0, Math.min(kids.length - 1, targetIndex + direction));
-      const target = kids[targetIndex];
-      if (target) {
-        scrollTo(target.offsetTop);
-      } else {
-        isAnimating.current = false;
-      }
-    } else {
-      // heroSnap: only intercept wheel while on the hero section
-      const firstChild = container.children[0] as HTMLElement | undefined;
-      if (!firstChild) return;
-      const heroBottom = firstChild.offsetHeight;
-      const isOnHero = container.scrollTop < heroBottom - 50;
-
-      if (isOnHero) {
-        e.preventDefault();
-        if (isAnimating.current) return;
-        isAnimating.current = true;
-        if (e.deltaY > 0) {
-          const secondChild = container.children[1] as HTMLElement | undefined;
-          scrollTo(secondChild ? secondChild.offsetTop : heroBottom);
-        } else {
-          scrollTo(0);
-        }
-      }
-    }
-  }, [snapMode, scrollTo]);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    container.addEventListener('wheel', handleWheel, { passive: false });
-    return () => container.removeEventListener('wheel', handleWheel);
-  }, [handleWheel]);
+  const snapClass =
+    snapMode === 'mandatory' ? 'snap-y snap-mandatory' : 'snap-y snap-proximity';
 
   return (
     <main
       ref={containerRef}
       data-snap-container
-      className="fixed inset-0 overflow-y-scroll [&::-webkit-scrollbar]:hidden"
-      style={{
-        scrollBehavior: 'smooth',
-        scrollbarWidth: 'none',
-        overscrollBehaviorY: 'contain',
-      }}
+      className={`fixed inset-0 overflow-y-scroll overscroll-y-contain [&::-webkit-scrollbar]:hidden ${snapClass}`}
+      style={{ scrollbarWidth: 'none' }}
     >
       {children}
     </main>

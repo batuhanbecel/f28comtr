@@ -18,6 +18,16 @@ export default {
           'surface': 'rgb(var(--c-surface) / <alpha-value>)',
         },
       },
+      transitionTimingFunction: {
+        brand: 'var(--ease-brand)',
+        morph: 'var(--ease-morph)',
+        snappy: 'var(--ease-snappy)',
+      },
+      transitionDuration: {
+        reveal: 'var(--duration-reveal-ms)',
+        hover: 'var(--duration-hover-ms)',
+        ui: 'var(--duration-ui-ms)',
+      },
     },
   },
   plugins: [],

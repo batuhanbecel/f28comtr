@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { shouldSkipOptimization } from '@/lib/blob';
+import { LANDING_PANEL_SIZES } from '@/lib/imageSizes';
 
 interface PanelProps {
   href: string;
@@ -16,164 +17,135 @@ interface PanelProps {
   isDimmed: boolean;
   visible: boolean;
   enterDelay: string;
+  isPrimary?: boolean;
   onEnter: () => void;
   onLeave: () => void;
 }
 
 function Panel({
   href, imageSrc, imageAlt, label, heading, enterLabel,
-  isDimmed, visible, enterDelay, onEnter, onLeave,
+  isDimmed, visible, enterDelay, isPrimary = false, onEnter, onLeave,
 }: PanelProps) {
-  const imageRef = useRef<HTMLDivElement>(null);
-  const mouse = useRef({ tx: 0, ty: 0, cx: 0, cy: 0 });
-  const raf = useRef<number | null>(null);
-
-  useEffect(() => {
-    let alive = true;
-    const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
-    const tick = () => {
-      if (!alive) return;
-      mouse.current.cx = lerp(mouse.current.cx, mouse.current.tx, 0.055);
-      mouse.current.cy = lerp(mouse.current.cy, mouse.current.ty, 0.055);
-      if (imageRef.current) {
-        imageRef.current.style.transform =
-          `scale(1.1) translate3d(${mouse.current.cx}px,${mouse.current.cy}px,0)`;
-      }
-      raf.current = requestAnimationFrame(tick);
-    };
-    raf.current = requestAnimationFrame(tick);
-    return () => {
-      alive = false;
-      if (raf.current) cancelAnimationFrame(raf.current);
-    };
-  }, []);
-
-  const handleMove = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    mouse.current.tx = -((e.clientX - r.left) / r.width - 0.5) * 24;
-    mouse.current.ty = -((e.clientY - r.top) / r.height - 0.5) * 16;
-  }, []);
-
-  const handleLeave = useCallback(() => {
-    mouse.current.tx = 0;
-    mouse.current.ty = 0;
-    onLeave();
-  }, [onLeave]);
-
   return (
     <Link
       href={href}
-      className="relative flex-1 min-h-0 overflow-hidden block"
-      onMouseMove={handleMove}
+      className="group relative flex-1 min-h-0 overflow-hidden block"
+      aria-label={`${heading} — ${enterLabel}`}
       onMouseEnter={onEnter}
-      onMouseLeave={handleLeave}
+      onMouseLeave={onLeave}
     >
-      {/* Parallax image layer — extends beyond edges to allow translation */}
-      <div
-        ref={imageRef}
-        className="absolute parallax-image"
-        style={{ inset: '-8%', transform: 'scale(1.1)' }}
-      >
+      {/* Background image */}
+      <div className="absolute inset-0">
         <Image
           src={imageSrc}
           alt={imageAlt}
           fill
-          className="object-cover"
-          priority
-          fetchPriority="high"
+          className={`object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] ${isDimmed ? 'scale-100' : 'group-hover:scale-[1.04]'}`}
+          loading={isPrimary ? 'eager' : 'lazy'}
+          fetchPriority={isPrimary ? 'high' : undefined}
           quality={85}
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes={LANDING_PANEL_SIZES}
           unoptimized={shouldSkipOptimization(imageSrc)}
         />
       </div>
 
-      {/* Tint overlay — dims when sibling is hovered */}
+      {/* Dim overlay */}
       <div
-        className="absolute inset-0 transition-all duration-700"
-        style={{ background: isDimmed ? 'rgba(0,0,0,0.72)' : 'rgba(0,0,0,0.32)' }}
+        className="absolute inset-0 transition-opacity duration-500"
+        style={{ background: isDimmed ? 'rgba(0,0,0,0.68)' : 'rgba(0,0,0,0.22)' }}
       />
-      {/* Strong bottom gradient for text legibility */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-transparent" />
-      {/* Top fade */}
-      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/55 to-transparent" />
+      {/* Bottom gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/18 to-transparent" />
 
-      {/* Text block */}
+      {/* Bottom text */}
       <div
-        className="absolute bottom-0 left-0 right-0 p-8 sm:p-10 md:p-12 lg:p-16 overflow-hidden whitespace-nowrap"
+        className="absolute bottom-0 left-0 right-0 px-7 sm:px-10 md:px-12 lg:px-14 pb-10 md:pb-14 z-10"
         style={{
           opacity: visible ? 1 : 0,
-          transform: visible ? 'translateY(0)' : 'translateY(28px)',
-          transition: `opacity 1.1s cubic-bezier(0.76,0,0.24,1) ${enterDelay}, transform 1.1s cubic-bezier(0.76,0,0.24,1) ${enterDelay}`,
+          transform: visible ? 'translateY(0)' : 'translateY(32px)',
+          transition: `opacity 0.7s cubic-bezier(0.76,0,0.24,1) ${enterDelay}, transform 0.7s cubic-bezier(0.76,0,0.24,1) ${enterDelay}`,
         }}
       >
-        {/* Accent rule */}
+        {/* Thin rule */}
         <div
-          className="h-px mb-5 origin-left transition-all duration-700"
-          style={{ width: isDimmed ? '16px' : '28px', background: isDimmed ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.35)' }}
+          className="h-px mb-5 origin-left transition-all duration-500"
+          style={{
+            width: isDimmed ? '10px' : '32px',
+            background: isDimmed ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.3)',
+          }}
         />
 
-        {/* Sub-label */}
+        {/* Label */}
         <p
-          className="text-[9px] tracking-[0.55em] uppercase mb-3 transition-all duration-600"
-          style={{ color: isDimmed ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.5)' }}
+          className="text-[9px] tracking-[0.6em] uppercase font-mono mb-3 transition-opacity duration-500"
+          style={{ color: isDimmed ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.42)' }}
         >
           {label}
         </p>
 
-        {/* Main heading */}
+        {/* Section heading */}
         <h2
-          className="heading-hero transition-all duration-700 whitespace-nowrap"
-          style={{ color: isDimmed ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,1)' }}
+          className="heading-hero transition-colors duration-500 leading-[0.9]"
+          style={{ color: isDimmed ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,1)' }}
         >
           {heading}
         </h2>
 
-        {/* CTA — always on mobile, on all screens (subtle always) */}
+        {/* Enter CTA */}
         <div
-          className="flex items-center gap-3 mt-5 transition-all duration-500"
-          style={{ opacity: isDimmed ? 0 : 0.6 }}
+          className={`flex items-center gap-3 mt-7 transition-all duration-500 ${isDimmed ? 'opacity-0 translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}
         >
-          <span className="w-6 h-px bg-white/70" />
-          <span className="text-white text-[9px] tracking-[0.5em] uppercase">{enterLabel}</span>
-          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="square" d="M5 12h14M13 6l6 6-6 6" />
-          </svg>
+          <span className="btn-editorial btn-editorial--light !text-[9px] !py-2.5 !px-4 !gap-2.5">
+            <span className="w-4 h-px bg-white/55" />
+            <span>{enterLabel}</span>
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="square" d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </span>
         </div>
       </div>
     </Link>
   );
 }
 
-export function LandingPanels() {
+interface LandingPanelsProps {
+  initialImages?: string[];
+}
+
+export function LandingPanels({ initialImages = [] }: LandingPanelsProps) {
   const [hovered, setHovered] = useState<'production' | 'ai' | null>(null);
   const [visible, setVisible] = useState(false);
-  const [landingImages, setLandingImages] = useState<string[]>([]);
+  const [landingImages, setLandingImages] = useState<string[]>(initialImages);
   const { t } = useLanguage();
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), 120);
+    const timer = setTimeout(() => setVisible(true), 80);
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
+    if (initialImages.length >= 2) return;
     const fetchLandingImages = async () => {
       try {
         const res = await fetch('/api/admin/landing-images');
         if (res.ok) {
           const data = await res.json();
-          setLandingImages(data.images || []);
+          if (Array.isArray(data.images) && data.images.length > 0) {
+            setLandingImages(data.images);
+          }
         }
       } catch {}
     };
     fetchLandingImages();
-  }, []);
+  }, [initialImages.length]);
 
-  // Fallback to local paths if no images in Redis yet
   const productionImage = landingImages[0] || '/landing-1.webp';
   const aiImage = landingImages[1] || '/landing-2.webp';
 
   return (
-    <main className="fixed inset-0 flex flex-col md:flex-row overflow-hidden">
+    <main className="fixed inset-0 overflow-hidden" aria-label="f/2.8 Production Agency">
+      {/* Panels */}
+      <div className="absolute inset-0 flex flex-col md:flex-row">
       <Panel
         href="/production"
         imageSrc={productionImage}
@@ -183,13 +155,14 @@ export function LandingPanels() {
         enterLabel={t.common.enter}
         isDimmed={hovered === 'ai'}
         visible={visible}
-        enterDelay="0.15s"
+        enterDelay="0.1s"
+        isPrimary
         onEnter={() => setHovered('production')}
         onLeave={() => setHovered(null)}
       />
 
-      {/* Thin centre divider */}
-      <div className="w-full md:w-px h-px md:h-full flex-shrink-0 z-10 pointer-events-none bg-gradient-to-r md:bg-gradient-to-b from-transparent via-white/12 to-transparent" />
+      {/* Divider */}
+      <div className="w-full md:w-px h-px md:h-full flex-shrink-0 z-10 pointer-events-none bg-white/[0.12]" />
 
       <Panel
         href="/ai-based"
@@ -200,10 +173,12 @@ export function LandingPanels() {
         enterLabel={t.common.enter}
         isDimmed={hovered === 'production'}
         visible={visible}
-        enterDelay="0.32s"
+        enterDelay="0.25s"
         onEnter={() => setHovered('ai')}
         onLeave={() => setHovered(null)}
       />
+      </div>
+
     </main>
   );
 }

@@ -16,34 +16,32 @@ export function Footer() {
     { href: '/about', label: t.nav.about },
   ];
 
+  const linkClass = 'text-th-fg/35 text-[13px] tracking-wide hover:text-th-fg/80 transition-colors duration-ui w-fit hover-line';
+
   return (
-    <footer className="bg-th-bg border-t border-th-fg/[0.07]">
-      <div className="max-w-7xl mx-auto px-8 md:px-16">
+    <footer className="bg-th-bg border-t border-th-fg/10">
+      <div className="page-section max-w-7xl mx-auto w-full">
 
         {/* Main grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 py-16 md:py-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 pb-12 md:pb-16">
 
           {/* Brand */}
           <div className="flex flex-col gap-6">
-            <Link href="/" className="opacity-55 hover:opacity-100 transition-opacity duration-300 w-fit">
-              <Image src="/logos/f28/f28_white.png" alt="f/2.8" width={90} height={45} className="h-8 w-auto dark:invert-0 invert" />
+            <Link href="/" className="opacity-55 hover:opacity-100 transition-opacity duration-ui w-fit hover-line">
+              <Image src="/logos/f28/f28_white.png" alt="f/2.8" width={90} height={45} className="h-8 w-auto dark:invert-0 invert" loading="lazy" />
             </Link>
             <div className="space-y-1">
-              <p className="text-th-fg/20 text-[10px] tracking-[0.4em] uppercase">{t.footer.tagline}</p>
-              <p className="text-th-fg/15 text-[10px] tracking-[0.4em] uppercase">{t.footer.location}</p>
+              <p className="section-label opacity-40">{t.footer.tagline}</p>
+              <p className="section-label opacity-30">{t.footer.location}</p>
             </div>
           </div>
 
           {/* Navigation */}
           <div>
-            <p className="text-th-fg/20 text-[9px] tracking-[0.55em] uppercase mb-7">{t.footer.navigation}</p>
+            <p className="section-label opacity-40 mb-7">{t.footer.navigation}</p>
             <nav className="flex flex-col gap-3.5">
               {NAV.map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="text-th-fg/35 text-[13px] tracking-wide hover:text-th-fg/80 transition-colors duration-300 w-fit hover-line"
-                >
+                <Link key={href} href={href} className={linkClass}>
                   {label}
                 </Link>
               ))}
@@ -52,21 +50,16 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <p className="text-th-fg/20 text-[9px] tracking-[0.55em] uppercase mb-7">{t.footer.contact}</p>
-            <a
-              href={`mailto:${contactInfo.email}`}
-              className="text-th-fg/35 text-[13px] tracking-wide hover:text-th-fg/80 transition-colors duration-300 block mb-8 hover-line w-fit"
-            >
+            <p className="section-label opacity-40 mb-7">{t.footer.contact}</p>
+            <a href={`mailto:${contactInfo.email}`} className={`${linkClass} block mb-8`}>
               {contactInfo.email}
             </a>
-            <p className="text-th-fg/20 text-[9px] tracking-[0.55em] uppercase mb-4">{t.footer.follow}</p>
+            <p className="section-label opacity-40 mb-4">{t.footer.follow}</p>
             <div className="flex gap-5">
-              <Link href={contactInfo.instagram} target="_blank" rel="noopener noreferrer"
-                className="text-th-fg/30 text-[10px] tracking-[0.4em] uppercase hover:text-th-fg/70 transition-colors duration-300">
+              <Link href={contactInfo.instagram} target="_blank" rel="noopener noreferrer" className={`section-label opacity-40 hover:opacity-80 transition-opacity duration-ui hover-line`}>
                 Instagram
               </Link>
-              <Link href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer"
-                className="text-th-fg/30 text-[10px] tracking-[0.4em] uppercase hover:text-th-fg/70 transition-colors duration-300">
+              <Link href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer" className={`section-label opacity-40 hover:opacity-80 transition-opacity duration-ui hover-line`}>
                 LinkedIn
               </Link>
             </div>
@@ -74,11 +67,11 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-th-fg/[0.06] py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-th-fg/15 text-[9px] tracking-[0.35em] uppercase">
+        <div className="border-t border-th-fg/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="section-label opacity-25">
             &copy; {new Date().getFullYear()} f/2.8 Production. {t.footer.rights}
           </p>
-          <p className="text-th-fg/10 text-[9px] tracking-[0.3em] uppercase font-mono">
+          <p className="mono-label opacity-20">
             {t.footer.city}
           </p>
         </div>

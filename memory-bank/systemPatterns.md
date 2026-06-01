@@ -66,9 +66,17 @@ RootLayout
 6. Download via manual blob + anchor (not `pdf.save()` — browser blocks after long async)
 
 ### Scroll Snap Pattern (ProductionSnapContainer)
-- Custom wheel event interception for controlled snap-scroll
+- Native CSS `scroll-snap` (`snap-mandatory` / `snap-proximity`) — no wheel interception
+- Locks `html` overflow; scroll on `[data-snap-container]`
 - `[data-snap-container]` attribute for BackToTop detection
 - `snapMode="heroSnap"` for portfolio pages (hero snaps, grid scrolls freely)
+
+### Motion System (May 2026)
+- Tokens: `--ease-brand`, `--duration-reveal`, etc. in `globals.css`
+- Reveal: `fade-in-up` (hero mount) + `ScrollReveal` / `useScrollReveal` (below fold)
+- Lightbox: unified `components/Lightbox.tsx`
+- Parallax: `useDirectParallax` + `parallaxScrollBus` (one scroll listener per container)
+- Perf: no perpetual RAF; grain off on `isPerfHeavyPage()` routes
 
 ### i18n Pattern
 - `LanguageContext` with `lang` ('en'|'tr') + `setLang`

@@ -2,6 +2,7 @@
 
 import { createContext, use, useState, useEffect, useCallback } from 'react';
 import { translations, type Lang, type T } from '@/lib/translations';
+import { persistLangClient } from '@/lib/prefs';
 
 interface LanguageContextValue {
   lang: Lang;
@@ -15,17 +16,23 @@ const LanguageContext = createContext<LanguageContextValue>({
   t: translations.en,
 });
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = useState<Lang>('en');
+export function LanguageProvider({
+  children,
+  initialLang = 'en',
+}: {
+  children: React.ReactNode;
+  initialLang?: Lang;
+}) {
+  const [lang, setLangState] = useState<Lang>(initialLang);
 
   useEffect(() => {
-    const stored = localStorage.getItem('f28_lang') as Lang | null;
-    if (stored === 'tr' || stored === 'en') setLangState(stored);
-  }, []);
+    setLangState(initialLang);
+    persistLangClient(initialLang);
+  }, [initialLang]);
 
   const setLang = useCallback((l: Lang) => {
     setLangState(l);
-    localStorage.setItem('f28_lang', l);
+    persistLangClient(l);
   }, []);
 
   return (
@@ -35,7 +42,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// React 19: use() instead of useContext()
 export function useLanguage() {
   return use(LanguageContext);
 }

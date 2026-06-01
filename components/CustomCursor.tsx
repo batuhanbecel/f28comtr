@@ -1,55 +1,63 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { prefersReducedMotion } from '@/lib/motion';
 
+/**
+ * Event-driven custom cursor — no RAF loop.
+ * Hover ring via body class (cheaper than :has() on every paint).
+ */
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (prefersReducedMotion()) return;
+    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    if (!mq.matches) return;
+
     const dot = dotRef.current;
     const ring = ringRef.current;
     if (!dot || !ring) return;
 
-    let mx = -200, my = -200;
-    let rx = -200, ry = -200;
-    let raf: number;
+    document.body.classList.add('custom-cursor-active');
 
-    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-
-    const tick = () => {
-      rx = lerp(rx, mx, 0.13);
-      ry = lerp(ry, my, 0.13);
-      dot.style.transform = `translate3d(${mx}px,${my}px,0) translate(-50%,-50%)`;
-      ring.style.transform = `translate3d(${rx}px,${ry}px,0) translate(-50%,-50%)`;
-      raf = requestAnimationFrame(tick);
+    const onMove = (e: MouseEvent) => {
+      const t = `translate3d(${e.clientX}px,${e.clientY}px,0) translate(-50%,-50%)`;
+      dot.style.transform = t;
+      ring.style.transform = t;
+      dot.dataset.visible = 'true';
+      ring.dataset.visible = 'true';
     };
 
-    const onMove = (e: MouseEvent) => { mx = e.clientX; my = e.clientY; };
+    const onLeave = () => {
+      delete dot.dataset.visible;
+      delete ring.dataset.visible;
+    };
 
     const onOver = (e: MouseEvent) => {
-      if ((e.target as HTMLElement).closest('a,button,[data-cursor-hover]')) {
-        ring.dataset.hover = '1';
-        dot.dataset.hover = '1';
-      }
-    };
-    const onOut = (e: MouseEvent) => {
-      if (!(e.relatedTarget as HTMLElement | null)?.closest('a,button,[data-cursor-hover]')) {
-        delete ring.dataset.hover;
-        delete dot.dataset.hover;
-      }
+      const interactive = (e.target as Element).closest('a, button, [data-cursor-hover]');
+      document.body.classList.toggle('cursor-on-interactive', !!interactive);
     };
 
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseover', onOver);
-    document.addEventListener('mouseout', onOut);
-    raf = requestAnimationFrame(tick);
+    document.addEventListener('mousemove', onMove, { passive: true });
+    document.addEventListener('mouseleave', onLeave);
+    document.addEventListener('mouseover', onOver, { passive: true });
+
+    const onMqChange = (e: MediaQueryListEvent) => {
+      if (!e.matches) {
+        onLeave();
+        document.body.classList.remove('cursor-on-interactive');
+      }
+    };
+    mq.addEventListener('change', onMqChange);
 
     return () => {
+      document.body.classList.remove('custom-cursor-active', 'cursor-on-interactive');
       document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseleave', onLeave);
       document.removeEventListener('mouseover', onOver);
-      document.removeEventListener('mouseout', onOut);
-      cancelAnimationFrame(raf);
+      mq.removeEventListener('change', onMqChange);
     };
   }, []);
 
@@ -58,12 +66,12 @@ export function CustomCursor() {
       <div
         ref={dotRef}
         className="cursor-dot fixed top-0 left-0 pointer-events-none z-[9999] hidden md:block"
-        style={{ willChange: 'transform' }}
+        aria-hidden="true"
       />
       <div
         ref={ringRef}
         className="cursor-ring fixed top-0 left-0 pointer-events-none z-[9998] hidden md:block"
-        style={{ willChange: 'transform' }}
+        aria-hidden="true"
       />
     </>
   );

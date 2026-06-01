@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getPartnerLogos, getClientLogos } from '@/lib/utils';
 import { getPhotographers } from '@/lib/db';
 import { Footer } from '@/components/Footer';
+import { PageSection } from '@/components/PageSection';
 import { LocalizedHero } from '@/components/LocalizedHero';
 import { LocalizedAboutBrands } from '@/components/LocalizedAboutBrands';
 import { AboutStats } from '@/components/AboutStats';
@@ -11,6 +12,13 @@ import { ScrollIndicator } from '@/components/ScrollIndicator';
 export const metadata: Metadata = {
   title: 'About Us | f/2.8 Production Agency',
   description: 'Istanbul-based photography and production agency since 2008. Photography, video, CGI, animation, editing, and motion graphics.',
+  openGraph: {
+    title: 'About Us | f/2.8 Production Agency',
+    description: 'Istanbul-based photography and production agency since 2008.',
+    type: 'website',
+    url: 'https://www.f28.com.tr/about',
+    siteName: 'f/2.8 Production Agency',
+  },
 };
 
 export const revalidate = 60;
@@ -28,19 +36,21 @@ export default async function AboutPage() {
     <ProductionSnapContainer snapMode="heroSnap">
       {/* Hero — snap point */}
       <section
-        className="h-screen flex flex-col items-center justify-center px-6 md:px-12 text-center relative overflow-hidden"
+        className="hero-screen h-screen flex flex-col items-center justify-center px-6 md:px-12 text-center relative overflow-hidden"
         style={{ scrollSnapAlign: 'start' }}
       >
         <div className="max-w-4xl mx-auto">
           <LocalizedHero page="about" />
-          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 mt-10 fade-in-up" style={{ animationDelay: '0.35s' }}>
-            {SERVICES.map((s, i) => (
-              <span key={s} className="flex items-center gap-2">
-                <span className="text-th-fg/20 font-mono text-[9px]">{String(i + 1).padStart(2, '0')}</span>
-                <span className="text-th-fg/45 text-[10px] tracking-[0.35em] uppercase">{s}</span>
-              </span>
-            ))}
-          </div>
+          <PageSection className="!py-0 !px-0 mt-10">
+            <div className="flex flex-wrap justify-center gap-3 fade-in-up" style={{ animationDelay: '0.35s' }}>
+              {SERVICES.map((s, i) => (
+                <span key={s} className="editorial-chip">
+                  <span className="mono-label">{String(i + 1).padStart(2, '0')}</span>
+                  {s}
+                </span>
+              ))}
+            </div>
+          </PageSection>
         </div>
         <ScrollIndicator />
       </section>

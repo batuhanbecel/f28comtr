@@ -25,7 +25,7 @@ export default async function ProductionPage() {
     <ProductionSnapContainer>
       {/* Hero — snap point 1 */}
       <section
-        className="h-screen flex flex-col items-center justify-center px-6 md:px-12 relative overflow-hidden"
+        className="hero-screen h-screen flex flex-col items-center justify-center px-6 md:px-12 relative overflow-hidden"
         style={{ scrollSnapAlign: 'start' }}
       >
         <LocalizedHero page="production" />

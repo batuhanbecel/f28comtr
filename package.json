@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "prebuild": "node scripts/generate-image-manifest.js",
-    "build": "next build --no-turbopack",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "generate-manifest": "node scripts/generate-image-manifest.js",
@@ -32,6 +32,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.20",
+    "critters": "^0.0.23",
     "dotenv": "^16.4.5",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",

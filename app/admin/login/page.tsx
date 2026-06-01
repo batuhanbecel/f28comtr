@@ -3,6 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { AdminPageLayout } from '@/components/admin/AdminPageLayout';
+import { AdminPanel } from '@/components/admin/AdminPanel';
+import { AdminFormField, AdminInput } from '@/components/admin/AdminFormField';
+import { AdminButton } from '@/components/admin/AdminButton';
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('');
@@ -37,45 +41,48 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-th-bg flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-12">
+    <AdminPageLayout title="Sign In" label="Admin" maxWidth="4xl">
+      <div className="max-w-sm mx-auto">
+        <div className="text-center mb-8">
           <Image
             src="/logos/f28/f28_white.png"
             alt="f/2.8"
             width={100}
             height={50}
-            className="h-10 w-auto mx-auto mb-8 opacity-90"
+            className="h-10 w-auto mx-auto mb-6 opacity-90"
+            loading="eager"
           />
-          <p className="text-th-fg/40 text-xs tracking-[0.3em] uppercase">Admin Dashboard</p>
+          <p className="section-label section-label--mini mx-auto">Admin Dashboard</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="Password"
-              autoFocus
-              required
-              className="w-full bg-th-fg/[0.04] border border-th-fg/[0.08] text-th-fg placeholder-th-fg/20 px-4 py-3 text-sm tracking-wide focus:outline-none focus:border-th-fg/25 transition-colors"
-            />
-          </div>
+        <AdminPanel>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <AdminFormField label="Password">
+              <AdminInput
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password"
+                autoFocus
+                required
+              />
+            </AdminFormField>
 
-          {error && (
-            <p className="text-red-400 text-xs tracking-wide">{error}</p>
-          )}
+            {error ? (
+              <p className="text-red-400 text-xs tracking-wide">{error}</p>
+            ) : null}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-th-fg text-th-bg text-[10px] font-bold tracking-[0.3em] uppercase py-3 hover:bg-th-fg/90 transition-colors disabled:opacity-50"
-          >
-            {loading ? 'Signing in...' : 'Sign In'}
-          </button>
-        </form>
+            <AdminButton
+              type="submit"
+              variant="primary"
+              disabled={loading}
+              className="w-full disabled:opacity-50"
+            >
+              {loading ? 'Signing in...' : 'Sign In'}
+            </AdminButton>
+          </form>
+        </AdminPanel>
       </div>
-    </div>
+    </AdminPageLayout>
   );
 }

@@ -4,7 +4,14 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { toast } from 'react-hot-toast';
 import { shouldSkipOptimization } from '@/lib/blob';
+import type { AIWork, WorkCategory } from '@/lib/aiWorks';
+import { AdminPageLayout } from '@/components/admin/AdminPageLayout';
+import { AdminPanel } from '@/components/admin/AdminPanel';
+import { AdminFormField, AdminInput, AdminSelect } from '@/components/admin/AdminFormField';
+import { AdminButton } from '@/components/admin/AdminButton';
+import { AdminDropzone } from '@/components/admin/AdminDropzone';
 
 interface UploadProgress {
   fileName: string;
@@ -14,6 +21,19 @@ interface UploadProgress {
 
 const MAX_CLIENT_SIZE = 3.5 * 1024 * 1024;
 const MAX_CLIENT_DIM = 3000;
+const CATEGORY_OPTIONS: { key: WorkCategory; label: string }[] = [
+  { key: 'visual', label: 'Visual' },
+  { key: 'video', label: 'Video' },
+  { key: 'hybrid', label: 'Hybrid' },
+];
+
+function deriveBrandKey(brand: string): string {
+  return brand
+    .toLowerCase()
+    .replace(/ı/g, 'i').replace(/ş/g, 's').replace(/ç/g, 'c')
+    .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ö/g, 'o')
+    .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'other';
+}
 
 async function compressImage(file: File): Promise<File> {
   if (file.size <= MAX_CLIENT_SIZE) return file;
@@ -39,45 +59,64 @@ async function compressImage(file: File): Promise<File> {
 
 export default function AdminAIBased() {
   const router = useRouter();
-  const [images, setImages] = useState<string[]>([]);
+  const [works, setWorks] = useState<AIWork[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState('');
-  const [isError, setIsError] = useState(false);
+  const [dirty, setDirty] = useState(false);
   const dragItem = useRef<number | null>(null);
-  const dragOver = useRef<number | null>(null);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadQueue, setUploadQueue] = useState<UploadProgress[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [defaultBrand, setDefaultBrand] = useState('');
+  const [defaultCategory, setDefaultCategory] = useState<WorkCategory>('visual');
+  const [filterBrand, setFilterBrand] = useState<string>('all');
+  const [filterCategory, setFilterCategory] = useState<string>('all');
   const abortRef = useRef(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const showMsg = (msg: string, error = false) => {
-    setMessage(msg);
-    setIsError(error);
-    setTimeout(() => setMessage(''), 3000);
-  };
-
-  const fetchImages = useCallback(async () => {
+  const fetchWorks = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/ai-images');
+      const res = await fetch('/api/admin/ai-works');
       if (res.status === 401) { router.push('/admin/login'); return; }
       const data = await res.json();
-      setImages(data.images || []);
+      setWorks(data.works || []);
     } catch {
-      showMsg('Failed to load AI images', true);
+      toast.error('Failed to load AI works');
     } finally {
       setLoading(false);
     }
   }, [router]);
 
-  useEffect(() => { fetchImages(); }, [fetchImages]);
+  useEffect(() => { fetchWorks(); }, [fetchWorks]);
+
+  const knownBrands = Array.from(
+    new Map(works.map((w) => [w.brandKey, w.brand])).entries()
+  ).map(([key, label]) => ({ key, label }));
+
+  const visibleWorks = works
+    .map((w, idx) => ({ w, idx }))
+    .filter(({ w }) => {
+      if (filterBrand !== 'all' && w.brandKey !== filterBrand) return false;
+      if (filterCategory !== 'all' && w.category !== filterCategory) return false;
+      return true;
+    });
+
+  const updateWork = (idx: number, patch: Partial<AIWork>) => {
+    setWorks(prev => prev.map((w, i) => {
+      if (i !== idx) return w;
+      const merged = { ...w, ...patch };
+      if (patch.brand !== undefined) merged.brandKey = deriveBrandKey(patch.brand);
+      return merged;
+    }));
+    setDirty(true);
+  };
 
   const uploadFiles = useCallback(async (files: File[]) => {
     const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/tiff', 'image/avif', 'image/heic', 'image/heif'];
     const imageFiles = files.filter(f => allowed.includes(f.type));
-    if (imageFiles.length === 0) { showMsg('No valid image files', true); return; }
+    if (imageFiles.length === 0) { toast.error('No valid image files'); return; }
+    const brand = defaultBrand.trim() || 'Other';
     abortRef.current = false;
     setIsUploading(true);
     const queue: UploadProgress[] = imageFiles.map(f => ({ fileName: f.name, status: 'pending' as const }));
@@ -95,7 +134,19 @@ export default function AdminAIBased() {
         const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
         if (res.ok) {
           const data = await res.json();
-          setImages(prev => [...prev, data.url]);
+          const newWork: AIWork = {
+            id: `work-${Date.now()}-${i}`,
+            brand,
+            brandKey: deriveBrandKey(brand),
+            title: '',
+            description: '',
+            category: defaultCategory,
+            imageSrc: data.url,
+            imageAlt: `${brand} AI image`,
+            year: new Date().getFullYear(),
+          };
+          setWorks(prev => [...prev, newWork]);
+          setDirty(true);
           setUploadQueue(prev => prev.map((item, idx) => idx === i ? { ...item, status: 'done' } : item));
           successCount++;
         } else {
@@ -107,75 +158,71 @@ export default function AdminAIBased() {
       }
     }
     setIsUploading(false);
-    if (successCount > 0) showMsg(`${successCount} AI image${successCount > 1 ? 's' : ''} uploaded`);
-  }, []);
+    if (successCount > 0) toast.success(`${successCount} image${successCount > 1 ? 's' : ''} uploaded — remember to Save`);
+  }, [defaultBrand, defaultCategory]);
 
-  const handleDeleteImage = async (img: string, index: number) => {
-    if (!confirm('Delete this AI image?')) return;
+  const handleDelete = async (work: AIWork, idx: number) => {
+    if (!confirm(`Delete this image? (${work.brand})`)) return;
     try {
-      const res = await fetch('/api/admin/upload', {
+      await fetch('/api/admin/upload', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: img, type: 'ai' }),
+        body: JSON.stringify({ url: work.imageSrc, type: 'ai' }),
       });
-      if (res.ok) {
-        setImages(prev => prev.filter((_, i) => i !== index));
-        showMsg('Image deleted');
-      } else showMsg('Delete failed', true);
-    } catch { showMsg('Delete failed', true); }
+    } catch {}
+    setWorks(prev => prev.filter((_, i) => i !== idx));
+    setDirty(true);
+    toast.success('Image removed — Save to persist');
   };
 
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await fetch('/api/admin/ai-images', {
+      const res = await fetch('/api/admin/ai-works', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ images }),
+        body: JSON.stringify({ works }),
       });
       const data = await res.json();
       if (res.ok) {
-        showMsg(`Saved ${data.count} images`);
+        toast.success(`Saved ${data.count} works`);
+        setDirty(false);
       } else {
-        showMsg(data.error || 'Save failed', true);
+        toast.error(data.error || 'Save failed');
       }
     } catch {
-      showMsg('Save failed', true);
+      toast.error('Save failed');
     } finally {
       setSaving(false);
     }
   };
 
-  const moveImage = (index: number, direction: -1 | 1) => {
-    const target = index + direction;
-    if (target < 0 || target >= images.length) return;
-    const next = [...images];
-    [next[index], next[target]] = [next[target], next[index]];
-    setImages(next);
+  const moveWork = (idx: number, direction: -1 | 1) => {
+    const target = idx + direction;
+    if (target < 0 || target >= works.length) return;
+    const next = [...works];
+    [next[idx], next[target]] = [next[target], next[idx]];
+    setWorks(next);
+    setDirty(true);
   };
 
-  const removeImage = (index: number) => {
-    setImages(prev => prev.filter((_, i) => i !== index));
+  const onDragStart = (idx: number) => {
+    dragItem.current = idx;
+    setDragIndex(idx);
   };
 
-  const onDragStart = (index: number) => {
-    dragItem.current = index;
-    setDragIndex(index);
-  };
-
-  const onDragEnter = (index: number) => {
-    dragOver.current = index;
-    if (dragItem.current === null || dragItem.current === index) return;
-    const next = [...images];
+  const onDragEnter = (idx: number) => {
+    if (dragItem.current === null || dragItem.current === idx) return;
+    const next = [...works];
     const [moved] = next.splice(dragItem.current, 1);
-    next.splice(index, 0, moved);
-    dragItem.current = index;
-    setImages(next);
+    next.splice(idx, 0, moved);
+    dragItem.current = idx;
+    setWorks(next);
+    setDirty(true);
   };
 
   const onDragEnd = () => {
     dragItem.current = null;
-    dragOver.current = null;
     setDragIndex(null);
   };
 
@@ -184,8 +231,8 @@ export default function AdminAIBased() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="space-y-3 w-full max-w-4xl px-8">
           <div className="h-10 bg-th-fg/[0.03] animate-pulse w-48" />
-          <div className="grid grid-cols-5 gap-2 mt-8">
-            {[...Array(15)].map((_, i) => <div key={i} className="aspect-square bg-th-fg/[0.03] animate-pulse" />)}
+          <div className="grid grid-cols-4 gap-2 mt-8">
+            {[...Array(8)].map((_, i) => <div key={i} className="aspect-[4/3] bg-th-fg/[0.03] animate-pulse" />)}
           </div>
         </div>
       </div>
@@ -193,74 +240,70 @@ export default function AdminAIBased() {
   }
 
   return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <header className="border-b border-th-fg/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-th-surface/95 backdrop-blur-sm z-10">
-        <div className="flex items-center gap-4">
-          <Link href="/admin" className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase hover:text-th-fg/60 transition-colors">
-            ← Dashboard
+    <AdminPageLayout
+      title="Works"
+      breadcrumb={{ href: '/admin', label: 'Dashboard' }}
+      actions={
+        <>
+          {dirty ? <span className="text-amber-400/70 text-[10px] tracking-[0.3em] uppercase">• Unsaved</span> : null}
+          <Link href="/ai-based" target="_blank" className="btn-editorial text-[10px]">
+            View Page ↗
           </Link>
-          <div className="w-px h-3 bg-th-fg/10" />
-          <span className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase">AI Based</span>
-        </div>
-        <Link
-          href="/ai-based"
-          target="_blank"
-          className="text-th-fg/30 text-[10px] tracking-[0.25em] uppercase hover:text-th-fg/60 transition-colors px-3 py-2 hover:bg-th-fg/5"
-        >
-          View Page ↗
-        </Link>
-      </header>
+          <AdminButton onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
+            + Upload
+          </AdminButton>
+          <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden"
+            onChange={e => { if (e.target.files) uploadFiles(Array.from(e.target.files)); e.target.value = ''; }} />
+          <AdminButton variant="primary" onClick={handleSave} disabled={saving || !dirty}>
+            {saving ? 'Saving...' : 'Save'}
+          </AdminButton>
+        </>
+      }
+    >
+      <p className="text-th-fg/25 text-xs mb-8">
+        {works.length} works — tag each with brand and type, drag to reorder
+      </p>
 
-      {/* Toast */}
-      {message && (
-        <div className={`fixed bottom-8 right-8 z-50 px-5 py-3 backdrop-blur border text-sm tracking-wide shadow-2xl ${
-          isError ? 'bg-red-500/20 border-red-500/30 text-red-300' : 'bg-th-fg/10 border-th-fg/20 text-th-fg'
-        }`}>
-          {message}
+      <AdminPanel label="Upload" title="Defaults" className="mb-6">
+        <div className="flex flex-wrap items-end gap-4">
+          <AdminFormField label="Brand (next upload)" className="min-w-[180px] flex-1">
+            <AdminInput
+              type="text"
+              placeholder="Brand (e.g. Puma)"
+              value={defaultBrand}
+              onChange={(e) => setDefaultBrand(e.target.value)}
+              list="brand-suggestions"
+            />
+          </AdminFormField>
+          <datalist id="brand-suggestions">
+            {knownBrands.map(b => <option key={b.key} value={b.label} />)}
+          </datalist>
+          <AdminFormField label="Type">
+            <AdminSelect
+              value={defaultCategory}
+              onChange={(e) => setDefaultCategory(e.target.value as WorkCategory)}
+            >
+              {CATEGORY_OPTIONS.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
+            </AdminSelect>
+          </AdminFormField>
         </div>
-      )}
+      </AdminPanel>
 
-      <div className="max-w-7xl mx-auto px-8 py-10">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <p className="text-th-fg/20 text-[10px] tracking-[0.5em] uppercase mb-2">AI Based</p>
-            <h1 className="text-3xl font-black tracking-tighter">IMAGE ORDER</h1>
-            <p className="text-th-fg/25 text-xs mt-1">
-              {images.length} images — drag to reorder, hover for controls
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-              className="text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 border border-th-fg/[0.15] text-th-fg/60 hover:text-th-fg hover:border-th-fg/30 transition-colors disabled:opacity-40">
-              + Upload
-            </button>
-            <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden"
-              onChange={e => { if (e.target.files) uploadFiles(Array.from(e.target.files)); e.target.value = ''; }} />
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="bg-th-fg text-th-bg text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-th-fg/90 transition-colors disabled:opacity-50">
-              {saving ? 'Saving...' : 'Save Order'}
-            </button>
-          </div>
-        </div>
+      <div
+        onDragOver={e => { e.preventDefault(); setIsDragOver(true); }}
+        onDragLeave={() => setIsDragOver(false)}
+        onDrop={e => { e.preventDefault(); setIsDragOver(false); if (e.dataTransfer.files.length) uploadFiles(Array.from(e.dataTransfer.files)); }}
+        className="mb-6"
+      >
+        <AdminDropzone
+          onFiles={(files) => uploadFiles(Array.from(files))}
+          accept="image/*"
+          disabled={isUploading}
+          hint="Drop images or click to upload"
+          className={isDragOver ? 'border-th-fg/40 bg-th-fg/[0.06]' : ''}
+        />
+      </div>
 
-        {/* Upload dropzone */}
-        <div
-          onDragOver={e => { e.preventDefault(); setIsDragOver(true); }}
-          onDragLeave={() => setIsDragOver(false)}
-          onDrop={e => { e.preventDefault(); setIsDragOver(false); if (e.dataTransfer.files.length) uploadFiles(Array.from(e.dataTransfer.files)); }}
-          className={`mb-6 border-2 border-dashed p-6 text-center transition-colors ${
-            isDragOver ? 'border-th-fg/40 bg-th-fg/[0.06]' : 'border-th-fg/[0.08] hover:border-th-fg/15'
-          }`}
-        >
-          <p className="text-th-fg/30 text-xs tracking-wide">Drop AI images here or click Upload</p>
-        </div>
-
-        {/* Upload progress */}
         {uploadQueue.length > 0 && (
           <div className="mb-6 border border-th-fg/[0.08] divide-y divide-th-fg/[0.05] max-h-48 overflow-y-auto">
             {isUploading && (
@@ -268,7 +311,7 @@ export default function AdminAIBased() {
                 <span className="text-th-fg/40 text-[10px] tracking-widest uppercase">
                   Uploading {uploadQueue.filter(q => q.status === 'done').length}/{uploadQueue.length}
                 </span>
-                <button onClick={() => abortRef.current = true} className="text-red-400/60 hover:text-red-400 text-[10px] tracking-widest uppercase">Cancel</button>
+                <button onClick={() => { abortRef.current = true; }} className="text-red-400/60 hover:text-red-400 text-[10px] tracking-widest uppercase">Cancel</button>
               </div>
             )}
             {uploadQueue.map((item, i) => (
@@ -284,57 +327,120 @@ export default function AdminAIBased() {
           </div>
         )}
 
-        {images.length === 0 ? (
+        {/* Filters */}
+        {works.length > 0 && (
+          <div className="mb-6 flex flex-wrap items-center gap-3 text-xs">
+            <span className="text-th-fg/40 text-[10px] tracking-[0.3em] uppercase">Filter</span>
+            <select
+              value={filterBrand}
+              onChange={(e) => setFilterBrand(e.target.value)}
+              className="bg-th-bg border border-th-fg/[0.12] px-3 py-1.5 text-th-fg/80 focus:outline-none focus:border-th-fg/40"
+            >
+              <option value="all">All brands</option>
+              {knownBrands.map(b => <option key={b.key} value={b.key}>{b.label}</option>)}
+            </select>
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="bg-th-bg border border-th-fg/[0.12] px-3 py-1.5 text-th-fg/80 focus:outline-none focus:border-th-fg/40"
+            >
+              <option value="all">All types</option>
+              {CATEGORY_OPTIONS.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
+            </select>
+            <span className="text-th-fg/30 ml-2">{visibleWorks.length} / {works.length}</span>
+          </div>
+        )}
+
+        {works.length === 0 ? (
           <div className="text-center py-20 border border-th-fg/[0.05]">
-            <p className="text-th-fg/20 text-xs tracking-[0.4em] uppercase">No AI images found</p>
-            <p className="text-th-fg/10 text-xs mt-2">Drop images above or click Upload to add AI images</p>
+            <p className="text-th-fg/20 text-xs tracking-[0.4em] uppercase">No AI works found</p>
+            <p className="text-th-fg/10 text-xs mt-2">Drop images above or click Upload to add works</p>
           </div>
         ) : (
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-1.5">
-            {images.map((img, index) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+            {visibleWorks.map(({ w: work, idx }) => (
               <div
-                key={img}
+                key={work.id}
                 draggable
-                onDragStart={() => onDragStart(index)}
-                onDragEnter={() => onDragEnter(index)}
+                onDragStart={() => onDragStart(idx)}
+                onDragEnter={() => onDragEnter(idx)}
                 onDragEnd={onDragEnd}
                 onDragOver={e => e.preventDefault()}
-                className={`group relative aspect-square overflow-hidden cursor-grab active:cursor-grabbing select-none transition-all duration-150 ${
-                  dragIndex === index ? 'opacity-40 scale-95 ring-1 ring-th-fg/30' : 'opacity-100'
+                className={`group relative border border-th-fg/[0.08] bg-th-fg/[0.02] transition-all duration-150 ${
+                  dragIndex === idx ? 'opacity-40 scale-95 ring-1 ring-th-fg/30' : 'opacity-100'
                 }`}
               >
-                <Image
-                  src={img}
-                  alt={`AI ${index + 1}`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 33vw, (max-width: 1024px) 20vw, 15vw"
-                  unoptimized={shouldSkipOptimization(img)}
-                />
-                <div className="absolute top-1 left-1 bg-th-bg/70 px-1.5 py-0.5">
-                  <span className="text-th-fg/60 text-[9px] font-mono">{index + 1}</span>
-                </div>
-                <div className="absolute inset-0 bg-th-bg/75 opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex flex-col justify-between p-1.5">
-                  <div className="flex justify-end gap-0.5">
-                    <button
-                      onClick={(e) => { e.stopPropagation(); moveImage(index, -1); }}
-                      disabled={index === 0}
-                      className="w-6 h-6 flex items-center justify-center text-th-fg/50 hover:text-th-fg hover:bg-th-fg/20 transition-colors disabled:opacity-20 text-xs"
-                    >←</button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); moveImage(index, 1); }}
-                      disabled={index === images.length - 1}
-                      className="w-6 h-6 flex items-center justify-center text-th-fg/50 hover:text-th-fg hover:bg-th-fg/20 transition-colors disabled:opacity-20 text-xs"
-                    >→</button>
+                <div className="relative aspect-[4/3] overflow-hidden cursor-grab active:cursor-grabbing">
+                  <Image
+                    src={work.imageSrc}
+                    alt={work.imageAlt}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    unoptimized={shouldSkipOptimization(work.imageSrc)}
+                  />
+                  <div className="absolute top-1.5 left-1.5 bg-th-bg/70 px-2 py-0.5">
+                    <span className="text-th-fg/70 text-[9px] font-mono">{idx + 1}</span>
                   </div>
-                  <div className="text-center">
-                    <span className="text-th-fg/40 text-[9px] font-mono">{index + 1} / {images.length}</span>
-                  </div>
-                  <div className="flex justify-end">
+                  <div className="absolute top-1.5 right-1.5 flex gap-1">
                     <button
-                      onClick={(e) => { e.stopPropagation(); handleDeleteImage(img, index); }}
-                      className="w-6 h-6 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-400/20 transition-colors text-xs"
+                      onClick={(e) => { e.stopPropagation(); moveWork(idx, -1); }}
+                      disabled={idx === 0}
+                      className="w-6 h-6 flex items-center justify-center bg-th-bg/70 text-th-fg/60 hover:text-th-fg hover:bg-th-bg/90 disabled:opacity-20 text-xs"
+                    >↑</button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); moveWork(idx, 1); }}
+                      disabled={idx === works.length - 1}
+                      className="w-6 h-6 flex items-center justify-center bg-th-bg/70 text-th-fg/60 hover:text-th-fg hover:bg-th-bg/90 disabled:opacity-20 text-xs"
+                    >↓</button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleDelete(work, idx); }}
+                      className="w-6 h-6 flex items-center justify-center bg-th-bg/70 text-red-400/70 hover:text-red-400 hover:bg-th-bg/90 text-xs"
                     >✕</button>
+                  </div>
+                </div>
+
+                <div className="p-3 space-y-2">
+                  <div>
+                    <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">Brand</label>
+                    <input
+                      type="text"
+                      value={work.brand}
+                      onChange={(e) => updateWork(idx, { brand: e.target.value })}
+                      list="brand-suggestions"
+                      className="w-full bg-th-bg border border-th-fg/[0.1] px-2 py-1.5 text-xs text-th-fg/85 focus:outline-none focus:border-th-fg/40"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">Type</label>
+                      <select
+                        value={work.category}
+                        onChange={(e) => updateWork(idx, { category: e.target.value as WorkCategory })}
+                        className="w-full bg-th-bg border border-th-fg/[0.1] px-2 py-1.5 text-xs text-th-fg/85 focus:outline-none focus:border-th-fg/40"
+                      >
+                        {CATEGORY_OPTIONS.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">Year</label>
+                      <input
+                        type="number"
+                        value={work.year}
+                        onChange={(e) => updateWork(idx, { year: Number(e.target.value) || work.year })}
+                        className="w-full bg-th-bg border border-th-fg/[0.1] px-2 py-1.5 text-xs text-th-fg/85 focus:outline-none focus:border-th-fg/40"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">Title (optional)</label>
+                    <input
+                      type="text"
+                      value={work.title}
+                      onChange={(e) => updateWork(idx, { title: e.target.value })}
+                      placeholder="Shown on hover"
+                      className="w-full bg-th-bg border border-th-fg/[0.1] px-2 py-1.5 text-xs text-th-fg/85 focus:outline-none focus:border-th-fg/40"
+                    />
                   </div>
                 </div>
               </div>
@@ -342,18 +448,13 @@ export default function AdminAIBased() {
           </div>
         )}
 
-        {images.length > 12 && (
-          <div className="mt-6 flex justify-end">
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="bg-th-fg text-th-bg text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-th-fg/90 transition-colors disabled:opacity-50"
-            >
-              {saving ? 'Saving...' : 'Save Order'}
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
+      {dirty && works.length > 0 && (
+        <div className="mt-6 flex justify-end">
+          <AdminButton variant="primary" onClick={handleSave} disabled={saving}>
+            {saving ? 'Saving...' : 'Save'}
+          </AdminButton>
+        </div>
+      )}
+    </AdminPageLayout>
   );
 }

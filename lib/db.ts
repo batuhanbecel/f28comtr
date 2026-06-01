@@ -33,6 +33,19 @@ export async function getPhotographers(): Promise<Photographer[]> {
   return photographers;
 }
 
+export async function getLandingImages(): Promise<string[]> {
+  const redis = getRedis();
+  if (redis) {
+    try {
+      const images = await redis.get('site:landing');
+      if (images && Array.isArray(images) && images.length > 0) {
+        return images as string[];
+      }
+    } catch {}
+  }
+  return [];
+}
+
 export async function setPhotographers(list: Photographer[]): Promise<void> {
   const redis = getRedis();
   if (!redis) throw new Error('Redis is not configured. Add UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN environment variables.');

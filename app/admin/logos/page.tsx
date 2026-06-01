@@ -4,7 +4,12 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { toast } from 'react-hot-toast';
 import { shouldSkipOptimization } from '@/lib/blob';
+import { AdminPageLayout } from '@/components/admin/AdminPageLayout';
+import { AdminPanel } from '@/components/admin/AdminPanel';
+import { AdminButton } from '@/components/admin/AdminButton';
+import { AdminDropzone } from '@/components/admin/AdminDropzone';
 
 interface LogoCategory {
   key: string;
@@ -48,8 +53,6 @@ export default function AdminLogos() {
   const router = useRouter();
   const [categories, setCategories] = useState<LogoCategory[]>([]);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState('');
-  const [isError, setIsError] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadQueue, setUploadQueue] = useState<UploadProgress[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -58,12 +61,6 @@ export default function AdminLogos() {
   const abortRef = useRef(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const showMsg = (msg: string, error = false) => {
-    setMessage(msg);
-    setIsError(error);
-    setTimeout(() => setMessage(''), 3000);
-  };
-
   const fetchLogos = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/logos');
@@ -71,7 +68,7 @@ export default function AdminLogos() {
       const data = await res.json();
       setCategories(data.categories || []);
     } catch {
-      showMsg('Failed to load logos', true);
+      toast.error('Failed to load logos');
     } finally {
       setLoading(false);
     }
@@ -82,7 +79,7 @@ export default function AdminLogos() {
   const uploadFiles = useCallback(async (files: File[]) => {
     const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/tiff', 'image/avif', 'image/heic', 'image/heif'];
     const imageFiles = files.filter(f => allowed.includes(f.type));
-    if (imageFiles.length === 0) { showMsg('No valid image files', true); return; }
+    if (imageFiles.length === 0) { toast.error('No valid image files'); return; }
     abortRef.current = false;
     setIsUploading(true);
     const queue: UploadProgress[] = imageFiles.map(f => ({ fileName: f.name, status: 'pending' as const }));
@@ -117,7 +114,7 @@ export default function AdminLogos() {
       }
     }
     setIsUploading(false);
-    if (successCount > 0) showMsg(`${successCount} logo${successCount > 1 ? 's' : ''} uploaded`);
+    if (successCount > 0) toast.success(`${successCount} logo${successCount > 1 ? 's' : ''} uploaded`);
   }, [selectedCategory]);
 
   const handleDeleteLogo = async (categoryKey: string, logoUrl: string, index: number) => {
@@ -134,9 +131,9 @@ export default function AdminLogos() {
             ? { ...cat, images: cat.images.filter((_, i) => i !== index) }
             : cat
         ));
-        showMsg('Logo deleted');
-      } else showMsg('Delete failed', true);
-    } catch { showMsg('Delete failed', true); }
+        toast.success('Logo deleted');
+      } else toast.error('Delete failed');
+    } catch { toast.error('Delete failed'); }
   };
 
   const moveLogo = (categoryKey: string, index: number, direction: -1 | 1) => {
@@ -160,9 +157,9 @@ export default function AdminLogos() {
         body: JSON.stringify({ categoryKey: selectedCategory, images: currentCategory.images }),
       });
       const data = await res.json();
-      if (res.ok) showMsg(`Saved ${data.count} logos`);
-      else showMsg(data.error || 'Save failed', true);
-    } catch { showMsg('Save failed', true); }
+      if (res.ok) toast.success(`Saved ${data.count} logos`);
+      else toast.error(data.error || 'Save failed');
+    } catch { toast.error('Save failed'); }
     finally { setSaving(false); }
   };
 
@@ -182,43 +179,20 @@ export default function AdminLogos() {
   const currentCategory = categories.find(c => c.key === selectedCategory);
 
   return (
-    <div className="min-h-screen">
-      <header className="border-b border-th-fg/[0.06] px-8 py-5 flex items-center justify-between sticky top-0 bg-th-surface/95 backdrop-blur-sm z-10">
-        <div className="flex items-center gap-4">
-          <Link href="/admin" className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase hover:text-th-fg/60 transition-colors">
-            ← Dashboard
-          </Link>
-          <div className="w-px h-3 bg-th-fg/10" />
-          <span className="text-th-fg/25 text-[10px] tracking-[0.3em] uppercase">Logos</span>
-        </div>
-        <Link
-          href="/about"
-          target="_blank"
-          className="text-th-fg/30 text-[10px] tracking-[0.25em] uppercase hover:text-th-fg/60 transition-colors px-3 py-2 hover:bg-th-fg/5"
-        >
+    <AdminPageLayout
+      title="Brand & Agency Logos"
+      breadcrumb={{ href: '/admin', label: 'Dashboard' }}
+      actions={
+        <Link href="/about" target="_blank" className="btn-editorial text-[10px]">
           View Page ↗
         </Link>
-      </header>
+      }
+    >
+      <p className="text-th-fg/25 text-xs mb-8">
+        Manage client, partner, f28, and social media logos
+      </p>
 
-      {message && (
-        <div className={`fixed bottom-8 right-8 z-50 px-5 py-3 backdrop-blur border text-sm tracking-wide shadow-2xl ${
-          isError ? 'bg-red-500/20 border-red-500/30 text-red-300' : 'bg-th-fg/10 border-th-fg/20 text-th-fg'
-        }`}>
-          {message}
-        </div>
-      )}
-
-      <div className="max-w-7xl mx-auto px-8 py-10">
-        <div className="mb-8">
-          <p className="text-th-fg/20 text-[10px] tracking-[0.5em] uppercase mb-2">Logos</p>
-          <h1 className="text-3xl font-black tracking-tighter">BRAND & AGENCY LOGOS</h1>
-          <p className="text-th-fg/25 text-xs mt-1">
-            Manage client, partner, f28, and social media logos
-          </p>
-        </div>
-
-        {/* Category selector */}
-        <div className="mb-6 flex gap-2 flex-wrap">
+      <div className="mb-6 flex gap-2 flex-wrap">
           {categories.map(cat => (
             <button
               key={cat.key}
@@ -236,41 +210,42 @@ export default function AdminLogos() {
 
         {currentCategory && (
           <>
-            <div className="mb-4">
+            <AdminPanel
+              label={currentCategory.name}
+              title="Category"
+              className="mb-6"
+              actions={
+                <>
+                  <AdminButton onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
+                    + Upload
+                  </AdminButton>
+                  <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden"
+                    onChange={e => { if (e.target.files) uploadFiles(Array.from(e.target.files)); e.target.value = ''; }} />
+                  <AdminButton variant="primary" onClick={handleSaveOrder} disabled={saving || currentCategory.images.length === 0}>
+                    {saving ? 'Saving...' : 'Save Order'}
+                  </AdminButton>
+                </>
+              }
+            >
               <p className="text-th-fg/40 text-sm">{currentCategory.description}</p>
               <p className="text-th-fg/20 text-xs mt-1">
                 {currentCategory.images.length} logo{currentCategory.images.length !== 1 ? 's' : ''}
               </p>
-            </div>
-
-            <div className="mb-6 flex gap-2">
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isUploading}
-                className="text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2.5 border border-th-fg/[0.15] text-th-fg/60 hover:text-th-fg hover:border-th-fg/30 transition-colors disabled:opacity-40"
-              >
-                + Upload
-              </button>
-              <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden"
-                onChange={e => { if (e.target.files) uploadFiles(Array.from(e.target.files)); e.target.value = ''; }} />
-              <button
-                onClick={handleSaveOrder}
-                disabled={saving || currentCategory.images.length === 0}
-                className="bg-th-fg text-th-bg text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-th-fg/90 transition-colors disabled:opacity-50"
-              >
-                {saving ? 'Saving...' : 'Save Order'}
-              </button>
-            </div>
+            </AdminPanel>
 
             <div
               onDragOver={e => { e.preventDefault(); setIsDragOver(true); }}
               onDragLeave={() => setIsDragOver(false)}
               onDrop={e => { e.preventDefault(); setIsDragOver(false); if (e.dataTransfer.files.length) uploadFiles(Array.from(e.dataTransfer.files)); }}
-              className={`mb-6 border-2 border-dashed p-6 text-center transition-colors ${
-                isDragOver ? 'border-th-fg/40 bg-th-fg/[0.06]' : 'border-th-fg/[0.08] hover:border-th-fg/15'
-              }`}
+              className="mb-6"
             >
-              <p className="text-th-fg/30 text-xs tracking-wide">Drop {currentCategory.name} logos here or click Upload</p>
+              <AdminDropzone
+                onFiles={(files) => uploadFiles(Array.from(files))}
+                accept="image/*"
+                disabled={isUploading}
+                hint={`Drop ${currentCategory.name} logos here`}
+                className={isDragOver ? 'border-th-fg/40 bg-th-fg/[0.06]' : ''}
+              />
             </div>
 
             {uploadQueue.length > 0 && (
@@ -348,7 +323,6 @@ export default function AdminLogos() {
             )}
           </>
         )}
-      </div>
-    </div>
+    </AdminPageLayout>
   );
 }

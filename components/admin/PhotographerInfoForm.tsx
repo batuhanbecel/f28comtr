@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import type { Photographer } from '@/lib/data';
 import Image from 'next/image';
+import { AdminPanel } from '@/components/admin/AdminPanel';
+import { AdminFormField, AdminInput } from '@/components/admin/AdminFormField';
+import { AdminButton } from '@/components/admin/AdminButton';
 
 interface PhotographerInfoFormProps {
   photographer: Photographer;
@@ -19,7 +22,6 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
     preview: photographer.preview,
   });
 
-  // Listen for preview updates from the star button in gallery
   useEffect(() => {
     const handlePreviewUpdate = (event: CustomEvent) => {
       setFormData(prev => ({ ...prev, preview: event.detail }));
@@ -57,32 +59,26 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
   };
 
   return (
-    <div className="border border-th-fg/[0.07] bg-th-fg/[0.02] p-6">
-      <p className="text-[10px] tracking-[0.4em] uppercase text-th-fg/20 mb-4">Information</p>
+    <AdminPanel label="Information" title="Details">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="text-[10px] tracking-widest uppercase text-th-fg/25 block mb-1.5">Full Name</label>
-            <input
+          <AdminFormField label="Full Name">
+            <AdminInput
               type="text"
               value={formData.fullName}
               onChange={(e) => setFormData({ ...formData, fullName: e.target.value.toUpperCase() })}
-              className="w-full bg-th-fg/[0.04] border border-th-fg/[0.08] text-th-fg placeholder-th-fg/15 px-3 py-2.5 text-sm focus:outline-none focus:border-th-fg/25 transition-colors"
               required
             />
-          </div>
-          <div>
-            <label className="text-[10px] tracking-widest uppercase text-th-fg/25 block mb-1.5">Title</label>
-            <input
+          </AdminFormField>
+          <AdminFormField label="Title">
+            <AdminInput
               type="text"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value.toUpperCase() })}
-              className="w-full bg-th-fg/[0.04] border border-th-fg/[0.08] text-th-fg placeholder-th-fg/15 px-3 py-2.5 text-sm focus:outline-none focus:border-th-fg/25 transition-colors"
               required
             />
-          </div>
-          <div>
-            <label className="text-[10px] tracking-widest uppercase text-th-fg/25 block mb-1.5">Preview Image</label>
+          </AdminFormField>
+          <AdminFormField label="Preview Image">
             {formData.preview ? (
               <div className="flex items-center gap-3 mt-1">
                 <div className="relative h-14 w-14 border border-th-fg/[0.08] overflow-hidden flex-shrink-0">
@@ -99,16 +95,12 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
             ) : (
               <p className="text-xs text-th-fg/20 py-2">Use ⭐ on images below to set preview</p>
             )}
-          </div>
+          </AdminFormField>
         </div>
-        <button
-          type="submit"
-          disabled={isSaving}
-          className="bg-th-fg text-th-bg text-[10px] font-bold tracking-[0.3em] uppercase px-5 py-2.5 hover:bg-th-fg/90 transition-colors disabled:opacity-50"
-        >
+        <AdminButton type="submit" variant="primary" disabled={isSaving} className="disabled:opacity-50">
           {isSaving ? 'Saving...' : 'Save Changes'}
-        </button>
+        </AdminButton>
       </form>
-    </div>
+    </AdminPanel>
   );
 }

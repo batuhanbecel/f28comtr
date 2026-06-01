@@ -1,53 +1,86 @@
-import type { Metadata } from 'next';
-import { MasonryGrid } from '@/components/MasonryGrid';
-import { getAIImages } from '@/lib/db';
-import { LocalizedHero } from '@/components/LocalizedHero';
-import { Footer } from '@/components/Footer';
-import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
-import { ScrollIndicator } from '@/components/ScrollIndicator';
+import type { Metadata } from "next"
+import { Suspense } from "react"
+import { AIBasedGallery } from "./components/AIBasedGallery"
+import { AIBasedHero } from "./components/AIBasedHero"
+import { AIBasedStats } from "./components/AIBasedStats"
+import { Footer } from "@/components/Footer"
+import { getAIWorks } from "@/lib/aiWorks"
+import type { AIWork } from "@/lib/aiWorks"
 
 export const metadata: Metadata = {
-  title: 'AI Based | f/2.8 Production Agency',
-  description: 'Creative visual and video content powered by the latest generative AI models.',
+  title: "AI Based | f/2.8 Production Agency",
+  description:
+    "Creative visual and video content powered by the latest generative AI models.",
   openGraph: {
-    title: 'AI Based | f/2.8 Production Agency',
-    description: 'Creative visual and video content powered by the latest generative AI models.',
-    url: 'https://www.f28.com.tr/ai-based',
+    title: "AI Based | f/2.8 Production Agency",
+    description:
+      "Creative visual and video content powered by the latest generative AI models.",
+    url: "https://www.f28.com.tr/ai-based",
   },
-};
+}
 
-export const revalidate = 60;
+export const revalidate = 60
 
-export default async function AIBasedPage() {
-  const aiImages = await getAIImages();
+async function StatsBlock({ worksPromise }: { worksPromise: Promise<AIWork[]> }) {
+  const works = await worksPromise
+  const brandCount = new Set(works.map((w) => w.brandKey)).size
+  return <AIBasedStats workCount={works.length} brandCount={brandCount} />
+}
+
+
+async function GalleryBlock({ worksPromise }: { worksPromise: Promise<AIWork[]> }) {
+  const works = await worksPromise
+  return <AIBasedGallery works={works} />
+}
+
+function StatsSkeleton() {
+  return (
+    <div className="flex justify-center gap-16 mt-14 opacity-30">
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="flex flex-col items-center gap-2">
+          <div className="h-8 w-12 bg-th-fg/10 animate-pulse" />
+          <div className="h-2 w-20 bg-th-fg/5 animate-pulse" />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function GallerySkeleton() {
+  return (
+    <section className="px-6 md:px-14 py-20">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[2px]">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div
+            key={i}
+            className="aspect-[4/3] bg-th-fg/[0.04] animate-pulse"
+            style={{ animationDelay: `${i * 50}ms` }}
+          />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+export default function AIBasedPage() {
+  // Fire the heavy fetch but don't await — let multiple Suspense boundaries consume it
+  const worksPromise = getAIWorks()
 
   return (
-    <ProductionSnapContainer snapMode="heroSnap">
-      {/* Hero — snap point */}
-      <section
-        className="h-screen flex flex-col items-center justify-center px-6 md:px-12 text-center relative overflow-hidden"
-        style={{ scrollSnapAlign: 'start' }}
-      >
-        <div className="max-w-4xl mx-auto">
-          <LocalizedHero page="aiBased" imageCount={aiImages.length} />
-        </div>
-        <ScrollIndicator />
-      </section>
-
-      {/* Grid — snap point (grid itself scrolls freely) */}
-      <div style={{ scrollSnapAlign: 'start' }}>
-        {aiImages.length > 0 ? (
-          <MasonryGrid images={aiImages} photographerName="AI Based" />
-        ) : (
-          <div className="text-center py-20 px-6">
-            <div className="glass-effect p-12 max-w-2xl mx-auto">
-              <p className="body-text opacity-60 mb-4">No AI images available yet</p>
-              <p className="label-text opacity-40">Add images to /public/ai-images to display them here</p>
-            </div>
-          </div>
-        )}
-        <Footer />
-      </div>
-    </ProductionSnapContainer>
-  );
+    <>
+      <main className="bg-th-bg text-th-fg min-h-screen">
+        <AIBasedHero
+          statsSlot={
+            <Suspense fallback={<StatsSkeleton />}>
+              <StatsBlock worksPromise={worksPromise} />
+            </Suspense>
+          }
+        />
+        <Suspense fallback={<GallerySkeleton />}>
+          <GalleryBlock worksPromise={worksPromise} />
+        </Suspense>
+      </main>
+      <Footer />
+    </>
+  )
 }

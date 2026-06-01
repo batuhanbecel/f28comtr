@@ -52,6 +52,33 @@ export const translations = {
       description:
         'We offer a hybrid production process by blending traditional retouching disciplines with the latest generative AI models. By combining our industry-standard craftsmanship with innovative technologies, we produce both creative and highly efficient visual and video content for our brands.',
       worksLabel: 'works',
+      stats: {
+        projects: 'Completed projects',
+        brands: 'Brands worked with',
+        since: 'Est. Istanbul',
+      },
+      process: {
+        sectionLabel: 'Our Process',
+        heading: 'How we work?',
+        steps: [
+          { title: 'Brief & concept', sub: 'Brand need and creative direction' },
+          { title: 'AI generation', sub: 'Model selection, prompt, iteration' },
+          { title: 'Hybrid retouching', sub: 'AI plus traditional post-production' },
+          { title: 'Delivery', sub: 'Platform-specific format and dimensions' },
+        ],
+      },
+      filters: {
+        brand: 'Brand',
+        type: 'Type',
+        all: 'All',
+        allBrands: 'All brands',
+        allTypes: 'All types',
+        visual: 'Visual',
+        video: 'Video',
+        hybrid: 'Hybrid',
+        resultsSuffix: 'works',
+        empty: 'No works match these filters.',
+      },
     },
     about: {
       sectionLabel: 'Istanbul — Since 2008',
@@ -129,7 +156,34 @@ export const translations = {
       heading: 'YAPAY ZEKA',
       description:
         'Geleneksel retouch disiplinini en güncel üretken yapay zeka modelleriyle harmanlayarak hibrit bir üretim süreci sunuyoruz. Sektör standartlarındaki ustalığımızı inovatif teknolojilerle birleştirerek, markalarımız için hem yaratıcı hem de yüksek verimli görsel ve video içerikler üretiyoruz.',
-      worksLabel: 'eser',
+      worksLabel: 'çalışma',
+      stats: {
+        projects: 'Tamamlanan proje',
+        brands: 'Çalışılan marka',
+        since: 'İstanbul, 2008',
+      },
+      process: {
+        sectionLabel: 'Çalışma Sürecimiz',
+        heading: 'Nasıl çalışıyoruz?',
+        steps: [
+          { title: 'Brief & konsept', sub: 'Marka ihtiyacı ve yaratıcı yön' },
+          { title: 'AI üretim', sub: 'Model seçimi, prompt ve iterasyon' },
+          { title: 'Hybrid rötüş', sub: 'AI ve geleneksel post prodüksiyon' },
+          { title: 'Teslimat', sub: 'Platforma özel format ve boyut' },
+        ],
+      },
+      filters: {
+        brand: 'Marka',
+        type: 'Tür',
+        all: 'Tümü',
+        allBrands: 'Tüm markalar',
+        allTypes: 'Tüm türler',
+        visual: 'Görsel',
+        video: 'Video',
+        hybrid: 'Hybrid',
+        resultsSuffix: 'çalışma',
+        empty: 'Bu filtrelere uygun çalışma bulunamadı.',
+      },
     },
     about: {
       sectionLabel: 'İstanbul — 2008\'den Beri',

@@ -21,13 +21,13 @@ export function PageLoader() {
       className="fixed top-0 left-0 right-0 z-[200] h-[1.5px] pointer-events-none"
       style={{
         opacity: show ? 1 : 0,
-        transition: 'opacity 0.2s ease',
+        transition: 'opacity var(--duration-ui) ease',
       }}
     >
       <div
         className="h-full bg-th-fg origin-left"
         style={{
-          animation: show ? 'page-load 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards' : 'none',
+          animation: show ? 'page-load var(--duration-reveal) var(--ease-snappy) forwards' : 'none',
           width: '0%',
         }}
       />

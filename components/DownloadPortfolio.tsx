@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
+import { EditorialButton } from '@/components/EditorialButton';
 
 interface Photographer {
   fullName: string;
@@ -293,10 +294,11 @@ export function DownloadPortfolio({ images, photographer }: Props) {
   }, [images, photographer]);
 
   return (
-    <button
+    <EditorialButton
       onClick={generate}
       disabled={phase === 'working'}
-      className="inline-flex items-center gap-2.5 text-th-fg/60 text-[10px] tracking-[0.4em] uppercase hover:text-th-fg border border-th-fg/25 hover:border-th-fg/55 hover:bg-th-fg/10 px-5 py-2.5 transition-all duration-300 disabled:cursor-wait disabled:opacity-50"
+      variant="light"
+      className="disabled:cursor-wait disabled:opacity-50"
     >
       {phase === 'idle' && (
         <>
@@ -328,6 +330,6 @@ export function DownloadPortfolio({ images, photographer }: Props) {
           <span className="text-red-400">{t.common.failedRetry}</span>
         </>
       )}
-    </button>
+    </EditorialButton>
   );
 }

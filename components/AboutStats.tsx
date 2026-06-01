@@ -1,6 +1,7 @@
 'use client';
 
 import { useLanguage } from '@/context/LanguageContext';
+import { ScrollReveal } from '@/components/ScrollReveal';
 
 interface AboutStatsProps {
   photographerCount: number;
@@ -33,17 +34,16 @@ export function AboutStats({ photographerCount, clientCount, partnerCount }: Abo
     <section className="border-y border-th-fg/[0.07]">
       <div className="grid grid-cols-3 md:grid-cols-6">
         {stats.map((stat, i) => (
-          <div
-            key={i}
-            className="flex flex-col items-center justify-center py-10 md:py-14 border-r border-th-fg/[0.05] last:border-r-0 relative group"
-          >
-            <span className="text-2xl md:text-3xl font-black tracking-tight text-th-fg/90">
-              {stat.value}
-            </span>
-            <span className="text-[8px] md:text-[9px] tracking-[0.45em] uppercase text-th-fg/25 mt-2">
-              {stat.label}
-            </span>
-          </div>
+          <ScrollReveal key={stat.label} delay={i * 0.05}>
+            <div className="flex flex-col items-center justify-center py-10 md:py-14 border-r border-th-fg/[0.05] last:border-r-0 stats-cell">
+              <span className="text-2xl md:text-4xl font-black tracking-tighter text-th-fg">
+                {stat.value}
+              </span>
+              <span className="text-[8px] md:text-[9px] tracking-[0.45em] uppercase text-th-fg/25 mt-2">
+                {stat.label}
+              </span>
+            </div>
+          </ScrollReveal>
         ))}
       </div>
     </section>

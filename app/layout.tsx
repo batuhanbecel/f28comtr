@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 import { Inter } from "next/font/google";
+import { ViewTransition } from "@/lib/ViewTransition";
 import "./globals.css";
 import { SiteChrome } from "@/components/SiteChrome";
 import { CustomCursor } from "@/components/CustomCursor";
@@ -9,6 +11,7 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
+import { parseLang, parseTheme } from "@/lib/prefs";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,6 +20,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.f28.com.tr"),
   title: "f/2.8 Production Agency | Photography & Retouching",
   description: "Professional photography and retouching production agency in Istanbul. Featuring top photographers and retouchers for commercial and creative projects.",
   keywords: ["photography", "retouching", "production agency", "Istanbul", "commercial photography", "f28"],
@@ -34,8 +38,17 @@ export const metadata: Metadata = {
     url: "https://www.f28.com.tr",
     siteName: "f/2.8 Production Agency",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "f/2.8 Production Agency",
+    description: "Professional photography and retouching production agency in Istanbul.",
+  },
   alternates: {
     canonical: "https://www.f28.com.tr",
+    languages: {
+      en: "https://www.f28.com.tr",
+      tr: "https://www.f28.com.tr",
+    },
   },
 };
 
@@ -47,16 +60,18 @@ export const viewport: Viewport = {
   themeColor: '#000000',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const initialLang = parseLang(cookieStore.get("f28_lang")?.value);
+  const initialTheme = parseTheme(cookieStore.get("f28_theme")?.value);
+
   return (
-    <html lang="en" className={inter.variable} data-theme="dark">
+    <html lang={initialLang} className={inter.variable} data-theme={initialTheme}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="manifest" href="/manifest.json" />
         <script
           type="application/ld+json"
@@ -87,12 +102,12 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased bg-th-bg text-th-fg">
-        <ThemeProvider>
-          <LanguageProvider>
+        <ThemeProvider initialTheme={initialTheme}>
+          <LanguageProvider initialLang={initialLang}>
             <SmoothScrollProvider>
               <CustomCursor />
               <SiteChrome />
-              {children}
+              <ViewTransition>{children}</ViewTransition>
               <SpeedInsights />
               <Analytics />
               <ServiceWorkerRegister />

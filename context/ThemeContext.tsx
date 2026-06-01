@@ -1,8 +1,7 @@
 'use client';
 
 import { createContext, use, useState, useEffect, useCallback } from 'react';
-
-type Theme = 'dark' | 'light';
+import { persistThemeClient, type Theme } from '@/lib/prefs';
 
 interface ThemeContextValue {
   theme: Theme;
@@ -16,21 +15,23 @@ const ThemeContext = createContext<ThemeContextValue>({
   toggleTheme: () => {},
 });
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('dark');
+export function ThemeProvider({
+  children,
+  initialTheme = 'dark',
+}: {
+  children: React.ReactNode;
+  initialTheme?: Theme;
+}) {
+  const [theme, setThemeState] = useState<Theme>(initialTheme);
 
   useEffect(() => {
-    const stored = localStorage.getItem('f28_theme') as Theme | null;
-    if (stored === 'light' || stored === 'dark') {
-      setThemeState(stored);
-      document.documentElement.setAttribute('data-theme', stored);
-    }
-  }, []);
+    setThemeState(initialTheme);
+    persistThemeClient(initialTheme);
+  }, [initialTheme]);
 
   const setTheme = useCallback((t: Theme) => {
     setThemeState(t);
-    localStorage.setItem('f28_theme', t);
-    document.documentElement.setAttribute('data-theme', t);
+    persistThemeClient(t);
   }, []);
 
   const toggleTheme = useCallback(() => {

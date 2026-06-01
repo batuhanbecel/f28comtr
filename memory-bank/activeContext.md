@@ -1,9 +1,17 @@
 # Active Context: f/28 Website Development
 
 ## Current Work Focus
-f/28 website is LIVE at https://www.f28.com.tr (Vercel). Full admin panel, Redis backend, AI Based section, Download Portfolio PDF with multi-image layouts, and mouse-interactive production page are all working in production. Now 9 photographers including Haldun Kırkbir.
+Site-wide design & motion refresh completed (May 2026): unified motion tokens, PageHero, ScrollReveal, unified Lightbox, parallax scroll bus, CSS consolidation for AI components.
 
-## Recent Changes (March 23, 2026 Session)
+## Recent Changes (May 2026 — Design Refresh)
+1. **Motion system:** `lib/motion.ts` + CSS tokens; Tailwind `duration-reveal/hover/ui`, `ease-brand/morph/snappy`
+2. **Shared components:** `PageHero`, `ScrollReveal`, `components/Lightbox.tsx`
+3. **Parallax:** `lib/parallaxScrollBus.ts` — single scroll listener per snap container
+4. **VT:** root opacity-only crossfade; removed unused `work-*` morph rules
+5. **Grain policy:** `isPerfHeavyPage()` — landing/production/galleries skip grain
+6. **Portfolio/About:** scroll-reveal enters; standardized thumb hover 1.04
+
+## Previous Changes (March 23, 2026 Session)
 1. **New Photographer: Haldun Kırkbir**
    - Added to `lib/data.ts` with id `haldun-kirkbir`, tags: commercial, portrait
    - 149 portfolio images across 6 categorized subfolders

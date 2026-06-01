@@ -16,6 +16,7 @@ const REDIS_KEYS = {
   logos_social: 'site:logos:social',
 } as const;
 
+export const runtime = 'nodejs';
 export const maxDuration = 30;
 
 const MAX_DIMENSION = 3200;

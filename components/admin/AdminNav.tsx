@@ -38,11 +38,11 @@ export function AdminNav() {
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
-        <div className="flex flex-col h-full px-5 py-6">
-          <Link href="/" className="flex items-center gap-3 mb-10">
+        <div className="flex flex-col h-full px-4 py-6">
+          <Link href="/" className="flex items-center gap-3 mb-10 px-1">
             <Image src="/logos/f28/f28_white.png" alt="f/2.8" width={80} height={40} className="h-6 w-auto opacity-60" />
             <div className="w-px h-3 bg-th-fg/10" />
-            <span className="text-th-fg/25 text-[9px] tracking-[0.3em] uppercase">Admin</span>
+            <span className="section-label section-label--mini">Admin</span>
           </Link>
 
           <div className="space-y-px">
@@ -54,10 +54,10 @@ export function AdminNav() {
                   href={item.href}
                   onClick={() => setIsOpen(false)}
                   className={`
-                    block px-3 py-2.5 text-[10px] font-bold tracking-[0.3em] uppercase transition-colors duration-200
-                    ${isActive 
-                      ? 'bg-th-fg/[0.06] text-th-fg' 
-                      : 'text-th-fg/30 hover:bg-th-fg/[0.03] hover:text-th-fg/60'
+                    block px-4 py-3 text-[10px] font-bold tracking-[0.3em] uppercase transition-colors duration-200 border-l-2
+                    ${isActive
+                      ? 'border-th-fg bg-th-fg/[0.06] text-th-fg'
+                      : 'border-transparent text-th-fg/30 hover:bg-th-fg/[0.03] hover:text-th-fg/60'
                     }
                   `}
                 >
@@ -71,7 +71,7 @@ export function AdminNav() {
             <form action="/api/admin/logout" method="POST">
               <button
                 type="submit"
-                className="w-full text-left px-3 py-2.5 text-[10px] font-bold tracking-[0.3em] uppercase text-th-fg/20 hover:text-red-400/70 hover:bg-red-400/[0.05] transition-colors duration-200"
+                className="w-full text-left px-4 py-3 text-[10px] font-bold tracking-[0.3em] uppercase text-th-fg/20 hover:text-red-400/70 hover:bg-red-400/[0.05] transition-colors duration-200"
               >
                 Logout
               </button>

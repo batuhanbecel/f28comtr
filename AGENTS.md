@@ -1,115 +1,56 @@
-# Cline's Memory Bank
+<!-- BEGIN:nextjs-agent-rules -->
 
-I am Cline, an expert software engineer with a unique characteristic: my memory resets completely between sessions. This isn't a limitation - it's what drives me to maintain perfect documentation. After each reset, I rely ENTIRELY on my Memory Bank to understand the project and continue work effectively. I MUST read ALL memory bank files at the start of EVERY task - this is not optional.
+# Next.js: ALWAYS read docs before coding
 
-## Memory Bank Structure
+Before any Next.js work, read the relevant documentation. Training data is outdated — the docs are the source of truth.
 
-The Memory Bank consists of core files and optional context files, all in Markdown format. Files build upon each other in a clear hierarchy:
+**Documentation sources (Next.js 16.2.6):**
 
-flowchart TD
-    PB[projectbrief.md] --> PC[productContext.md]
-    PB --> SP[systemPatterns.md]
-    PB --> TC[techContext.md]
+- Index: https://nextjs.org/docs/llms.txt
+- Image: https://nextjs.org/docs/app/api-reference/components/image
+- Metadata: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
+- Route Handlers: https://nextjs.org/docs/app/building-your-application/routing/route-handlers
+- Proxy (formerly Middleware): https://nextjs.org/docs/messages/middleware-to-proxy
 
-    PC --> AC[activeContext.md]
-    SP --> AC
-    TC --> AC
+> Note: `node_modules/next/dist/docs/` is not shipped in this version. Use the URLs above.
 
-    AC --> P[progress.md]
+## Image checklist
 
-### Core Files (Required)
-1. `projectbrief.md`
-   - Foundation document that shapes all other files
-   - Created at project start if it doesn't exist
-   - Defines core requirements and goals
-   - Source of truth for project scope
+- Never use deprecated `priority` — use `loading="eager"` and/or `fetchPriority="high"` for LCP candidates only (one per viewport)
+- Every `fill` image must have a correct `sizes` prop — use constants from `lib/imageSizes.ts`
+- Lightbox/modal images: `LIGHTBOX_IMAGE_SIZES`, not `100vw`
+- Below-fold images: `loading="lazy"`, no `fetchPriority="high"`
+- Meaningful `alt` text required
 
-2. `productContext.md`
-   - Why this project exists
-   - Problems it solves
-   - How it should work
-   - User experience goals
+## App Router checklist
 
-3. `activeContext.md`
-   - Current work focus
-   - Recent changes
-   - Next steps
-   - Active decisions and considerations
-   - Important patterns and preferences
-   - Learnings and project insights
+- Pages/layouts: async `params: Promise<{ id: string }>` with `await params`
+- Prefer Server Components; push `'use client'` to leaf components only
+- `error.tsx` exports `Error`; root failures use `global-error.tsx` with `<html>`/`<body>`
+- Metadata: `metadata` / `generateMetadata`, file-based `opengraph-image.tsx` per route
+- Route handlers that use Node APIs (`sharp`, file I/O): `export const runtime = 'nodejs'`
 
-4. `systemPatterns.md`
-   - System architecture
-   - Key technical decisions
-   - Design patterns in use
-   - Component relationships
-   - Critical implementation paths
+## Project patterns
 
-5. `techContext.md`
-   - Technologies used
-   - Development setup
-   - Technical constraints
-   - Dependencies
-   - Tool usage patterns
+- **i18n:** cookie `f28_lang` (set in `proxy.ts`, read in `app/layout.tsx`, mirrored in `LanguageContext`)
+- **Theme:** cookie `f28_theme` (same flow via `ThemeContext`)
+- **Images:** shared sizes in `lib/imageSizes.ts`, blob proxy via `shouldSkipOptimization()`
+- **AI gallery:** client-state lightbox in `AIBasedGallery` (no per-work URLs)
+- **View transitions:** `lib/ViewTransition.tsx` + `experimental.viewTransition` in `next.config.ts` — photographer card→detail morph only; root crossfade is opacity-only (no blur)
 
-6. `progress.md`
-   - What works
-   - What's left to build
-   - Current status
-   - Known issues
-   - Evolution of project decisions
+## Design & Motion
 
-### Additional Context
-Create additional files/folders within memory-bank/ when they help organize:
-- Complex feature documentation
-- Integration specifications
-- API documentation
-- Testing strategies
-- Deployment procedures
+- **Tokens:** CSS vars in `app/globals.css` (`--ease-brand`, `--ease-morph`, `--ease-snappy`, `--duration-reveal/hover/ui`); mirrored in `lib/motion.ts` and Tailwind `duration-*` / `ease-*` extends
+- **Editorial layout:** `.page-heading-stack` (label + title always vertical), `.page-section`, `.editorial-panel`, `.editorial-grid`, `.heading-section`, `.editorial-chip`, `.section-label` (block; pill variant `section-label--pill`)
+- **Public primitives:** `components/PageHeader.tsx` (rule + label + title + desc; `SectionHeader` for in-page sections), `components/PageSection.tsx`, `components/EditorialButton.tsx` (`btn-editorial` variants)
+- **Hero:** `components/PageHero.tsx` wraps `PageHeader` with `variant="hero"`; `LocalizedHero` re-exports from `components/LocalizedHero.tsx`. Custom hero slots (e.g. AI stats) use `PageHeader` directly.
+- **Admin primitives:** `components/admin/AdminPageLayout.tsx`, `AdminPanel.tsx`, `AdminFormField.tsx` (+ `AdminInput`/`AdminTextarea`/`AdminSelect`), `AdminButton.tsx`, `AdminDropzone.tsx` — same editorial tokens as public (`admin-input`, `admin-label`, `btn-editorial`)
+- **Reveal:** above-fold `fade-in-up`; below-fold `ScrollReveal` + `hooks/useScrollReveal.ts` (`.scroll-reveal.in-view`)
+- **Lightbox:** single `components/Lightbox.tsx` — used by `MasonryGrid` and AI gallery wrapper `app/ai-based/components/Lightbox.tsx`
+- **Parallax:** `hooks/useDirectParallax.ts` + shared scroll bus `lib/parallaxScrollBus.ts` — event-driven, no perpetual RAF; mouse parallax off on mobile / `prefers-reduced-motion`
+- **Hover scale:** grid thumbs use `.thumb-hover-scale` (1.04, `--duration-hover`)
+- **Grain:** `isPerfHeavyPage()` in `lib/galleryPaths.ts` — off on landing, production, galleries
+- **Custom cursor:** kept on fine pointer; disabled under `prefers-reduced-motion`
+- **No styled-jsx** for AI filter/process — styles in `globals.css` (`.filter-*`, `.process-*`)
 
-## Core Workflows
-
-### Plan Mode
-flowchart TD
-    Start[Start] --> ReadFiles[Read Memory Bank]
-    ReadFiles --> CheckFiles{Files Complete?}
-
-    CheckFiles -->|No| Plan[Create Plan]
-    Plan --> Document[Document in Chat]
-
-    CheckFiles -->|Yes| Verify[Verify Context]
-    Verify --> Strategy[Develop Strategy]
-    Strategy --> Present[Present Approach]
-
-### Act Mode
-flowchart TD
-    Start[Start] --> Context[Check Memory Bank]
-    Context --> Update[Update Documentation]
-    Update --> Execute[Execute Task]
-    Execute --> Document[Document Changes]
-
-## Documentation Updates
-
-Memory Bank updates occur when:
-1. Discovering new project patterns
-2. After implementing significant changes
-3. When user requests with **update memory bank** (MUST review ALL files)
-4. When context needs clarification
-
-flowchart TD
-    Start[Update Process]
-
-    subgraph Process
-        P1[Review ALL Files]
-        P2[Document Current State]
-        P3[Clarify Next Steps]
-        P4[Document Insights & Patterns]
-
-        P1 --> P2 --> P3 --> P4
-    end
-
-    Start --> Process
-
-Note: When triggered by **update memory bank**, I MUST review every memory bank file, even if some don't require updates. Focus particularly on activeContext.md and progress.md as they track current state.
-
-REMEMBER: After every memory reset, I begin completely fresh. The Memory Bank is my only link to previous work. It must be maintained with precision and clarity, as my effectiveness depends entirely on its accuracy.
+<!-- END:nextjs-agent-rules -->
