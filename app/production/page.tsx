@@ -4,6 +4,7 @@ import { ParallaxSection } from '@/components/ParallaxSection';
 import { Footer } from '@/components/Footer';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 import { LocalizedHero } from '@/components/LocalizedHero';
+import { ProductionStats } from '@/components/ProductionStats';
 import { ScrollIndicator } from '@/components/ScrollIndicator';
 
 export const metadata: Metadata = {
@@ -29,6 +30,9 @@ export default async function ProductionPage() {
         style={{ scrollSnapAlign: 'start' }}
       >
         <LocalizedHero page="production" />
+        <div className="mt-8 w-full flex justify-center">
+          <ProductionStats projectCount={1000} brandCount={150} />
+        </div>
         <ScrollIndicator />
       </section>
 

@@ -79,7 +79,7 @@ interface SectionHeaderProps {
 export function SectionHeader({ label, title, action, className = '' }: SectionHeaderProps) {
   return (
     <div className={`flex items-end justify-between gap-6 mb-8 ${className}`}>
-      <div className="page-heading-stack gap-3">
+      <div className="page-heading-stack">
         {label ? <span className="section-label">{label}</span> : null}
         <h2 className="heading-section">{title}</h2>
       </div>

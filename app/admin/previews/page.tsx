@@ -10,6 +10,8 @@ import { AdminPageLayout } from '@/components/admin/AdminPageLayout';
 import { AdminButton } from '@/components/admin/AdminButton';
 import { AdminDropzone } from '@/components/admin/AdminDropzone';
 import { AdminUploadQueue } from '@/components/admin/AdminUploadQueue';
+import { useAdminT } from '@/hooks/useAdminT';
+import { formatAdmin } from '@/lib/adminI18n';
 
 interface UploadProgress {
   fileName: string;
@@ -43,6 +45,7 @@ async function compressImage(file: File): Promise<File> {
 }
 
 export default function AdminPreviews() {
+  const a = useAdminT();
   const router = useRouter();
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -188,30 +191,28 @@ export default function AdminPreviews() {
 
   return (
     <AdminPageLayout
-      title="Previews"
-      breadcrumb={{ href: '/admin', label: 'Dashboard' }}
+      title={a.previews.title}
+      breadcrumb={{ href: '/admin', label: a.nav.dashboard }}
       actions={
         <>
           <Link href="/portfolios" target="_blank" className="btn-editorial text-[10px]">
-            View Page ↗
+            {a.actions.viewPage}
           </Link>
           <AdminButton onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
-            + Upload
+            {a.actions.upload}
           </AdminButton>
           <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden"
             onChange={e => { if (e.target.files) uploadFiles(Array.from(e.target.files)); e.target.value = ''; }} />
           <AdminButton variant="primary" onClick={handleSave} disabled={saving}>
-            {saving ? 'Saving...' : 'Save Order'}
+            {saving ? a.actions.saving : a.actions.saveOrder}
           </AdminButton>
         </>
       }
     >
-      <p className="text-th-fg/25 text-xs mb-2">
-        {images.length} images — drag to reorder, hover for controls
+      <p className="admin-muted text-xs mb-2">
+        {formatAdmin(a.previews.count, { count: images.length })}
       </p>
-      <p className="text-th-fg/10 text-xs mb-8">
-        These are used for photographer cards on the Portfolios page
-      </p>
+      <p className="admin-muted text-[10px] mb-8">{a.previews.hint}</p>
 
       <div
         onDragOver={e => { e.preventDefault(); setIsDragOver(true); }}
@@ -223,7 +224,7 @@ export default function AdminPreviews() {
           onFiles={(files) => uploadFiles(Array.from(files))}
           accept="image/*"
           disabled={isUploading}
-          hint="Drop preview images here"
+          hint={a.dropzone.dropImages}
           className={isDragOver ? 'border-th-fg/40 bg-th-fg/[0.06]' : ''}
         />
       </div>
@@ -238,8 +239,8 @@ export default function AdminPreviews() {
 
         {images.length === 0 ? (
           <div className="text-center py-20 border border-th-fg/[0.05]">
-            <p className="text-th-fg/20 text-xs tracking-[0.4em] uppercase">No preview images found</p>
-            <p className="text-th-fg/10 text-xs mt-2">Drop images above or click Upload to add preview images</p>
+            <p className="admin-muted text-xs tracking-[0.4em] uppercase">{a.previews.noImages}</p>
+            <p className="admin-muted text-[10px] mt-2">{a.previews.noImagesHint}</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

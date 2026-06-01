@@ -1,5 +1,8 @@
 'use client';
 
+import { formatAdmin } from '@/lib/adminI18n';
+import { useAdminT } from '@/hooks/useAdminT';
+
 interface UploadProgress {
   fileName: string;
   status: 'pending' | 'uploading' | 'done' | 'error';
@@ -14,6 +17,8 @@ interface AdminUploadQueueProps {
 }
 
 export function AdminUploadQueue({ queue, isUploading, onCancel, className = 'mb-6' }: AdminUploadQueueProps) {
+  const a = useAdminT();
+
   if (queue.length === 0) return null;
 
   const doneCount = queue.filter((item) => item.status === 'done').length;
@@ -23,13 +28,13 @@ export function AdminUploadQueue({ queue, isUploading, onCancel, className = 'mb
       {isUploading ? (
         <div className="px-4 py-2 flex justify-between items-center bg-th-fg/[0.02]">
           <span className="text-th-fg/40 text-[10px] tracking-widest uppercase">
-            Uploading {doneCount}/{queue.length}
+            {formatAdmin(a.uploadQueue.uploading, { done: doneCount, total: queue.length })}
           </span>
           <button
             onClick={onCancel}
             className="text-red-400/60 hover:text-red-400 text-[10px] tracking-widest uppercase"
           >
-            Cancel
+            {a.uploadQueue.cancel}
           </button>
         </div>
       ) : null}
@@ -44,16 +49,16 @@ export function AdminUploadQueue({ queue, isUploading, onCancel, className = 'mb
                   ? 'text-red-400/70'
                   : item.status === 'uploading'
                     ? 'text-th-fg/50'
-                    : 'text-th-fg/20'
+                    : 'admin-muted'
             }`}
           >
             {item.status === 'uploading'
-              ? 'Uploading...'
+              ? a.uploadQueue.uploadingItem
               : item.status === 'done'
                 ? '✓'
                 : item.status === 'error'
-                  ? item.error || 'Failed'
-                  : 'Pending'}
+                  ? item.error || a.uploadQueue.failed
+                  : a.uploadQueue.pending}
           </span>
         </div>
       ))}

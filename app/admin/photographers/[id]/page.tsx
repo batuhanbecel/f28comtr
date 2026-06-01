@@ -4,6 +4,7 @@ import { PhotographerImageGallery } from '@/components/admin/PhotographerImageGa
 import { PhotographerInfoForm } from '@/components/admin/PhotographerInfoForm';
 import { AdminPageLayout } from '@/components/admin/AdminPageLayout';
 import { AdminPanel } from '@/components/admin/AdminPanel';
+import { getAdminT } from '@/lib/getAdminT';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,6 +14,7 @@ interface PageProps {
 
 export default async function EditPhotographerPage({ params }: PageProps) {
   const { id } = await params;
+  const a = await getAdminT();
   const photographers = await getPhotographers();
   const photographer = photographers.find((p) => p.id === id);
 
@@ -25,13 +27,13 @@ export default async function EditPhotographerPage({ params }: PageProps) {
   return (
     <AdminPageLayout
       title={photographer.fullName}
-      breadcrumb={{ href: '/admin/photographers', label: 'Photographers' }}
+      breadcrumb={{ href: '/admin/photographers', label: a.nav.photographers }}
     >
-      <p className="text-th-fg/40 text-sm mb-8">Edit photographer information and manage portfolio images</p>
+      <p className="text-th-fg/40 text-sm mb-8">{a.photographerEdit.intro}</p>
 
       <PhotographerInfoForm photographer={photographer} />
 
-      <AdminPanel label="Portfolio" title="Images" className="mt-8">
+      <AdminPanel label={a.photographerEdit.portfolio} title={a.photographerEdit.images} className="mt-8">
         <PhotographerImageGallery
           images={images}
           photographerId={id}

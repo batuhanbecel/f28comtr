@@ -152,7 +152,8 @@ body.custom-cursor-active.cursor-on-interactive .cursor-dot[data-visible="true"]
   font-size: clamp(2rem, 8.5vw, 6.25rem);
   font-weight: 900;
   letter-spacing: -0.035em;
-  line-height: 0.98;
+  line-height: 1.08;
+  padding-block: 0.08em 0.06em;
   overflow: visible;
 }
 
@@ -228,8 +229,12 @@ body.custom-cursor-active.cursor-on-interactive .cursor-dot[data-visible="true"]
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  padding: 0.08em 0.02em 0.12em;
+  line-height: 1.12;
+  padding: 0.14em 0.04em 0.2em;
   display: inline-block;
+  overflow: visible;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 [data-theme="light"] .gradient-text {
@@ -266,19 +271,25 @@ body.custom-cursor-active.cursor-on-interactive .cursor-dot[data-visible="true"]
   opacity: 0.55;
   display: block;
   width: fit-content;
+  line-height: 1.65;
+  padding-block: 0.2em;
+  overflow: visible;
 }
 .section-label--pill {
-  padding: 0.45rem 0.9rem;
+  padding: 0.55rem 0.95rem;
   margin-bottom: 0;
   border: 1px solid rgb(var(--c-fg) / 0.14);
   background: rgb(var(--c-fg) / 0.03);
   letter-spacing: 0.38em;
   opacity: 0.7;
+  line-height: 1.55;
 }
 .section-label--mini {
   font-size: 0.55rem;
   letter-spacing: 0.3em;
   opacity: 0.4;
+  line-height: 1.6;
+  padding-block: 0.15em;
 }
 
 /* Vertical stack — label and heading never side-by-side */
@@ -286,8 +297,9 @@ body.custom-cursor-active.cursor-on-interactive .cursor-dot[data-visible="true"]
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 1.5rem;
   width: 100%;
+  overflow: visible;
 }
 .page-heading-stack--center {
   align-items: center;
@@ -298,6 +310,10 @@ body.custom-cursor-active.cursor-on-interactive .cursor-dot[data-visible="true"]
   display: block;
   width: 100%;
   max-width: 100%;
+  overflow: visible;
+}
+.page-heading-stack > * {
+  overflow: visible;
 }
 
 .page-section {
@@ -334,7 +350,9 @@ body.custom-cursor-active.cursor-on-interactive .cursor-dot[data-visible="true"]
   font-size: clamp(1.25rem, 3vw, 2rem);
   font-weight: 900;
   letter-spacing: -0.02em;
-  line-height: 1.1;
+  line-height: 1.22;
+  padding-block: 0.06em 0.1em;
+  overflow: visible;
 }
 
 .editorial-chip {
@@ -381,6 +399,10 @@ body.custom-cursor-active.cursor-on-interactive .cursor-dot[data-visible="true"]
   text-transform: uppercase;
   color: rgb(var(--c-fg) / 0.45);
   margin-bottom: 0.5rem;
+}
+
+.admin-muted {
+  color: rgb(var(--c-fg) / 0.5);
 }
 
 /* Consistent hover transition for interactive elements */

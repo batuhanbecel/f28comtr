@@ -26,7 +26,7 @@ export function AIBasedHero({ statsSlot }: AIBasedHeroProps) {
       </section>
 
       <section className="page-section page-section--border max-w-7xl mx-auto w-full" aria-label={t.aiBased.process.sectionLabel}>
-        <div className="page-heading-stack gap-3 mb-10">
+        <div className="page-heading-stack mb-10">
           <span className="section-label">{t.aiBased.process.sectionLabel}</span>
           <h2 className="heading-section">{t.aiBased.process.heading}</h2>
         </div>

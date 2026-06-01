@@ -5,13 +5,15 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { AdminPanel } from '@/components/admin/AdminPanel';
 import { AdminButton } from '@/components/admin/AdminButton';
+import { useAdminT } from '@/hooks/useAdminT';
 
 export function SiteSettingsClient() {
   const [cleaning, setCleaning] = useState(false);
   const router = useRouter();
+  const a = useAdminT();
 
   const handleCleanup = async () => {
-    if (!confirm('Scan all image URLs in Redis and remove broken (404) references? This may take a minute.')) return;
+    if (!confirm(a.settings.cleanupConfirm)) return;
     setCleaning(true);
     try {
       const res = await fetch('/api/admin/cleanup', { method: 'POST' });
@@ -20,24 +22,24 @@ export function SiteSettingsClient() {
         toast.success(data.message);
         if (data.totalRemoved > 0) router.refresh();
       } else {
-        toast.error(data.error || 'Cleanup failed');
+        toast.error(data.error || a.settings.cleanupFailed);
       }
     } catch {
-      toast.error('Cleanup failed');
+      toast.error(a.settings.cleanupFailed);
     } finally {
       setCleaning(false);
     }
   };
 
   return (
-    <AdminPanel label="Data Management" title="Maintenance">
+    <AdminPanel label={a.settings.dataManagement} title={a.settings.maintenance}>
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold mb-0.5">Cleanup Images</p>
-          <p className="text-xs text-th-fg/30">Scan Redis for broken image URLs (404) and remove them automatically.</p>
+          <p className="text-sm font-semibold mb-0.5">{a.settings.cleanupTitle}</p>
+          <p className="text-xs text-th-fg/30">{a.settings.cleanupDesc}</p>
         </div>
         <AdminButton onClick={handleCleanup} disabled={cleaning} className="flex-shrink-0 disabled:opacity-40">
-          {cleaning ? 'Scanning...' : 'Cleanup Images'}
+          {cleaning ? a.actions.scanning : a.actions.cleanupImages}
         </AdminButton>
       </div>
     </AdminPanel>

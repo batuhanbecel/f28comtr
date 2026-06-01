@@ -11,6 +11,8 @@ import { AdminPanel } from '@/components/admin/AdminPanel';
 import { AdminButton } from '@/components/admin/AdminButton';
 import { AdminDropzone } from '@/components/admin/AdminDropzone';
 import { AdminUploadQueue } from '@/components/admin/AdminUploadQueue';
+import { useAdminT } from '@/hooks/useAdminT';
+import { formatAdmin } from '@/lib/adminI18n';
 
 interface LogoCategory {
   key: string;
@@ -51,6 +53,7 @@ async function compressImage(file: File): Promise<File> {
 }
 
 export default function AdminLogos() {
+  const a = useAdminT();
   const router = useRouter();
   const [categories, setCategories] = useState<LogoCategory[]>([]);
   const [loading, setLoading] = useState(true);
@@ -181,17 +184,15 @@ export default function AdminLogos() {
 
   return (
     <AdminPageLayout
-      title="Logos"
-      breadcrumb={{ href: '/admin', label: 'Dashboard' }}
+      title={a.logos.title}
+      breadcrumb={{ href: '/admin', label: a.nav.dashboard }}
       actions={
         <Link href="/about" target="_blank" className="btn-editorial text-[10px]">
-          View Page ↗
+          {a.actions.viewPage}
         </Link>
       }
     >
-      <p className="text-th-fg/25 text-xs mb-8">
-        Manage client, partner, f28, and social media logos
-      </p>
+      <p className="admin-muted text-xs mb-8">{a.logos.intro}</p>
 
       <div className="mb-6 flex gap-2 flex-wrap">
           {categories.map(cat => (
@@ -213,24 +214,26 @@ export default function AdminLogos() {
           <>
             <AdminPanel
               label={currentCategory.name}
-              title="Category"
+              title={a.logos.category}
               className="mb-6"
               actions={
                 <>
                   <AdminButton onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
-                    + Upload
+                    {a.actions.upload}
                   </AdminButton>
                   <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden"
                     onChange={e => { if (e.target.files) uploadFiles(Array.from(e.target.files)); e.target.value = ''; }} />
                   <AdminButton variant="primary" onClick={handleSaveOrder} disabled={saving || currentCategory.images.length === 0}>
-                    {saving ? 'Saving...' : 'Save Order'}
+                    {saving ? a.actions.saving : a.actions.saveOrder}
                   </AdminButton>
                 </>
               }
             >
-              <p className="text-th-fg/40 text-sm">{currentCategory.description}</p>
-              <p className="text-th-fg/20 text-xs mt-1">
-                {currentCategory.images.length} logo{currentCategory.images.length !== 1 ? 's' : ''}
+              <p className="text-th-fg/70 text-sm">{currentCategory.description}</p>
+              <p className="admin-muted text-xs mt-1">
+                {currentCategory.images.length === 1
+                  ? formatAdmin(a.logos.logoCount, { count: currentCategory.images.length })
+                  : formatAdmin(a.logos.logoCountPlural, { count: currentCategory.images.length })}
               </p>
             </AdminPanel>
 
@@ -244,7 +247,7 @@ export default function AdminLogos() {
                 onFiles={(files) => uploadFiles(Array.from(files))}
                 accept="image/*"
                 disabled={isUploading}
-                hint={`Drop ${currentCategory.name} logos here`}
+                hint={formatAdmin(a.dropzone.dropLogos, { category: currentCategory.name })}
                 className={isDragOver ? 'border-th-fg/40 bg-th-fg/[0.06]' : ''}
               />
             </div>
@@ -259,8 +262,12 @@ export default function AdminLogos() {
 
             {currentCategory.images.length === 0 ? (
               <div className="text-center py-20 border border-th-fg/[0.05]">
-                <p className="text-th-fg/20 text-xs tracking-[0.4em] uppercase">No {currentCategory.name} logos found</p>
-                <p className="text-th-fg/10 text-xs mt-2">Drop logos above or click Upload to add {currentCategory.name} logos</p>
+                <p className="admin-muted text-xs tracking-[0.4em] uppercase">
+                  {formatAdmin(a.logos.noLogos, { category: currentCategory.name })}
+                </p>
+                <p className="admin-muted text-[10px] mt-2">
+                  {formatAdmin(a.logos.noLogosHint, { category: currentCategory.name })}
+                </p>
               </div>
             ) : (
               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">

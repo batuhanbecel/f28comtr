@@ -6,7 +6,6 @@ import { BalancedMasonryGrid as MasonryGridLib, Frame } from '@masonry-grid/reac
 import { shouldSkipOptimization } from '@/lib/blob';
 import { GRID_IMAGE_QUALITY } from '@/lib/imageConfig';
 import { MASONRY_THUMB_SIZES } from '@/lib/imageSizes';
-import { useInView } from '@/lib/useInView';
 import { Lightbox } from '@/components/Lightbox';
 
 interface MasonryGridProps {
@@ -17,50 +16,42 @@ interface MasonryGridProps {
 // Fallback ratio used only until the image's real dimensions are measured.
 const FRAME_W = 4;
 const FRAME_H = 5;
+const BLUR = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q==";
 
 const MasonryThumb = memo(function MasonryThumb({
   src,
   alt,
-  priority,
   onOpen,
   onMeasure,
 }: {
   src: string;
   alt: string;
-  priority: boolean;
   onOpen: () => void;
   onMeasure: (src: string, w: number, h: number) => void;
 }) {
-  const { ref, inView } = useInView<HTMLDivElement>({
-    rootMargin: '500px 0px',
-    initial: priority,
-  });
-
   return (
     <div
-      ref={ref}
       className="relative w-full h-full cursor-pointer group overflow-hidden bg-th-fg/[0.03]"
       onClick={onOpen}
     >
-      {inView ? (
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          className="object-cover thumb-hover-scale"
-          loading={priority ? 'eager' : 'lazy'}
-          fetchPriority={priority ? 'high' : undefined}
-          sizes={MASONRY_THUMB_SIZES}
-          quality={GRID_IMAGE_QUALITY}
-          unoptimized={shouldSkipOptimization(src)}
-          onLoad={(e) => {
-            const img = e.currentTarget;
-            if (img.naturalWidth && img.naturalHeight) {
-              onMeasure(src, img.naturalWidth, img.naturalHeight);
-            }
-          }}
-        />
-      ) : null}
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className="object-cover thumb-hover-scale"
+        loading="lazy"
+        sizes={MASONRY_THUMB_SIZES}
+        quality={GRID_IMAGE_QUALITY}
+        placeholder="blur"
+        blurDataURL={BLUR}
+        unoptimized={shouldSkipOptimization(src)}
+        onLoad={(e) => {
+          const img = e.currentTarget;
+          if (img.naturalWidth && img.naturalHeight) {
+            onMeasure(src, img.naturalWidth, img.naturalHeight);
+          }
+        }}
+      />
     </div>
   );
 });
@@ -124,7 +115,6 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
                 <MasonryThumb
                   src={image}
                   alt={photographerName}
-                  priority={idx < 4}
                   onOpen={() => openLightbox(image)}
                   onMeasure={handleMeasure}
                 />

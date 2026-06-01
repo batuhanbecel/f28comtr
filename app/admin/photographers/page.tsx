@@ -11,8 +11,11 @@ import { AdminPageLayout } from '@/components/admin/AdminPageLayout';
 import { AdminPanel } from '@/components/admin/AdminPanel';
 import { AdminFormField, AdminInput } from '@/components/admin/AdminFormField';
 import { AdminButton } from '@/components/admin/AdminButton';
+import { useAdminT } from '@/hooks/useAdminT';
+import { formatAdmin } from '@/lib/adminI18n';
 
 export default function PhotographersPage() {
+  const a = useAdminT();
   const [photographers, setPhotographers] = useState<Photographer[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -25,7 +28,7 @@ export default function PhotographersPage() {
       const res = await fetch('/api/admin/photographers');
       if (res.status === 401) { router.push('/admin/login'); return; }
       setPhotographers(await res.json());
-    } catch { toast.error('Failed to load'); }
+    } catch { toast.error(a.toast.loadFailed); }
     finally { setLoading(false); }
   }, [router]);
 
@@ -44,18 +47,20 @@ export default function PhotographersPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: next.map(p => p.id) }),
       });
-      if (!res.ok) { toast.error('Failed to save order'); load(); }
-    } catch { toast.error('Failed to save order'); load(); }
+      if (!res.ok) { toast.error(a.toast.saveOrderFailed); load(); }
+    } catch { toast.error(a.toast.saveOrderFailed); load(); }
     finally { setSaving(false); }
   };
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Delete ${name}?`)) return;
+    if (!confirm(formatAdmin(a.photographers.deleteConfirm, { name }))) return;
     try {
       const res = await fetch(`/api/admin/photographers/${id}`, { method: 'DELETE' });
-      if (res.ok) { toast.success(`${name} deleted`); setPhotographers(p => p.filter(x => x.id !== id)); }
-      else toast.error('Delete failed');
-    } catch { toast.error('Delete failed'); }
+      if (res.ok) {
+        toast.success(formatAdmin(a.photographers.deleted, { name }));
+        setPhotographers((p) => p.filter((x) => x.id !== id));
+      } else toast.error(a.toast.deleteFailed);
+    } catch { toast.error(a.toast.deleteFailed); }
   };
 
   const handleAdd = async (e: React.FormEvent) => {
@@ -68,36 +73,36 @@ export default function PhotographersPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        toast.success(`${newP.fullName} added`);
+        toast.success(formatAdmin(a.photographers.added, { name: newP.fullName }));
         setPhotographers(p => [...p, data]);
         setNewP({ id: '', fullName: '', title: 'PHOTOGRAPHER', preview: '' });
         setShowAddForm(false);
-      } else toast.error(data.error || 'Failed');
-    } catch { toast.error('Failed to add'); }
+      } else toast.error(data.error || a.toast.failed);
+    } catch { toast.error(a.toast.addFailed); }
   };
 
   return (
     <AdminPageLayout
-      title="Photographers"
-      breadcrumb={{ href: '/admin', label: 'Dashboard' }}
+      title={a.photographers.title}
+      breadcrumb={{ href: '/admin', label: a.nav.dashboard }}
       actions={
         <AdminButton
           variant={showAddForm ? 'ghost' : 'primary'}
-          onClick={() => setShowAddForm(v => !v)}
+          onClick={() => setShowAddForm((v) => !v)}
         >
-          {showAddForm ? '✕ Cancel' : '+ Add'}
+          {showAddForm ? a.actions.cancel : a.actions.add}
         </AdminButton>
       }
     >
-      <p className="text-th-fg/25 text-xs mb-8">
-        {photographers.length} photographers — hover to edit or reorder
+      <p className="admin-muted text-xs mb-8">
+        {formatAdmin(a.photographers.count, { count: photographers.length })}
       </p>
 
       {showAddForm && (
-        <AdminPanel label="New" title="Photographer" className="mb-10">
+        <AdminPanel label={a.photographers.new} title={a.photographers.newTitle} className="mb-10">
           <form onSubmit={handleAdd} className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
-              <AdminFormField label="ID / Folder">
+              <AdminFormField label={a.photographers.idFolder}>
                 <AdminInput
                   required
                   placeholder="john-doe"
@@ -105,7 +110,7 @@ export default function PhotographersPage() {
                   onChange={(e) => setNewP(v => ({ ...v, id: e.target.value.toLowerCase().replace(/\s+/g, '-') }))}
                 />
               </AdminFormField>
-              <AdminFormField label="Full Name">
+              <AdminFormField label={a.photographers.fullName}>
                 <AdminInput
                   required
                   placeholder="JOHN DOE"
@@ -113,7 +118,7 @@ export default function PhotographersPage() {
                   onChange={(e) => setNewP(v => ({ ...v, fullName: e.target.value.toUpperCase() }))}
                 />
               </AdminFormField>
-              <AdminFormField label="Title">
+              <AdminFormField label={a.photographers.titleField}>
                 <AdminInput
                   required
                   placeholder="PHOTOGRAPHER"
@@ -121,7 +126,7 @@ export default function PhotographersPage() {
                   onChange={(e) => setNewP(v => ({ ...v, title: e.target.value.toUpperCase() }))}
                 />
               </AdminFormField>
-              <AdminFormField label="Preview Path (optional)">
+              <AdminFormField label={a.photographers.previewPath}>
                 <AdminInput
                   placeholder="/portfolios/previews/name.webp"
                   value={newP.preview}
@@ -130,7 +135,7 @@ export default function PhotographersPage() {
               </AdminFormField>
             </div>
             <AdminButton type="submit" variant="primary">
-              Create Photographer
+              {a.actions.createPhotographer}
             </AdminButton>
           </form>
         </AdminPanel>
@@ -173,7 +178,7 @@ export default function PhotographersPage() {
                 <div className="flex gap-2">
                   <Link href={`/admin/photographers/${p.id}`}
                     className="flex-1 py-2 text-center text-[9px] font-bold tracking-[0.2em] uppercase bg-th-fg text-th-bg hover:bg-th-fg/90 transition-colors">
-                    Edit Photos
+                    {a.actions.editPhotos}
                   </Link>
                   <button onClick={() => handleDelete(p.id, p.fullName)}
                     className="px-3 py-2 text-[9px] tracking-widest uppercase text-red-400/70 hover:text-red-400 hover:bg-red-400/10 transition-colors border border-red-400/20">
@@ -188,8 +193,8 @@ export default function PhotographersPage() {
 
       {!loading && photographers.length === 0 && (
         <AdminPanel className="text-center py-16">
-          <p className="text-th-fg/20 text-xs tracking-[0.4em] uppercase mb-6">No photographers found</p>
-          <AdminButton onClick={() => setShowAddForm(true)}>+ Add Photographer</AdminButton>
+          <p className="admin-muted text-xs tracking-[0.4em] uppercase mb-6">{a.photographers.noResults}</p>
+          <AdminButton onClick={() => setShowAddForm(true)}>{a.actions.addPhotographer}</AdminButton>
         </AdminPanel>
       )}
     </AdminPageLayout>

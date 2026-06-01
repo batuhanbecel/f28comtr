@@ -1,3 +1,5 @@
+import { adminEn, adminTr } from '@/lib/adminTranslations';
+
 export const translations = {
   en: {
     nav: {
@@ -45,6 +47,11 @@ export const translations = {
       heading: 'PRODUCTION',
       description:
         'Based in Istanbul since 2008, f/2.8 Production delivers high-quality photography and video services through an international portfolio. Working with many leading brands from around the world, the team provides efficient solutions for photography, video, CGI, animation, editing, and motion graphics.',
+      stats: {
+        projects: 'Completed projects',
+        brands: 'Brands worked with',
+        since: 'Est. Istanbul',
+      },
     },
     aiBased: {
       sectionLabel: 'Artificial Intelligence & Creativity',
@@ -103,6 +110,7 @@ export const translations = {
       rights: 'All rights reserved.',
       city: 'Istanbul, Turkey',
     },
+    admin: adminEn,
   },
   tr: {
     nav: {
@@ -150,6 +158,11 @@ export const translations = {
       heading: 'PRODÜKSİYON',
       description:
         '2008\'den bu yana İstanbul merkezli f/2.8 Production, uluslararası portföyüyle yüksek kaliteli fotoğrafçılık ve video hizmetleri sunmaktadır. Dünyanın dört bir yanındaki önde gelen markalarla çalışan ekip; fotoğrafçılık, video, CGI, animasyon, kurgu ve hareketli grafik alanlarında etkin çözümler sunmaktadır.',
+      stats: {
+        projects: 'Tamamlanan proje',
+        brands: 'Çalışılan marka',
+        since: 'İstanbul, 2008',
+      },
     },
     aiBased: {
       sectionLabel: 'Yapay Zeka & Yaratıcılık',
@@ -208,6 +221,7 @@ export const translations = {
       rights: 'Tüm hakları saklıdır.',
       city: 'İstanbul, Türkiye',
     },
+    admin: adminTr,
   },
 };
 

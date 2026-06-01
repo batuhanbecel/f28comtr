@@ -85,7 +85,7 @@ function Panel({
 
         {/* Section heading */}
         <h2
-          className="heading-hero transition-colors duration-hover ease-brand leading-[0.9]"
+          className="heading-hero transition-colors duration-hover ease-brand"
           style={{ color: isDimmed ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,1)' }}
         >
           {heading}

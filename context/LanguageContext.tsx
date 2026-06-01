@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, use, useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { translations, type Lang, type T } from '@/lib/translations';
 import { persistLangClient } from '@/lib/prefs';
 
@@ -24,16 +25,21 @@ export function LanguageProvider({
   initialLang?: Lang;
 }) {
   const [lang, setLangState] = useState<Lang>(initialLang);
+  const router = useRouter();
 
   useEffect(() => {
     setLangState(initialLang);
     persistLangClient(initialLang);
   }, [initialLang]);
 
-  const setLang = useCallback((l: Lang) => {
-    setLangState(l);
-    persistLangClient(l);
-  }, []);
+  const setLang = useCallback(
+    (l: Lang) => {
+      setLangState(l);
+      persistLangClient(l);
+      router.refresh();
+    },
+    [router],
+  );
 
   return (
     <LanguageContext.Provider value={{ lang, setLang, t: translations[lang] }}>

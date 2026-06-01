@@ -13,6 +13,8 @@ import { AdminFormField, AdminInput, AdminSelect } from '@/components/admin/Admi
 import { AdminButton } from '@/components/admin/AdminButton';
 import { AdminDropzone } from '@/components/admin/AdminDropzone';
 import { AdminUploadQueue } from '@/components/admin/AdminUploadQueue';
+import { useAdminT } from '@/hooks/useAdminT';
+import { formatAdmin } from '@/lib/adminI18n';
 
 interface UploadProgress {
   fileName: string;
@@ -22,12 +24,6 @@ interface UploadProgress {
 
 const MAX_CLIENT_SIZE = 3.5 * 1024 * 1024;
 const MAX_CLIENT_DIM = 3000;
-const CATEGORY_OPTIONS: { key: WorkCategory; label: string }[] = [
-  { key: 'visual', label: 'Visual' },
-  { key: 'video', label: 'Video' },
-  { key: 'hybrid', label: 'Hybrid' },
-];
-
 function deriveBrandKey(brand: string): string {
   return brand
     .toLowerCase()
@@ -59,6 +55,12 @@ async function compressImage(file: File): Promise<File> {
 }
 
 export default function AdminAIBased() {
+  const a = useAdminT();
+  const categoryOptions: { key: WorkCategory; label: string }[] = [
+    { key: 'visual', label: a.categories.visual },
+    { key: 'video', label: a.categories.video },
+    { key: 'hybrid', label: a.categories.hybrid },
+  ];
   const router = useRouter();
   const [works, setWorks] = useState<AIWork[]>([]);
   const [loading, setLoading] = useState(true);
@@ -242,35 +244,35 @@ export default function AdminAIBased() {
 
   return (
     <AdminPageLayout
-      title="AI Images"
-      breadcrumb={{ href: '/admin', label: 'Dashboard' }}
+      title={a.aiBased.title}
+      breadcrumb={{ href: '/admin', label: a.nav.dashboard }}
       actions={
         <>
-          {dirty ? <span className="text-amber-400/70 text-[10px] tracking-[0.3em] uppercase">• Unsaved</span> : null}
+          {dirty ? <span className="text-amber-400/70 text-[10px] tracking-[0.3em] uppercase">{a.status.unsaved}</span> : null}
           <Link href="/ai-based" target="_blank" className="btn-editorial text-[10px]">
-            View Page ↗
+            {a.actions.viewPage}
           </Link>
           <AdminButton onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
-            + Upload
+            {a.actions.upload}
           </AdminButton>
           <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden"
             onChange={e => { if (e.target.files) uploadFiles(Array.from(e.target.files)); e.target.value = ''; }} />
           <AdminButton variant="primary" onClick={handleSave} disabled={saving || !dirty}>
-            {saving ? 'Saving...' : 'Save'}
+            {saving ? a.actions.saving : a.actions.save}
           </AdminButton>
         </>
       }
     >
-      <p className="text-th-fg/25 text-xs mb-8">
-        {works.length} works — tag each with brand and type, drag to reorder
+      <p className="admin-muted text-xs mb-8">
+        {formatAdmin(a.aiBased.count, { count: works.length })}
       </p>
 
-      <AdminPanel label="Upload" title="Defaults" className="mb-6">
+      <AdminPanel label={a.aiBased.upload} title={a.aiBased.defaults} className="mb-6">
         <div className="flex flex-wrap items-end gap-4">
-          <AdminFormField label="Brand (next upload)" className="min-w-[180px] flex-1">
+          <AdminFormField label={a.aiBased.brandNext} className="min-w-[180px] flex-1">
             <AdminInput
               type="text"
-              placeholder="Brand (e.g. Puma)"
+              placeholder={a.aiBased.brandPlaceholder}
               value={defaultBrand}
               onChange={(e) => setDefaultBrand(e.target.value)}
               list="brand-suggestions"
@@ -279,12 +281,12 @@ export default function AdminAIBased() {
           <datalist id="brand-suggestions">
             {knownBrands.map(b => <option key={b.key} value={b.label} />)}
           </datalist>
-          <AdminFormField label="Type">
+          <AdminFormField label={a.aiBased.type}>
             <AdminSelect
               value={defaultCategory}
               onChange={(e) => setDefaultCategory(e.target.value as WorkCategory)}
             >
-              {CATEGORY_OPTIONS.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
+              {categoryOptions.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
             </AdminSelect>
           </AdminFormField>
         </div>
@@ -300,7 +302,7 @@ export default function AdminAIBased() {
           onFiles={(files) => uploadFiles(Array.from(files))}
           accept="image/*"
           disabled={isUploading}
-          hint="Drop images or click to upload"
+          hint={a.dropzone.dropImages}
           className={isDragOver ? 'border-th-fg/40 bg-th-fg/[0.06]' : ''}
         />
       </div>
@@ -316,29 +318,29 @@ export default function AdminAIBased() {
         {/* Filters */}
         {works.length > 0 && (
           <div className="mb-6 flex flex-wrap items-center gap-3 text-xs">
-            <span className="text-th-fg/40 text-[10px] tracking-[0.3em] uppercase">Filter</span>
+            <span className="section-label opacity-70">{a.filters.filter}</span>
             <AdminSelect
               value={filterBrand}
               onChange={(e) => setFilterBrand(e.target.value)}
             >
-              <option value="all">All brands</option>
+              <option value="all">{a.filters.allBrands}</option>
               {knownBrands.map(b => <option key={b.key} value={b.key}>{b.label}</option>)}
             </AdminSelect>
             <AdminSelect
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
             >
-              <option value="all">All types</option>
-              {CATEGORY_OPTIONS.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
+              <option value="all">{a.filters.allTypes}</option>
+              {categoryOptions.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
             </AdminSelect>
-            <span className="text-th-fg/30 ml-2">{visibleWorks.length} / {works.length}</span>
+            <span className="admin-muted ml-2">{visibleWorks.length} / {works.length}</span>
           </div>
         )}
 
         {works.length === 0 ? (
           <div className="text-center py-20 border border-th-fg/[0.05]">
-            <p className="text-th-fg/20 text-xs tracking-[0.4em] uppercase">No AI works found</p>
-            <p className="text-th-fg/10 text-xs mt-2">Drop images above or click Upload to add works</p>
+            <p className="admin-muted text-xs tracking-[0.4em] uppercase">{a.aiBased.noWorks}</p>
+            <p className="admin-muted text-[10px] mt-2">{a.aiBased.noWorksHint}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
@@ -386,7 +388,7 @@ export default function AdminAIBased() {
 
                 <div className="p-3 space-y-2">
                   <div>
-                    <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">Brand</label>
+                    <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">{a.aiBased.brand}</label>
                     <input
                       type="text"
                       value={work.brand}
@@ -397,17 +399,17 @@ export default function AdminAIBased() {
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">Type</label>
+                      <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">{a.aiBased.type}</label>
                       <select
                         value={work.category}
                         onChange={(e) => updateWork(idx, { category: e.target.value as WorkCategory })}
                         className="w-full bg-th-bg border border-th-fg/[0.1] px-2 py-1.5 text-xs text-th-fg/85 focus:outline-none focus:border-th-fg/40"
                       >
-                        {CATEGORY_OPTIONS.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
+                        {categoryOptions.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
                       </select>
                     </div>
                     <div>
-                      <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">Year</label>
+                      <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">{a.aiBased.year}</label>
                       <input
                         type="number"
                         value={work.year}
@@ -417,7 +419,7 @@ export default function AdminAIBased() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">Title (optional)</label>
+                    <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">{a.aiBased.titleOptional}</label>
                     <input
                       type="text"
                       value={work.title}

@@ -1,21 +1,21 @@
-"use client"
+'use client';
 
-import { useLanguage } from "@/context/LanguageContext"
-import { ScrollReveal } from "@/components/ScrollReveal"
+import { ScrollReveal } from '@/components/ScrollReveal';
+import { useLanguage } from '@/context/LanguageContext';
 
-interface AIBasedStatsProps {
-  workCount: number
-  brandCount: number
+interface ProductionStatsProps {
+  projectCount: number;
+  brandCount: number;
 }
 
-export function AIBasedStats({ workCount, brandCount }: AIBasedStatsProps) {
-  const { t } = useLanguage()
+export function ProductionStats({ projectCount, brandCount }: ProductionStatsProps) {
+  const { t } = useLanguage();
 
   const stats = [
-    { value: `${workCount}+`, label: t.aiBased.stats.projects },
-    { value: `${brandCount}+`, label: t.aiBased.stats.brands },
-    { value: "2008", label: t.aiBased.stats.since },
-  ]
+    { value: `${projectCount}+`, label: t.production.stats.projects },
+    { value: `${brandCount}+`, label: t.production.stats.brands },
+    { value: '2008', label: t.production.stats.since },
+  ];
 
   return (
     <section className="border-y border-th-fg/[0.12] w-full max-w-2xl mx-auto">
@@ -37,9 +37,5 @@ export function AIBasedStats({ workCount, brandCount }: AIBasedStatsProps) {
         ))}
       </div>
     </section>
-  )
-}
-
-export function WorksBadge(_props: { workCount: number }) {
-  return null
+  );
 }

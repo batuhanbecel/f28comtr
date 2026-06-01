@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useAdminT } from '@/hooks/useAdminT';
 
 interface PhotographerImageGalleryProps {
   images: string[];
@@ -110,6 +111,7 @@ export function PhotographerImageGallery({
   currentPreview,
   onPreviewSelect 
 }: PhotographerImageGalleryProps) {
+  const a = useAdminT();
   const [images, setImages] = useState(initialImages);
   const [isSaving, setIsSaving] = useState(false);
   const [isReorderMode, setIsReorderMode] = useState(false);
@@ -430,7 +432,7 @@ export function PhotographerImageGallery({
                     <button
                       onClick={() => onPreviewSelect(image)}
                       className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-yellow-400 hover:bg-yellow-500/15 transition-colors text-sm"
-                      title="Set as preview"
+                      title={a.photographerEdit.setPreview}
                     >⭐</button>
                   )}
                 </div>
@@ -449,8 +451,8 @@ export function PhotographerImageGallery({
 
       {images.length === 0 && !isUploading && uploadQueue.length === 0 && (
         <div className="text-center py-20 border border-th-fg/[0.05]">
-          <p className="text-th-fg/20 text-xs tracking-[0.4em] uppercase">No images found</p>
-          <p className="text-th-fg/10 text-xs mt-2">Drop images above or click Upload</p>
+          <p className="admin-muted text-xs tracking-[0.4em] uppercase">{a.photographerEdit.noImages}</p>
+          <p className="admin-muted text-[10px] mt-2">{a.photographerEdit.noImagesHint}</p>
         </div>
       )}
     </div>

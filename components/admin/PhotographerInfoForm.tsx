@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { AdminPanel } from '@/components/admin/AdminPanel';
 import { AdminFormField, AdminInput } from '@/components/admin/AdminFormField';
 import { AdminButton } from '@/components/admin/AdminButton';
+import { useAdminT } from '@/hooks/useAdminT';
 
 interface PhotographerInfoFormProps {
   photographer: Photographer;
@@ -15,6 +16,7 @@ interface PhotographerInfoFormProps {
 
 export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps) {
   const router = useRouter();
+  const a = useAdminT();
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
     fullName: photographer.fullName,
@@ -45,24 +47,24 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
       });
 
       if (res.ok) {
-        toast.success('Photographer info updated');
+        toast.success(a.photographerEdit.updated);
         router.refresh();
       } else {
         const data = await res.json();
-        toast.error(data.error || 'Failed to update');
+        toast.error(data.error || a.toast.updateFailed);
       }
     } catch {
-      toast.error('Failed to update photographer');
+      toast.error(a.toast.updatePhotographerFailed);
     } finally {
       setIsSaving(false);
     }
   };
 
   return (
-    <AdminPanel label="Information" title="Details">
+    <AdminPanel label={a.photographerEdit.information} title={a.photographerEdit.details}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <AdminFormField label="Full Name">
+          <AdminFormField label={a.photographers.fullName}>
             <AdminInput
               type="text"
               value={formData.fullName}
@@ -70,7 +72,7 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
               required
             />
           </AdminFormField>
-          <AdminFormField label="Title">
+          <AdminFormField label={a.photographers.titleField}>
             <AdminInput
               type="text"
               value={formData.title}
@@ -78,7 +80,7 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
               required
             />
           </AdminFormField>
-          <AdminFormField label="Preview Image">
+          <AdminFormField label={a.photographerEdit.previewImage}>
             {formData.preview ? (
               <div className="flex items-center gap-3 mt-1">
                 <div className="relative h-14 w-14 border border-th-fg/[0.08] overflow-hidden flex-shrink-0">
@@ -90,15 +92,15 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
                     sizes="56px"
                   />
                 </div>
-                <p className="text-[10px] text-th-fg/30 tracking-wide">Use ⭐ on images below to change</p>
+                <p className="text-[10px] text-th-fg/30 tracking-wide">{a.photographerEdit.previewChange}</p>
               </div>
             ) : (
-              <p className="text-xs text-th-fg/20 py-2">Use ⭐ on images below to set preview</p>
+              <p className="text-xs admin-muted py-2">{a.photographerEdit.previewHint}</p>
             )}
           </AdminFormField>
         </div>
         <AdminButton type="submit" variant="primary" disabled={isSaving} className="disabled:opacity-50">
-          {isSaving ? 'Saving...' : 'Save Changes'}
+          {isSaving ? a.actions.savingInfo : a.actions.saveInfo}
         </AdminButton>
       </form>
     </AdminPanel>
