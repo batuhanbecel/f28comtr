@@ -1,6 +1,6 @@
 "use client"
 
-import { PageHeader } from '@/components/PageHeader';
+import { EditorialPageHero } from '@/components/EditorialPageHero';
 import { useLanguage } from '@/context/LanguageContext';
 
 interface AIBasedHeroProps {
@@ -13,19 +13,9 @@ export function AIBasedHero({ statsSlot }: AIBasedHeroProps) {
 
   return (
     <>
-      <section className="hero-screen min-h-screen flex flex-col items-center justify-center section-padding text-center relative overflow-hidden pb-16">
-        <PageHeader
-          label={t.aiBased.sectionLabel}
-          title={t.aiBased.heading}
-          description={t.aiBased.description}
-          variant="hero"
-          preline
-        >
-          {statsSlot ? <div className="mt-4 w-full">{statsSlot}</div> : null}
-        </PageHeader>
-      </section>
+      <EditorialPageHero page="aiBased">{statsSlot}</EditorialPageHero>
 
-      <section className="page-section page-section--border max-w-7xl mx-auto w-full" aria-label={t.aiBased.process.sectionLabel}>
+      <section className="max-w-7xl mx-auto w-full px-6 md:px-12 pt-12 md:pt-16 pb-16 md:pb-20" aria-label={t.aiBased.process.sectionLabel}>
         <div className="page-heading-stack mb-10">
           <span className="section-label">{t.aiBased.process.sectionLabel}</span>
           <h2 className="heading-section">{t.aiBased.process.heading}</h2>

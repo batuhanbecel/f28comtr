@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { F28LogoMark } from '@/components/F28LogoMark';
 import { useState } from 'react';
 import { useAdminT } from '@/hooks/useAdminT';
 
@@ -52,13 +52,7 @@ export function AdminNav() {
       >
         <div className="flex flex-col h-full px-4 py-6">
           <Link href="/" className="flex items-center gap-3 mb-10 px-1">
-            <Image
-              src="/logos/f28/f28_white.png"
-              alt="f/2.8"
-              width={80}
-              height={40}
-              className="h-6 w-auto opacity-60 dark:opacity-60 invert dark:invert-0"
-            />
+            <F28LogoMark className="h-6 w-auto text-th-fg opacity-60" aria-hidden />
             <div className="w-px h-3 bg-th-fg/10" />
             <span className="section-label section-label--mini">{a.label}</span>
           </Link>

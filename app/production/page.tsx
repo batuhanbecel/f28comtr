@@ -1,56 +1,46 @@
-import type { Metadata } from 'next';
-import { getPhotographers } from '@/lib/db';
-import { ParallaxSection } from '@/components/ParallaxSection';
-import { Footer } from '@/components/Footer';
-import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
-import { LocalizedHero } from '@/components/LocalizedHero';
-import { ProductionStats } from '@/components/ProductionStats';
-import { ScrollIndicator } from '@/components/ScrollIndicator';
-
-export const metadata: Metadata = {
-  title: 'Production | f/2.8 Production Agency',
-  description: 'Professional photography and retouching by top photographers. Based in Istanbul since 2008.',
-  openGraph: {
-    title: 'Production | f/2.8 Production Agency',
-    description: 'Professional photography and retouching by top photographers. Based in Istanbul since 2008.',
-    url: 'https://www.f28.com.tr/production',
-  },
-};
-
-export const revalidate = 60;
-
-export default async function ProductionPage() {
-  const photographers = await getPhotographers();
-
-  return (
-    <ProductionSnapContainer snapMode="heroSnap">
-      {/* Hero — snap point 1 */}
-      <section
-        className="hero-screen h-screen flex flex-col items-center justify-center px-6 md:px-12 relative overflow-hidden"
-        style={{ scrollSnapAlign: 'start' }}
-      >
-        <LocalizedHero page="production" />
-        <div className="mt-8 w-full flex justify-center">
-          <ProductionStats projectCount={1000} brandCount={150} />
-        </div>
-        <ScrollIndicator />
-      </section>
-
-      {/* One snap point per photographer */}
-      {photographers.map((photographer, index) => (
-        <ParallaxSection
-          key={photographer.id}
-          photographer={photographer}
-          index={index}
-          total={photographers.length}
-          fullscreen
-        />
-      ))}
-
-      {/* Footer — final snap point */}
-      <div style={{ scrollSnapAlign: 'start' }}>
-        <Footer />
-      </div>
-    </ProductionSnapContainer>
-  );
-}
+import type { Metadata } from 'next';
+import { getPhotographers } from '@/lib/db';
+import { ParallaxSection } from '@/components/ParallaxSection';
+import { Footer } from '@/components/Footer';
+import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
+import { EditorialPageHero } from '@/components/EditorialPageHero';
+import { ProductionStats } from '@/components/ProductionStats';
+
+export const metadata: Metadata = {
+  title: 'Production | f/2.8 Production Agency',
+  description: 'Professional photography and retouching by top photographers. Based in Istanbul since 2008.',
+  openGraph: {
+    title: 'Production | f/2.8 Production Agency',
+    description: 'Professional photography and retouching by top photographers. Based in Istanbul since 2008.',
+    url: 'https://www.f28.com.tr/production',
+  },
+};
+
+export const revalidate = 60;
+
+export default async function ProductionPage() {
+  const photographers = await getPhotographers();
+
+  return (
+    <ProductionSnapContainer snapMode="heroSnap">
+      <EditorialPageHero page="production" scrollSnap>
+        <ProductionStats projectCount={1000} brandCount={150} inHero />
+      </EditorialPageHero>
+
+      {photographers.map((photographer, index) => (
+        <ParallaxSection
+          key={photographer.id}
+          photographer={photographer}
+          index={index}
+          total={photographers.length}
+          fullscreen
+        />
+      ))}
+
+      <div style={{ scrollSnapAlign: 'start' }}>
+        <Footer />
+      </div>
+    </ProductionSnapContainer>
+  );
+}
+

@@ -297,7 +297,7 @@ export function DownloadPortfolio({ images, photographer }: Props) {
     <EditorialButton
       onClick={generate}
       disabled={phase === 'working'}
-      variant="light"
+      variant="default"
       className="disabled:cursor-wait disabled:opacity-50"
     >
       {phase === 'idle' && (
@@ -310,7 +310,7 @@ export function DownloadPortfolio({ images, photographer }: Props) {
       )}
       {phase === 'working' && (
         <>
-          <span className="w-3.5 h-3.5 flex-shrink-0 border border-white/20 border-t-white/60 rounded-full animate-spin" />
+          <span className="w-3.5 h-3.5 flex-shrink-0 border border-th-fg/20 border-t-th-fg/60 rounded-full animate-spin" />
           {progress < 8 ? t.common.preparing : `${t.common.buildingPdf} ${progress}%`}
         </>
       )}

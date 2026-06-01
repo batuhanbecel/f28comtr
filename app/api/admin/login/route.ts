@@ -1,22 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminToken, COOKIE_NAME, COOKIE_MAX_AGE } from '@/lib/auth';
-import { getRedis } from '@/lib/redis';
+import { consumeLoginAttempt, clearLoginAttempts, constantTimeEqual } from '@/lib/loginSecurity';
+
+// Small fixed delay on failed auth to blunt timing/enumeration attacks.
+const FAIL_DELAY_MS = 400;
+const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export async function POST(request: NextRequest) {
   try {
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
 
-    const redis = getRedis();
-    if (redis) {
-      const key = `ratelimit:login:${ip}`;
-      const attempts = await redis.incr(key);
-      if (attempts === 1) await redis.expire(key, 60);
-      if (attempts > 10) {
-        return NextResponse.json(
-          { error: 'Too many login attempts. Try again in a minute.' },
-          { status: 429 }
-        );
-      }
+    const limit = await consumeLoginAttempt(ip);
+    if (!limit.allowed) {
+      console.warn(`[admin-login] rate limited ip=${ip} retryAfter=${limit.retryAfter ?? 0}s`);
+      return NextResponse.json(
+        { error: 'Too many login attempts. Please try again later.' },
+        { status: 429, headers: { 'Retry-After': String(limit.retryAfter ?? 60) } }
+      );
     }
 
     const { password } = await request.json();
@@ -26,13 +26,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Server misconfiguration.' }, { status: 500 });
     }
 
-    if (password !== adminPassword) {
+    const ok = typeof password === 'string' && (await constantTimeEqual(password, adminPassword));
+    if (!ok) {
+      console.warn(`[admin-login] failed attempt ip=${ip} at=${new Date().toISOString()}`);
+      await delay(FAIL_DELAY_MS);
       return NextResponse.json({ error: 'Invalid password.' }, { status: 401 });
     }
 
-    if (redis) {
-      await redis.del(`ratelimit:login:${ip}`);
-    }
+    await clearLoginAttempts(ip);
 
     const token = await createAdminToken();
     const response = NextResponse.json({ success: true });

@@ -97,8 +97,8 @@ function SortableImage({ id, image, photographerName }: { id: string; image: str
         className="object-cover"
         sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
       />
-      <div className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex items-center justify-center">
-        <span className="text-white/40 text-[9px] tracking-widest uppercase">Drag</span>
+      <div className="absolute inset-0 bg-th-bg/75 opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex items-center justify-center">
+        <span className="text-th-fg/50 text-[9px] tracking-widest uppercase">Drag</span>
       </div>
     </div>
   );
@@ -426,12 +426,12 @@ export function PhotographerImageGallery({
                   <span className="text-yellow-900 text-[9px] font-bold">⭐</span>
                 </div>
               )}
-              <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-between p-2">
+              <div className="absolute inset-0 bg-th-bg/85 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-between p-2">
                 <div className="flex justify-end gap-1">
                   {onPreviewSelect && currentPreview !== image && (
                     <button
                       onClick={() => onPreviewSelect(image)}
-                      className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-yellow-400 hover:bg-yellow-500/15 transition-colors text-sm"
+                      className="w-6 h-6 flex items-center justify-center text-th-fg/50 hover:text-yellow-500 hover:bg-yellow-500/15 transition-colors text-sm"
                       title={a.photographerEdit.setPreview}
                     >⭐</button>
                   )}

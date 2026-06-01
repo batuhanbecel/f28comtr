@@ -20,7 +20,6 @@ export function PhotographerHeroHeader({ name, title, children }: PhotographerHe
       variant="hero"
       shell={false}
       gradient={false}
-      className="[&_.hero-rule]:!bg-white/25 [&_.section-label]:!text-white/45 [&_.heading-hero]:!text-white"
     >
       <div className="min-h-[44px]">{children}</div>
     </PageHeader>

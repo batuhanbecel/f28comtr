@@ -21,6 +21,9 @@ export interface Photographer {
   folder: string;
   preview: string;
   tags?: PhotographerTag[];
+  bio?: { en: string; tr: string };
+  instagram?: string;
+  website?: string;
 }
 
 export const photographers: Photographer[] = [

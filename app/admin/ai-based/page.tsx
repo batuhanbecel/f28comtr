@@ -15,6 +15,7 @@ import { AdminDropzone } from '@/components/admin/AdminDropzone';
 import { AdminUploadQueue } from '@/components/admin/AdminUploadQueue';
 import { useAdminT } from '@/hooks/useAdminT';
 import { formatAdmin } from '@/lib/adminI18n';
+import { deriveBrandKey } from '@/lib/brandKey';
 
 interface UploadProgress {
   fileName: string;
@@ -24,13 +25,6 @@ interface UploadProgress {
 
 const MAX_CLIENT_SIZE = 3.5 * 1024 * 1024;
 const MAX_CLIENT_DIM = 3000;
-function deriveBrandKey(brand: string): string {
-  return brand
-    .toLowerCase()
-    .replace(/ı/g, 'i').replace(/ş/g, 's').replace(/ç/g, 'c')
-    .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ö/g, 'o')
-    .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'other';
-}
 
 async function compressImage(file: File): Promise<File> {
   if (file.size <= MAX_CLIENT_SIZE) return file;

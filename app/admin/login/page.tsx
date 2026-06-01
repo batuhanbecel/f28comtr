@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { AdminPageLayout } from '@/components/admin/AdminPageLayout';
 import { AdminPanel } from '@/components/admin/AdminPanel';
 import { AdminFormField, AdminInput } from '@/components/admin/AdminFormField';
 import { AdminButton } from '@/components/admin/AdminButton';
 import { useAdminT } from '@/hooks/useAdminT';
+import { F28LogoMark } from '@/components/F28LogoMark';
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('');
@@ -46,14 +46,7 @@ export default function AdminLogin() {
     <AdminPageLayout title={a.login.title} maxWidth="4xl">
       <div className="max-w-sm mx-auto">
         <div className="text-center mb-8">
-          <Image
-            src="/logos/f28/f28_white.png"
-            alt="f/2.8"
-            width={100}
-            height={50}
-            className="h-10 w-auto mx-auto mb-6 opacity-90 invert dark:invert-0"
-            loading="eager"
-          />
+          <F28LogoMark className="h-10 w-auto mx-auto mb-6 text-th-fg opacity-90" />
           <p className="section-label section-label--mini mx-auto">{a.login.subtitle}</p>
         </div>
 

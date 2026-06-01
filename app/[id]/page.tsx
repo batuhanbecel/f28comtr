@@ -12,6 +12,7 @@ import { MasonryGridSkeleton } from '@/components/MasonryGridSkeleton';
 import { Footer } from '@/components/Footer';
 import { DownloadPortfolio } from '@/components/DownloadPortfolio';
 import { PhotographerHeroHeader } from '@/components/PhotographerHeroHeader';
+import { PhotographerBio } from '@/components/PhotographerBio';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 import { ViewTransition } from '@/lib/ViewTransition';
 
@@ -109,10 +110,10 @@ export default async function PortfolioPage({ params }: PageProps) {
             unoptimized={shouldSkipOptimization(photographer.preview)}
           />
         </ViewTransition>
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-transparent h-1/3" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--c-bg)/0.95)] via-[rgb(var(--c-bg)/0.55)] to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[rgb(var(--c-bg)/0.3)] to-transparent h-1/3" />
 
-        <div className="relative z-10 text-white px-4 w-full max-w-5xl">
+        <div className="relative z-10 text-th-fg px-4 w-full max-w-5xl">
           <PhotographerHeroHeader name={photographer.fullName} title={photographer.title}>
             <Suspense fallback={<div className="opacity-30 text-[10px] tracking-[0.3em] uppercase">Loading…</div>}>
               <DownloadButton imagesPromise={imagesPromise} photographer={photographer} />
@@ -123,7 +124,12 @@ export default async function PortfolioPage({ params }: PageProps) {
 
       {/* Grid — streams in after hero */}
       <div style={{ scrollSnapAlign: 'start' }}>
-        <section className="py-12">
+        <PhotographerBio
+          bio={photographer.bio}
+          instagram={photographer.instagram}
+          website={photographer.website}
+        />
+        <section className="pb-12">
           <Suspense fallback={<MasonryGridSkeleton />}>
             <MasonryGridStream imagesPromise={imagesPromise} photographer={photographer} />
           </Suspense>

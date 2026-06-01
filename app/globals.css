@@ -439,21 +439,6 @@ body.custom-cursor-active.cursor-on-interactive .cursor-dot[data-visible="true"]
   }
 }
 
-.hero-rule {
-  width: 56px;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    rgb(var(--c-fg) / 0.75) 0%,
-    rgb(var(--c-fg) / 0.15) 100%
-  );
-  margin: 0 auto 1.5rem;
-}
-.hero-rule--left {
-  margin-left: 0;
-  margin-right: auto;
-}
-
 /* Full-viewport hero ambient glow */
 .hero-screen {
   position: relative;
@@ -494,17 +479,6 @@ body.custom-cursor-active.cursor-on-interactive .cursor-dot[data-visible="true"]
   border: 1px solid rgb(var(--c-fg) / 0.08);
   pointer-events: none;
 }
-.page-hero-shell::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 1px;
-  height: 32px;
-  background: linear-gradient(to bottom, rgb(var(--c-fg) / 0.35), transparent);
-}
-
 .page-header-block {
   padding-bottom: 2.5rem;
   margin-bottom: 2.5rem;
@@ -583,6 +557,41 @@ body.custom-cursor-active.cursor-on-interactive .cursor-dot[data-visible="true"]
   }
 }
 
+/* Hero entrance — one motion for label, title, description, stats */
+.hero-reveal {
+  opacity: 0;
+  animation: heroReveal var(--duration-reveal) var(--ease-brand) forwards;
+  will-change: opacity, transform;
+}
+
+@keyframes heroReveal {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-reveal .scroll-indicator-hint {
+  opacity: 0;
+  animation: heroRevealTail 0.5s var(--ease-brand) forwards;
+  animation-delay: calc(var(--duration-reveal) * 0.55);
+}
+
+@keyframes heroRevealTail {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ─── Mono data label (numbers, counts, indices) ────────────────────────── */
 .mono-label {
   font-family: var(--font-mono, ui-monospace, monospace);
@@ -598,7 +607,7 @@ body.custom-cursor-active.cursor-on-interactive .cursor-dot[data-visible="true"]
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,0.55) 100%);
+  background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgb(var(--c-bg) / 0.55) 100%);
 }
 
 @keyframes page-load {
@@ -649,16 +658,22 @@ body[data-lightbox-open] nav {
 
 /* ─── AI gallery (single stylesheet — avoids per-card styled-jsx) ─────── */
 .ai-gallery-section {
-  padding: 64px 48px;
+  padding: 0 0 64px;
 }
 @media (max-width: 768px) {
   .ai-gallery-section {
-    padding: 48px 20px;
+    padding: 0 0 48px;
   }
 }
-@media (max-width: 480px) {
-  .ai-gallery-section {
-    padding: 40px 12px;
+/* Filter bar keeps inner breathing room; grid stays full-bleed */
+.ai-gallery-section .filter-bar {
+  padding-left: 48px;
+  padding-right: 48px;
+}
+@media (max-width: 768px) {
+  .ai-gallery-section .filter-bar {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
 
@@ -870,7 +885,7 @@ body[data-lightbox-open] nav {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #111;
+  background: rgb(var(--c-fg) / 0.04);
 }
 .ai-work-image {
   object-fit: cover;
@@ -879,7 +894,7 @@ body[data-lightbox-open] nav {
 .ai-work-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.72);
+  background: rgb(var(--c-bg) / 0.72);
   opacity: 0;
   transition: opacity 0.25s ease;
   display: flex;
@@ -895,13 +910,13 @@ body[data-lightbox-open] nav {
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgb(var(--c-fg) / 0.55);
   margin-bottom: 5px;
 }
 .ai-work-overlay-title {
   font-size: 15px;
   font-weight: 400;
-  color: #fff;
+  color: rgb(var(--c-fg));
   line-height: 1.35;
   margin: 0 0 10px;
   letter-spacing: 0.01em;
@@ -915,15 +930,15 @@ body[data-lightbox-open] nav {
   font-size: 9px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgb(var(--c-fg) / 0.5);
+  border: 1px solid rgb(var(--c-fg) / 0.22);
   padding: 3px 9px;
   border-radius: 1px;
 }
 @media (hover: none) {
   .ai-work-overlay {
     opacity: 1;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 55%);
+    background: linear-gradient(to top, rgb(var(--c-bg) / 0.85) 0%, transparent 55%);
   }
   .ai-work-overlay-title--empty {
     display: none;
@@ -1126,6 +1141,8 @@ body[data-lightbox-open] nav {
   }
 
   .fade-in-up,
+  .hero-reveal,
+  .hero-reveal .scroll-indicator-hint,
   .scroll-reveal {
     animation: none !important;
     opacity: 1 !important;

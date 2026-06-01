@@ -24,7 +24,7 @@ export const revalidate = 60
 async function StatsBlock({ worksPromise }: { worksPromise: Promise<AIWork[]> }) {
   const works = await worksPromise
   const brandCount = new Set(works.map((w) => w.brandKey)).size
-  return <AIBasedStats workCount={works.length} brandCount={brandCount} />
+  return <AIBasedStats workCount={works.length} brandCount={brandCount} inHero />
 }
 
 
@@ -35,14 +35,16 @@ async function GalleryBlock({ worksPromise }: { worksPromise: Promise<AIWork[]> 
 
 function StatsSkeleton() {
   return (
-    <div className="flex justify-center gap-16 mt-14 opacity-30">
-      {[0, 1, 2].map((i) => (
-        <div key={i} className="flex flex-col items-center gap-2">
-          <div className="h-8 w-12 bg-th-fg/10 animate-pulse" />
-          <div className="h-2 w-20 bg-th-fg/5 animate-pulse" />
-        </div>
-      ))}
-    </div>
+    <section className="border-y border-th-fg/[0.12] w-full max-w-2xl mx-auto mt-4 opacity-40">
+      <div className="flex items-stretch divide-x divide-th-fg/[0.12]">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="flex-1 flex flex-col items-center gap-3 py-7 md:py-10 px-4">
+            <div className="h-8 w-12 bg-th-fg/10 animate-pulse" />
+            <div className="h-2 w-20 bg-th-fg/5 animate-pulse" />
+          </div>
+        ))}
+      </div>
+    </section>
   )
 }
 

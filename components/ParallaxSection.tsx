@@ -43,7 +43,7 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
   return (
     <section
       ref={sectionRef}
-      className={`relative ${fullscreen ? 'h-screen' : 'h-[70vh]'} w-full flex items-end overflow-hidden bg-black`}
+      className={`relative ${fullscreen ? 'h-screen' : 'h-[70vh]'} w-full flex items-end overflow-hidden bg-th-bg`}
       style={fullscreen ? { scrollSnapAlign: 'start' } : undefined}
     >
       <Image
@@ -60,8 +60,8 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
         unoptimized={shouldSkipOptimization(photographer.preview)}
       />
 
-      {/* Gradient overlay — dark bottom, lighter top */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/15 to-transparent" />
+      {/* Gradient overlay — theme background fade from bottom */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--c-bg)/0.92)] via-[rgb(var(--c-bg)/0.18)] to-transparent" />
 
       {/* Text block — always bottom-left */}
       <div
@@ -74,17 +74,17 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
       >
         {/* Meta row: title + counter */}
         <div className="flex items-center gap-5 mb-4">
-          <span className="text-white/45 text-[9px] tracking-[0.5em] uppercase font-mono">
+          <span className="text-th-fg/55 text-[9px] tracking-[0.5em] uppercase font-mono">
             {(t.titleMap as Record<string, string>)[photographer.title] ?? photographer.title}
           </span>
-          <span className="text-white/20 text-[9px] tracking-[0.35em] font-mono">
+          <span className="text-th-fg/30 text-[9px] tracking-[0.35em] font-mono">
             {numLabel} {totalLabel}
           </span>
         </div>
 
         {/* Name */}
         <h2
-          className="heading-hero text-white mb-8"
+          className="heading-hero text-th-fg mb-8"
           style={{
             opacity: visible ? 1 : 0,
             transform: visible ? 'translateY(0)' : 'translateY(20px)',
@@ -101,7 +101,7 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
             transition: 'opacity 0.95s var(--ease-morph) 0.2s',
           }}
         >
-          <EditorialButton href={`/${photographer.id}`} variant="light" className="group">
+          <EditorialButton href={`/${photographer.id}`} variant="default" className="group">
             <span className="transition-transform duration-hover ease-brand group-hover:translate-x-1">
               {t.common.viewPortfolio}
             </span>

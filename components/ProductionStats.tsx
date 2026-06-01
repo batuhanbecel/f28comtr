@@ -6,9 +6,11 @@ import { useLanguage } from '@/context/LanguageContext';
 interface ProductionStatsProps {
   projectCount: number;
   brandCount: number;
+  /** Inside HeroReveal — no per-stat scroll stagger */
+  inHero?: boolean;
 }
 
-export function ProductionStats({ projectCount, brandCount }: ProductionStatsProps) {
+export function ProductionStats({ projectCount, brandCount, inHero = false }: ProductionStatsProps) {
   const { t } = useLanguage();
 
   const stats = [
@@ -20,8 +22,8 @@ export function ProductionStats({ projectCount, brandCount }: ProductionStatsPro
   return (
     <section className="border-y border-th-fg/[0.12] w-full max-w-2xl mx-auto">
       <div className="flex items-stretch divide-x divide-th-fg/[0.12]">
-        {stats.map((stat, i) => (
-          <ScrollReveal key={stat.label} delay={i * 0.06} className="flex-1">
+        {stats.map((stat) => {
+          const cell = (
             <div className="flex flex-col items-center justify-center gap-3 py-7 md:py-10 px-4">
               <span
                 className="font-black tracking-tighter text-th-fg leading-none"
@@ -33,8 +35,17 @@ export function ProductionStats({ projectCount, brandCount }: ProductionStatsPro
                 {stat.label}
               </span>
             </div>
-          </ScrollReveal>
-        ))}
+          );
+          return inHero ? (
+            <div key={stat.label} className="flex-1">
+              {cell}
+            </div>
+          ) : (
+            <ScrollReveal key={stat.label} className="flex-1">
+              {cell}
+            </ScrollReveal>
+          );
+        })}
       </div>
     </section>
   );

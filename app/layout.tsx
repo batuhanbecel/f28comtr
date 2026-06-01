@@ -27,9 +27,6 @@ export const metadata: Metadata = {
   authors: [{ name: "f/2.8 Production" }],
   creator: "f/2.8 Production",
   publisher: "f/2.8 Production",
-  icons: {
-    icon: "/logos/f28/favicon.jpg",
-  },
   openGraph: {
     title: "f/2.8 Production Agency",
     description: "Professional photography and retouching production agency",

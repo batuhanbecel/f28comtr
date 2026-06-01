@@ -1,44 +1,33 @@
-import { PageHeader } from '@/components/PageHeader';
+'use client';
+
 import { EditorialButton } from '@/components/EditorialButton';
+import { F28Logo } from '@/components/F28Logo';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function NotFound() {
+  const { t } = useLanguage();
+
   return (
     <main className="min-h-screen bg-th-bg text-th-fg flex flex-col items-center justify-center px-6 relative overflow-hidden">
+      {/* Animated logo */}
+      <div className="mb-12">
+        <F28Logo width={220} className="text-th-fg" delay={0} />
+      </div>
 
-      {/* Subtle grid */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          opacity: 0.03,
-          backgroundImage:
-            'linear-gradient(rgb(var(--c-fg)) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--c-fg)) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
-        }}
-      />
-
-      <div className="relative">
-        <PageHeader
-          label="Error"
-          title="404"
-          description="This page could not be found"
-          align="center"
-          animate={false}
-          gradient={false}
-          className="[&_.heading-hero]:text-[clamp(7rem,22vw,16rem)] [&_.heading-hero]:leading-none [&_.heading-hero]:tracking-[-0.04em]"
-        >
+      <div className="text-center space-y-4">
+        <p className="section-label section-label--pill mx-auto">{t.notFound.title}</p>
+        <p className="body-text opacity-40">{t.notFound.description}</p>
+        <div className="pt-4">
           <EditorialButton href="/">
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="square" d="M19 12H5M12 5l-7 7 7 7" />
             </svg>
-            Back to home
+            {t.notFound.backHome}
           </EditorialButton>
-        </PageHeader>
+        </div>
       </div>
 
-      {/* Bottom label */}
-      <p className="absolute bottom-10 section-label opacity-20">
-        f/2.8 Production Agency
-      </p>
+      <p className="absolute bottom-10 section-label opacity-20">f/2.8 Production Agency</p>
     </main>
   );
 }

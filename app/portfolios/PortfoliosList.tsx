@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Photographer } from '@/lib/data';
 import { Footer } from '@/components/Footer';
-import { PageHeader } from '@/components/PageHeader';
+import { EditorialPageHero } from '@/components/EditorialPageHero';
 import { PageSection } from '@/components/PageSection';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { useLanguage } from '@/context/LanguageContext';
@@ -21,17 +21,9 @@ export function PortfoliosList({ photographers }: { photographers: Photographer[
   return (
     <main className="min-h-screen bg-th-bg text-th-fg">
 
-      <section className="section-padding pb-8">
-        <ScrollReveal className="px-4 md:px-8" delay={0.1}>
-          <PageHeader
-            label={t.portfolios.sectionLabel}
-            title={t.portfolios.heading}
-            align="left"
-            animate={false}
-            className="page-header-block"
-          />
-        </ScrollReveal>
+      <EditorialPageHero page="portfolios" />
 
+      <section className="pb-8">
         <div className="editorial-grid grid-cols-2 lg:grid-cols-4">
           {photographers.map((p, i) => (
             <ScrollReveal key={p.id} delay={0.15 + Math.min(i, 8) * 0.06}>
@@ -55,25 +47,25 @@ export function PortfoliosList({ photographers }: { photographers: Photographer[
                   />
                 </ViewTransition>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-hover ease-snappy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--c-bg)/0.9)] via-[rgb(var(--c-bg)/0.2)] to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-hover ease-snappy" />
 
                 <div className="absolute top-4 left-4">
-                  <span className="font-mono text-[10px] tracking-[0.3em] text-white/35 group-hover:text-white/65 transition-colors duration-hover">
+                  <span className="font-mono text-[10px] tracking-[0.3em] text-th-fg/35 group-hover:text-th-fg/65 transition-colors duration-hover">
                     {String(i + 1).padStart(2, '0')}
                   </span>
                 </div>
 
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-hover ease-brand">
-                  <svg className="w-4 h-4 text-white/65" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <svg className="w-4 h-4 text-th-fg/65" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="square" d="M7 17L17 7M17 7H7M17 7v10" />
                   </svg>
                 </div>
 
                 <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 transform translate-y-1 group-hover:translate-y-0 transition-transform duration-hover ease-brand">
-                  <p className="text-[8px] tracking-[0.5em] uppercase text-white/40 group-hover:text-white/70 transition-colors duration-hover mb-1.5">
+                  <p className="text-[8px] tracking-[0.5em] uppercase text-th-fg/40 group-hover:text-th-fg/70 transition-colors duration-hover mb-1.5">
                     {(t.titleMap as Record<string, string>)[p.title] ?? p.title}
                   </p>
-                  <h2 className="text-lg md:text-xl font-black tracking-tight leading-tight text-white/85 group-hover:text-white transition-colors duration-hover">
+                  <h2 className="text-lg md:text-xl font-black tracking-tight leading-tight text-th-fg/85 group-hover:text-th-fg transition-colors duration-hover">
                     {p.fullName}
                   </h2>
                 </div>

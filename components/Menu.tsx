@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { contactInfo } from '@/lib/data';
+import { F28LogoMark } from '@/components/F28LogoMark';
 import { useLanguage } from '@/context/LanguageContext';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -74,14 +75,7 @@ export function Menu() {
         isScrolled || forceBackdrop ? 'bg-th-bg/60 border-b border-th-fg/10 backdrop-blur-xl' : 'border-b border-transparent'
       }`}>
         <Link href="/" className="relative z-50 transition-opacity duration-hover hover:opacity-70">
-          <Image
-            src="/logos/f28/f28_white.png"
-            alt="f/2.8"
-            width={120}
-            height={60}
-            className="h-8 md:h-10 w-auto dark:invert-0 invert"
-            loading="eager"
-          />
+          <F28LogoMark className="h-8 md:h-10 w-auto text-th-fg" aria-label="f/2.8" />
         </Link>
 
         {/* Desktop nav links */}

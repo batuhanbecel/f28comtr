@@ -31,7 +31,7 @@ const MasonryThumb = memo(function MasonryThumb({
 }) {
   return (
     <div
-      className="relative w-full h-full cursor-pointer group overflow-hidden bg-th-fg/[0.03]"
+      className="relative w-full h-full cursor-pointer group overflow-hidden bg-th-fg/[0.03] card-editorial"
       onClick={onOpen}
     >
       <Image
@@ -52,6 +52,12 @@ const MasonryThumb = memo(function MasonryThumb({
           }
         }}
       />
+      {/* Hover overlay — matches AI grid: same theme-aware tint + foreground expand icon */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-ui ease-brand pointer-events-none flex items-center justify-center bg-[rgb(var(--c-bg)/0.72)]">
+        <svg className="w-6 h-6 text-th-fg/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.25}>
+          <path strokeLinecap="square" d="M7 17L17 7M17 7H7M17 7v10" />
+        </svg>
+      </div>
     </div>
   );
 });

@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { contactInfo } from '@/lib/data';
+import { F28LogoMark } from '@/components/F28LogoMark';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function Footer() {
@@ -28,7 +28,7 @@ export function Footer() {
           {/* Brand */}
           <div className="flex flex-col gap-6">
             <Link href="/" className="opacity-55 hover:opacity-100 transition-opacity duration-ui w-fit hover-line">
-              <Image src="/logos/f28/f28_white.png" alt="f/2.8" width={90} height={45} className="h-8 w-auto dark:invert-0 invert" loading="lazy" />
+              <F28LogoMark className="h-8 w-auto text-th-fg" />
             </Link>
             <div className="space-y-1">
               <p className="section-label opacity-40">{t.footer.tagline}</p>

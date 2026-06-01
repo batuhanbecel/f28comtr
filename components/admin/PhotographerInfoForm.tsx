@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 import type { Photographer } from '@/lib/data';
 import Image from 'next/image';
 import { AdminPanel } from '@/components/admin/AdminPanel';
-import { AdminFormField, AdminInput } from '@/components/admin/AdminFormField';
+import { AdminFormField, AdminInput, AdminTextarea } from '@/components/admin/AdminFormField';
 import { AdminButton } from '@/components/admin/AdminButton';
 import { useAdminT } from '@/hooks/useAdminT';
 
@@ -22,6 +22,9 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
     fullName: photographer.fullName,
     title: photographer.title,
     preview: photographer.preview,
+    bio: { en: photographer.bio?.en ?? '', tr: photographer.bio?.tr ?? '' },
+    instagram: photographer.instagram ?? '',
+    website: photographer.website ?? '',
   });
 
   useEffect(() => {
@@ -99,6 +102,43 @@ export function PhotographerInfoForm({ photographer }: PhotographerInfoFormProps
             )}
           </AdminFormField>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <AdminFormField label={a.photographerEdit.bioEn}>
+            <AdminTextarea
+              value={formData.bio.en}
+              onChange={(e) => setFormData({ ...formData, bio: { ...formData.bio, en: e.target.value } })}
+              placeholder="Short bio in English"
+            />
+          </AdminFormField>
+          <AdminFormField label={a.photographerEdit.bioTr}>
+            <AdminTextarea
+              value={formData.bio.tr}
+              onChange={(e) => setFormData({ ...formData, bio: { ...formData.bio, tr: e.target.value } })}
+              placeholder="Türkçe kısa biyografi"
+            />
+          </AdminFormField>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <AdminFormField label={a.photographerEdit.instagram}>
+            <AdminInput
+              type="text"
+              value={formData.instagram}
+              onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
+              placeholder="https://instagram.com/username"
+            />
+          </AdminFormField>
+          <AdminFormField label={a.photographerEdit.website}>
+            <AdminInput
+              type="text"
+              value={formData.website}
+              onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+              placeholder="https://example.com"
+            />
+          </AdminFormField>
+        </div>
+
         <AdminButton type="submit" variant="primary" disabled={isSaving} className="disabled:opacity-50">
           {isSaving ? a.actions.savingInfo : a.actions.saveInfo}
         </AdminButton>

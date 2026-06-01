@@ -153,15 +153,15 @@ export default function PhotographersPage() {
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                 unoptimized={shouldSkipOptimization(p.preview)} />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--c-bg)/0.9)] via-[rgb(var(--c-bg)/0.2)] to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-4">
                 <p className="text-th-fg/40 text-[9px] tracking-[0.3em] uppercase mb-1">{p.title}</p>
                 <p className="text-th-fg font-bold text-sm tracking-tight">{p.fullName}</p>
               </div>
-              <div className="absolute top-3 left-3 w-6 h-6 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+              <div className="absolute top-3 left-3 w-6 h-6 bg-th-bg/60 backdrop-blur-sm flex items-center justify-center">
                 <span className="text-th-fg/50 text-[10px] font-mono">{index + 1}</span>
               </div>
-              <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-between p-4">
+              <div className="absolute inset-0 bg-th-bg/85 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-between p-4">
                 <div className="flex justify-between items-start">
                   <span className="text-th-fg/30 text-[9px] tracking-widest uppercase">#{index + 1}</span>
                   <div className="flex gap-1">

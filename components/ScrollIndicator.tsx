@@ -2,12 +2,22 @@
 
 import { useLanguage } from '@/context/LanguageContext';
 
-export function ScrollIndicator() {
+interface ScrollIndicatorProps {
+  /** Synced tail after unified hero reveal */
+  inHero?: boolean;
+}
+
+export function ScrollIndicator({ inHero = false }: ScrollIndicatorProps) {
   const { t } = useLanguage();
 
   return (
-    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 fade-in-up w-full flex justify-center" style={{ animationDelay: '0.5s' }}>
-      <div className="flex flex-col items-center gap-2 animate-bounce">
+    <div
+      className={`absolute bottom-10 left-1/2 -translate-x-1/2 w-full flex justify-center ${
+        inHero ? '' : 'fade-in-up'
+      }`}
+      style={inHero ? undefined : { animationDelay: '0.5s' }}
+    >
+      <div className={`flex flex-col items-center gap-2 animate-bounce ${inHero ? 'scroll-indicator-hint' : ''}`}>
         <span className="text-th-fg/20 text-[9px] tracking-[0.45em] uppercase pl-[0.45em]">
           {t.common.scroll}
         </span>

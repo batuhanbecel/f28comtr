@@ -9,14 +9,22 @@
   "orientation": "any",
   "icons": [
     {
-      "src": "/logos/f28/favicon.jpg",
+      "src": "/icon",
       "sizes": "192x192",
-      "type": "image/jpeg"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "/logos/f28/favicon.jpg",
+      "src": "/icon",
       "sizes": "512x512",
-      "type": "image/jpeg"
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-icon",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

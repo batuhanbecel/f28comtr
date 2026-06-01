@@ -11,6 +11,7 @@ interface PageHeaderProps {
   actions?: React.ReactNode;
   className?: string;
   animate?: boolean;
+  /** When true (default for non-hero), each line staggers. Hero pages should use HeroReveal + animate={false}. */
 }
 
 export function PageHeader({
@@ -35,16 +36,15 @@ export function PageHeader({
   return (
     <header className={`${shellClass} ${headerBlock} max-w-5xl w-full ${center ? 'mx-auto text-center' : 'text-left'} ${className}`}>
       <div className={`page-heading-stack ${center ? 'page-heading-stack--center' : ''}`}>
-        <div className={`hero-rule ${anim} ${center ? '' : 'hero-rule--left'}`} style={animate ? { animationDelay: '0.05s' } : undefined} />
         {label ? (
-          <span className={`section-label section-label--pill ${anim}`} style={animate ? { animationDelay: '0.1s' } : undefined}>
+          <span className={`section-label section-label--pill ${anim}`} style={animate ? { animationDelay: '0.05s' } : undefined}>
             {label}
           </span>
         ) : null}
         <h1
           className={`heading-hero ${gradient ? 'gradient-text' : ''} ${anim}`}
           style={{
-            animationDelay: animate ? '0.2s' : undefined,
+            animationDelay: animate ? '0.12s' : undefined,
             whiteSpace: preline ? 'pre-line' : undefined,
           }}
         >
@@ -53,13 +53,13 @@ export function PageHeader({
         {description ? (
           <p
             className={`body-text max-w-2xl opacity-60 leading-relaxed ${anim} ${center ? 'mx-auto' : ''}`}
-            style={animate ? { animationDelay: '0.25s' } : undefined}
+            style={animate ? { animationDelay: '0.18s' } : undefined}
           >
             {description}
           </p>
         ) : null}
         {children ? (
-          <div className={anim} style={animate ? { animationDelay: '0.3s' } : undefined}>
+          <div className={anim} style={animate ? { animationDelay: '0.24s' } : undefined}>
             {children}
           </div>
         ) : null}
