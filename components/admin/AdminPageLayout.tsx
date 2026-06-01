@@ -22,7 +22,7 @@ export function AdminPageLayout({
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-th-fg/10 px-6 md:px-10 py-6 sticky top-0 bg-th-surface/95 backdrop-blur-md z-10">
+      <header className="border-b border-th-fg/10 pl-16 pr-6 md:px-10 py-6 sticky top-0 bg-th-surface/95 backdrop-blur-md z-10">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="page-heading-stack gap-2">
             {breadcrumb ? (

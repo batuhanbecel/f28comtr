@@ -13,12 +13,14 @@ interface WorkCardProps {
   work: Work
   priority?: boolean
   onOpen?: () => void
+  onMeasure?: (src: string, w: number, h: number) => void
 }
 
 export const WorkCard = memo(function WorkCard({
   work,
   priority = false,
   onOpen,
+  onMeasure,
 }: WorkCardProps) {
   const { t } = useLanguage()
   const { ref, inView } = useInView<HTMLButtonElement>({
@@ -55,6 +57,12 @@ export const WorkCard = memo(function WorkCard({
             fetchPriority={priority ? "high" : undefined}
             quality={GRID_IMAGE_QUALITY}
             unoptimized={shouldSkipOptimization(work.imageSrc)}
+            onLoad={(e) => {
+              const img = e.currentTarget
+              if (img.naturalWidth && img.naturalHeight) {
+                onMeasure?.(work.imageSrc, img.naturalWidth, img.naturalHeight)
+              }
+            }}
           />
         ) : null}
         <div className="ai-work-overlay">

@@ -4,6 +4,7 @@ interface PageHeaderProps {
   description?: string;
   align?: 'center' | 'left';
   variant?: 'default' | 'hero';
+  shell?: boolean;
   preline?: boolean;
   gradient?: boolean;
   children?: React.ReactNode;
@@ -18,6 +19,7 @@ export function PageHeader({
   description,
   align = 'center',
   variant = 'default',
+  shell = true,
   preline = false,
   gradient = true,
   children,
@@ -27,11 +29,11 @@ export function PageHeader({
 }: PageHeaderProps) {
   const center = align === 'center';
   const anim = animate ? 'fade-in-up' : '';
-  const shell = variant === 'hero' ? 'page-hero-shell hero-screen' : '';
+  const shellClass = variant === 'hero' && shell ? 'page-hero-shell hero-screen' : '';
   const headerBlock = variant === 'default' ? 'page-header-block' : '';
 
   return (
-    <header className={`${shell} ${headerBlock} max-w-5xl w-full ${center ? 'mx-auto text-center' : 'text-left'} ${className}`}>
+    <header className={`${shellClass} ${headerBlock} max-w-5xl w-full ${center ? 'mx-auto text-center' : 'text-left'} ${className}`}>
       <div className={`page-heading-stack ${center ? 'page-heading-stack--center' : ''}`}>
         <div className={`hero-rule ${anim} ${center ? '' : 'hero-rule--left'}`} style={animate ? { animationDelay: '0.05s' } : undefined} />
         {label ? (

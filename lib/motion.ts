@@ -9,6 +9,10 @@ export const MOTION = {
     reveal: '0.65s',
     hover: '0.35s',
     ui: '0.2s',
+    vtOut: '0.3s',
+    vtIn: '0.45s',
+    vtGroup: '0.55s',
+    vtPhoto: '0.6s',
   },
 } as const;
 

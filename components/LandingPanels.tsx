@@ -40,7 +40,7 @@ function Panel({
           src={imageSrc}
           alt={imageAlt}
           fill
-          className={`object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] ${isDimmed ? 'scale-100' : 'group-hover:scale-[1.04]'}`}
+          className={`object-cover transition-transform duration-[var(--duration-reveal-ms)] ease-snappy ${isDimmed ? 'scale-100' : 'group-hover:scale-[1.04]'}`}
           loading={isPrimary ? 'eager' : 'lazy'}
           fetchPriority={isPrimary ? 'high' : undefined}
           quality={85}
@@ -51,7 +51,7 @@ function Panel({
 
       {/* Dim overlay */}
       <div
-        className="absolute inset-0 transition-opacity duration-500"
+        className="absolute inset-0 transition-opacity duration-hover ease-brand"
         style={{ background: isDimmed ? 'rgba(0,0,0,0.68)' : 'rgba(0,0,0,0.22)' }}
       />
       {/* Bottom gradient */}
@@ -63,12 +63,12 @@ function Panel({
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? 'translateY(0)' : 'translateY(32px)',
-          transition: `opacity 0.7s cubic-bezier(0.76,0,0.24,1) ${enterDelay}, transform 0.7s cubic-bezier(0.76,0,0.24,1) ${enterDelay}`,
+          transition: `opacity var(--duration-reveal) var(--ease-brand) ${enterDelay}, transform var(--duration-reveal) var(--ease-brand) ${enterDelay}`,
         }}
       >
         {/* Thin rule */}
         <div
-          className="h-px mb-5 origin-left transition-all duration-500"
+          className="h-px mb-5 origin-left transition-all duration-hover ease-brand"
           style={{
             width: isDimmed ? '10px' : '32px',
             background: isDimmed ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.3)',
@@ -77,7 +77,7 @@ function Panel({
 
         {/* Label */}
         <p
-          className="text-[9px] tracking-[0.6em] uppercase font-mono mb-3 transition-opacity duration-500"
+          className="text-[9px] tracking-[0.6em] uppercase font-mono mb-3 transition-opacity duration-hover ease-brand"
           style={{ color: isDimmed ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.42)' }}
         >
           {label}
@@ -85,7 +85,7 @@ function Panel({
 
         {/* Section heading */}
         <h2
-          className="heading-hero transition-colors duration-500 leading-[0.9]"
+          className="heading-hero transition-colors duration-hover ease-brand leading-[0.9]"
           style={{ color: isDimmed ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,1)' }}
         >
           {heading}
@@ -93,7 +93,7 @@ function Panel({
 
         {/* Enter CTA */}
         <div
-          className={`flex items-center gap-3 mt-7 transition-all duration-500 ${isDimmed ? 'opacity-0 translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}
+          className={`flex items-center gap-3 mt-7 transition-all duration-hover ease-brand ${isDimmed ? 'opacity-0 translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}
         >
           <span className="btn-editorial btn-editorial--light !text-[9px] !py-2.5 !px-4 !gap-2.5">
             <span className="w-4 h-px bg-white/55" />

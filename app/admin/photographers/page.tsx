@@ -78,7 +78,7 @@ export default function PhotographersPage() {
 
   return (
     <AdminPageLayout
-      title="Lineup"
+      title="Photographers"
       breadcrumb={{ href: '/admin', label: 'Dashboard' }}
       actions={
         <AdminButton

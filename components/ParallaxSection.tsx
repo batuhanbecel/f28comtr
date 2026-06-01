@@ -69,7 +69,7 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? 'translateY(0)' : 'translateY(24px)',
-          transition: 'opacity 0.65s cubic-bezier(0.76,0,0.24,1), transform 0.65s cubic-bezier(0.76,0,0.24,1)',
+          transition: 'opacity 0.95s var(--ease-morph), transform 0.95s var(--ease-morph)',
         }}
       >
         {/* Meta row: title + counter */}
@@ -88,7 +88,7 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
           style={{
             opacity: visible ? 1 : 0,
             transform: visible ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'opacity 0.65s cubic-bezier(0.76,0,0.24,1) 0.07s, transform 0.65s cubic-bezier(0.76,0,0.24,1) 0.07s',
+            transition: 'opacity 0.95s var(--ease-morph) 0.12s, transform 0.95s var(--ease-morph) 0.12s',
           }}
         >
           {photographer.fullName}
@@ -98,14 +98,14 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
         <div
           style={{
             opacity: visible ? 1 : 0,
-            transition: 'opacity 0.65s cubic-bezier(0.76,0,0.24,1) 0.14s',
+            transition: 'opacity 0.95s var(--ease-morph) 0.2s',
           }}
         >
           <EditorialButton href={`/${photographer.id}`} variant="light" className="group">
-            <span className="transition-transform duration-300 group-hover:translate-x-1">
+            <span className="transition-transform duration-hover ease-brand group-hover:translate-x-1">
               {t.common.viewPortfolio}
             </span>
-            <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-4 h-4 transition-transform duration-hover ease-brand group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="square" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </EditorialButton>

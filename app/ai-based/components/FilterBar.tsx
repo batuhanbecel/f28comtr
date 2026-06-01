@@ -44,9 +44,10 @@ export function FilterBar({
 
   return (
     <div className="filter-bar">
-      <div className="filter-row">
-        <span className="filter-label section-label">{t.aiBased.filters.brand}</span>
-        <div className="filter-pills">
+      {/* Brand — scrollable pill strip */}
+      <div className="filter-group">
+        <span className="filter-label">{t.aiBased.filters.brand}</span>
+        <div className="filter-pills" role="group" aria-label={t.aiBased.filters.brand}>
           {brandOptions.map((b) => {
             const count = counts.byBrand[b.key] ?? 0
             if (b.key !== "all" && count === 0) return null
@@ -54,7 +55,7 @@ export function FilterBar({
               <button
                 key={`brand-${b.key}`}
                 onClick={() => onBrand(b.key)}
-                className={`filter-pill editorial-panel ${filters.brand === b.key ? "active" : ""}`}
+                className={`filter-pill ${filters.brand === b.key ? "active" : ""}`}
                 aria-pressed={filters.brand === b.key}
               >
                 {b.label}
@@ -65,9 +66,10 @@ export function FilterBar({
         </div>
       </div>
 
-      <div className="filter-row filter-row--secondary">
-        <span className="filter-label section-label">{t.aiBased.filters.type}</span>
-        <div className="filter-pills">
+      {/* Type — segmented control + live result count */}
+      <div className="filter-group">
+        <span className="filter-label">{t.aiBased.filters.type}</span>
+        <div className="filter-segment" role="group" aria-label={t.aiBased.filters.type}>
           {categoryOptions.map((c) => {
             const count = counts.byCategory[c.key] ?? 0
             if (c.key !== "all" && count === 0) return null
@@ -75,9 +77,7 @@ export function FilterBar({
               <button
                 key={`cat-${c.key}`}
                 onClick={() => onCategory(c.key)}
-                className={`filter-pill filter-pill--cat editorial-panel ${
-                  filters.category === c.key ? "active" : ""
-                }`}
+                className={`filter-seg-btn ${filters.category === c.key ? "active" : ""}`}
                 aria-pressed={filters.category === c.key}
               >
                 {c.label}
@@ -85,12 +85,12 @@ export function FilterBar({
             )
           })}
         </div>
-      </div>
 
-      <p className="result-count" aria-live="polite">
-        <span className="result-num">{total}</span>
-        <span className="result-suffix">{t.aiBased.filters.resultsSuffix}</span>
-      </p>
+        <p className="filter-result" aria-live="polite">
+          <b>{total}</b>
+          <span>{t.aiBased.filters.resultsSuffix}</span>
+        </p>
+      </div>
     </div>
   )
 }

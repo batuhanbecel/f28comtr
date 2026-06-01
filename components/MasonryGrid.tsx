@@ -14,6 +14,7 @@ interface MasonryGridProps {
   photographerName: string;
 }
 
+// Fallback ratio used only until the image's real dimensions are measured.
 const FRAME_W = 4;
 const FRAME_H = 5;
 
@@ -22,11 +23,13 @@ const MasonryThumb = memo(function MasonryThumb({
   alt,
   priority,
   onOpen,
+  onMeasure,
 }: {
   src: string;
   alt: string;
   priority: boolean;
   onOpen: () => void;
+  onMeasure: (src: string, w: number, h: number) => void;
 }) {
   const { ref, inView } = useInView<HTMLDivElement>({
     rootMargin: '500px 0px',
@@ -50,6 +53,12 @@ const MasonryThumb = memo(function MasonryThumb({
           sizes={MASONRY_THUMB_SIZES}
           quality={GRID_IMAGE_QUALITY}
           unoptimized={shouldSkipOptimization(src)}
+          onLoad={(e) => {
+            const img = e.currentTarget;
+            if (img.naturalWidth && img.naturalHeight) {
+              onMeasure(src, img.naturalWidth, img.naturalHeight);
+            }
+          }}
         />
       ) : null}
     </div>
@@ -63,14 +72,16 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
 
   const deferredImages = useDeferredValue(images);
 
-  const [erroredImages, setErroredImages] = useState<Set<string>>(new Set());
-  const handleImageError = useCallback((src: string) => {
-    setErroredImages((prev) => new Set([...prev, src]));
+  // Real per-image aspect ratios, measured on load. Until measured, a frame
+  // uses the 4:5 fallback so layout stays stable, then snaps to its true ratio.
+  const [dims, setDims] = useState<Record<string, { w: number; h: number }>>({});
+  const handleMeasure = useCallback((src: string, w: number, h: number) => {
+    setDims((prev) => (prev[src] ? prev : { ...prev, [src]: { w, h } }));
   }, []);
 
-  const validImages = deferredImages.filter((img) => !erroredImages.has(img));
+  const visibleImages = deferredImages;
 
-  const slides = validImages.map((src) => ({
+  const slides = visibleImages.map((src) => ({
     src,
     alt: `${photographerName} — portfolio photograph`,
   }));
@@ -94,9 +105,9 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
   }, []);
 
   const openLightbox = useCallback((img: string) => {
-    const idx = validImages.indexOf(img);
+    const idx = visibleImages.indexOf(img);
     if (idx >= 0) setLightboxIndex(idx);
-  }, [validImages]);
+  }, [visibleImages]);
 
   const closeLightbox = useCallback(() => {
     setLightboxIndex(null);
@@ -106,16 +117,20 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
     <>
       <div ref={containerRef} className="masonry-scroll">
         <MasonryGridLib frameWidth={frameWidth} gap={3}>
-          {validImages.map((image, idx) => (
-            <Frame key={image} width={FRAME_W} height={FRAME_H}>
-              <MasonryThumb
-                src={image}
-                alt={photographerName}
-                priority={idx < 4}
-                onOpen={() => openLightbox(image)}
-              />
-            </Frame>
-          ))}
+          {visibleImages.map((image, idx) => {
+            const d = dims[image];
+            return (
+              <Frame key={image} width={d?.w ?? FRAME_W} height={d?.h ?? FRAME_H}>
+                <MasonryThumb
+                  src={image}
+                  alt={photographerName}
+                  priority={idx < 4}
+                  onOpen={() => openLightbox(image)}
+                  onMeasure={handleMeasure}
+                />
+              </Frame>
+            );
+          })}
         </MasonryGridLib>
       </div>
 

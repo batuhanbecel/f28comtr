@@ -10,6 +10,7 @@ import { AdminPageLayout } from '@/components/admin/AdminPageLayout';
 import { AdminPanel } from '@/components/admin/AdminPanel';
 import { AdminButton } from '@/components/admin/AdminButton';
 import { AdminDropzone } from '@/components/admin/AdminDropzone';
+import { AdminUploadQueue } from '@/components/admin/AdminUploadQueue';
 
 interface LogoCategory {
   key: string;
@@ -180,7 +181,7 @@ export default function AdminLogos() {
 
   return (
     <AdminPageLayout
-      title="Brand & Agency Logos"
+      title="Logos"
       breadcrumb={{ href: '/admin', label: 'Dashboard' }}
       actions={
         <Link href="/about" target="_blank" className="btn-editorial text-[10px]">
@@ -248,28 +249,13 @@ export default function AdminLogos() {
               />
             </div>
 
-            {uploadQueue.length > 0 && (
-              <div className="mb-6 border border-th-fg/[0.08] divide-y divide-th-fg/[0.05] max-h-48 overflow-y-auto">
-                {isUploading && (
-                  <div className="px-4 py-2 flex justify-between items-center bg-th-fg/[0.02]">
-                    <span className="text-th-fg/40 text-[10px] tracking-widest uppercase">
-                      Uploading {uploadQueue.filter(q => q.status === 'done').length}/{uploadQueue.length}
-                    </span>
-                    <button onClick={() => abortRef.current = true} className="text-red-400/60 hover:text-red-400 text-[10px] tracking-widest uppercase">Cancel</button>
-                  </div>
-                )}
-                {uploadQueue.map((item, i) => (
-                  <div key={i} className="px-4 py-2 flex items-center justify-between text-xs">
-                    <span className="text-th-fg/50 truncate max-w-[60%]">{item.fileName}</span>
-                    <span className={`text-[10px] tracking-wider ${
-                      item.status === 'done' ? 'text-green-400/70' : item.status === 'error' ? 'text-red-400/70' : item.status === 'uploading' ? 'text-th-fg/50' : 'text-th-fg/20'
-                    }`}>
-                      {item.status === 'uploading' ? 'Uploading...' : item.status === 'done' ? '✓' : item.status === 'error' ? item.error || 'Failed' : 'Pending'}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
+            <AdminUploadQueue
+              queue={uploadQueue}
+              isUploading={isUploading}
+              onCancel={() => {
+                abortRef.current = true;
+              }}
+            />
 
             {currentCategory.images.length === 0 ? (
               <div className="text-center py-20 border border-th-fg/[0.05]">

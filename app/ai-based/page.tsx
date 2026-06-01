@@ -48,13 +48,16 @@ function StatsSkeleton() {
 
 function GallerySkeleton() {
   return (
-    <section className="px-6 md:px-14 py-20">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[2px]">
-        {Array.from({ length: 6 }).map((_, i) => (
+    <section className="ai-gallery-section">
+      <div className="editorial-grid grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className="aspect-[4/3] bg-th-fg/[0.04] animate-pulse"
-            style={{ animationDelay: `${i * 50}ms` }}
+            className="editorial-panel bg-th-fg/[0.04] animate-pulse !border-th-fg/[0.06]"
+            style={{
+              aspectRatio: i % 3 === 0 ? '3/4' : i % 2 === 0 ? '1/1' : '4/3',
+              animationDelay: `${i * 40}ms`,
+            }}
           />
         ))}
       </div>

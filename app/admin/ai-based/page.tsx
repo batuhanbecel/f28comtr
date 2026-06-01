@@ -12,6 +12,7 @@ import { AdminPanel } from '@/components/admin/AdminPanel';
 import { AdminFormField, AdminInput, AdminSelect } from '@/components/admin/AdminFormField';
 import { AdminButton } from '@/components/admin/AdminButton';
 import { AdminDropzone } from '@/components/admin/AdminDropzone';
+import { AdminUploadQueue } from '@/components/admin/AdminUploadQueue';
 
 interface UploadProgress {
   fileName: string;
@@ -241,7 +242,7 @@ export default function AdminAIBased() {
 
   return (
     <AdminPageLayout
-      title="Works"
+      title="AI Images"
       breadcrumb={{ href: '/admin', label: 'Dashboard' }}
       actions={
         <>
@@ -304,49 +305,32 @@ export default function AdminAIBased() {
         />
       </div>
 
-        {uploadQueue.length > 0 && (
-          <div className="mb-6 border border-th-fg/[0.08] divide-y divide-th-fg/[0.05] max-h-48 overflow-y-auto">
-            {isUploading && (
-              <div className="px-4 py-2 flex justify-between items-center bg-th-fg/[0.02]">
-                <span className="text-th-fg/40 text-[10px] tracking-widest uppercase">
-                  Uploading {uploadQueue.filter(q => q.status === 'done').length}/{uploadQueue.length}
-                </span>
-                <button onClick={() => { abortRef.current = true; }} className="text-red-400/60 hover:text-red-400 text-[10px] tracking-widest uppercase">Cancel</button>
-              </div>
-            )}
-            {uploadQueue.map((item, i) => (
-              <div key={i} className="px-4 py-2 flex items-center justify-between text-xs">
-                <span className="text-th-fg/50 truncate max-w-[60%]">{item.fileName}</span>
-                <span className={`text-[10px] tracking-wider ${
-                  item.status === 'done' ? 'text-green-400/70' : item.status === 'error' ? 'text-red-400/70' : item.status === 'uploading' ? 'text-th-fg/50' : 'text-th-fg/20'
-                }`}>
-                  {item.status === 'uploading' ? 'Uploading...' : item.status === 'done' ? '✓' : item.status === 'error' ? item.error || 'Failed' : 'Pending'}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
+      <AdminUploadQueue
+        queue={uploadQueue}
+        isUploading={isUploading}
+        onCancel={() => {
+          abortRef.current = true;
+        }}
+      />
 
         {/* Filters */}
         {works.length > 0 && (
           <div className="mb-6 flex flex-wrap items-center gap-3 text-xs">
             <span className="text-th-fg/40 text-[10px] tracking-[0.3em] uppercase">Filter</span>
-            <select
+            <AdminSelect
               value={filterBrand}
               onChange={(e) => setFilterBrand(e.target.value)}
-              className="bg-th-bg border border-th-fg/[0.12] px-3 py-1.5 text-th-fg/80 focus:outline-none focus:border-th-fg/40"
             >
               <option value="all">All brands</option>
               {knownBrands.map(b => <option key={b.key} value={b.key}>{b.label}</option>)}
-            </select>
-            <select
+            </AdminSelect>
+            <AdminSelect
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
-              className="bg-th-bg border border-th-fg/[0.12] px-3 py-1.5 text-th-fg/80 focus:outline-none focus:border-th-fg/40"
             >
               <option value="all">All types</option>
               {CATEGORY_OPTIONS.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
-            </select>
+            </AdminSelect>
             <span className="text-th-fg/30 ml-2">{visibleWorks.length} / {works.length}</span>
           </div>
         )}

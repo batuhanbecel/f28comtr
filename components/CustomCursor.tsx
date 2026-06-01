@@ -65,12 +65,12 @@ export function CustomCursor() {
     <>
       <div
         ref={dotRef}
-        className="cursor-dot fixed top-0 left-0 pointer-events-none z-[9999] hidden md:block"
+        className="cursor-dot fixed top-0 left-0 pointer-events-none z-[9999]"
         aria-hidden="true"
       />
       <div
         ref={ringRef}
-        className="cursor-ring fixed top-0 left-0 pointer-events-none z-[9998] hidden md:block"
+        className="cursor-ring fixed top-0 left-0 pointer-events-none z-[9998]"
         aria-hidden="true"
       />
     </>

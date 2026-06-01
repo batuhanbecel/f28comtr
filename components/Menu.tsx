@@ -57,6 +57,7 @@ export function Menu() {
 
   const toggleMenu = useCallback(() => setIsOpen(prev => !prev), []);
   const closeMenu = useCallback(() => setIsOpen(false), []);
+  const forceBackdrop = pathname === '/' || /^\/[^/]+$/.test(pathname);
 
   const menuItems = [
     { href: '/', label: t.nav.home, num: '01' },
@@ -69,8 +70,8 @@ export function Menu() {
   return (
     <>
       {/* Header */}
-      <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-5 md:px-10 md:py-7 transition-all duration-hover ease-brand ${
-        isScrolled ? 'bg-th-bg/90 border-b border-th-fg/10 backdrop-blur-md' : 'border-b border-transparent'
+      <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-5 md:px-10 md:py-7 transition-all duration-hover ease-brand lg:grid lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-8 ${
+        isScrolled || forceBackdrop ? 'bg-th-bg/60 border-b border-th-fg/10 backdrop-blur-xl' : 'border-b border-transparent'
       }`}>
         <Link href="/" className="relative z-50 transition-opacity duration-hover hover:opacity-70">
           <Image
@@ -82,23 +83,46 @@ export function Menu() {
             loading="eager"
           />
         </Link>
-        
-        <div className="flex items-center gap-4">
+
+        {/* Desktop nav links */}
+        <nav className="hidden lg:flex items-center justify-center gap-5 xl:gap-9">
+          {menuItems.map((item) => {
+            const isActive = item.href === '/'
+              ? pathname === '/'
+              : pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`group relative text-[10px] xl:text-[11px] tracking-[0.22em] xl:tracking-[0.25em] uppercase font-medium transition-colors duration-hover ${
+                  isActive ? 'text-th-fg' : 'text-th-fg/45 hover:text-th-fg/80'
+                }`}
+              >
+                {item.label}
+                <span className={`absolute -bottom-1.5 left-0 h-px bg-th-fg transition-all duration-hover ease-brand ${
+                  isActive ? 'w-full opacity-60' : 'w-0 opacity-0 group-hover:w-full group-hover:opacity-40'
+                }`} />
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="flex items-center gap-4 lg:justify-self-end">
           <ThemeToggle />
           <span className="w-px h-3 bg-th-fg/15" />
           <LanguageSwitcher />
           <button
             onClick={toggleMenu}
-            className="relative z-50 flex flex-col gap-[5px] w-7 py-1 group"
+            className="relative z-50 flex flex-col gap-[5px] w-7 py-1 group lg:hidden"
             aria-label="Toggle menu"
           >
-          <span className={`h-px bg-th-fg transition-all duration-500 ease-out origin-center ${
+          <span className={`h-px bg-th-fg transition-all duration-reveal ease-brand origin-center ${
             isOpen ? 'rotate-45 translate-y-[7px] w-full opacity-100' : 'w-full opacity-60 group-hover:opacity-100'
           }`} />
-          <span className={`h-px bg-th-fg transition-all duration-500 ${
+          <span className={`h-px bg-th-fg transition-all duration-reveal ease-brand ${
             isOpen ? 'opacity-0 w-0' : 'w-3/4 opacity-40 group-hover:w-full group-hover:opacity-80'
           }`} />
-          <span className={`h-px bg-th-fg transition-all duration-500 ease-out origin-center ${
+          <span className={`h-px bg-th-fg transition-all duration-reveal ease-brand origin-center ${
             isOpen ? '-rotate-45 -translate-y-[7px] w-full opacity-100' : 'w-1/2 opacity-25 group-hover:w-full group-hover:opacity-100'
           }`} />
           </button>
@@ -129,7 +153,9 @@ export function Menu() {
             className="flex items-center justify-between mb-auto pt-24 md:pt-28"
             style={{
               opacity: isVisible ? 1 : 0,
-              transition: isVisible ? 'opacity 0.4s ease 0.2s' : 'opacity 0.15s ease',
+              transition: isVisible
+                ? 'opacity var(--duration-ui) var(--ease-brand) 0.2s'
+                : 'opacity var(--duration-ui) var(--ease-brand)',
             }}
           >
             <span className="section-label text-white/25">Istanbul, Turkey</span>
@@ -156,7 +182,7 @@ export function Menu() {
                   className="group flex items-baseline gap-5 md:gap-8 py-5 md:py-6"
                 >
                   <span className="mono-label text-white/25 w-8 flex-shrink-0">{item.num}</span>
-                  <span className="heading-section text-white transition-all duration-300 group-hover:text-white/50 group-hover:translate-x-2">
+                  <span className="heading-section text-white transition-all duration-hover ease-brand group-hover:text-white/50 group-hover:translate-x-2">
                     {item.label}
                   </span>
                 </Link>
