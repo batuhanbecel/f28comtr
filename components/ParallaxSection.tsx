@@ -44,7 +44,7 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
     <section
       ref={sectionRef}
       className={`relative ${fullscreen ? 'h-screen' : 'h-[70vh]'} w-full flex items-end overflow-hidden bg-black`}
-      style={fullscreen ? { scrollSnapAlign: 'start', scrollSnapStop: 'always' } : undefined}
+      style={fullscreen ? { scrollSnapAlign: 'start' } : undefined}
     >
       <Image
         src={photographer.preview}

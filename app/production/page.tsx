@@ -22,7 +22,7 @@ export default async function ProductionPage() {
   const photographers = await getPhotographers();
 
   return (
-    <ProductionSnapContainer>
+    <ProductionSnapContainer snapMode="heroSnap">
       {/* Hero — snap point 1 */}
       <section
         className="hero-screen h-screen flex flex-col items-center justify-center px-6 md:px-12 relative overflow-hidden"
