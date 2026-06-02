@@ -91,9 +91,11 @@ export default function PageCopyAdminClient() {
         }
         const data = await res.json();
         if (signal?.aborted) return;
+        if (key !== `${page}:${lang}`) return;
+        const defaults = (data.defaults ?? {}) as Record<string, unknown>;
         const merged = deepMerge(
-          (data.defaults ?? {}) as Record<string, unknown>,
-          (data.copy ?? {}) as Record<string, unknown>,
+          defaults,
+          deepMerge(defaults, (data.copy ?? {}) as Record<string, unknown>),
         ) as AnyPageCopy;
         setCopy(merged);
         setLoadedFor(key);
@@ -238,9 +240,15 @@ function ProductionCopyForm({
       deepMerge(prev as Record<string, unknown>, patch as Record<string, unknown>) as ProductionPageCopy,
     );
 
-  const serviceItems = copy.services.items ?? [];
-  const processSteps = copy.process.steps ?? [];
-  const deliverableItems = copy.deliverables.items ?? [];
+  const services = copy.services ?? { sectionLabel: '', heading: '', items: [] };
+  const process = copy.process ?? { sectionLabel: '', heading: '', steps: [] };
+  const deliverables = copy.deliverables ?? { sectionLabel: '', heading: '', items: [] };
+  const team = copy.team ?? { sectionLabel: '', description: '', cta: '' };
+  const stats = copy.stats ?? { projects: '', brands: '', since: '' };
+  const statsValues = copy.statsValues ?? { projects: '', brands: '', sinceYear: '' };
+  const serviceItems = services.items ?? [];
+  const processSteps = process.steps ?? [];
+  const deliverableItems = deliverables.items ?? [];
 
   return (
     <div className="space-y-8">
@@ -256,19 +264,19 @@ function ProductionCopyForm({
 
       <AdminPanel title={pc.sections.stats}>
         <div className="grid gap-4 md:grid-cols-2">
-          <TextField label={copy.stats.projects} value={copy.stats.projects} onChange={(v) => update({ stats: { ...copy.stats, projects: v } })} />
-          <TextField label={copy.stats.brands} value={copy.stats.brands} onChange={(v) => update({ stats: { ...copy.stats, brands: v } })} />
-          <TextField label={copy.stats.since} value={copy.stats.since} onChange={(v) => update({ stats: { ...copy.stats, since: v } })} />
-          <TextField label={pc.fields.statProjects} value={copy.statsValues.projects} onChange={(v) => update({ statsValues: { ...copy.statsValues, projects: v } })} />
-          <TextField label={pc.fields.statBrands} value={copy.statsValues.brands} onChange={(v) => update({ statsValues: { ...copy.statsValues, brands: v } })} />
-          <TextField label={pc.fields.statSince} value={copy.statsValues.sinceYear} onChange={(v) => update({ statsValues: { ...copy.statsValues, sinceYear: v } })} />
+          <TextField label={stats.projects} value={stats.projects} onChange={(v) => update({ stats: { ...stats, projects: v } })} />
+          <TextField label={stats.brands} value={stats.brands} onChange={(v) => update({ stats: { ...stats, brands: v } })} />
+          <TextField label={stats.since} value={stats.since} onChange={(v) => update({ stats: { ...stats, since: v } })} />
+          <TextField label={pc.fields.statProjects} value={statsValues.projects} onChange={(v) => update({ statsValues: { ...statsValues, projects: v } })} />
+          <TextField label={pc.fields.statBrands} value={statsValues.brands} onChange={(v) => update({ statsValues: { ...statsValues, brands: v } })} />
+          <TextField label={pc.fields.statSince} value={statsValues.sinceYear} onChange={(v) => update({ statsValues: { ...statsValues, sinceYear: v } })} />
         </div>
       </AdminPanel>
 
       <AdminPanel title={pc.sections.services}>
         <div className="grid gap-4 md:grid-cols-2 mb-6">
-          <TextField label={pc.fields.sectionLabel} value={copy.services.sectionLabel} onChange={(v) => update({ services: { ...copy.services, sectionLabel: v } })} />
-          <TextField label={pc.fields.heading} value={copy.services.heading} onChange={(v) => update({ services: { ...copy.services, heading: v } })} />
+          <TextField label={pc.fields.sectionLabel} value={services.sectionLabel} onChange={(v) => update({ services: { ...services, sectionLabel: v } })} />
+          <TextField label={pc.fields.heading} value={services.heading} onChange={(v) => update({ services: { ...services, heading: v } })} />
         </div>
         <div className="space-y-6">
           {serviceItems.map((item, i) => (
@@ -280,7 +288,7 @@ function ProductionCopyForm({
                   className="!text-red-500/80 hover:!text-red-500"
                   onClick={() => {
                     const items = serviceItems.filter((_, idx) => idx !== i);
-                    update({ services: { ...copy.services, items } });
+                    update({ services: { ...services, items } });
                   }}
                 >
                   {pc.removeItem}
@@ -290,12 +298,12 @@ function ProductionCopyForm({
                 <TextField label={pc.fields.title} value={item.title} onChange={(v) => {
                   const items = [...serviceItems];
                   items[i] = { ...items[i], title: v };
-                  update({ services: { ...copy.services, items } });
+                  update({ services: { ...services, items } });
                 }} />
                 <TextField label={pc.fields.itemDescription} value={item.description} onChange={(v) => {
                   const items = [...serviceItems];
                   items[i] = { ...items[i], description: v };
-                  update({ services: { ...copy.services, items } });
+                  update({ services: { ...services, items } });
                 }} multiline />
               </div>
             </div>
@@ -307,7 +315,7 @@ function ProductionCopyForm({
             onClick={() =>
               update({
                 services: {
-                  ...copy.services,
+                  ...services,
                   items: [...serviceItems, { title: '', description: '' }],
                 },
               })
@@ -320,8 +328,8 @@ function ProductionCopyForm({
 
       <AdminPanel title={pc.sections.process}>
         <div className="grid gap-4 md:grid-cols-2 mb-6">
-          <TextField label={pc.fields.sectionLabel} value={copy.process.sectionLabel} onChange={(v) => update({ process: { ...copy.process, sectionLabel: v } })} />
-          <TextField label={pc.fields.heading} value={copy.process.heading} onChange={(v) => update({ process: { ...copy.process, heading: v } })} />
+          <TextField label={pc.fields.sectionLabel} value={process.sectionLabel} onChange={(v) => update({ process: { ...process, sectionLabel: v } })} />
+          <TextField label={pc.fields.heading} value={process.heading} onChange={(v) => update({ process: { ...process, heading: v } })} />
         </div>
         <div className="space-y-4">
           {processSteps.map((step, i) => (
@@ -333,7 +341,7 @@ function ProductionCopyForm({
                   className="!text-red-500/80 hover:!text-red-500"
                   onClick={() => {
                     const steps = processSteps.filter((_, idx) => idx !== i);
-                    update({ process: { ...copy.process, steps } });
+                    update({ process: { ...process, steps } });
                   }}
                 >
                   {pc.removeItem}
@@ -343,12 +351,12 @@ function ProductionCopyForm({
                 <TextField label={pc.fields.stepTitle} value={step.title} onChange={(v) => {
                   const steps = [...processSteps];
                   steps[i] = { ...steps[i], title: v };
-                  update({ process: { ...copy.process, steps } });
+                  update({ process: { ...process, steps } });
                 }} />
                 <TextField label={pc.fields.stepSub} value={step.sub} onChange={(v) => {
                   const steps = [...processSteps];
                   steps[i] = { ...steps[i], sub: v };
-                  update({ process: { ...copy.process, steps } });
+                  update({ process: { ...process, steps } });
                 }} />
               </div>
             </div>
@@ -360,7 +368,7 @@ function ProductionCopyForm({
             onClick={() =>
               update({
                 process: {
-                  ...copy.process,
+                  ...process,
                   steps: [...processSteps, { title: '', sub: '' }],
                 },
               })
@@ -373,8 +381,8 @@ function ProductionCopyForm({
 
       <AdminPanel title={pc.sections.deliverables}>
         <div className="grid gap-4 md:grid-cols-2 mb-6">
-          <TextField label={pc.fields.sectionLabel} value={copy.deliverables.sectionLabel} onChange={(v) => update({ deliverables: { ...copy.deliverables, sectionLabel: v } })} />
-          <TextField label={pc.fields.heading} value={copy.deliverables.heading} onChange={(v) => update({ deliverables: { ...copy.deliverables, heading: v } })} />
+          <TextField label={pc.fields.sectionLabel} value={deliverables.sectionLabel} onChange={(v) => update({ deliverables: { ...deliverables, sectionLabel: v } })} />
+          <TextField label={pc.fields.heading} value={deliverables.heading} onChange={(v) => update({ deliverables: { ...deliverables, heading: v } })} />
         </div>
         <div className="space-y-4">
           {deliverableItems.map((item, i) => (
@@ -383,7 +391,7 @@ function ProductionCopyForm({
                 <TextField label={`${pc.fields.deliverable} ${i + 1}`} value={item} onChange={(v) => {
                   const items = [...deliverableItems];
                   items[i] = v;
-                  update({ deliverables: { ...copy.deliverables, items } });
+                  update({ deliverables: { ...deliverables, items } });
                 }} />
               </div>
               <AdminButton
@@ -391,7 +399,7 @@ function ProductionCopyForm({
                 className="!text-red-500/80 hover:!text-red-500 shrink-0"
                 onClick={() => {
                   const items = deliverableItems.filter((_, idx) => idx !== i);
-                  update({ deliverables: { ...copy.deliverables, items } });
+                  update({ deliverables: { ...deliverables, items } });
                 }}
               >
                 {pc.removeItem}
@@ -405,7 +413,7 @@ function ProductionCopyForm({
             onClick={() =>
               update({
                 deliverables: {
-                  ...copy.deliverables,
+                  ...deliverables,
                   items: [...deliverableItems, ''],
                 },
               })
@@ -418,10 +426,10 @@ function ProductionCopyForm({
 
       <AdminPanel title={pc.sections.team}>
         <div className="grid gap-4 md:grid-cols-2">
-          <TextField label={pc.fields.sectionLabel} value={copy.team.sectionLabel} onChange={(v) => update({ team: { ...copy.team, sectionLabel: v } })} />
-          <TextField label={pc.fields.cta} value={copy.team.cta} onChange={(v) => update({ team: { ...copy.team, cta: v } })} />
+          <TextField label={pc.fields.sectionLabel} value={team.sectionLabel} onChange={(v) => update({ team: { ...team, sectionLabel: v } })} />
+          <TextField label={pc.fields.cta} value={team.cta} onChange={(v) => update({ team: { ...team, cta: v } })} />
           <div className="md:col-span-2">
-            <TextField label={pc.fields.description} value={copy.team.description} onChange={(v) => update({ team: { ...copy.team, description: v } })} multiline />
+            <TextField label={pc.fields.description} value={team.description} onChange={(v) => update({ team: { ...team, description: v } })} multiline />
           </div>
         </div>
       </AdminPanel>
@@ -434,7 +442,7 @@ function ProductionCopyForm({
         </div>
       </AdminPanel>
 
-      <SeoPanel seo={copy.seo} onChange={(seo) => update({ seo })} pc={pc} />
+      <SeoPanel seo={copy.seo ?? { title: '', description: '' }} onChange={(seo) => update({ seo })} pc={pc} />
     </div>
   );
 }
@@ -453,6 +461,12 @@ function AiPoweredCopyForm({
       deepMerge(prev as Record<string, unknown>, patch as Record<string, unknown>) as AiPoweredPageCopy,
     );
 
+  const stats = copy.stats ?? { projects: '', brands: '', since: '' };
+  const statsValues = copy.statsValues ?? { sinceYear: '' };
+  const processBlock = copy.process ?? { sectionLabel: '', heading: '', steps: [] };
+  const filters = copy.filters ?? {};
+  const processSteps = processBlock.steps ?? [];
+
   return (
     <div className="space-y-8">
       <AdminPanel title={pc.sections.hero}>
@@ -467,29 +481,29 @@ function AiPoweredCopyForm({
 
       <AdminPanel title={pc.sections.stats}>
         <div className="grid gap-4 md:grid-cols-2">
-          <TextField label={copy.stats.projects} value={copy.stats.projects} onChange={(v) => update({ stats: { ...copy.stats, projects: v } })} />
-          <TextField label={copy.stats.brands} value={copy.stats.brands} onChange={(v) => update({ stats: { ...copy.stats, brands: v } })} />
-          <TextField label={copy.stats.since} value={copy.stats.since} onChange={(v) => update({ stats: { ...copy.stats, since: v } })} />
-          <TextField label={pc.fields.statSince} value={copy.statsValues.sinceYear} onChange={(v) => update({ statsValues: { sinceYear: v } })} />
-          <TextField label="Works suffix" value={copy.worksLabel} onChange={(v) => update({ worksLabel: v })} />
+          <TextField label={stats.projects} value={stats.projects} onChange={(v) => update({ stats: { ...stats, projects: v } })} />
+          <TextField label={stats.brands} value={stats.brands} onChange={(v) => update({ stats: { ...stats, brands: v } })} />
+          <TextField label={stats.since} value={stats.since} onChange={(v) => update({ stats: { ...stats, since: v } })} />
+          <TextField label={pc.fields.statSince} value={statsValues.sinceYear} onChange={(v) => update({ statsValues: { sinceYear: v } })} />
+          <TextField label="Works suffix" value={copy.worksLabel ?? ''} onChange={(v) => update({ worksLabel: v })} />
         </div>
       </AdminPanel>
 
       <AdminPanel title={pc.sections.process}>
         <div className="grid gap-4 md:grid-cols-2 mb-6">
-          <TextField label={pc.fields.sectionLabel} value={copy.process.sectionLabel} onChange={(v) => update({ process: { ...copy.process, sectionLabel: v } })} />
-          <TextField label={pc.fields.heading} value={copy.process.heading} onChange={(v) => update({ process: { ...copy.process, heading: v } })} />
+          <TextField label={pc.fields.sectionLabel} value={processBlock.sectionLabel} onChange={(v) => update({ process: { ...processBlock, sectionLabel: v } })} />
+          <TextField label={pc.fields.heading} value={processBlock.heading} onChange={(v) => update({ process: { ...processBlock, heading: v } })} />
         </div>
         <div className="space-y-4">
-          {(copy.process.steps ?? []).map((step, i) => (
+          {processSteps.map((step, i) => (
             <div key={`ai-step-${i}`} className="border-t border-th-fg/10 pt-4">
               <div className="flex justify-end mb-2">
                 <button
                   type="button"
                   className="text-[10px] uppercase tracking-widest text-red-400/80 hover:text-red-400"
                   onClick={() => {
-                    const steps = (copy.process.steps ?? []).filter((_, idx) => idx !== i);
-                    update({ process: { ...copy.process, steps } });
+                    const steps = processSteps.filter((_, idx) => idx !== i);
+                    update({ process: { ...processBlock, steps } });
                   }}
                 >
                   {pc.removeItem}
@@ -497,14 +511,14 @@ function AiPoweredCopyForm({
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <TextField label={`${pc.fields.stepTitle} ${i + 1}`} value={step.title} onChange={(v) => {
-                  const steps = [...(copy.process.steps ?? [])];
+                  const steps = [...processSteps];
                   steps[i] = { ...steps[i], title: v };
-                  update({ process: { ...copy.process, steps } });
+                  update({ process: { ...processBlock, steps } });
                 }} />
                 <TextField label={`${pc.fields.stepSub} ${i + 1}`} value={step.sub} onChange={(v) => {
-                  const steps = [...(copy.process.steps ?? [])];
+                  const steps = [...processSteps];
                   steps[i] = { ...steps[i], sub: v };
-                  update({ process: { ...copy.process, steps } });
+                  update({ process: { ...processBlock, steps } });
                 }} />
               </div>
             </div>
@@ -512,8 +526,8 @@ function AiPoweredCopyForm({
           <AdminButton
             variant="ghost"
             onClick={() => {
-              const steps = [...(copy.process.steps ?? []), { title: '', sub: '' }];
-              update({ process: { ...copy.process, steps } });
+              const steps = [...processSteps, { title: '', sub: '' }];
+              update({ process: { ...processBlock, steps } });
             }}
           >
             {pc.addStep}
@@ -523,13 +537,13 @@ function AiPoweredCopyForm({
 
       <AdminPanel title={pc.sections.filters}>
         <div className="grid gap-4 md:grid-cols-2">
-          {Object.entries(copy.filters ?? {}).map(([key, value]) => (
-            <TextField key={key} label={key} value={value} onChange={(v) => update({ filters: { ...copy.filters, [key]: v } })} />
+          {Object.entries(filters).map(([key, value]) => (
+            <TextField key={key} label={key} value={value} onChange={(v) => update({ filters: { ...filters, [key]: v } })} />
           ))}
         </div>
       </AdminPanel>
 
-      <SeoPanel seo={copy.seo} onChange={(seo) => update({ seo })} pc={pc} />
+      <SeoPanel seo={copy.seo ?? { title: '', description: '' }} onChange={(seo) => update({ seo })} pc={pc} />
     </div>
   );
 }
@@ -547,6 +561,15 @@ function ContactCopyForm({
     setCopy((prev) =>
       deepMerge(prev as Record<string, unknown>, patch as Record<string, unknown>) as ContactPageCopy,
     );
+
+  const info = copy.info ?? {
+    email: '',
+    instagram: '',
+    linkedin: '',
+    address: '',
+    city: '',
+  };
+  const form = copy.form ?? {};
 
   return (
     <div className="space-y-8">
@@ -573,11 +596,11 @@ function ContactCopyForm({
 
       <AdminPanel title={pc.sections.contactInfo}>
         <div className="grid gap-4 md:grid-cols-2">
-          <TextField label={pc.fields.email} value={copy.info?.email ?? ''} onChange={(v) => update({ info: { ...copy.info, email: v } })} />
-          <TextField label={pc.fields.instagram} value={copy.info?.instagram ?? ''} onChange={(v) => update({ info: { ...copy.info, instagram: v } })} />
-          <TextField label={pc.fields.linkedin} value={copy.info?.linkedin ?? ''} onChange={(v) => update({ info: { ...copy.info, linkedin: v } })} />
-          <TextField label={pc.fields.address} value={copy.info?.address ?? ''} onChange={(v) => update({ info: { ...copy.info, address: v } })} multiline />
-          <TextField label={pc.fields.city} value={copy.info?.city ?? ''} onChange={(v) => update({ info: { ...copy.info, city: v } })} />
+          <TextField label={pc.fields.email} value={info.email} onChange={(v) => update({ info: { ...info, email: v } })} />
+          <TextField label={pc.fields.instagram} value={info.instagram} onChange={(v) => update({ info: { ...info, instagram: v } })} />
+          <TextField label={pc.fields.linkedin} value={info.linkedin} onChange={(v) => update({ info: { ...info, linkedin: v } })} />
+          <TextField label={pc.fields.address} value={info.address} onChange={(v) => update({ info: { ...info, address: v } })} multiline />
+          <TextField label={pc.fields.city} value={info.city} onChange={(v) => update({ info: { ...info, city: v } })} />
         </div>
       </AdminPanel>
 
@@ -587,13 +610,13 @@ function ContactCopyForm({
           <TextField label={pc.fields.heading} value={copy.formHeading} onChange={(v) => update({ formHeading: v })} />
         </div>
         <div className="grid gap-4 md:grid-cols-2">
-          {Object.entries(copy.form ?? {}).map(([key, value]) => (
-            <TextField key={key} label={key} value={value} onChange={(v) => update({ form: { ...copy.form, [key]: v } })} multiline={key === 'success' || key === 'error'} />
+          {Object.entries(form).map(([key, value]) => (
+            <TextField key={key} label={key} value={value} onChange={(v) => update({ form: { ...form, [key]: v } })} multiline={key === 'success' || key === 'error'} />
           ))}
         </div>
       </AdminPanel>
 
-      <SeoPanel seo={copy.seo} onChange={(seo) => update({ seo })} pc={pc} />
+      <SeoPanel seo={copy.seo ?? { title: '', description: '' }} onChange={(seo) => update({ seo })} pc={pc} />
     </div>
   );
 }

@@ -59,12 +59,36 @@ export async function getSiteCopyStore(): Promise<SiteCopyStore> {
   if (!redis) return {};
 
   try {
-    const stored = await redis.get(REDIS_KEY);
-    if (!stored || typeof stored !== 'object') return {};
+    const raw = await redis.get(REDIS_KEY);
+    if (raw == null) return {};
+
+    let stored: unknown = raw;
+    if (typeof raw === 'string') {
+      try {
+        stored = JSON.parse(raw) as unknown;
+      } catch {
+        return {};
+      }
+    }
+
+    if (!stored || typeof stored !== 'object' || Array.isArray(stored)) return {};
     return stored as SiteCopyStore;
   } catch {
     return {};
   }
+}
+
+/** Re-apply defaults so partial Redis overrides never drop nested keys (e.g. services.items). */
+function withDefaults<K extends PageCopyKey>(
+  page: K,
+  lang: Lang,
+  copy: PageCopyByKey[K],
+): PageCopyByKey[K] {
+  const defaults = defaultGetters[page](lang);
+  return deepMerge(
+    defaults as Record<string, unknown>,
+    copy as Record<string, unknown>,
+  ) as PageCopyByKey[K];
 }
 
 export async function setSiteCopyStore(store: SiteCopyStore): Promise<void> {
@@ -82,7 +106,11 @@ export async function getPageCopy<K extends PageCopyKey>(
   const defaults = defaultGetters[page](lang);
   const store = await getSiteCopyStore();
   const patch = store[page]?.[lang];
-  return deepMerge(defaults as Record<string, unknown>, patch as Record<string, unknown> | undefined) as PageCopyByKey[K];
+  const merged = deepMerge(
+    defaults as Record<string, unknown>,
+    patch as Record<string, unknown> | undefined,
+  ) as PageCopyByKey[K];
+  return withDefaults(page, lang, merged);
 }
 
 export async function savePageCopyPatch<K extends PageCopyKey>(
@@ -94,10 +122,10 @@ export async function savePageCopyPatch<K extends PageCopyKey>(
   const store = await getSiteCopyStore();
   const currentPage = (store[page] ?? {}) as Partial<Record<Lang, Partial<PageCopyByKey[K]>>>;
   const storedLang = currentPage[lang] ?? {};
-  const mergedLang = deepMerge(
+  const mergedLang = withDefaults(page, lang, deepMerge(
     deepMerge(defaults as Record<string, unknown>, storedLang as Record<string, unknown>),
     patch as Record<string, unknown>,
-  );
+  ) as PageCopyByKey[K]);
 
   const nextStore = {
     ...store,

@@ -319,7 +319,7 @@ export const translations = {
     },
     landing: {
       productionLabel: 'Fotoğrafçılık & Rötuş',
-      aiLabel: 'AI-Powered & Creativity',
+      aiLabel: 'AI-Powered & Yaratıcılık',
     },
     production: {
       sectionLabel: 'İstanbul — 2008\'den Beri',
@@ -391,7 +391,7 @@ export const translations = {
       marqueeViewImage: 'Görseli aç',
     },
     aiPowered: {
-      sectionLabel: 'AI-Powered & Creativity',
+      sectionLabel: 'AI-Powered & Yaratıcılık',
       heading: 'AI-POWERED',
       description:
         'Geleneksel retouch disiplinini en güncel AI modelleriyle harmanlayarak hibrit bir prodüksiyon süreci sunuyoruz. Sektör standartlarındaki ustalığımızı inovatif teknolojilerle birleştirerek, markalarımız için hem yaratıcı hem de yüksek verimli görsel ve video içerikler üretiyoruz.',
