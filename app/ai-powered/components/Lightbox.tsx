@@ -32,11 +32,11 @@ export function Lightbox({ works, filtersCopy, index, onClose, onIndexChange }: 
         if (!work) return null
         return (
           <>
-            <p className="text-white/40 text-[10px] tracking-[0.3em] uppercase mb-1">{work.brand}</p>
+            <p className="caption-text text-white/62 tracking-[0.24em] mb-1">{work.brand}</p>
             {work.title && (
               <p className="text-white/90 text-sm leading-snug">{work.title}</p>
             )}
-            <p className="text-white/30 text-[9px] tracking-[0.2em] uppercase mt-1">
+            <p className="caption-text text-white/52 tracking-[0.16em] mt-1">
               {categoryLabels[work.category] ?? work.category}
             </p>
           </>

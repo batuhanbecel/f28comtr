@@ -2,6 +2,8 @@
 
 import { AboutStats } from '@/components/AboutStats';
 import { Footer } from '@/components/Footer';
+import { HeroSnapBody } from '@/components/HeroSnapBody';
+import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 import type { Photographer } from '@/lib/data';
 import type { HomeSelectedWork } from '@/lib/homeV2.shared';
 import type { ProductionPageCopy } from '@/lib/pageCopy.types';
@@ -43,9 +45,15 @@ export function HomeV2PageContent({
   const serviceTitles = productionCopy.services.items.map((item) => item.title);
 
   return (
-    <main className="min-h-screen bg-th-bg text-th-fg">
-      <HomeV2Hero heroTitle={copy.heroTitle} stats={productionCopy} />
+    <ProductionSnapContainer snapMode="heroSnap">
+      <HomeV2Hero
+        heroLabel={copy.heroLabel}
+        heroTitle={copy.heroTitle}
+        heroDescription={copy.heroDescription}
+        stats={productionCopy}
+      />
 
+      <HeroSnapBody className="bg-th-bg text-th-fg">
       <HomeV2ServicesMarquee label={copy.servicesMarqueeLabel} items={serviceTitles} />
 
       <HomeV2SelectedWorks
@@ -80,6 +88,7 @@ export function HomeV2PageContent({
       <HomeV2ClientLogosMarquee label={copy.clientsMarqueeLabel} logos={clientLogos} />
 
       <Footer />
-    </main>
+      </HeroSnapBody>
+    </ProductionSnapContainer>
   );
 }

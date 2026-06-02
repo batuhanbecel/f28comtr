@@ -1,7 +1,7 @@
 'use client';
 
-import { EditorialButton } from '@/components/EditorialButton';
 import { PageSection } from '@/components/PageSection';
+import { HeroSnapTarget } from '@/components/HeroSnapTarget';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import type { ProductionPageCopy } from '@/lib/pageCopy.types';
 
@@ -10,7 +10,7 @@ interface ProductionSectionsProps {
 }
 
 export function ProductionSections({ copy }: ProductionSectionsProps) {
-  const { services, process, deliverables, team } = copy;
+  const { services, process, deliverables } = copy;
   const serviceItems = services.items ?? [];
   const processSteps = process.steps ?? [];
   const deliverableItems = deliverables.items ?? [];
@@ -21,7 +21,8 @@ export function ProductionSections({ copy }: ProductionSectionsProps) {
   return (
     <>
       {serviceItems.length > 0 ? (
-        <PageSection className="pt-12 md:pt-16 pb-16 md:pb-20">
+        <HeroSnapTarget className="hero-snap-target--pad">
+        <PageSection className="pt-6 md:pt-8 pb-16 md:pb-20">
           <ScrollReveal className="page-heading-stack mb-10 md:mb-14">
             <span className="section-label">{services.sectionLabel}</span>
             <h2 className="heading-section">{services.heading}</h2>
@@ -31,18 +32,19 @@ export function ProductionSections({ copy }: ProductionSectionsProps) {
             {serviceItems.map((item, i) => (
               <ScrollReveal key={`${item.title}-${i}`} delay={0.08 + i * 0.05}>
                 <article className="editorial-panel h-full p-8 md:p-10 flex flex-col gap-4">
-                  <span className="font-mono text-[10px] tracking-[0.35em] text-th-fg/30">
+                  <span className="mono-label">
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <h3 className="text-base md:text-lg font-medium tracking-tight text-th-fg/90">
                     {item.title}
                   </h3>
-                  <p className="text-[13px] leading-relaxed text-th-fg/55">{item.description}</p>
+                  <p className="text-sm leading-relaxed text-muted-body">{item.description}</p>
                 </article>
               </ScrollReveal>
             ))}
           </div>
         </PageSection>
+        </HeroSnapTarget>
       ) : null}
 
       {processSteps.length > 0 ? (
@@ -86,14 +88,6 @@ export function ProductionSections({ copy }: ProductionSectionsProps) {
           </ScrollReveal>
         </PageSection>
       ) : null}
-
-      <PageSection border className="py-16 md:py-14">
-        <ScrollReveal className="max-w-3xl mx-auto text-center flex flex-col items-center gap-6">
-          <span className="section-label">{team.sectionLabel}</span>
-          <p className="text-[15px] md:text-base leading-relaxed text-th-fg/55">{team.description}</p>
-          <EditorialButton href="/portfolios">{team.cta}</EditorialButton>
-        </ScrollReveal>
-      </PageSection>
     </>
   );
 }

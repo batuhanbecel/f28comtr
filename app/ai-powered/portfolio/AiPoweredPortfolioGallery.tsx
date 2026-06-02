@@ -4,6 +4,9 @@ import { useDeferredValue } from 'react';
 import { EditorialPageHero } from '@/components/EditorialPageHero';
 import { MasonryGrid } from '@/components/MasonryGrid';
 import { Footer } from '@/components/Footer';
+import { HeroSnapBody } from '@/components/HeroSnapBody';
+import { HeroSnapTarget } from '@/components/HeroSnapTarget';
+import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 import { useLanguage } from '@/context/LanguageContext';
 import type { AiPortfolioData } from '@/lib/aiPoweredPortfolio.shared';
 import type { Lang } from '@/lib/translations';
@@ -23,9 +26,11 @@ export function AiPoweredPortfolioGallery({ portfolio, lang }: AiPoweredPortfoli
   const imageUrls = deferredFiltered.map((item) => item.src);
 
   return (
-    <main className="min-h-screen bg-th-bg text-th-fg">
+    <ProductionSnapContainer snapMode="heroSnap">
       <EditorialPageHero page="aiPoweredPortfolio" lang={lang} />
 
+      <HeroSnapBody className="bg-th-bg text-th-fg min-h-screen">
+      <HeroSnapTarget className="hero-snap-target--pad">
       <section className="ai-portfolio-section">
         {portfolio.items.length > 0 ? (
           <>
@@ -48,19 +53,21 @@ export function AiPoweredPortfolioGallery({ portfolio, lang }: AiPoweredPortfoli
                 />
               ) : (
                 <div className="py-24 text-center px-6">
-                  <p className="section-label opacity-50">{t.aiPoweredPortfolio.filters.empty}</p>
+                  <p className="section-label">{t.aiPoweredPortfolio.filters.empty}</p>
                 </div>
               )}
             </div>
           </>
         ) : (
           <div className="py-24 text-center px-6">
-            <p className="section-label opacity-50">{t.aiPoweredPortfolio.empty}</p>
+            <p className="section-label">{t.aiPoweredPortfolio.empty}</p>
           </div>
         )}
       </section>
+      </HeroSnapTarget>
 
       <Footer />
-    </main>
+      </HeroSnapBody>
+    </ProductionSnapContainer>
   );
 }

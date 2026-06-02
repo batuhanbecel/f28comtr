@@ -4,6 +4,9 @@ import { useCallback, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Lightbox } from '@/components/Lightbox';
+import { PageSection } from '@/components/PageSection';
+import { ScrollReveal } from '@/components/ScrollReveal';
+import { EditorialButton } from '@/components/EditorialButton';
 import { shouldSkipOptimization } from '@/lib/blob';
 import { GRID_IMAGE_QUALITY } from '@/lib/imageConfig';
 import { MARQUEE_THUMB_SIZES } from '@/lib/imageSizes';
@@ -12,7 +15,10 @@ import type { ProductionPageCopy } from '@/lib/pageCopy.types';
 
 interface ProductionMarqueeProps {
   items: ProductionMarqueeItem[];
-  copy: Pick<ProductionPageCopy, 'heading' | 'marqueeLabel' | 'marqueeRow' | 'marqueeViewImage'>;
+  copy: Pick<
+    ProductionPageCopy,
+    'heading' | 'marqueeLabel' | 'marqueeRow' | 'marqueeViewImage' | 'team'
+  >;
 }
 
 function MarqueeRow({
@@ -33,24 +39,16 @@ function MarqueeRow({
   const loop = [...items, ...items];
 
   return (
-    <div
-      className="production-marquee-row overflow-hidden"
-      aria-label={rowLabel}
-    >
-      <div
-        className={`production-marquee-track production-marquee-track--${direction}`}
-      >
+    <div className="production-network-row overflow-hidden" aria-label={rowLabel}>
+      <div className={`production-marquee-track production-marquee-track--${direction}`}>
         {loop.map((item, i) => (
-          <div
-            key={`${item.src}-${i}`}
-            className="production-marquee-cell group"
-          >
+          <article key={`${item.src}-${i}`} className="production-network-cell group">
             <span className="production-marquee-media">
               <Image
                 src={item.src}
                 alt={`${item.photographerName} — production work`}
-                width={320}
-                height={220}
+                width={360}
+                height={450}
                 className="production-marquee-img"
                 sizes={MARQUEE_THUMB_SIZES}
                 quality={GRID_IMAGE_QUALITY}
@@ -59,26 +57,27 @@ function MarqueeRow({
                 unoptimized={shouldSkipOptimization(item.src)}
               />
             </span>
-            <div className="production-marquee-cell-overlay">
+            <div className="production-network-cell-shade" aria-hidden />
+            <div className="production-network-cell-meta">
               <Link
                 href={`/${item.photographerId}`}
-                className="production-marquee-credit"
+                className="production-network-credit"
                 onClick={(e) => e.stopPropagation()}
               >
                 {item.photographerName}
               </Link>
               <button
                 type="button"
-                className="production-marquee-open"
+                className="production-network-open"
                 onClick={() => onSelect(item.src)}
                 aria-label={`${viewImageLabel} — ${item.photographerName}`}
               >
-                <svg className="w-5 h-5 text-th-fg/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.25}>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.25}>
                   <path strokeLinecap="square" d="M7 17L17 7M17 7H7M17 7v10" />
                 </svg>
               </button>
             </div>
-          </div>
+          </article>
         ))}
       </div>
     </div>
@@ -111,22 +110,37 @@ export function ProductionMarquee({ items, copy }: ProductionMarqueeProps) {
 
   return (
     <>
-      <section className="production-marquee" aria-label={copy.marqueeLabel}>
-        <MarqueeRow
-          items={rowA}
-          direction="forward"
-          onSelect={openAt}
-          rowLabel={copy.marqueeRow}
-          viewImageLabel={copy.marqueeViewImage}
-        />
-        <MarqueeRow
-          items={rowB.length > 0 ? rowB : rowA}
-          direction="reverse"
-          onSelect={openAt}
-          rowLabel={copy.marqueeRow}
-          viewImageLabel={copy.marqueeViewImage}
-        />
-      </section>
+      <PageSection border className="production-network-section py-16 md:py-24">
+        <div className="production-network-layout">
+          <ScrollReveal className="production-network-copy page-heading-stack">
+            <span className="section-label">{copy.team.sectionLabel}</span>
+            <h2 className="heading-section">{copy.marqueeLabel}</h2>
+            <p className="text-[15px] md:text-base leading-relaxed text-muted-body max-w-md">
+              {copy.team.description}
+            </p>
+            <div className="pt-2">
+              <EditorialButton href="/portfolios">{copy.team.cta}</EditorialButton>
+            </div>
+          </ScrollReveal>
+
+          <div className="production-network-gallery" aria-label={copy.marqueeLabel}>
+            <MarqueeRow
+              items={rowA}
+              direction="forward"
+              onSelect={openAt}
+              rowLabel={copy.marqueeRow}
+              viewImageLabel={copy.marqueeViewImage}
+            />
+            <MarqueeRow
+              items={rowB.length > 0 ? rowB : rowA}
+              direction="reverse"
+              onSelect={openAt}
+              rowLabel={copy.marqueeRow}
+              viewImageLabel={copy.marqueeViewImage}
+            />
+          </div>
+        </div>
+      </PageSection>
 
       <Lightbox
         slides={slides}

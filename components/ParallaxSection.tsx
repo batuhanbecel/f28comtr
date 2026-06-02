@@ -74,10 +74,10 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
       >
         {/* Meta row: title + counter */}
         <div className="flex items-center gap-5 mb-4">
-          <span className="text-th-fg/55 text-[9px] tracking-[0.5em] uppercase font-mono">
+          <span className="caption-text tracking-[0.38em]">
             {(t.titleMap as Record<string, string>)[photographer.title] ?? photographer.title}
           </span>
-          <span className="text-th-fg/30 text-[9px] tracking-[0.35em] font-mono">
+          <span className="mono-label">
             {numLabel} {totalLabel}
           </span>
         </div>

@@ -1,19 +1,21 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import {
+  isHeroSnapAtContentStart,
+  isHeroSnapOnHero,
+  scrollHeroSnapToContent,
+  scrollHeroSnapToHero,
+} from '@/lib/heroSnapScroll';
 
 interface Props {
   children: React.ReactNode;
-  /**
-   * 'mandatory' — every section snaps (production page)
-   * 'heroSnap'  — only first scroll snaps hero→grid, grid scrolls freely
-   */
   snapMode?: 'mandatory' | 'heroSnap';
 }
 
-/** Native CSS scroll-snap — no wheel interception (GPU-friendly, no main-thread jank). */
 export function ProductionSnapContainer({ children, snapMode = 'mandatory' }: Props) {
   const containerRef = useRef<HTMLElement>(null);
+  const animatingRef = useRef(false);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -24,14 +26,80 @@ export function ProductionSnapContainer({ children, snapMode = 'mandatory' }: Pr
     };
   }, []);
 
+  useEffect(() => {
+    if (snapMode !== 'heroSnap') return;
+    const el = containerRef.current;
+    if (!el) return;
+
+    const lock = () => {
+      animatingRef.current = true;
+      window.setTimeout(() => {
+        animatingRef.current = false;
+      }, 900);
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      if (animatingRef.current) {
+        e.preventDefault();
+        return;
+      }
+
+      const delta = e.deltaY;
+      if (Math.abs(delta) < 4) return;
+
+      if (delta > 0 && isHeroSnapOnHero(el)) {
+        e.preventDefault();
+        lock();
+        scrollHeroSnapToContent(el);
+        return;
+      }
+
+      if (delta < 0 && isHeroSnapAtContentStart(el)) {
+        e.preventDefault();
+        lock();
+        scrollHeroSnapToHero(el);
+      }
+    };
+
+    let touchStartY = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0]?.clientY ?? 0;
+    };
+    const onTouchEnd = (e: TouchEvent) => {
+      if (animatingRef.current) return;
+      const endY = e.changedTouches[0]?.clientY ?? touchStartY;
+      const delta = touchStartY - endY;
+      if (Math.abs(delta) < 40) return;
+
+      if (delta > 0 && isHeroSnapOnHero(el)) {
+        lock();
+        scrollHeroSnapToContent(el);
+      } else if (delta < 0 && isHeroSnapAtContentStart(el)) {
+        lock();
+        scrollHeroSnapToHero(el);
+      }
+    };
+
+    el.addEventListener('wheel', onWheel, { passive: false });
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchend', onTouchEnd, { passive: true });
+
+    return () => {
+      el.removeEventListener('wheel', onWheel);
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [snapMode]);
+
   const snapClass =
-    snapMode === 'mandatory' ? 'snap-y snap-mandatory' : 'snap-y snap-proximity';
+    snapMode === 'heroSnap' ? '' : 'snap-y snap-mandatory';
 
   return (
     <main
       ref={containerRef}
       data-snap-container
-      className={`fixed inset-0 overflow-y-scroll overscroll-y-contain [&::-webkit-scrollbar]:hidden ${snapClass}`}
+      data-hero-snap={snapMode === 'heroSnap' ? 'true' : undefined}
+      className={`hero-snap-container fixed inset-0 overflow-y-scroll overscroll-y-contain scroll-smooth [&::-webkit-scrollbar]:hidden ${snapClass}`.trim()}
       style={{ scrollbarWidth: 'none' }}
     >
       {children}

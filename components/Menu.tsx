@@ -139,8 +139,8 @@ export function Menu({ photographers, lang }: MenuProps) {
         <Link
           key={item.href}
           href={item.href}
-          className={`group relative text-[10px] xl:text-[11px] tracking-[0.22em] xl:tracking-[0.25em] uppercase font-medium transition-colors duration-hover ${
-            isActive ? 'text-th-fg' : 'text-th-fg/45 hover:text-th-fg/80'
+          className={`group relative text-xs xl:text-[13px] tracking-[0.2em] xl:tracking-[0.22em] uppercase font-medium transition-colors duration-hover ${
+            isActive ? 'text-th-fg' : 'text-th-fg/58 hover:text-th-fg/88'
           }`}
         >
           {item.label}
@@ -165,8 +165,8 @@ export function Menu({ photographers, lang }: MenuProps) {
       >
         <Link
           href={item.href}
-          className={`group relative inline-flex items-center gap-1.5 text-[10px] xl:text-[11px] tracking-[0.22em] xl:tracking-[0.25em] uppercase font-medium transition-colors duration-hover ${
-            isActive ? 'text-th-fg' : 'text-th-fg/45 hover:text-th-fg/80'
+          className={`group relative inline-flex items-center gap-1.5 text-xs xl:text-[13px] tracking-[0.2em] xl:tracking-[0.22em] uppercase font-medium transition-colors duration-hover ${
+            isActive ? 'text-th-fg' : 'text-th-fg/58 hover:text-th-fg/88'
           }`}
           aria-haspopup="true"
           aria-expanded={isOpenDropdown}
@@ -194,7 +194,7 @@ export function Menu({ photographers, lang }: MenuProps) {
         >
           <div className="min-w-[15rem] max-w-[18rem] border border-th-fg/10 bg-th-bg/95 backdrop-blur-xl shadow-lg py-2">
             {item.sectionLabel ? (
-              <p className="px-4 pt-2 pb-1 text-[8px] tracking-[0.45em] uppercase text-th-fg/35">{item.sectionLabel}</p>
+              <p className="px-4 pt-2 pb-1 caption-text tracking-[0.38em]">{item.sectionLabel}</p>
             ) : null}
             {item.children.map((child, index) => {
               const childActive = isActivePath(pathname, child.href);
@@ -208,9 +208,9 @@ export function Menu({ photographers, lang }: MenuProps) {
                       childActive ? 'text-th-fg' : 'text-th-fg/55 hover:text-th-fg/85'
                     }`}
                   >
-                    <span className="block text-[10px] tracking-[0.18em] uppercase font-medium leading-snug">{child.label}</span>
+                    <span className="block text-xs tracking-[0.16em] uppercase font-medium leading-snug">{child.label}</span>
                     {child.meta ? (
-                      <span className="block mt-0.5 text-[8px] tracking-[0.35em] uppercase text-th-fg/30">{child.meta}</span>
+                      <span className="block mt-0.5 caption-text tracking-[0.28em]">{child.meta}</span>
                     ) : null}
                   </Link>
                 </div>
@@ -280,7 +280,7 @@ export function Menu({ photographers, lang }: MenuProps) {
             {expanded ? (
               <div className="mt-4 pl-0 space-y-1 border-l border-white/10 ml-0.5">
                 {item.sectionLabel ? (
-                  <p className="pl-4 pb-2 text-[8px] tracking-[0.45em] uppercase text-white/30">{item.sectionLabel}</p>
+                  <p className="pl-4 pb-2 caption-text text-white/45 tracking-[0.38em]">{item.sectionLabel}</p>
                 ) : null}
                 {item.children.map((child, childIndex) => (
                   <div key={child.href}>
@@ -290,11 +290,11 @@ export function Menu({ photographers, lang }: MenuProps) {
                     <Link
                       href={child.href}
                       onClick={closeMenu}
-                      className="block pl-4 py-2.5 text-white/45 hover:text-white/80 transition-colors duration-ui"
+                      className="block pl-4 py-2.5 text-white/58 hover:text-white/88 transition-colors duration-ui"
                     >
-                    <span className="block text-[11px] tracking-[0.2em] uppercase">{child.label}</span>
+                    <span className="block text-xs tracking-[0.18em] uppercase">{child.label}</span>
                     {child.meta ? (
-                      <span className="block mt-0.5 text-[8px] tracking-[0.35em] uppercase text-white/25">{child.meta}</span>
+                      <span className="block mt-0.5 caption-text text-white/45 tracking-[0.28em]">{child.meta}</span>
                     ) : null}
                     </Link>
                   </div>
@@ -369,8 +369,8 @@ export function Menu({ photographers, lang }: MenuProps) {
                 : 'opacity var(--duration-ui) var(--ease-brand)',
             }}
           >
-            <span className="section-label text-white/25">Istanbul, Turkey</span>
-            <span className="mono-label text-white/20">f/2.8</span>
+            <span className="section-label text-white/45">Istanbul, Turkey</span>
+            <span className="mono-label text-white/40">f/2.8</span>
           </div>
 
           <nav className="flex flex-col my-auto py-10 gap-1">
@@ -389,17 +389,17 @@ export function Menu({ photographers, lang }: MenuProps) {
           >
             <div className="flex items-center gap-6">
               <Link href={contactInfo.instagram} target="_blank" rel="noopener noreferrer"
-                className="section-label text-white/30 hover:text-white/70 transition-colors duration-ui hover-line">
+                className="section-label text-white/50 hover:text-white/85 transition-colors duration-ui hover-line">
                 Instagram
               </Link>
               <span className="w-px h-3 bg-white/10" />
               <Link href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer"
-                className="section-label text-white/30 hover:text-white/70 transition-colors duration-ui hover-line">
+                className="section-label text-white/50 hover:text-white/85 transition-colors duration-ui hover-line">
                 LinkedIn
               </Link>
             </div>
             <a href={`mailto:${contactInfo.email}`}
-              className="section-label text-white/30 hover:text-white/70 transition-colors duration-ui hover-line">
+              className="section-label text-white/50 hover:text-white/85 transition-colors duration-ui hover-line">
               {contactInfo.email}
             </a>
           </div>

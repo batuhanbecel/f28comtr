@@ -2,8 +2,11 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 import { AiPoweredGallery } from "./components/AiPoweredGallery"
 import { AiPoweredHero } from "./components/AiPoweredHero"
+import { AiPoweredProcessStrip } from "./components/AiPoweredProcessStrip"
 import { AiPoweredStats } from "./components/AiPoweredStats"
 import { Footer } from "@/components/Footer"
+import { HeroSnapBody } from "@/components/HeroSnapBody"
+import { ProductionSnapContainer } from "@/components/ProductionSnapContainer"
 import { getAiPoweredWorks } from "@/lib/aiPoweredWorks"
 import type { AiPoweredWork } from "@/lib/aiPoweredWorks"
 import { getPageCopy } from "@/lib/pageCopy"
@@ -78,22 +81,23 @@ export default async function AiPoweredPage() {
   const worksPromise = getAiPoweredWorks()
 
   return (
-    <>
-      <main className="bg-th-bg text-th-fg min-h-screen">
-        <AiPoweredHero
-          lang={lang}
-          copy={copy}
-          statsSlot={
-            <Suspense fallback={<StatsSkeleton />}>
-              <StatsBlock worksPromise={worksPromise} copy={copy} />
-            </Suspense>
-          }
-        />
+    <ProductionSnapContainer snapMode="heroSnap">
+      <AiPoweredHero
+        lang={lang}
+        copy={copy}
+        statsSlot={
+          <Suspense fallback={<StatsSkeleton />}>
+            <StatsBlock worksPromise={worksPromise} copy={copy} />
+          </Suspense>
+        }
+      />
+      <HeroSnapBody className="bg-th-bg text-th-fg min-h-screen">
+        <AiPoweredProcessStrip copy={copy} />
         <Suspense fallback={<GallerySkeleton />}>
           <GalleryBlock worksPromise={worksPromise} />
         </Suspense>
-      </main>
-      <Footer />
-    </>
+        <Footer />
+      </HeroSnapBody>
+    </ProductionSnapContainer>
   )
 }

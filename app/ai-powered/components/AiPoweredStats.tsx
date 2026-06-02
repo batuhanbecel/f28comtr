@@ -29,7 +29,7 @@ export function AiPoweredStats({ workCount, brandCount, copy, inHero = false }: 
               >
                 {stat.value}
               </span>
-              <span className="text-[8px] md:text-[9px] tracking-[0.38em] uppercase font-mono text-th-fg/35 text-center leading-relaxed">
+              <span className="stat-label">
                 {stat.label}
               </span>
             </div>

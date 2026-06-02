@@ -6,6 +6,9 @@ import type { Photographer } from '@/lib/data';
 import type { Lang } from '@/lib/translations';
 import { Footer } from '@/components/Footer';
 import { EditorialPageHero } from '@/components/EditorialPageHero';
+import { HeroSnapBody } from '@/components/HeroSnapBody';
+import { HeroSnapTarget } from '@/components/HeroSnapTarget';
+import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 import { PageSection } from '@/components/PageSection';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { useLanguage } from '@/context/LanguageContext';
@@ -20,10 +23,11 @@ export function PortfoliosList({ photographers, lang }: { photographers: Photogr
   const { t } = useLanguage();
 
   return (
-    <main className="min-h-screen bg-th-bg text-th-fg">
-
+    <ProductionSnapContainer snapMode="heroSnap">
       <EditorialPageHero page="portfolios" lang={lang} />
 
+      <HeroSnapBody className="bg-th-bg text-th-fg">
+      <HeroSnapTarget className="hero-snap-target--pad">
       <section className="pb-8">
         <div className="editorial-grid grid-cols-2 lg:grid-cols-4">
           {photographers.map((p, i) => (
@@ -37,7 +41,7 @@ export function PortfoliosList({ photographers, lang }: { photographers: Photogr
                     src={p.preview}
                     alt={p.fullName}
                     fill
-                    className="object-cover thumb-hover-scale"
+                    className="object-cover object-top thumb-hover-scale"
                     sizes={MASONRY_THUMB_SIZES}
                     loading={i < 4 ? 'eager' : 'lazy'}
                     fetchPriority={i === 0 ? 'high' : undefined}
@@ -51,7 +55,7 @@ export function PortfoliosList({ photographers, lang }: { photographers: Photogr
                 <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--c-bg)/0.9)] via-[rgb(var(--c-bg)/0.2)] to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-hover ease-snappy" />
 
                 <div className="absolute top-4 left-4">
-                  <span className="font-mono text-[10px] tracking-[0.3em] text-th-fg/35 group-hover:text-th-fg/65 transition-colors duration-hover">
+                  <span className="mono-label group-hover:opacity-80 transition-opacity duration-hover">
                     {String(i + 1).padStart(2, '0')}
                   </span>
                 </div>
@@ -63,7 +67,7 @@ export function PortfoliosList({ photographers, lang }: { photographers: Photogr
                 </div>
 
                 <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 transform translate-y-1 group-hover:translate-y-0 transition-transform duration-hover ease-brand">
-                  <p className="text-[8px] tracking-[0.5em] uppercase text-th-fg/40 group-hover:text-th-fg/70 transition-colors duration-hover mb-1.5">
+                  <p className="caption-text mb-1.5 group-hover:opacity-90 transition-opacity duration-hover">
                     {(t.titleMap as Record<string, string>)[p.title] ?? p.title}
                   </p>
                   <h2 className="text-lg md:text-xl font-black tracking-tight leading-tight text-th-fg/85 group-hover:text-th-fg transition-colors duration-hover">
@@ -75,6 +79,7 @@ export function PortfoliosList({ photographers, lang }: { photographers: Photogr
           ))}
         </div>
       </section>
+      </HeroSnapTarget>
 
       <PageSection border>
         <ScrollReveal className="flex items-center justify-between mb-10">
@@ -95,7 +100,7 @@ export function PortfoliosList({ photographers, lang }: { photographers: Photogr
                 <span className="flex-1 text-sm font-bold tracking-tight text-th-fg/50 group-hover:text-th-fg group-hover:translate-x-1 transition-all duration-hover ease-brand">
                   {p.fullName}
                 </span>
-                <span className="section-label opacity-40 group-hover:opacity-70 transition-opacity duration-hover">
+                <span className="section-label opacity-70 group-hover:opacity-90 transition-opacity duration-hover">
                   {(t.titleMap as Record<string, string>)[p.title] ?? p.title}
                 </span>
                 <svg
@@ -111,6 +116,7 @@ export function PortfoliosList({ photographers, lang }: { photographers: Photogr
       </PageSection>
 
       <Footer />
-    </main>
+      </HeroSnapBody>
+    </ProductionSnapContainer>
   );
 }

@@ -13,6 +13,8 @@ import { Footer } from '@/components/Footer';
 import { DownloadPortfolio } from '@/components/DownloadPortfolio';
 import { PhotographerHeroHeader } from '@/components/PhotographerHeroHeader';
 import { PhotographerBio } from '@/components/PhotographerBio';
+import { HeroSnapBody } from '@/components/HeroSnapBody';
+import { HeroSnapTarget } from '@/components/HeroSnapTarget';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 import { ViewTransition } from '@/lib/ViewTransition';
 import { generatePhotographerMetadata, SITE_NAME } from '@/lib/seo';
@@ -96,7 +98,6 @@ export default async function PortfolioPage({ params }: PageProps) {
       {/* Hero — renders immediately */}
       <section
         className="relative h-[80vh] md:h-screen w-full flex items-end justify-center pb-16 md:pb-24 vignette overflow-hidden"
-        style={{ scrollSnapAlign: 'start' }}
       >
         <ViewTransition name={`photographer-${photographer.id}`}>
           <Image
@@ -124,19 +125,21 @@ export default async function PortfolioPage({ params }: PageProps) {
       </section>
 
       {/* Grid — streams in after hero */}
-      <div style={{ scrollSnapAlign: 'start' }}>
+      <HeroSnapBody>
         <PhotographerBio
           bio={photographer.bio}
           instagram={photographer.instagram}
           website={photographer.website}
         />
+        <HeroSnapTarget className="hero-snap-target--pad">
         <section className="pb-12">
           <Suspense fallback={<MasonryGridSkeleton />}>
             <MasonryGridStream imagesPromise={imagesPromise} photographer={photographer} />
           </Suspense>
         </section>
+        </HeroSnapTarget>
         <Footer />
-      </div>
+      </HeroSnapBody>
     </ProductionSnapContainer>
   );
 }

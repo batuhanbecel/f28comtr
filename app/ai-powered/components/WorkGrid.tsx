@@ -47,7 +47,7 @@ export function WorkGrid({ works, filtersCopy, onOpenAt }: WorkGridProps) {
   if (works.length === 0) {
     return (
       <div className="py-20 text-center">
-        <p className="text-[13px] text-th-fg/30 tracking-wide">{filtersCopy.empty}</p>
+        <p className="text-sm text-muted-body tracking-wide">{filtersCopy.empty}</p>
       </div>
     )
   }

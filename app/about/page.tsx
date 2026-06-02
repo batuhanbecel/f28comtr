@@ -6,6 +6,8 @@ import { Footer } from '@/components/Footer';
 import { EditorialPageHero } from '@/components/EditorialPageHero';
 import { LocalizedAboutBrands } from '@/components/LocalizedAboutBrands';
 import { AboutStats } from '@/components/AboutStats';
+import { HeroSnapBody } from '@/components/HeroSnapBody';
+import { HeroSnapTarget } from '@/components/HeroSnapTarget';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 import { generatePageMetadata } from '@/lib/seo';
 
@@ -27,7 +29,7 @@ export default async function AboutPage() {
 
   return (
     <ProductionSnapContainer snapMode="heroSnap">
-      <EditorialPageHero page="about" lang={lang} scrollSnap>
+      <EditorialPageHero page="about" lang={lang}>
         <div className="flex flex-wrap justify-center gap-3 w-full max-w-3xl">
           {SERVICES.map((s, i) => (
             <span key={s} className="editorial-chip">
@@ -38,16 +40,18 @@ export default async function AboutPage() {
         </div>
       </EditorialPageHero>
 
-      <div style={{ scrollSnapAlign: 'start' }}>
+      <HeroSnapBody>
+        <HeroSnapTarget className="hero-snap-target--pad">
         <AboutStats
           photographerCount={photographers.length}
           clientCount={clientLogos.length}
           partnerCount={partnerLogos.length}
         />
+        </HeroSnapTarget>
 
         <LocalizedAboutBrands partnerLogos={partnerLogos} clientLogos={clientLogos} />
         <Footer />
-      </div>
+      </HeroSnapBody>
     </ProductionSnapContainer>
   );
 }

@@ -3,6 +3,7 @@
 import { createContext, use, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import type { ContactPageCopy } from '@/lib/pageCopy.types';
+import { contactInfo as staticContactInfo } from '@/lib/data';
 import { translations, type Lang, type T } from '@/lib/translations';
 import { persistLangClient } from '@/lib/prefs';
 
@@ -20,11 +21,11 @@ const LanguageContext = createContext<LanguageContextValue>({
   setLang: () => {},
   t: translations.en,
   contactInfo: {
-    email: '',
-    instagram: '',
-    linkedin: '',
-    address: '',
-    city: '',
+    email: staticContactInfo.email,
+    instagram: staticContactInfo.instagram,
+    linkedin: staticContactInfo.linkedin,
+    address: staticContactInfo.address,
+    city: staticContactInfo.city,
   },
 });
 

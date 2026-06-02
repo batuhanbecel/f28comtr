@@ -10,8 +10,8 @@ export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
   const { lang, setLang } = useLanguage();
 
   const btnClass = compact
-    ? 'text-[10px] tracking-[0.12em] px-1 py-0.5'
-    : 'text-[11px] tracking-[0.25em] px-1.5 py-1';
+    ? 'text-xs tracking-[0.12em] px-1 py-0.5'
+    : 'text-[13px] tracking-[0.22em] px-1.5 py-1';
 
   return (
     <div className="flex items-center gap-1 z-50 shrink-0">
@@ -20,7 +20,7 @@ export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
         className={`font-medium uppercase transition-all duration-ui ease-brand ${btnClass} ${
           lang === 'en'
             ? 'text-th-fg opacity-90'
-            : 'text-th-fg opacity-25 hover:opacity-55'
+            : 'text-th-fg opacity-45 hover:opacity-70'
         }`}
         aria-label="Switch to English"
       >
@@ -32,7 +32,7 @@ export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
         className={`font-medium uppercase transition-all duration-ui ease-brand ${btnClass} ${
           lang === 'tr'
             ? 'text-th-fg opacity-90'
-            : 'text-th-fg opacity-25 hover:opacity-55'
+            : 'text-th-fg opacity-45 hover:opacity-70'
         }`}
         aria-label="Türkçe'ye geç"
       >

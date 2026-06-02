@@ -77,8 +77,8 @@ function Panel({
 
         {/* Label */}
         <p
-          className="text-[9px] tracking-[0.6em] uppercase font-mono mb-3 transition-opacity duration-hover ease-brand"
-          style={{ color: isDimmed ? 'rgb(var(--c-fg) / 0.12)' : 'rgb(var(--c-fg) / 0.5)' }}
+          className="caption-text mb-3 tracking-[0.45em] transition-opacity duration-hover ease-brand"
+          style={{ color: isDimmed ? 'rgb(var(--c-fg) / 0.28)' : 'rgb(var(--c-fg) / var(--opacity-subtle))' }}
         >
           {label}
         </p>
@@ -95,7 +95,7 @@ function Panel({
         <div
           className={`flex items-center gap-3 mt-4 sm:mt-5 lg:mt-7 transition-all duration-hover ease-brand ${isDimmed ? 'opacity-0 translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}
         >
-          <span className="btn-editorial !text-[9px] !py-2.5 !px-4 !gap-2.5">
+          <span className="btn-editorial !py-2.5 !px-4 !gap-2.5">
             <span className="w-4 h-px bg-th-fg/55" />
             <span>{enterLabel}</span>
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

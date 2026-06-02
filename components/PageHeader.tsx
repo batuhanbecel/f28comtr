@@ -52,7 +52,7 @@ export function PageHeader({
         </h1>
         {description ? (
           <p
-            className={`body-text max-w-2xl opacity-60 leading-relaxed ${anim} ${center ? 'mx-auto' : ''}`}
+            className={`body-text max-w-2xl text-muted-body leading-relaxed ${anim} ${center ? 'mx-auto' : ''}`}
             style={animate ? { animationDelay: '0.18s' } : undefined}
           >
             {description}

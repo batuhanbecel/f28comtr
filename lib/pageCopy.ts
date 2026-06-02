@@ -140,8 +140,15 @@ export async function getPageSeo(page: PageCopyKey, lang: Lang) {
 }
 
 export async function getContactInfo(lang: Lang): Promise<ContactPageCopy['info']> {
+  const { contactInfo: staticInfo } = await import('@/lib/data');
   const copy = await getPageCopy('contact', lang);
-  return copy.info;
+  return {
+    email: copy.info.email || staticInfo.email,
+    instagram: copy.info.instagram || staticInfo.instagram,
+    linkedin: copy.info.linkedin || staticInfo.linkedin,
+    address: copy.info.address || staticInfo.address,
+    city: copy.info.city || staticInfo.city,
+  };
 }
 
 export type { ProductionPageCopy, AiPoweredPageCopy, ContactPageCopy, PageCopyKey, SiteCopyStore };

@@ -31,7 +31,7 @@ export function HomeV2AiSplit({
         <ScrollReveal className="home-v2-ai-split-copy min-w-0 lg:pr-4 xl:pr-8">
           <span className="section-label block mb-6">{label}</span>
           <h2 className="heading-section mb-6 max-w-xl">{title}</h2>
-          <p className="text-[14px] md:text-[15px] leading-relaxed text-th-fg/55 max-w-lg mb-10">
+          <p className="text-[15px] md:text-base leading-relaxed text-muted-body max-w-lg mb-10">
             {body}
           </p>
           <EditorialButton href="/ai-powered" variant="primary">
@@ -48,14 +48,14 @@ export function HomeV2AiSplit({
               >
                 {workCount}+
               </span>
-              <span className="text-[9px] tracking-[0.45em] uppercase font-mono text-th-fg/35 mt-3 block">
+              <span className="stat-label mt-3 block !max-w-none !text-left">
                 {worksStatLabel}
               </span>
             </div>
             {uniqueBrands.length > 0 ? (
               <div className="flex flex-wrap gap-2">
                 {uniqueBrands.map((brand) => (
-                  <span key={brand} className="editorial-chip text-[10px]">
+                  <span key={brand} className="editorial-chip">
                     {brand}
                   </span>
                 ))}

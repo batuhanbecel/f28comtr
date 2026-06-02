@@ -18,12 +18,12 @@ export function PhotographerBio({ bio, instagram, website }: PhotographerBioProp
   return (
     <section className="px-6 md:px-12 max-w-3xl mx-auto pt-12 md:pt-16 pb-2">
       {text ? (
-        <p className="body-text opacity-70 leading-relaxed whitespace-pre-line">{text}</p>
+        <p className="body-text text-muted-body leading-relaxed whitespace-pre-line">{text}</p>
       ) : null}
 
       {hasLinks ? (
         <div className="flex flex-wrap items-center gap-3 mt-6">
-          <span className="section-label opacity-40">{t.footer.follow}</span>
+          <span className="section-label">{t.footer.follow}</span>
           {instagram ? (
             <a
               href={instagram}

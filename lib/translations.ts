@@ -48,7 +48,10 @@ export const translations = {
       aiLabel: 'AI-Powered & Creativity',
     },
     homeV2: {
-      heroTitle: 'PRODUCTION & AI',
+      heroLabel: 'Istanbul — Since 2008',
+      heroTitle: 'PRODUCTION AT ITS FINEST',
+      heroDescription:
+        'Photography, retouch and hybrid AI production for global brands — one Istanbul studio, two creative engines.',
       servicesMarqueeLabel: 'Our services',
       selectedWorksLabel: 'Selected work',
       selectedWorksHeading: 'SELECTED WORKS',
@@ -57,7 +60,7 @@ export const translations = {
       artistsHeading: 'ARTISTS',
       viewAllArtists: 'View all',
       aiSplitLabel: 'AI-Powered Production',
-      aiSplitTitle: 'Traditional production + AI',
+      aiSplitTitle: 'Traditional production meets AI',
       aiSplitBody:
         'From brief to delivery: model selection, prompt, iteration and hybrid retouch. AI workflow and traditional post-production in one pipeline.',
       aiSplitCta: 'View works',
@@ -339,7 +342,10 @@ export const translations = {
       aiLabel: 'AI-Powered & Yaratıcılık',
     },
     homeV2: {
-      heroTitle: 'PRODÜKSİYON & AI',
+      heroLabel: 'İstanbul — 2008\'den Beri',
+      heroTitle: 'PRODÜKSİYON EN İYİ HALİ',
+      heroDescription:
+        'Fotoğrafçılık, rötuş ve hibrit AI prodüksiyon — global markalar için tek İstanbul stüdyosu, iki yaratıcı motor.',
       servicesMarqueeLabel: 'Hizmetlerimiz',
       selectedWorksLabel: 'Seçili iş',
       selectedWorksHeading: 'SEÇİLİ İŞLER',
@@ -348,7 +354,7 @@ export const translations = {
       artistsHeading: 'SANATÇILAR',
       viewAllArtists: 'Tümünü gör',
       aiSplitLabel: 'AI-Powered Production',
-      aiSplitTitle: 'Geleneksel prodüksiyon + yapay zeka',
+      aiSplitTitle: 'Geleneksel prodüksiyon yapay zeka ile buluşuyor',
       aiSplitBody:
         'Brief\'ten teslimata kadar: model seçimi, prompt, iterasyon ve hibrit retuş. AI iş akışı ile geleneksel post-prodüksiyon bir arada.',
       aiSplitCta: 'İşleri gör',

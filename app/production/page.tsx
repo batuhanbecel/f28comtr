@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import { Footer } from '@/components/Footer';
 
 import { EditorialPageHero } from '@/components/EditorialPageHero';
+import { HeroSnapBody } from '@/components/HeroSnapBody';
+import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 
 import { ProductionStats } from '@/components/ProductionStats';
 
@@ -57,29 +59,17 @@ export default async function ProductionPage() {
 
 
   return (
-
-    <main className="min-h-screen bg-th-bg text-th-fg">
-
+    <ProductionSnapContainer snapMode="heroSnap">
       <EditorialPageHero page="production" lang={lang} heroCopy={heroCopy}>
-
         <ProductionStats copy={copy} inHero />
-
       </EditorialPageHero>
 
-
-
-      <ProductionSections copy={copy} />
-
-
-
-      <ProductionMarquee items={marqueeItems} copy={copy} />
-
-
-
-      <Footer />
-
-    </main>
-
+      <HeroSnapBody className="bg-th-bg text-th-fg">
+        <ProductionSections copy={copy} />
+        <ProductionMarquee items={marqueeItems} copy={copy} />
+        <Footer />
+      </HeroSnapBody>
+    </ProductionSnapContainer>
   );
 
 }

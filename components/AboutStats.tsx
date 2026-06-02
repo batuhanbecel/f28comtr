@@ -39,7 +39,7 @@ export function AboutStats({ photographerCount, clientCount, partnerCount }: Abo
               <span className="text-2xl md:text-4xl font-black tracking-tighter text-th-fg">
                 {stat.value}
               </span>
-              <span className="text-[8px] md:text-[9px] tracking-[0.45em] uppercase text-th-fg/25 mt-2">
+              <span className="stat-label mt-2 md:mt-3">
                 {stat.label}
               </span>
             </div>

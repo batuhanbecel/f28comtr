@@ -41,7 +41,7 @@ export default function GlobalError({
 
           <div className="text-center space-y-4">
             <p className="section-label section-label--pill mx-auto">{t.label}</p>
-            <p className="body-text opacity-40">{t.description}</p>
+            <p className="body-text text-muted-body">{t.description}</p>
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
               <button onClick={reset} className="btn-editorial btn-editorial--primary">
                 {t.tryAgain}
@@ -52,7 +52,7 @@ export default function GlobalError({
             </div>
           </div>
 
-          <p className="absolute bottom-10 section-label opacity-20">f/2.8 Production Agency</p>
+          <p className="absolute bottom-10 section-label opacity-50">f/2.8 Production Agency</p>
         </main>
       </body>
     </html>

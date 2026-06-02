@@ -40,7 +40,7 @@ const MasonryThumb = memo(function MasonryThumb({
         src={src}
         alt={alt}
         fill
-        className="object-cover thumb-hover-scale"
+        className="object-cover object-top thumb-hover-scale"
         loading="lazy"
         sizes={MASONRY_THUMB_SIZES}
         quality={GRID_IMAGE_QUALITY}
