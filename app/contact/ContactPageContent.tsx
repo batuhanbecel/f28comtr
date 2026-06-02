@@ -1,4 +1,3 @@
-import { ScrollReveal } from '@/components/ScrollReveal';
 import { PageSection } from '@/components/PageSection';
 import { Footer } from '@/components/Footer';
 import { EditorialPageHero } from '@/components/EditorialPageHero';
@@ -23,13 +22,13 @@ export async function ContactPageContent() {
 
       <PageSection className="contact-page pb-20 md:pb-28">
         <div className="contact-layout">
-          <ScrollReveal className="contact-layout__channels">
+          <div className="contact-layout__channels">
             <ContactChannels copy={copy} />
-          </ScrollReveal>
+          </div>
 
-          <ScrollReveal delay={80} className="contact-layout__form">
+          <div className="contact-layout__form">
             <ContactForm copy={copy} />
-          </ScrollReveal>
+          </div>
         </div>
       </PageSection>
 

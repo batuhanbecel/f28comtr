@@ -25,11 +25,15 @@ export function useScrollReveal<T extends HTMLElement>(
       el.style.transitionDelay = `${delay}s`;
     }
 
+    const reveal = () => {
+      el.classList.add('in-view');
+      if (once) observer.unobserve(el);
+    };
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          el.classList.add('in-view');
-          if (once) observer.unobserve(el);
+          reveal();
         } else if (!once) {
           el.classList.remove('in-view');
         }
@@ -37,8 +41,22 @@ export function useScrollReveal<T extends HTMLElement>(
       { rootMargin, threshold },
     );
 
+    const syncIfAlreadyVisible = () => {
+      const rect = el.getBoundingClientRect();
+      const viewH = window.innerHeight || document.documentElement.clientHeight;
+      if (rect.top < viewH && rect.bottom > 0) {
+        reveal();
+      }
+    };
+
     observer.observe(el);
-    return () => observer.disconnect();
+    syncIfAlreadyVisible();
+    const raf = requestAnimationFrame(syncIfAlreadyVisible);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      observer.disconnect();
+    };
   }, [rootMargin, threshold, once]);
 
   return ref;
