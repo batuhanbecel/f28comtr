@@ -12,7 +12,7 @@ export function TitleLabel({ photographer }: TitleLabelProps) {
   const { t } = useLanguage();
   
   return (
-    <span className="section-label fade-in-up" style={{animationDelay: '0.1s', color: 'rgba(255,255,255,0.45)'}}>
+    <span className="section-label fade-in-up" style={{animationDelay: '0.1s', color: 'rgba(255,255,255,0.62)'}}>
       {(t.titleMap as Record<string, string>)[photographer.title] ?? photographer.title}
     </span>
   );

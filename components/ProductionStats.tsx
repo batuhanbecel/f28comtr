@@ -29,7 +29,7 @@ export function ProductionStats({ copy, inHero = false, className = '' }: Produc
               >
                 {stat.value}
               </span>
-              <span className="text-[8px] md:text-[9px] tracking-[0.38em] uppercase font-mono text-th-fg/35 text-center leading-relaxed">
+              <span className="text-[8px] md:text-[9px] tracking-[0.32em] uppercase font-mono text-th-fg/50 text-center leading-relaxed">
                 {stat.label}
               </span>
             </div>

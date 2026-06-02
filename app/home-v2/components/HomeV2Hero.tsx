@@ -2,10 +2,10 @@
 
 import { EditorialButton } from '@/components/EditorialButton';
 import { HeroReveal } from '@/components/HeroReveal';
-import { PageHeader } from '@/components/PageHeader';
 import { ProductionStats } from '@/components/ProductionStats';
 import { useLanguage } from '@/context/LanguageContext';
 import type { ProductionPageCopy } from '@/lib/pageCopy.types';
+import { HomeV2HeroLogo } from './HomeV2HeroLogo';
 import { HomeV2HeroSlider } from './HomeV2HeroSlider';
 
 interface HomeV2HeroProps {
@@ -30,14 +30,7 @@ export function HomeV2Hero({ heroTitle, stats }: HomeV2HeroProps) {
 
       <div className="relative z-10 flex flex-1 flex-col px-6 md:px-12 pt-28 pb-16 md:pb-20">
         <HeroReveal className="home-v2-hero-content flex flex-1 flex-col items-center justify-center w-full max-w-5xl mx-auto text-center">
-          <PageHeader
-            title={heroTitle}
-            variant="hero"
-            shell={false}
-            animate={false}
-            align="center"
-            className="w-full"
-          />
+          <HomeV2HeroLogo title={heroTitle} />
 
           <div className="home-v2-hero-ctas flex flex-wrap items-center justify-center gap-3 md:gap-4">
             <EditorialButton href="/production" variant="primary">

@@ -62,10 +62,10 @@ export function HomeV2SelectedWorks({ works, sectionLabel, heading }: HomeV2Sele
                 <p className="text-sm md:text-base font-medium tracking-tight text-th-fg/90 group-hover:text-th-fg transition-colors duration-hover">
                   {work.workTitle}
                 </p>
-                <p className="mt-1 text-[11px] tracking-[0.2em] uppercase text-th-fg/50">
+                <p className="mt-1 text-[11px] tracking-[0.2em] uppercase text-th-fg/60">
                   {work.artistName}
                 </p>
-                <p className="mt-2 text-[9px] tracking-[0.45em] uppercase font-mono text-th-fg/30">
+                <p className="mt-2 text-[9px] tracking-[0.38em] uppercase font-mono text-th-fg/45">
                   {roleLabel(work.role)}
                 </p>
               </div>

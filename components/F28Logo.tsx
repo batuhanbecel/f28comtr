@@ -7,6 +7,10 @@ interface F28LogoProps {
   className?: string;
   /** ms before draw starts — useful for coordinating with page entrance */
   delay?: number;
+  /** Hide from accessibility tree when a parent heading provides the label */
+  'aria-hidden'?: boolean;
+  /** Click/tap replays stroke draw — off for hero */
+  interactive?: boolean;
 }
 
 /**
@@ -14,7 +18,13 @@ interface F28LogoProps {
  * Color inherits from CSS `color` (currentColor).
  * Click / tap replays the animation.
  */
-export function F28Logo({ width = 480, className = '', delay = 0 }: F28LogoProps) {
+export function F28Logo({
+  width = 480,
+  className = '',
+  delay = 0,
+  'aria-hidden': ariaHidden,
+  interactive = true,
+}: F28LogoProps) {
   const svgRef = useRef<SVGSVGElement>(null);
 
   const replay = useCallback(() => {
@@ -31,9 +41,21 @@ export function F28Logo({ width = 480, className = '', delay = 0 }: F28LogoProps
 
   return (
     <div
-      className={`f28-logo-wrap inline-block cursor-pointer select-none ${className}`}
-      onClick={replay}
-      title="Replay animation"
+      className={`f28-logo-wrap inline-block select-none ${interactive ? 'cursor-pointer' : ''} ${className}`}
+      onClick={interactive ? replay : undefined}
+      title={interactive ? 'Replay animation' : undefined}
+      role={interactive ? 'button' : undefined}
+      tabIndex={interactive ? 0 : undefined}
+      onKeyDown={
+        interactive
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                replay();
+              }
+            }
+          : undefined
+      }
     >
       <style>{`
         @keyframes f28Draw {
@@ -64,7 +86,8 @@ export function F28Logo({ width = 480, className = '', delay = 0 }: F28LogoProps
         viewBox="0 0 1082.33 641.85"
         width={width}
         xmlns="http://www.w3.org/2000/svg"
-        aria-label="f/2.8"
+        aria-hidden={ariaHidden}
+        aria-label={ariaHidden ? undefined : 'f/2.8'}
         style={{ display: 'block', maxWidth: '100%' }}
       >
         {/* Fill layer — fades in after stroke draw */}
