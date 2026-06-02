@@ -1603,6 +1603,29 @@ body[data-lightbox-open] nav {
 }
 
 /* ─── Home v2 preview ────────────────────────────────────────────────────── */
+.home-v2-hero-logo-heading {
+  line-height: 0;
+}
+
+.home-v2-hero-logo-stage {
+  opacity: 0;
+  animation: home-v2-hero-logo-in 0.75s var(--ease-brand) 0.06s forwards;
+}
+
+@keyframes home-v2-hero-logo-in {
+  to {
+    opacity: 1;
+  }
+}
+
+.home-v2-hero-logo {
+  display: block;
+  width: min(52vw, 11rem);
+  height: auto;
+  margin-inline: auto;
+  filter: drop-shadow(0 0 28px rgb(255 255 255 / 0.1));
+}
+
 .home-v2-hero-content {
   gap: clamp(1.5rem, 4vw, 2.25rem);
 }
@@ -1747,6 +1770,11 @@ body[data-lightbox-open] nav {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .home-v2-hero-logo-stage {
+    animation: none;
+    opacity: 1;
+  }
+
   .home-v2-hero-slide.is-current,
   .home-v2-hero-slide.is-previous {
     animation: none;
