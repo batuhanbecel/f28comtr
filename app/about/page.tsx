@@ -6,18 +6,11 @@ import { EditorialPageHero } from '@/components/EditorialPageHero';
 import { LocalizedAboutBrands } from '@/components/LocalizedAboutBrands';
 import { AboutStats } from '@/components/AboutStats';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
+import { generatePageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'About Us | f/2.8 Production Agency',
-  description: 'Istanbul-based photography and production agency since 2008. Photography, video, CGI, animation, editing, and motion graphics.',
-  openGraph: {
-    title: 'About Us | f/2.8 Production Agency',
-    description: 'Istanbul-based photography and production agency since 2008.',
-    type: 'website',
-    url: 'https://www.f28.com.tr/about',
-    siteName: 'f/2.8 Production Agency',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata('about', '/about');
+}
 
 export const revalidate = 60;
 

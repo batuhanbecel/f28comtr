@@ -71,11 +71,11 @@ export function Menu() {
   return (
     <>
       {/* Header */}
-      <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-5 md:px-10 md:py-7 transition-all duration-hover ease-brand lg:grid lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-8 ${
+      <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between gap-3 px-4 py-4 sm:px-5 sm:py-5 md:px-10 md:py-7 transition-all duration-hover ease-brand lg:grid lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-8 ${
         isScrolled || forceBackdrop ? 'bg-th-bg/60 border-b border-th-fg/10 backdrop-blur-xl' : 'border-b border-transparent'
       }`}>
-        <Link href="/" className="relative z-50 transition-opacity duration-hover hover:opacity-70">
-          <F28LogoMark className="h-8 md:h-10 w-auto text-th-fg" aria-label="f/2.8" />
+        <Link href="/" className="relative z-50 shrink-0 transition-opacity duration-hover hover:opacity-70">
+          <F28LogoMark className="h-7 sm:h-8 md:h-10 w-auto text-th-fg" aria-label="f/2.8" />
         </Link>
 
         {/* Desktop nav links */}
@@ -101,23 +101,23 @@ export function Menu() {
           })}
         </nav>
 
-        <div className="flex items-center gap-4 lg:justify-self-end">
+        <div className="flex items-center gap-2 sm:gap-3 lg:justify-self-end shrink-0 min-h-8">
           <ThemeToggle />
-          <span className="w-px h-3 bg-th-fg/15" />
-          <LanguageSwitcher />
+          <span className="w-px h-3 bg-th-fg/15 shrink-0" aria-hidden />
+          <LanguageSwitcher compact />
           <button
             onClick={toggleMenu}
-            className="relative z-50 flex flex-col gap-[5px] w-7 py-1 group lg:hidden"
+            className="relative z-50 flex flex-col justify-center items-end gap-[4px] w-6 h-8 shrink-0 lg:hidden"
             aria-label="Toggle menu"
           >
-          <span className={`h-px bg-th-fg transition-all duration-reveal ease-brand origin-center ${
-            isOpen ? 'rotate-45 translate-y-[7px] w-full opacity-100' : 'w-full opacity-60 group-hover:opacity-100'
+          <span className={`h-px w-5 bg-th-fg transition-all duration-reveal ease-brand origin-center ${
+            isOpen ? 'rotate-45 translate-y-[6px] opacity-100' : 'opacity-60 group-hover:opacity-100'
           }`} />
           <span className={`h-px bg-th-fg transition-all duration-reveal ease-brand ${
-            isOpen ? 'opacity-0 w-0' : 'w-3/4 opacity-40 group-hover:w-full group-hover:opacity-80'
+            isOpen ? 'opacity-0 w-0' : 'w-4 opacity-40'
           }`} />
-          <span className={`h-px bg-th-fg transition-all duration-reveal ease-brand origin-center ${
-            isOpen ? '-rotate-45 -translate-y-[7px] w-full opacity-100' : 'w-1/2 opacity-25 group-hover:w-full group-hover:opacity-100'
+          <span className={`h-px w-3 bg-th-fg transition-all duration-reveal ease-brand origin-center ${
+            isOpen ? '-rotate-45 -translate-y-[6px] w-5 opacity-100' : 'opacity-25'
           }`} />
           </button>
         </div>

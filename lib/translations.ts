@@ -110,6 +110,44 @@ export const translations = {
       rights: 'All rights reserved.',
       city: 'Istanbul, Turkey',
     },
+    seo: {
+      home: {
+        title: 'f/2.8 Production Agency | Photography & Retouching',
+        description:
+          'Professional photography and retouching production agency in Istanbul. Featuring top photographers and retouchers for commercial and creative projects.',
+      },
+      production: {
+        title: 'Production',
+        description:
+          'Professional photography and retouching by top photographers. Based in Istanbul since 2008.',
+      },
+      aiBased: {
+        title: 'AI Based',
+        description:
+          'Creative visual and video content powered by generative AI and traditional retouching — hybrid production in Istanbul.',
+      },
+      portfolios: {
+        title: 'Portfolios',
+        description:
+          'Browse portfolios from our talented photographers and retouchers at f/2.8 Production Agency, Istanbul.',
+      },
+      about: {
+        title: 'About Us',
+        description:
+          'Istanbul-based photography and production agency since 2008. Photography, video, CGI, animation, editing, and motion graphics.',
+      },
+      photographer: {
+        titleTemplate: '{name}',
+        descriptionTemplate:
+          '{title} portfolio — {name} at f/2.8 Production Agency, Istanbul.',
+        notFoundTitle: 'Portfolio',
+        notFoundDescription: 'Photographer portfolio at f/2.8 Production Agency.',
+      },
+      notFound: {
+        title: '404 | f/2.8 Production Agency',
+        description: 'This page could not be found.',
+      },
+    },
     notFound: {
       label: 'Error',
       title: '404',
@@ -233,6 +271,44 @@ export const translations = {
       follow: 'Takip Et',
       rights: 'Tüm hakları saklıdır.',
       city: 'İstanbul, Türkiye',
+    },
+    seo: {
+      home: {
+        title: 'f/2.8 Production Agency | Fotoğrafçılık & Rötuş',
+        description:
+          'İstanbul merkezli profesyonel fotoğrafçılık ve rötuş prodüksiyon ajansı. Ticari ve yaratıcı projeler için önde gelen fotoğrafçılar ve rötuşçular.',
+      },
+      production: {
+        title: 'Prodüksiyon',
+        description:
+          'Önde gelen fotoğrafçılarla profesyonel fotoğrafçılık ve rötuş. 2008\'den beri İstanbul.',
+      },
+      aiBased: {
+        title: 'Yapay Zeka',
+        description:
+          'Üretken yapay zeka ve geleneksel rötuşla hibrit görsel ve video prodüksiyon — İstanbul.',
+      },
+      portfolios: {
+        title: 'Portföyler',
+        description:
+          'f/2.8 Production Agency fotoğrafçı ve rötuşçu portföylerini keşfedin — İstanbul.',
+      },
+      about: {
+        title: 'Hakkımızda',
+        description:
+          '2008\'den beri İstanbul merkezli fotoğrafçılık ve prodüksiyon ajansı. Fotoğraf, video, CGI, animasyon, kurgu ve motion graphics.',
+      },
+      photographer: {
+        titleTemplate: '{name}',
+        descriptionTemplate:
+          '{name} — {title} portföyü, f/2.8 Production Agency, İstanbul.',
+        notFoundTitle: 'Portföy',
+        notFoundDescription: 'f/2.8 Production Agency fotoğrafçı portföyü.',
+      },
+      notFound: {
+        title: '404 | f/2.8 Production Agency',
+        description: 'Bu sayfa bulunamadı.',
+      },
     },
     notFound: {
       label: 'Hata',

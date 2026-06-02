@@ -1,9 +1,10 @@
 import type { MetadataRoute } from 'next';
 import { photographers as staticPhotographers } from '@/lib/data';
 import { getPhotographers } from '@/lib/db';
+import { getSiteUrl } from '@/lib/siteUrl';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://www.f28.com.tr';
+  const baseUrl = getSiteUrl();
 
   let photographers = staticPhotographers;
   try {

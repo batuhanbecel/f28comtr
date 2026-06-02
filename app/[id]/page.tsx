@@ -15,6 +15,8 @@ import { PhotographerHeroHeader } from '@/components/PhotographerHeroHeader';
 import { PhotographerBio } from '@/components/PhotographerBio';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 import { ViewTransition } from '@/lib/ViewTransition';
+import { generatePhotographerMetadata, SITE_NAME } from '@/lib/seo';
+import { absoluteUrl, getSiteUrl } from '@/lib/siteUrl';
 
 export const revalidate = 60;
 
@@ -30,16 +32,10 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const photographer = await getPhotographers().then((photographers) => photographers.find((p) => p.id === id));
-  if (!photographer) return { title: 'Portfolio | f/2.8 Production' };
-  return {
-    title: `${photographer.fullName} | f/2.8 Production`,
-    description: `${photographer.title} portfolio — ${photographer.fullName} at f/2.8 Production Agency.`,
-    openGraph: {
-      title: photographer.fullName,
-      images: [{ url: photographer.preview }],
-    },
-  };
+  const photographer = await getPhotographers().then((photographers) =>
+    photographers.find((p) => p.id === id),
+  );
+  return generatePhotographerMetadata(photographer, id);
 }
 
 async function DownloadButton({
@@ -72,17 +68,22 @@ export default async function PortfolioPage({ params }: PageProps) {
   // Start the heavy fetch but don't await — let two Suspense boundaries consume it
   const imagesPromise = getPhotographerImages(id);
 
+  const siteUrl = getSiteUrl();
+  const previewUrl = photographer.preview.startsWith('http')
+    ? photographer.preview
+    : absoluteUrl(photographer.preview);
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: photographer.fullName,
     jobTitle: photographer.title,
-    image: `https://www.f28.com.tr${photographer.preview}`,
-    url: `https://www.f28.com.tr/${photographer.id}`,
+    image: previewUrl,
+    url: `${siteUrl}/${photographer.id}`,
     worksFor: {
       '@type': 'Organization',
-      name: 'f/2.8 Production Agency',
-      url: 'https://www.f28.com.tr',
+      name: SITE_NAME,
+      url: siteUrl,
     },
   };
 

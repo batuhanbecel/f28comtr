@@ -12,6 +12,8 @@ import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { parseLang, parseTheme } from "@/lib/prefs";
+import { getSiteUrl, absoluteUrl } from "@/lib/siteUrl";
+import { SITE_NAME } from "@/lib/seo";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,34 +21,30 @@ const inter = Inter({
   display: "swap",
 });
 
+const googleVerification = process.env.GOOGLE_SITE_VERIFICATION;
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.f28.com.tr"),
-  title: "f/2.8 Production Agency | Photography & Retouching",
-  description: "Professional photography and retouching production agency in Istanbul. Featuring top photographers and retouchers for commercial and creative projects.",
+  metadataBase: new URL(getSiteUrl()),
+  title: {
+    default: "f/2.8 Production Agency | Photography & Retouching",
+    template: "%s | f/2.8 Production Agency",
+  },
+  description:
+    "Professional photography and retouching production agency in Istanbul. Featuring top photographers and retouchers for commercial and creative projects.",
   keywords: ["photography", "retouching", "production agency", "Istanbul", "commercial photography", "f28"],
   authors: [{ name: "f/2.8 Production" }],
   creator: "f/2.8 Production",
   publisher: "f/2.8 Production",
   openGraph: {
-    title: "f/2.8 Production Agency",
-    description: "Professional photography and retouching production agency",
     type: "website",
-    locale: "en_US",
-    url: "https://www.f28.com.tr",
-    siteName: "f/2.8 Production Agency",
+    siteName: SITE_NAME,
   },
   twitter: {
     card: "summary_large_image",
-    title: "f/2.8 Production Agency",
-    description: "Professional photography and retouching production agency in Istanbul.",
   },
-  alternates: {
-    canonical: "https://www.f28.com.tr",
-    languages: {
-      en: "https://www.f28.com.tr",
-      tr: "https://www.f28.com.tr",
-    },
-  },
+  ...(googleVerification
+    ? { verification: { google: googleVerification } }
+    : {}),
 };
 
 export const viewport: Viewport = {
@@ -65,6 +63,38 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const initialLang = parseLang(cookieStore.get("f28_lang")?.value);
   const initialTheme = parseTheme(cookieStore.get("f28_theme")?.value);
+  const siteUrl = getSiteUrl();
+
+  const organizationLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: siteUrl,
+    logo: absoluteUrl('/icon'),
+    description: 'Professional photography and retouching production agency in Istanbul.',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Mecidiyeköy, Kuştepe Mahallesi, Yoncalı Sokak, No: 1',
+      addressLocality: 'Şişli',
+      addressRegion: 'İstanbul',
+      postalCode: '34387',
+      addressCountry: 'TR',
+    },
+    sameAs: [
+      'https://www.instagram.com/f28production',
+      'https://linkedin.com/company/f-2-8-production/',
+    ],
+    foundingDate: '2008',
+    knowsAbout: ['Photography', 'Retouching', 'AI Visual Content', 'Commercial Photography'],
+  };
+
+  const websiteLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: siteUrl,
+    publisher: { '@type': 'Organization', name: SITE_NAME, url: siteUrl },
+  };
 
   return (
     <html lang={initialLang} className={inter.variable} data-theme={initialTheme}>
@@ -72,30 +102,11 @@ export default async function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'Organization',
-              name: 'f/2.8 Production Agency',
-              url: 'https://www.f28.com.tr',
-              logo: 'https://www.f28.com.tr/logos/f28/f28_white.png',
-              description: 'Professional photography and retouching production agency in Istanbul.',
-              address: {
-                '@type': 'PostalAddress',
-                streetAddress: 'Mecidiyeköy, Kuştepe Mahallesi, Yoncalı Sokak, No: 1',
-                addressLocality: 'Şişli',
-                addressRegion: 'İstanbul',
-                postalCode: '34387',
-                addressCountry: 'TR',
-              },
-              sameAs: [
-                'https://www.instagram.com/f28production',
-                'https://linkedin.com/company/f-2-8-production/',
-              ],
-              foundingDate: '2008',
-              knowsAbout: ['Photography', 'Retouching', 'AI Visual Content', 'Commercial Photography'],
-            }),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }}
         />
       </head>
       <body className="antialiased bg-th-bg text-th-fg">

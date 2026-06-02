@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { getSiteUrl } from '@/lib/siteUrl';
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -9,6 +10,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/admin', '/api/'],
       },
     ],
-    sitemap: 'https://www.f28.com.tr/sitemap.xml',
+    sitemap: `${getSiteUrl()}/sitemap.xml`,
   };
 }

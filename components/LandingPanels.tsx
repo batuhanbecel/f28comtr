@@ -29,7 +29,7 @@ function Panel({
   return (
     <Link
       href={href}
-      className="group relative flex-1 min-h-0 overflow-hidden block"
+      className="group relative flex-1 min-h-0 basis-0 overflow-hidden block isolate"
       aria-label={`${heading} — ${enterLabel}`}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
@@ -59,7 +59,7 @@ function Panel({
 
       {/* Bottom text */}
       <div
-        className="absolute bottom-0 left-0 right-0 px-7 sm:px-10 md:px-12 lg:px-14 pb-10 md:pb-14 z-10"
+        className="absolute bottom-0 left-0 right-0 px-5 sm:px-7 md:px-10 lg:px-14 pb-6 sm:pb-8 md:pb-14 z-10 max-h-[70%] overflow-hidden"
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? 'translateY(0)' : 'translateY(32px)',
@@ -85,7 +85,7 @@ function Panel({
 
         {/* Section heading */}
         <h2
-          className="heading-hero transition-colors duration-hover ease-brand"
+          className="landing-panel-heading transition-colors duration-hover ease-brand"
           style={{ color: isDimmed ? 'rgb(var(--c-fg) / 0.15)' : 'rgb(var(--c-fg))' }}
         >
           {heading}
@@ -93,7 +93,7 @@ function Panel({
 
         {/* Enter CTA */}
         <div
-          className={`flex items-center gap-3 mt-7 transition-all duration-hover ease-brand ${isDimmed ? 'opacity-0 translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}
+          className={`flex items-center gap-3 mt-4 sm:mt-5 lg:mt-7 transition-all duration-hover ease-brand ${isDimmed ? 'opacity-0 translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'}`}
         >
           <span className="btn-editorial !text-[9px] !py-2.5 !px-4 !gap-2.5">
             <span className="w-4 h-px bg-th-fg/55" />
@@ -144,8 +144,8 @@ export function LandingPanels({ initialImages = [] }: LandingPanelsProps) {
 
   return (
     <main className="fixed inset-0 overflow-hidden" aria-label="f/2.8 Production Agency">
-      {/* Panels */}
-      <div className="absolute inset-0 flex flex-col md:flex-row">
+      {/* Panels — stack until lg; side-by-side on desktop only */}
+      <div className="absolute inset-0 flex flex-col lg:flex-row">
       <Panel
         href="/production"
         imageSrc={productionImage}
@@ -162,7 +162,7 @@ export function LandingPanels({ initialImages = [] }: LandingPanelsProps) {
       />
 
       {/* Divider */}
-      <div className="w-full md:w-px h-px md:h-full flex-shrink-0 z-10 pointer-events-none bg-th-fg/[0.12]" />
+      <div className="w-full lg:w-px h-px lg:h-full flex-shrink-0 z-10 pointer-events-none bg-th-fg/[0.12]" />
 
       <Panel
         href="/ai-based"

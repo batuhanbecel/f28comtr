@@ -6,17 +6,10 @@ import { AIBasedStats } from "./components/AIBasedStats"
 import { Footer } from "@/components/Footer"
 import { getAIWorks } from "@/lib/aiWorks"
 import type { AIWork } from "@/lib/aiWorks"
+import { generatePageMetadata } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "AI Based | f/2.8 Production Agency",
-  description:
-    "Creative visual and video content powered by the latest generative AI models.",
-  openGraph: {
-    title: "AI Based | f/2.8 Production Agency",
-    description:
-      "Creative visual and video content powered by the latest generative AI models.",
-    url: "https://www.f28.com.tr/ai-based",
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata("aiBased", "/ai-based")
 }
 
 export const revalidate = 60
