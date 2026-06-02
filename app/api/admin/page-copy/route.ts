@@ -13,6 +13,8 @@ import {
 import type { PageCopyKey } from '@/lib/pageCopy.types';
 import type { Lang } from '@/lib/translations';
 
+export const dynamic = 'force-dynamic';
+
 const PAGE_PATHS: Record<PageCopyKey, string> = {
   production: '/production',
   aiPowered: '/ai-powered',

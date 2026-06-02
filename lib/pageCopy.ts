@@ -1,5 +1,12 @@
-import { contactInfo } from '@/lib/data';
 import { deepMerge } from '@/lib/pageCopy.shared';
+import {
+  getDefaultAiPoweredCopy,
+  getDefaultContactCopy,
+  getDefaultProductionCopy,
+  mergePageCopyWithDefaults,
+  normalizeLangPatch,
+  pageCopyDefaultGetters,
+} from '@/lib/pageCopy.defaults';
 import type {
   AiPoweredPageCopy,
   ContactPageCopy,
@@ -9,50 +16,18 @@ import type {
   SiteCopyStore,
 } from '@/lib/pageCopy.types';
 import { getRedis } from '@/lib/redis';
-import { translations, type Lang } from '@/lib/translations';
+import type { Lang } from '@/lib/translations';
 
 const REDIS_KEY = 'site:copy';
 
-export function getDefaultProductionCopy(lang: Lang): ProductionPageCopy {
-  const base = translations[lang].production;
-  return {
-    ...structuredClone(base),
-    statsValues: { projects: '1000+', brands: '150+', sinceYear: '2008' },
-    seo: { ...translations[lang].seo.production },
-  };
-}
-
-export function getDefaultAiPoweredCopy(lang: Lang): AiPoweredPageCopy {
-  const base = translations[lang].aiPowered;
-  return {
-    ...structuredClone(base),
-    statsValues: { sinceYear: '2008' },
-    seo: { ...translations[lang].seo.aiPowered },
-  };
-}
-
-export function getDefaultContactCopy(lang: Lang): ContactPageCopy {
-  const base = translations[lang].contact;
-  return {
-    ...structuredClone(base),
-    info: {
-      email: contactInfo.email,
-      instagram: contactInfo.instagram,
-      linkedin: contactInfo.linkedin,
-      address: contactInfo.address,
-      city: contactInfo.city,
-    },
-    seo: { ...translations[lang].seo.contact },
-  };
-}
-
-const defaultGetters: {
-  [K in PageCopyKey]: (lang: Lang) => PageCopyByKey[K];
-} = {
-  production: getDefaultProductionCopy,
-  aiPowered: getDefaultAiPoweredCopy,
-  contact: getDefaultContactCopy,
+export {
+  getDefaultAiPoweredCopy,
+  getDefaultContactCopy,
+  getDefaultProductionCopy,
+  mergePageCopyWithDefaults,
 };
+
+const defaultGetters = pageCopyDefaultGetters;
 
 export async function getSiteCopyStore(): Promise<SiteCopyStore> {
   const redis = getRedis();
@@ -84,11 +59,7 @@ function withDefaults<K extends PageCopyKey>(
   lang: Lang,
   copy: PageCopyByKey[K],
 ): PageCopyByKey[K] {
-  const defaults = defaultGetters[page](lang);
-  return deepMerge(
-    defaults as Record<string, unknown>,
-    copy as Record<string, unknown>,
-  ) as PageCopyByKey[K];
+  return mergePageCopyWithDefaults(page, lang, copy);
 }
 
 export async function setSiteCopyStore(store: SiteCopyStore): Promise<void> {
@@ -105,10 +76,10 @@ export async function getPageCopy<K extends PageCopyKey>(
 ): Promise<PageCopyByKey[K]> {
   const defaults = defaultGetters[page](lang);
   const store = await getSiteCopyStore();
-  const patch = store[page]?.[lang];
+  const patch = normalizeLangPatch(store[page]?.[lang]);
   const merged = deepMerge(
     defaults as Record<string, unknown>,
-    patch as Record<string, unknown> | undefined,
+    patch,
   ) as PageCopyByKey[K];
   return withDefaults(page, lang, merged);
 }

@@ -80,6 +80,9 @@ export type AdminTranslations = {
       statProjects: string;
       statBrands: string;
       statSince: string;
+      statProjectsLabel: string;
+      statBrandsLabel: string;
+      statSinceLabel: string;
       seoTitle: string;
       seoDescription: string;
       email: string;
@@ -324,6 +327,9 @@ export const adminEn: AdminTranslations = {
       statProjects: 'Projects value',
       statBrands: 'Brands value',
       statSince: 'Since year',
+      statProjectsLabel: 'Projects label',
+      statBrandsLabel: 'Brands label',
+      statSinceLabel: 'Since label',
       seoTitle: 'Meta title',
       seoDescription: 'Meta description',
       email: 'Email',
@@ -596,6 +602,9 @@ export const adminTr: AdminTranslations = {
       statProjects: 'Proje değeri',
       statBrands: 'Marka değeri',
       statSince: 'Kuruluş yılı',
+      statProjectsLabel: 'Proje etiketi',
+      statBrandsLabel: 'Marka etiketi',
+      statSinceLabel: 'Kuruluş etiketi',
       seoTitle: 'Meta başlık',
       seoDescription: 'Meta açıklama',
       email: 'E-posta',

@@ -14,6 +14,14 @@ export function deepMerge<T extends Record<string, unknown>>(
     const existing = out[key as string];
 
     if (Array.isArray(value)) {
+      // Empty arrays in Redis often mean a partial save — keep default list items.
+      if (
+        value.length === 0 &&
+        Array.isArray(existing) &&
+        existing.length > 0
+      ) {
+        continue;
+      }
       out[key as string] = structuredClone(value);
       continue;
     }

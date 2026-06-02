@@ -17,6 +17,7 @@ import type {
   ProductionPageCopy,
 } from '@/lib/pageCopy.types';
 import type { Lang } from '@/lib/translations';
+import { mergePageCopyWithDefaults } from '@/lib/pageCopy.defaults';
 import { deepMerge } from '@/lib/pageCopy.shared';
 
 type AnyPageCopy = ProductionPageCopy | AiPoweredPageCopy | ContactPageCopy;
@@ -80,7 +81,10 @@ export default function PageCopyAdminClient() {
       setLoading(true);
       setLoadedFor(null);
       try {
-        const res = await fetch(`/api/admin/page-copy?page=${page}&lang=${lang}`, { signal });
+        const res = await fetch(`/api/admin/page-copy?page=${page}&lang=${lang}`, {
+          signal,
+          cache: 'no-store',
+        });
         if (res.status === 401) {
           router.push('/admin/login');
           return;
@@ -92,12 +96,13 @@ export default function PageCopyAdminClient() {
         const data = await res.json();
         if (signal?.aborted) return;
         if (key !== `${page}:${lang}`) return;
-        const defaults = (data.defaults ?? {}) as Record<string, unknown>;
-        const merged = deepMerge(
-          defaults,
-          deepMerge(defaults, (data.copy ?? {}) as Record<string, unknown>),
-        ) as AnyPageCopy;
-        setCopy(merged);
+        setCopy(
+          mergePageCopyWithDefaults(
+            page,
+            lang,
+            (data.copy ?? data.defaults) as Record<string, unknown>,
+          ) as AnyPageCopy,
+        );
         setLoadedFor(key);
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') return;
@@ -129,6 +134,9 @@ export default function PageCopyAdminClient() {
         return;
       }
       if (!res.ok) throw new Error('save failed');
+      const data = await res.json();
+      setCopy(mergePageCopyWithDefaults(page, lang, data.copy) as AnyPageCopy);
+      setLoadedFor(`${page}:${lang}`);
       toast.success(pc.saved);
     } catch {
       toast.error(a.toast.failed);
@@ -148,7 +156,7 @@ export default function PageCopyAdminClient() {
       }
       if (!res.ok) throw new Error('reset failed');
       const data = await res.json();
-      setCopy(data.copy as AnyPageCopy);
+      setCopy(mergePageCopyWithDefaults(page, lang, data.copy) as AnyPageCopy);
       setLoadedFor(`${page}:${lang}`);
       toast.success(pc.resetDone);
     } catch {
@@ -264,9 +272,9 @@ function ProductionCopyForm({
 
       <AdminPanel title={pc.sections.stats}>
         <div className="grid gap-4 md:grid-cols-2">
-          <TextField label={stats.projects} value={stats.projects} onChange={(v) => update({ stats: { ...stats, projects: v } })} />
-          <TextField label={stats.brands} value={stats.brands} onChange={(v) => update({ stats: { ...stats, brands: v } })} />
-          <TextField label={stats.since} value={stats.since} onChange={(v) => update({ stats: { ...stats, since: v } })} />
+          <TextField label={pc.fields.statProjectsLabel} value={stats.projects} onChange={(v) => update({ stats: { ...stats, projects: v } })} />
+          <TextField label={pc.fields.statBrandsLabel} value={stats.brands} onChange={(v) => update({ stats: { ...stats, brands: v } })} />
+          <TextField label={pc.fields.statSinceLabel} value={stats.since} onChange={(v) => update({ stats: { ...stats, since: v } })} />
           <TextField label={pc.fields.statProjects} value={statsValues.projects} onChange={(v) => update({ statsValues: { ...statsValues, projects: v } })} />
           <TextField label={pc.fields.statBrands} value={statsValues.brands} onChange={(v) => update({ statsValues: { ...statsValues, brands: v } })} />
           <TextField label={pc.fields.statSince} value={statsValues.sinceYear} onChange={(v) => update({ statsValues: { ...statsValues, sinceYear: v } })} />
@@ -481,10 +489,10 @@ function AiPoweredCopyForm({
 
       <AdminPanel title={pc.sections.stats}>
         <div className="grid gap-4 md:grid-cols-2">
-          <TextField label={stats.projects} value={stats.projects} onChange={(v) => update({ stats: { ...stats, projects: v } })} />
-          <TextField label={stats.brands} value={stats.brands} onChange={(v) => update({ stats: { ...stats, brands: v } })} />
-          <TextField label={stats.since} value={stats.since} onChange={(v) => update({ stats: { ...stats, since: v } })} />
-          <TextField label={pc.fields.statSince} value={statsValues.sinceYear} onChange={(v) => update({ statsValues: { sinceYear: v } })} />
+          <TextField label={pc.fields.statProjectsLabel} value={stats.projects} onChange={(v) => update({ stats: { ...stats, projects: v } })} />
+          <TextField label={pc.fields.statBrandsLabel} value={stats.brands} onChange={(v) => update({ stats: { ...stats, brands: v } })} />
+          <TextField label={pc.fields.statSinceLabel} value={stats.since} onChange={(v) => update({ stats: { ...stats, since: v } })} />
+          <TextField label={pc.fields.statSince} value={statsValues.sinceYear} onChange={(v) => update({ statsValues: { ...statsValues, sinceYear: v } })} />
           <TextField label="Works suffix" value={copy.worksLabel ?? ''} onChange={(v) => update({ worksLabel: v })} />
         </div>
       </AdminPanel>
