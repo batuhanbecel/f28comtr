@@ -2,10 +2,10 @@
 
 import { Lightbox as UnifiedLightbox } from "@/components/Lightbox"
 import { useLanguage } from "@/context/LanguageContext"
-import type { GenerativeWork } from "../data/works"
+import type { AiPoweredWork } from "@/lib/aiPoweredWorks"
 
 interface LightboxProps {
-  works: GenerativeWork[]
+  works: AiPoweredWork[]
   index: number | null
   onClose: () => void
   onIndexChange: (next: number) => void
@@ -17,9 +17,9 @@ export function Lightbox({ works, index, onClose, onIndexChange }: LightboxProps
   const slides = works.map((w) => ({ src: w.imageSrc, alt: w.imageAlt }))
 
   const categoryLabels: Record<string, string> = {
-    visual: t.generativeWorkflow.filters.visual,
-    video: t.generativeWorkflow.filters.video,
-    hybrid: t.generativeWorkflow.filters.hybrid,
+    visual: t.aiPowered.filters.visual,
+    video: t.aiPowered.filters.video,
+    hybrid: t.aiPowered.filters.hybrid,
   }
 
   return (

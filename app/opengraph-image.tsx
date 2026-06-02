@@ -80,7 +80,7 @@ export default function OGImage() {
             marginTop: 28,
           }}
         >
-          Photography · Retouching · Generative Workflow
+          Photography · Retouching · AI-Powered
         </div>
 
         {/* Bottom location */}

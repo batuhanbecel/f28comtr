@@ -1,5 +1,5 @@
 import { photographers as staticPhotographers, Photographer } from './data';
-import { getPortfolioImages, getGenerativeWorkflowImages as getStaticGenerativeWorkflowImages } from './utils';
+import { getPortfolioImages, getAiPoweredImages as getStaticAiPoweredImages } from './utils';
 import { getRedis } from './redis';
 
 export async function getPhotographers(): Promise<Photographer[]> {
@@ -69,7 +69,7 @@ export async function setPhotographerImages(photographerId: string, images: stri
   await redis.set(`photographer:${photographerId}:images`, JSON.stringify(images));
 }
 
-export async function getGenerativeWorkflowImages(): Promise<string[]> {
+export async function getAiPoweredImages(): Promise<string[]> {
   const redis = getRedis();
   if (redis) {
     try {
@@ -77,10 +77,10 @@ export async function getGenerativeWorkflowImages(): Promise<string[]> {
       if (images && Array.isArray(images) && images.length > 0) return images as string[];
     } catch {}
   }
-  return getStaticGenerativeWorkflowImages();
+  return getStaticAiPoweredImages();
 }
 
-export async function setGenerativeWorkflowImages(images: string[]): Promise<void> {
+export async function setAiPoweredImages(images: string[]): Promise<void> {
   const redis = getRedis();
   if (!redis) throw new Error('Redis is not configured.');
   await redis.set('ai:images', JSON.stringify(images));

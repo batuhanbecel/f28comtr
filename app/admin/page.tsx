@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getPhotographers, getGenerativeWorkflowImages, isRedisConfigured } from '@/lib/db';
+import { getPhotographers, getAiPoweredImages, isRedisConfigured } from '@/lib/db';
 import { AdminPageLayout } from '@/components/admin/AdminPageLayout';
 import { AdminPanel } from '@/components/admin/AdminPanel';
 import { getAdminT } from '@/lib/getAdminT';
@@ -16,14 +16,14 @@ export default async function AdminDashboard() {
 
   const a = await getAdminT();
 
-  const [photographers, generativeWorkflowImages] = await Promise.all([
+  const [photographers, aiPoweredImages] = await Promise.all([
     getPhotographers(),
-    getGenerativeWorkflowImages(),
+    getAiPoweredImages(),
   ]);
 
   const stats = [
     { label: a.dashboard.stats.photographers, value: photographers.length, href: '/admin/photographers' },
-    { label: a.dashboard.stats.generativeWorkflow, value: generativeWorkflowImages.length, href: '/admin/generative-workflow' },
+    { label: a.dashboard.stats.aiPowered, value: aiPoweredImages.length, href: '/admin/ai-powered' },
     {
       label: a.dashboard.stats.redis,
       value: isRedisConfigured() ? a.status.connected : a.status.none,
@@ -39,7 +39,7 @@ export default async function AdminDashboard() {
       desc: a.dashboard.cards.photographersDesc,
       icon: '👥',
     },
-    { href: '/admin/generative-workflow', label: a.nav.generativeWorkflow, desc: a.dashboard.cards.generativeWorkflowDesc, icon: '⚡' },
+    { href: '/admin/ai-powered', label: a.nav.aiPowered, desc: a.dashboard.cards.aiPoweredDesc, icon: '⚡' },
     { href: '/admin/settings', label: a.nav.settings, desc: a.dashboard.cards.settingsDesc, icon: '⚙' },
   ];
 

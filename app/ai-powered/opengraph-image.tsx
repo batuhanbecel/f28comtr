@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'nodejs';
-export const alt = 'Generative Workflow | f/2.8 Production Agency';
+export const alt = 'AI-Powered | f/2.8 Production Agency';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -52,21 +52,14 @@ export default function OGImage() {
         {/* Title */}
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            fontSize: 64,
+            fontSize: 96,
             fontWeight: 900,
             color: '#fff',
             letterSpacing: '-0.03em',
-            lineHeight: 1.05,
-            textAlign: 'center',
-            paddingInline: 40,
+            lineHeight: 1,
           }}
         >
-          Generative
-          <br />
-          Workflow
+          AI-Powered
         </div>
 
         {/* Tagline */}

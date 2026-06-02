@@ -75,7 +75,7 @@ export async function getClientLogos(): Promise<string[]> {
   }
 }
 
-export function getGenerativeWorkflowImages(): string[] {
+export function getAiPoweredImages(): string[] {
   if (imageManifest['__ai__']?.length > 0) {
     return imageManifest['__ai__'];
   }

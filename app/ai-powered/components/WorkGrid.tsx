@@ -3,11 +3,11 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { BalancedMasonryGrid, Frame } from "@masonry-grid/react"
 import { useLanguage } from "@/context/LanguageContext"
-import type { GenerativeWork } from "../data/works"
+import type { AiPoweredWork } from "@/lib/aiPoweredWorks"
 import { WorkCard } from "./WorkCard"
 
 interface WorkGridProps {
-  works: GenerativeWork[]
+  works: AiPoweredWork[]
   onOpenAt: (index: number) => void
 }
 
@@ -46,7 +46,7 @@ export function WorkGrid({ works, onOpenAt }: WorkGridProps) {
   if (works.length === 0) {
     return (
       <div className="py-20 text-center">
-        <p className="text-[13px] text-th-fg/30 tracking-wide">{t.generativeWorkflow.filters.empty}</p>
+        <p className="text-[13px] text-th-fg/30 tracking-wide">{t.aiPowered.filters.empty}</p>
       </div>
     )
   }

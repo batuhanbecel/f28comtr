@@ -85,7 +85,7 @@ export default async function RootLayout({
       'https://linkedin.com/company/f-2-8-production/',
     ],
     foundingDate: '2008',
-    knowsAbout: ['Photography', 'Retouching', 'Generative Workflow', 'Commercial Photography'],
+    knowsAbout: ['Photography', 'Retouching', 'AI-Powered Production', 'Commercial Photography'],
   };
 
   const websiteLd = {

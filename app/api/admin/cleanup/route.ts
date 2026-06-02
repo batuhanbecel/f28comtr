@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { checkAuth } from '@/lib/auth';
-import { getPhotographers, getPhotographerImages, setPhotographerImages, getGenerativeWorkflowImages, setGenerativeWorkflowImages } from '@/lib/db';
+import { getPhotographers, getPhotographerImages, setPhotographerImages, getAiPoweredImages, setAiPoweredImages } from '@/lib/db';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.f28.com.tr';
 
@@ -41,11 +41,11 @@ export async function POST() {
     }
   }
 
-  const generativeWorkflowImages = await getGenerativeWorkflowImages();
+  const aiPoweredImages = await getAiPoweredImages();
   const aiValid: string[] = [];
   const aiRemoved: string[] = [];
 
-  for (const img of generativeWorkflowImages) {
+  for (const img of aiPoweredImages) {
     if (await checkUrl(img)) {
       aiValid.push(img);
     } else {
@@ -55,8 +55,8 @@ export async function POST() {
   }
 
   if (aiRemoved.length > 0) {
-    await setGenerativeWorkflowImages(aiValid);
-    results.push({ photographer: 'Generative Workflow', removed: aiRemoved });
+    await setAiPoweredImages(aiValid);
+    results.push({ photographer: 'AI-Powered', removed: aiRemoved });
   }
 
   return NextResponse.json({

@@ -5,27 +5,47 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/ai-based',
-        destination: '/generative-workflow',
+        destination: '/ai-powered',
         permanent: true,
       },
       {
         source: '/ai-based/:path*',
-        destination: '/generative-workflow/:path*',
+        destination: '/ai-powered/:path*',
+        permanent: true,
+      },
+      {
+        source: '/generative-workflow',
+        destination: '/ai-powered',
+        permanent: true,
+      },
+      {
+        source: '/generative-workflow/:path*',
+        destination: '/ai-powered/:path*',
         permanent: true,
       },
       {
         source: '/admin/ai-based',
-        destination: '/admin/generative-workflow',
+        destination: '/admin/ai-powered',
         permanent: true,
       },
       {
         source: '/admin/ai-based/:path*',
-        destination: '/admin/generative-workflow/:path*',
+        destination: '/admin/ai-powered/:path*',
         permanent: true,
       },
       {
-        source: '/generative-workflow/work/:id',
-        destination: '/generative-workflow',
+        source: '/admin/generative-workflow',
+        destination: '/admin/ai-powered',
+        permanent: true,
+      },
+      {
+        source: '/admin/generative-workflow/:path*',
+        destination: '/admin/ai-powered/:path*',
+        permanent: true,
+      },
+      {
+        source: '/ai-powered/work/:id',
+        destination: '/ai-powered',
         permanent: false,
       },
       {

@@ -1,18 +1,18 @@
 "use client"
 
 import { useState, useCallback, useDeferredValue } from "react"
-import type { GenerativeWork } from "../data/works"
-import { useGenerativeWorkflowFilter } from "../hooks/useGenerativeWorkflowFilter"
+import type { AiPoweredWork } from "@/lib/aiPoweredWorks"
+import { useAiPoweredFilter } from "../hooks/useAiPoweredFilter"
 import { FilterBar } from "./FilterBar"
 import { WorkGrid } from "./WorkGrid"
 import { Lightbox } from "./Lightbox"
 
-interface GenerativeWorkflowGalleryProps {
-  works: GenerativeWork[]
+interface AiPoweredGalleryProps {
+  works: AiPoweredWork[]
 }
 
-export function GenerativeWorkflowGallery({ works }: GenerativeWorkflowGalleryProps) {
-  const { filters, filtered, counts, brands, setBrand, setCategory } = useGenerativeWorkflowFilter(works)
+export function AiPoweredGallery({ works }: AiPoweredGalleryProps) {
+  const { filters, filtered, counts, brands, setBrand, setCategory } = useAiPoweredFilter(works)
   const deferredFiltered = useDeferredValue(filtered)
   const isFiltering = deferredFiltered !== filtered
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)

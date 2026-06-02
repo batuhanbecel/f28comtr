@@ -3,19 +3,19 @@
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { useLanguage } from '@/context/LanguageContext';
 
-interface GenerativeWorkflowStatsProps {
+interface AiPoweredStatsProps {
   workCount: number;
   brandCount: number;
   inHero?: boolean;
 }
 
-export function GenerativeWorkflowStats({ workCount, brandCount, inHero = false }: GenerativeWorkflowStatsProps) {
+export function AiPoweredStats({ workCount, brandCount, inHero = false }: AiPoweredStatsProps) {
   const { t } = useLanguage();
 
   const stats = [
-    { value: `${workCount}+`, label: t.generativeWorkflow.stats.projects },
-    { value: `${brandCount}+`, label: t.generativeWorkflow.stats.brands },
-    { value: '2008', label: t.generativeWorkflow.stats.since },
+    { value: `${workCount}+`, label: t.aiPowered.stats.projects },
+    { value: `${brandCount}+`, label: t.aiPowered.stats.brands },
+    { value: '2008', label: t.aiPowered.stats.since },
   ];
 
   return (

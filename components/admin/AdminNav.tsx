@@ -9,7 +9,7 @@ import { useAdminT } from '@/hooks/useAdminT';
 const navHrefs = [
   '/admin',
   '/admin/photographers',
-  '/admin/generative-workflow',
+  '/admin/ai-powered',
   '/admin/landing',
   '/admin/logos',
   '/admin/previews',
@@ -24,7 +24,7 @@ export function AdminNav() {
   const navItems = [
     { href: navHrefs[0], label: a.nav.dashboard },
     { href: navHrefs[1], label: a.nav.photographers },
-    { href: navHrefs[2], label: a.nav.generativeWorkflow },
+    { href: navHrefs[2], label: a.nav.aiPowered },
     { href: navHrefs[3], label: a.nav.landing },
     { href: navHrefs[4], label: a.nav.logos },
     { href: navHrefs[5], label: a.nav.previews },

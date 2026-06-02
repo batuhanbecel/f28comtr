@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
-const PREFETCH_ROUTES = ['/production', '/portfolios', '/generative-workflow'];
+const PREFETCH_ROUTES = ['/production', '/portfolios', '/ai-powered'];
 const DELAY_MS = 5000;
 
 let hasRun = false;

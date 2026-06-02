@@ -3,22 +3,22 @@
 import { EditorialPageHero } from '@/components/EditorialPageHero';
 import { useLanguage } from '@/context/LanguageContext';
 
-interface GenerativeWorkflowHeroProps {
+interface AiPoweredHeroProps {
   statsSlot?: React.ReactNode;
 }
 
-export function GenerativeWorkflowHero({ statsSlot }: GenerativeWorkflowHeroProps) {
+export function AiPoweredHero({ statsSlot }: AiPoweredHeroProps) {
   const { t } = useLanguage();
-  const steps = t.generativeWorkflow.process.steps;
+  const steps = t.aiPowered.process.steps;
 
   return (
     <>
-      <EditorialPageHero page="generativeWorkflow">{statsSlot}</EditorialPageHero>
+      <EditorialPageHero page="aiPowered">{statsSlot}</EditorialPageHero>
 
-      <section className="max-w-7xl mx-auto w-full px-6 md:px-12 pt-12 md:pt-16 pb-16 md:pb-20" aria-label={t.generativeWorkflow.process.sectionLabel}>
+      <section className="max-w-7xl mx-auto w-full px-6 md:px-12 pt-12 md:pt-16 pb-16 md:pb-20" aria-label={t.aiPowered.process.sectionLabel}>
         <div className="page-heading-stack mb-10">
-          <span className="section-label">{t.generativeWorkflow.process.sectionLabel}</span>
-          <h2 className="heading-section">{t.generativeWorkflow.process.heading}</h2>
+          <span className="section-label">{t.aiPowered.process.sectionLabel}</span>
+          <h2 className="heading-section">{t.aiPowered.process.heading}</h2>
         </div>
 
         <ol className="process-strip">
