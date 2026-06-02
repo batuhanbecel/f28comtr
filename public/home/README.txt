@@ -1,5 +1,10 @@
 Home V2 hero assets (preview route /home-v2)
 
-Place your looping background video here:
-  hero.mp4          (required for video hero)
-  hero-poster.webp  (optional LCP poster / reduced-motion fallback)
+Hero slider (active):
+  1.webp
+  2.webp
+  3.jpg
+
+Optional legacy:
+  hero.mp4
+  hero-poster.webp

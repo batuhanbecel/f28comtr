@@ -1606,10 +1606,115 @@ body[data-lightbox-open] nav {
 .home-v2-hero-media {
   isolation: isolate;
 }
-.home-v2-hero-video {
+
+.home-v2-hero-slider {
+  overflow: hidden;
+  background: rgb(0 0 0);
+}
+
+.home-v2-hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.home-v2-hero-slide-zoom {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
   transform: scale(1.06);
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.home-v2-hero-slide-image {
   filter: grayscale(1) contrast(1.08) brightness(0.72);
 }
+
+/* Zoom on wrapper; opacity crossfade stays on the slide layer. */
+.home-v2-hero-slide.is-current .home-v2-hero-slide-zoom,
+.home-v2-hero-slide.is-previous .home-v2-hero-slide-zoom {
+  animation: home-v2-hero-kenburns var(--home-v2-hero-interval-ms, 8000ms) var(--ease-brand) forwards;
+}
+
+@keyframes home-v2-hero-kenburns {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1.14);
+  }
+}
+
+/* Incoming layer fades in over the outgoing layer (overlap = seamless). */
+.home-v2-hero-slide.is-current {
+  z-index: 2;
+  animation: home-v2-hero-fade-in var(--home-v2-hero-fade-ms, 2400ms) ease-in-out forwards;
+}
+
+.home-v2-hero-slide.is-current.is-initial {
+  animation: none;
+  opacity: 1;
+}
+
+.home-v2-hero-slide.is-previous {
+  z-index: 1;
+  opacity: 1;
+  animation: home-v2-hero-fade-out var(--home-v2-hero-fade-ms, 2400ms) ease-in-out forwards;
+}
+
+@keyframes home-v2-hero-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes home-v2-hero-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.home-v2-hero-slider-dots {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  gap: 0.65rem;
+  transform: translateX(-50%);
+}
+
+.home-v2-hero-slider-dot {
+  width: 1.75rem;
+  height: 2px;
+  padding: 0;
+  border: none;
+  background: rgb(var(--c-fg) / 0.22);
+  cursor: pointer;
+  transition:
+    background var(--duration-ui) var(--ease-brand),
+    width var(--duration-ui) var(--ease-brand);
+}
+
+.home-v2-hero-slider-dot.is-active {
+  width: 2.5rem;
+  background: rgb(var(--c-fg) / 0.65);
+}
+
+.home-v2-hero-slider-dot:focus-visible {
+  outline: 2px solid rgb(var(--c-fg) / 0.45);
+  outline-offset: 4px;
+}
+
 .home-v2-hero-scrim {
   background:
     linear-gradient(
@@ -1619,6 +1724,7 @@ body[data-lightbox-open] nav {
       rgb(var(--c-bg) / 0.88) 100%
     );
 }
+
 .home-v2-hero-grain {
   opacity: 0.14;
   mix-blend-mode: overlay;
@@ -1627,10 +1733,23 @@ body[data-lightbox-open] nav {
   background-size: 256px 256px;
   background-repeat: repeat;
 }
+
 @media (prefers-reduced-motion: reduce) {
-  .home-v2-hero-video {
+  .home-v2-hero-slide.is-current,
+  .home-v2-hero-slide.is-previous {
+    animation: none;
+    opacity: 1;
+  }
+
+  .home-v2-hero-slide.is-previous {
     display: none;
   }
+
+  .home-v2-hero-slide-zoom {
+    animation: none !important;
+    transform: scale(1.08);
+  }
+
   .home-v2-hero-grain {
     opacity: 0.08;
   }
