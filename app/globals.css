@@ -1602,6 +1602,120 @@ body[data-lightbox-open] nav {
   }
 }
 
+/* ─── Home v2 preview ────────────────────────────────────────────────────── */
+.home-v2-hero-title {
+  font-size: clamp(2.5rem, 8vw, 5.5rem);
+}
+.home-v2-hero-media {
+  isolation: isolate;
+}
+.home-v2-hero-video {
+  transform: scale(1.06);
+  filter: grayscale(1) contrast(1.08) brightness(0.72);
+}
+.home-v2-hero-scrim {
+  background:
+    linear-gradient(
+      to bottom,
+      rgb(0 0 0 / 0.35) 0%,
+      rgb(0 0 0 / 0.5) 45%,
+      rgb(var(--c-bg) / 0.88) 100%
+    );
+}
+.home-v2-hero-grain {
+  opacity: 0.14;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  background-repeat: repeat;
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-v2-hero-video {
+    display: none;
+  }
+  .home-v2-hero-grain {
+    opacity: 0.08;
+  }
+}
+
+.home-v2-services-marquee {
+  position: relative;
+  left: 50%;
+  right: 50%;
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  overflow: hidden;
+  border-top: 1px solid rgb(var(--c-fg) / 0.08);
+  border-bottom: 1px solid rgb(var(--c-fg) / 0.08);
+  padding: 22px 0;
+  background: rgb(var(--c-bg));
+}
+.home-v2-services-marquee-row:hover .home-v2-services-marquee-track {
+  animation-play-state: paused;
+}
+.home-v2-services-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 12px;
+  padding: 0;
+  will-change: transform;
+}
+.home-v2-services-marquee-track--forward {
+  animation: production-marquee-forward 90s linear infinite;
+}
+.home-v2-services-chip {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.home-v2-ai-split-copy {
+  padding-bottom: 0.25rem;
+}
+@media (min-width: 1024px) {
+  .home-v2-ai-split-copy {
+    padding-right: 2rem;
+  }
+}
+
+.home-v2-logos-marquee-contained {
+  width: 100%;
+}
+.home-v2-logos-marquee-row:hover .production-marquee-track {
+  animation-play-state: paused;
+}
+
+.home-v2-logos-marquee-cell {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(120px, 14vw, 180px);
+  height: clamp(72px, 9vw, 100px);
+  padding: 16px 20px;
+  background: rgb(var(--c-bg));
+  border: 1px solid rgb(var(--c-fg) / 0.06);
+}
+.home-v2-logos-marquee-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.28;
+  filter: brightness(0);
+  transition: opacity var(--duration-hover) var(--ease-snappy);
+}
+[data-theme='light'] .home-v2-logos-marquee-img {
+  filter: brightness(0);
+}
+:root:not([data-theme='light']) .home-v2-logos-marquee-img {
+  filter: brightness(0) invert(1);
+}
+.home-v2-logos-marquee-cell:hover .home-v2-logos-marquee-img {
+  opacity: 0.65;
+}
+
 /* ─── Unified lightbox ───────────────────────────────────────────────────── */
 .lightbox-backdrop {
   position: fixed;

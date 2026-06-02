@@ -47,6 +47,23 @@ export const translations = {
       productionLabel: 'Photography & Retouching',
       aiLabel: 'AI-Powered & Creativity',
     },
+    homeV2: {
+      heroTitle: 'Production & AI',
+      servicesMarqueeLabel: 'Our services',
+      selectedWorksLabel: 'Selected work',
+      selectedWorksHeading: 'SELECTED WORKS',
+      workTitleFallback: 'Editorial campaign',
+      artistsLabel: 'Our artists',
+      artistsHeading: 'ARTISTS',
+      viewAllArtists: 'View all',
+      aiSplitLabel: 'AI-Powered Production',
+      aiSplitTitle: 'Traditional production + AI',
+      aiSplitBody:
+        'From brief to delivery: model selection, prompt, iteration and hybrid retouch. AI workflow and traditional post-production in one pipeline.',
+      aiSplitCta: 'View works',
+      aiWorksStat: 'AI works',
+      clientsMarqueeLabel: 'Clients',
+    },
     production: {
       sectionLabel: 'Istanbul — Since 2008',
       heading: 'PRODUCTION',
@@ -320,6 +337,23 @@ export const translations = {
     landing: {
       productionLabel: 'Fotoğrafçılık & Rötuş',
       aiLabel: 'AI-Powered & Yaratıcılık',
+    },
+    homeV2: {
+      heroTitle: 'Production & AI',
+      servicesMarqueeLabel: 'Hizmetlerimiz',
+      selectedWorksLabel: 'Seçili iş',
+      selectedWorksHeading: 'SEÇİLİ İŞLER',
+      workTitleFallback: 'Kampanya',
+      artistsLabel: 'Sanatçılarımız',
+      artistsHeading: 'SANATÇILAR',
+      viewAllArtists: 'Tümünü gör',
+      aiSplitLabel: 'AI-Powered Production',
+      aiSplitTitle: 'Geleneksel prodüksiyon + yapay zeka',
+      aiSplitBody:
+        'Brief\'ten teslimata kadar: model seçimi, prompt, iterasyon ve hibrit retuş. AI iş akışı ile geleneksel post-prodüksiyon bir arada.',
+      aiSplitCta: 'İşleri gör',
+      aiWorksStat: 'AI iş',
+      clientsMarqueeLabel: 'Müşterilerimiz',
     },
     production: {
       sectionLabel: 'İstanbul — 2008\'den Beri',
