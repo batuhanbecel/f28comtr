@@ -1603,9 +1603,6 @@ body[data-lightbox-open] nav {
 }
 
 /* ─── Home v2 preview ────────────────────────────────────────────────────── */
-.home-v2-hero-title {
-  font-size: clamp(2.5rem, 8vw, 5.5rem);
-}
 .home-v2-hero-media {
   isolation: isolate;
 }

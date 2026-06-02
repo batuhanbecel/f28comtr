@@ -8,11 +8,39 @@ export type SitemapChangeFrequency = NonNullable<
 export type FooterNavKey =
   | 'home'
   | 'production'
+  | 'aiPowered'
   | 'aiPoweredGallery'
   | 'aiPoweredPortfolio'
   | 'portfolios'
   | 'about'
   | 'contact';
+
+export type FooterNavEntry =
+  | { kind: 'link'; path: string; navKey: FooterNavKey }
+  | {
+      kind: 'group';
+      labelKey: 'aiPowered';
+      href: string;
+      children: { path: string; navKey: 'aiPoweredGallery' | 'aiPoweredPortfolio' }[];
+    };
+
+/** Footer navigation — grouped AI links match main menu structure. */
+export const FOOTER_NAV: FooterNavEntry[] = [
+  { kind: 'link', path: '/', navKey: 'home' },
+  { kind: 'link', path: '/production', navKey: 'production' },
+  {
+    kind: 'group',
+    labelKey: 'aiPowered',
+    href: '/ai-powered',
+    children: [
+      { path: '/ai-powered', navKey: 'aiPoweredGallery' },
+      { path: '/ai-powered/portfolio', navKey: 'aiPoweredPortfolio' },
+    ],
+  },
+  { kind: 'link', path: '/portfolios', navKey: 'portfolios' },
+  { kind: 'link', path: '/about', navKey: 'about' },
+  { kind: 'link', path: '/contact', navKey: 'contact' },
+];
 
 export interface PublicSiteRoute {
   path: string;

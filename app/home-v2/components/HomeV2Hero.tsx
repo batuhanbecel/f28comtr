@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { F28LogoBg } from '@/components/F28LogoBg';
 import { HeroReveal } from '@/components/HeroReveal';
+import { PageHeader } from '@/components/PageHeader';
 import type { ProductionPageCopy } from '@/lib/pageCopy.types';
 
 const HERO_VIDEO_SRC = '/home/hero.mp4';
@@ -66,10 +67,15 @@ export function HomeV2Hero({ heroTitle, stats }: HomeV2HeroProps) {
 
       <div className="relative z-10 flex flex-1 flex-col px-6 md:px-12 pt-28 pb-10 md:pb-14">
         <HeroReveal className="flex flex-1 flex-col md:flex-row md:items-center md:justify-between gap-10 md:gap-6 w-full max-w-7xl mx-auto">
-          <div className="flex flex-1 items-center justify-center md:justify-center md:flex-[1.2]">
-            <h1 className="home-v2-hero-title text-center md:text-center text-th-fg font-black tracking-tighter leading-[0.92]">
-              {heroTitle}
-            </h1>
+          <div className="flex flex-1 items-center justify-center md:flex-[1.2] w-full min-w-0">
+            <PageHeader
+              title={heroTitle}
+              variant="hero"
+              shell={false}
+              animate={false}
+              align="center"
+              className="w-full max-w-5xl"
+            />
           </div>
 
           <aside className="flex shrink-0 flex-row md:flex-col items-stretch justify-center md:items-end md:justify-center gap-0 md:gap-0 border border-th-fg/10 md:min-w-[200px] divide-x md:divide-x-0 md:divide-y divide-th-fg/10">

@@ -1,20 +1,18 @@
 'use client';
 
 import Link from 'next/link';
-import { PUBLIC_SITE_ROUTES } from '@/lib/siteRoutes';
+import { FOOTER_NAV } from '@/lib/siteRoutes';
 import { F28LogoMark } from '@/components/F28LogoMark';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function Footer() {
   const { t, contactInfo } = useLanguage();
 
-  const navLinks = PUBLIC_SITE_ROUTES.map(({ path, navKey }) => ({
-    href: path,
-    label: t.nav[navKey],
-  }));
-
   const linkClass =
     'text-th-fg/35 text-[13px] tracking-wide hover:text-th-fg/80 transition-colors duration-ui w-fit hover-line';
+
+  const childLinkClass =
+    'text-th-fg/30 text-[12px] tracking-wide hover:text-th-fg/70 transition-colors duration-ui w-fit hover-line pl-0';
 
   return (
     <footer className="bg-th-bg border-t border-th-fg/10">
@@ -33,11 +31,30 @@ export function Footer() {
           <div>
             <p className="section-label text-th-fg/45 mb-7">{t.footer.navigation}</p>
             <nav className="flex flex-col gap-3.5" aria-label={t.footer.navigation}>
-              {navLinks.map(({ href, label }) => (
-                <Link key={href} href={href} className={linkClass}>
-                  {label}
-                </Link>
-              ))}
+              {FOOTER_NAV.map((entry) => {
+                if (entry.kind === 'link') {
+                  return (
+                    <Link key={entry.path} href={entry.path} className={linkClass}>
+                      {t.nav[entry.navKey]}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <div key="ai-powered-group" className="flex flex-col gap-2.5">
+                    <Link href={entry.href} className={linkClass}>
+                      {t.nav[entry.labelKey]}
+                    </Link>
+                    <div className="flex flex-col gap-2 pl-4 border-l border-th-fg/10">
+                      {entry.children.map((child) => (
+                        <Link key={child.path} href={child.path} className={childLinkClass}>
+                          {t.nav[child.navKey]}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
             </nav>
           </div>
 

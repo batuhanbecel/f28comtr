@@ -48,7 +48,7 @@ export const translations = {
       aiLabel: 'AI-Powered & Creativity',
     },
     homeV2: {
-      heroTitle: 'Production & AI',
+      heroTitle: 'PRODUCTION & AI',
       servicesMarqueeLabel: 'Our services',
       selectedWorksLabel: 'Selected work',
       selectedWorksHeading: 'SELECTED WORKS',
@@ -339,7 +339,7 @@ export const translations = {
       aiLabel: 'AI-Powered & Yaratıcılık',
     },
     homeV2: {
-      heroTitle: 'Production & AI',
+      heroTitle: 'PRODUCTION & AI',
       servicesMarqueeLabel: 'Hizmetlerimiz',
       selectedWorksLabel: 'Seçili iş',
       selectedWorksHeading: 'SEÇİLİ İŞLER',
