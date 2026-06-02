@@ -8,6 +8,7 @@ export type AdminTranslations = {
     aiPowered: string;
     aiPoweredPortfolio: string;
     landing: string;
+    homeSelectedWorks: string;
     logos: string;
     previews: string;
     pageCopy: string;
@@ -44,6 +45,7 @@ export type AdminTranslations = {
   aiPowered: Record<string, string>;
   aiPoweredPortfolio: Record<string, string>;
   landing: Record<string, string>;
+  homeSelectedWorks: Record<string, string>;
   previews: Record<string, string>;
   logos: Record<string, string>;
   pageCopy: {
@@ -124,6 +126,7 @@ export const adminEn: AdminTranslations = {
     aiPowered: 'AI-Powered',
     aiPoweredPortfolio: 'AI Portfolio',
     landing: 'Landing',
+    homeSelectedWorks: 'Home — Selected',
     logos: 'Logos',
     previews: 'Previews',
     pageCopy: 'Page Copy',
@@ -273,6 +276,32 @@ export const adminEn: AdminTranslations = {
     noImages: 'No landing images found',
     noImagesHint: 'Drop images above or click Upload to add landing images',
   },
+  homeSelectedWorks: {
+    title: 'Home — Selected works',
+    intro: 'Choose up to six portfolio images and set the project title shown on the Home preview (/home-v2).',
+    count: '{count} / {max} works selected',
+    viewPreview: 'View /home-v2 ↗',
+    pickerLabel: 'Add work',
+    pickerTitle: 'Pick from portfolio',
+    photographer: 'Photographer',
+    choosePhotographer: 'Select photographer…',
+    choosePhotographerHint: 'Select a photographer to browse their portfolio images.',
+    noPortfolioImages: 'No portfolio images for this photographer.',
+    loadPortfolioFailed: 'Failed to load portfolio images',
+    workTitle: 'Project title',
+    workTitlePlaceholder: 'e.g. Çilek Mobilya campaign',
+    titleRequired: 'Every selected work needs a project title before saving.',
+    addImage: 'Add to selected works',
+    added: 'Added to selected works',
+    alreadyAdded: 'This image is already in the list',
+    maxReached: 'Maximum {max} works — remove one to add another',
+    noWorks: 'No selected works yet',
+    noWorksHint: 'Pick images from a photographer portfolio above, then set each project title.',
+    remove: 'Remove',
+    moveUp: 'Move up',
+    moveDown: 'Move down',
+    saved: 'Saved {count} selected works',
+  },
   previews: {
     title: 'Previews',
     count: '{count} images — drag to reorder, hover for controls',
@@ -399,6 +428,7 @@ export const adminTr: AdminTranslations = {
     aiPowered: 'AI-Powered',
     aiPoweredPortfolio: 'AI Portfolio',
     landing: 'Ana Sayfa',
+    homeSelectedWorks: 'Ana Sayfa — Seçili',
     logos: 'Logolar',
     previews: 'Önizlemeler',
     pageCopy: 'Sayfa Metinleri',
@@ -547,6 +577,32 @@ export const adminTr: AdminTranslations = {
     count: '{count} görsel — sıralamak için sürükleyin',
     noImages: 'Ana sayfa görseli bulunamadı',
     noImagesHint: 'Yukarıya bırakın veya görsel eklemek için Yükle’ye tıklayın',
+  },
+  homeSelectedWorks: {
+    title: 'Ana Sayfa — Seçili işler',
+    intro: 'En fazla altı portfolyo görseli seçin; proje başlığı Home önizlemesinde (/home-v2) görünür.',
+    count: '{count} / {max} iş seçildi',
+    viewPreview: '/home-v2 önizleme ↗',
+    pickerLabel: 'İş ekle',
+    pickerTitle: 'Portfolyodan seç',
+    photographer: 'Fotoğrafçı',
+    choosePhotographer: 'Fotoğrafçı seçin…',
+    choosePhotographerHint: 'Portfolyo görsellerini görmek için fotoğrafçı seçin.',
+    noPortfolioImages: 'Bu fotoğrafçı için portfolyo görseli yok.',
+    loadPortfolioFailed: 'Portfolyo görselleri yüklenemedi',
+    workTitle: 'Proje başlığı',
+    workTitlePlaceholder: 'ör. Çilek Mobilya kampanyası',
+    titleRequired: 'Kaydetmeden önce her iş için proje başlığı girin.',
+    addImage: 'Seçili işlere ekle',
+    added: 'Seçili işlere eklendi',
+    alreadyAdded: 'Bu görsel zaten listede',
+    maxReached: 'En fazla {max} iş — yeni eklemek için birini kaldırın',
+    noWorks: 'Henüz seçili iş yok',
+    noWorksHint: 'Yukarıdan portfolyo görseli seçin ve her biri için proje başlığı yazın.',
+    remove: 'Kaldır',
+    moveUp: 'Yukarı taşı',
+    moveDown: 'Aşağı taşı',
+    saved: '{count} seçili iş kaydedildi',
   },
   previews: {
     title: 'Önizlemeler',

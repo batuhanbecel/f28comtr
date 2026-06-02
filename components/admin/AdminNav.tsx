@@ -12,6 +12,7 @@ const navHrefs = [
   '/admin/ai-powered',
   '/admin/ai-powered/portfolio',
   '/admin/landing',
+  '/admin/home-selected-works',
   '/admin/logos',
   '/admin/previews',
   '/admin/copy',
@@ -30,11 +31,12 @@ export function AdminNav() {
     { href: navHrefs[2], label: a.nav.aiPowered },
     { href: navHrefs[3], label: a.nav.aiPoweredPortfolio },
     { href: navHrefs[4], label: a.nav.landing },
-    { href: navHrefs[5], label: a.nav.logos },
-    { href: navHrefs[6], label: a.nav.previews },
-    { href: navHrefs[7], label: a.nav.pageCopy },
-    { href: navHrefs[8], label: a.nav.seo },
-    { href: navHrefs[9], label: a.nav.settings },
+    { href: navHrefs[5], label: a.nav.homeSelectedWorks },
+    { href: navHrefs[6], label: a.nav.logos },
+    { href: navHrefs[7], label: a.nav.previews },
+    { href: navHrefs[8], label: a.nav.pageCopy },
+    { href: navHrefs[9], label: a.nav.seo },
+    { href: navHrefs[10], label: a.nav.settings },
   ];
 
   return (

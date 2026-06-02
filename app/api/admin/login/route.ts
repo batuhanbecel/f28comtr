@@ -23,7 +23,11 @@ export async function POST(request: NextRequest) {
     const adminPassword = process.env.ADMIN_PASSWORD;
 
     if (!adminPassword) {
-      return NextResponse.json({ error: 'Server misconfiguration.' }, { status: 500 });
+      const hint =
+        process.env.NODE_ENV === 'development'
+          ? 'ADMIN_PASSWORD is missing. Copy .env.example to .env.local and set a password.'
+          : 'Server misconfiguration.';
+      return NextResponse.json({ error: hint }, { status: 500 });
     }
 
     const ok = typeof password === 'string' && (await constantTimeEqual(password, adminPassword));
