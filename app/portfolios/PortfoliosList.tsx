@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Photographer } from '@/lib/data';
+import type { Lang } from '@/lib/translations';
 import { Footer } from '@/components/Footer';
 import { EditorialPageHero } from '@/components/EditorialPageHero';
 import { PageSection } from '@/components/PageSection';
@@ -15,13 +16,13 @@ import { ViewTransition } from '@/lib/ViewTransition';
 
 const BLUR = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q==";
 
-export function PortfoliosList({ photographers }: { photographers: Photographer[] }) {
+export function PortfoliosList({ photographers, lang }: { photographers: Photographer[]; lang: Lang }) {
   const { t } = useLanguage();
 
   return (
     <main className="min-h-screen bg-th-bg text-th-fg">
 
-      <EditorialPageHero page="portfolios" />
+      <EditorialPageHero page="portfolios" lang={lang} />
 
       <section className="pb-8">
         <div className="editorial-grid grid-cols-2 lg:grid-cols-4">

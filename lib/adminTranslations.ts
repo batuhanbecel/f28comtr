@@ -6,9 +6,12 @@ export type AdminTranslations = {
     dashboard: string;
     photographers: string;
     aiPowered: string;
+    aiPoweredPortfolio: string;
     landing: string;
     logos: string;
     previews: string;
+    pageCopy: string;
+    seo: string;
     settings: string;
     logout: string;
     toggleMenu: string;
@@ -39,22 +42,89 @@ export type AdminTranslations = {
   photographers: Record<string, string>;
   photographerEdit: Record<string, string>;
   aiPowered: Record<string, string>;
+  aiPoweredPortfolio: Record<string, string>;
   landing: Record<string, string>;
   previews: Record<string, string>;
   logos: Record<string, string>;
+  pageCopy: {
+    title: string;
+    intro: string;
+    language: string;
+    pages: { production: string; aiPowered: string; contact: string };
+    sections: {
+      hero: string;
+      stats: string;
+      services: string;
+      process: string;
+      deliverables: string;
+      team: string;
+      marquee: string;
+      filters: string;
+      channels: string;
+      form: string;
+      contactInfo: string;
+      seo: string;
+    };
+    fields: {
+      sectionLabel: string;
+      heading: string;
+      description: string;
+      title: string;
+      subtitle: string;
+      cta: string;
+      itemTitle: string;
+      itemDescription: string;
+      stepTitle: string;
+      stepSub: string;
+      deliverable: string;
+      statProjects: string;
+      statBrands: string;
+      statSince: string;
+      seoTitle: string;
+      seoDescription: string;
+      email: string;
+      instagram: string;
+      linkedin: string;
+      address: string;
+      city: string;
+    };
+    reset: string;
+    resetConfirm: string;
+    saved: string;
+    resetDone: string;
+    addService: string;
+    addStep: string;
+    addDeliverable: string;
+    removeItem: string;
+  };
+  seo: {
+    title: string;
+    intro: string;
+    language: string;
+    panelTitle: string;
+    titleField: string;
+    descriptionField: string;
+    reset: string;
+    resetConfirm: string;
+    saved: string;
+    resetDone: string;
+  };
   settings: Record<string, string>;
   toast: Record<string, string>;
 };
 
 export const adminEn: AdminTranslations = {
   label: 'Admin',
-  nav: {
+    nav: {
     dashboard: 'Dashboard',
     photographers: 'Photographers',
     aiPowered: 'AI-Powered',
+    aiPoweredPortfolio: 'AI Portfolio',
     landing: 'Landing',
     logos: 'Logos',
     previews: 'Previews',
+    pageCopy: 'Page Copy',
+    seo: 'SEO',
     settings: 'Settings',
     logout: 'Logout',
     toggleMenu: 'Toggle menu',
@@ -64,6 +134,7 @@ export const adminEn: AdminTranslations = {
     cancel: '✕ Cancel',
     upload: '+ Upload',
     save: 'Save',
+    loading: 'Loading...',
     saving: 'Saving...',
     saveOrder: 'Save Order',
     viewPage: 'View Page ↗',
@@ -178,6 +249,21 @@ export const adminEn: AdminTranslations = {
     noWorks: 'No AI-powered works found',
     noWorksHint: 'Drop images above or click Upload to add works',
   },
+  aiPoweredPortfolio: {
+    title: 'AI-Powered Portfolio',
+    count: '{count} images — assign categories, drag to reorder',
+    noImages: 'No portfolio images found',
+    noImagesHint: 'Drop images above or click Upload to add portfolio images',
+    tagsTitle: 'Filter categories',
+    tagsHint: 'Labels appear in EN and TR on the public portfolio page.',
+    tagEn: 'English label',
+    tagTr: 'Turkish label',
+    addTag: 'Add category',
+    deleteTag: 'Remove',
+    uploadTags: 'Default categories for new uploads',
+    imageTags: 'Categories',
+    noTags: 'Add categories above to enable filtering.',
+  },
   landing: {
     title: 'Landing',
     count: '{count} images — drag to reorder',
@@ -199,6 +285,73 @@ export const adminEn: AdminTranslations = {
     logoCountPlural: '{count} logos',
     noLogos: 'No {category} logos found',
     noLogosHint: 'Drop logos above or click Upload to add {category} logos',
+  },
+  pageCopy: {
+    title: 'Page Copy',
+    intro: 'Edit Production, AI-Powered, and Contact page text in English and Turkish.',
+    language: 'Language',
+    pages: {
+      production: 'Production',
+      aiPowered: 'AI-Powered',
+      contact: 'Contact',
+    },
+    sections: {
+      hero: 'Hero',
+      stats: 'Stats',
+      services: 'Services',
+      process: 'Process',
+      deliverables: 'Deliverables',
+      team: 'Team',
+      marquee: 'Marquee',
+      filters: 'Filters',
+      channels: 'Channels',
+      form: 'Form',
+      contactInfo: 'Contact details',
+      seo: 'SEO',
+    },
+    fields: {
+      sectionLabel: 'Section label',
+      heading: 'Heading',
+      description: 'Description',
+      title: 'Title',
+      subtitle: 'Subtext',
+      cta: 'Button text',
+      itemTitle: 'Item title',
+      itemDescription: 'Item description',
+      stepTitle: 'Step title',
+      stepSub: 'Step description',
+      deliverable: 'Deliverable',
+      statProjects: 'Projects value',
+      statBrands: 'Brands value',
+      statSince: 'Since year',
+      seoTitle: 'Meta title',
+      seoDescription: 'Meta description',
+      email: 'Email',
+      instagram: 'Instagram URL',
+      linkedin: 'LinkedIn URL',
+      address: 'Address',
+      city: 'City',
+    },
+    reset: 'Reset to defaults',
+    resetConfirm: 'Reset all custom copy for this page and language?',
+    saved: 'Page copy saved',
+    resetDone: 'Reset to defaults',
+    addService: '+ Add service',
+    addStep: '+ Add step',
+    addDeliverable: '+ Add deliverable',
+    removeItem: 'Remove',
+  },
+  seo: {
+    title: 'SEO / Metadata',
+    intro: 'Edit meta title and description for all public pages (EN/TR). Stored separately from page body copy.',
+    language: 'Language',
+    panelTitle: 'Meta tags',
+    titleField: 'Meta title',
+    descriptionField: 'Meta description',
+    reset: 'Reset SEO',
+    resetConfirm: 'Reset custom SEO for this page and language?',
+    saved: 'SEO saved',
+    resetDone: 'SEO reset to defaults',
   },
   settings: {
     title: 'Settings',
@@ -238,9 +391,12 @@ export const adminTr: AdminTranslations = {
     dashboard: 'Panel',
     photographers: 'Fotoğrafçılar',
     aiPowered: 'AI-Powered',
+    aiPoweredPortfolio: 'AI Portfolio',
     landing: 'Ana Sayfa',
     logos: 'Logolar',
     previews: 'Önizlemeler',
+    pageCopy: 'Sayfa Metinleri',
+    seo: 'SEO',
     settings: 'Ayarlar',
     logout: 'Çıkış',
     toggleMenu: 'Menüyü aç/kapat',
@@ -250,6 +406,7 @@ export const adminTr: AdminTranslations = {
     cancel: '✕ İptal',
     upload: '+ Yükle',
     save: 'Kaydet',
+    loading: 'Yükleniyor...',
     saving: 'Kaydediliyor...',
     saveOrder: 'Sırayı Kaydet',
     viewPage: 'Sayfayı Gör ↗',
@@ -364,6 +521,21 @@ export const adminTr: AdminTranslations = {
     noWorks: 'AI-Powered çalışma bulunamadı',
     noWorksHint: 'Yukarıya bırakın veya çalışma eklemek için Yükle’ye tıklayın',
   },
+  aiPoweredPortfolio: {
+    title: 'AI-Powered Portfolio',
+    count: '{count} görsel — kategori ata, sıralamak için sürükleyin',
+    noImages: 'Portfolyo görseli bulunamadı',
+    noImagesHint: 'Yukarıya bırakın veya portfolyo görseli eklemek için Yükle’ye tıklayın',
+    tagsTitle: 'Filtre kategorileri',
+    tagsHint: 'Etiketler public portfolyo sayfasında EN ve TR olarak görünür.',
+    tagEn: 'İngilizce etiket',
+    tagTr: 'Türkçe etiket',
+    addTag: 'Kategori ekle',
+    deleteTag: 'Kaldır',
+    uploadTags: 'Yeni yüklemeler için varsayılan kategoriler',
+    imageTags: 'Kategoriler',
+    noTags: 'Filtreleme için yukarıdan kategori ekleyin.',
+  },
   landing: {
     title: 'Ana Sayfa',
     count: '{count} görsel — sıralamak için sürükleyin',
@@ -385,6 +557,73 @@ export const adminTr: AdminTranslations = {
     logoCountPlural: '{count} logo',
     noLogos: '{category} logosu bulunamadı',
     noLogosHint: 'Yukarıya bırakın veya {category} logosu eklemek için Yükle’ye tıklayın',
+  },
+  pageCopy: {
+    title: 'Sayfa Metinleri',
+    intro: 'Production, AI-Powered ve İletişim sayfalarının EN/TR metinlerini düzenleyin.',
+    language: 'Dil',
+    pages: {
+      production: 'Production',
+      aiPowered: 'AI-Powered',
+      contact: 'İletişim',
+    },
+    sections: {
+      hero: 'Hero',
+      stats: 'İstatistikler',
+      services: 'Hizmetler',
+      process: 'Süreç',
+      deliverables: 'Teslimatlar',
+      team: 'Ekip',
+      marquee: 'Marquee',
+      filters: 'Filtreler',
+      channels: 'Kanallar',
+      form: 'Form',
+      contactInfo: 'İletişim bilgileri',
+      seo: 'SEO',
+    },
+    fields: {
+      sectionLabel: 'Bölüm etiketi',
+      heading: 'Başlık',
+      description: 'Açıklama',
+      title: 'Başlık',
+      subtitle: 'Alt metin',
+      cta: 'Buton metni',
+      itemTitle: 'Öğe başlığı',
+      itemDescription: 'Öğe açıklaması',
+      stepTitle: 'Adım başlığı',
+      stepSub: 'Adım açıklaması',
+      deliverable: 'Teslimat',
+      statProjects: 'Proje değeri',
+      statBrands: 'Marka değeri',
+      statSince: 'Kuruluş yılı',
+      seoTitle: 'Meta başlık',
+      seoDescription: 'Meta açıklama',
+      email: 'E-posta',
+      instagram: 'Instagram URL',
+      linkedin: 'LinkedIn URL',
+      address: 'Adres',
+      city: 'Şehir',
+    },
+    reset: 'Varsayılana dön',
+    resetConfirm: 'Bu sayfa ve dil için tüm özel metinler silinsin mi?',
+    saved: 'Sayfa metinleri kaydedildi',
+    resetDone: 'Varsayılana döndürüldü',
+    addService: '+ Hizmet ekle',
+    addStep: '+ Adım ekle',
+    addDeliverable: '+ Teslimat ekle',
+    removeItem: 'Kaldır',
+  },
+  seo: {
+    title: 'SEO / Meta',
+    intro: 'Tüm public sayfalar için meta başlık ve açıklama (EN/TR). Sayfa metinlerinden ayrı kaydedilir.',
+    language: 'Dil',
+    panelTitle: 'Meta etiketleri',
+    titleField: 'Meta başlık',
+    descriptionField: 'Meta açıklama',
+    reset: 'SEO sıfırla',
+    resetConfirm: 'Bu sayfa ve dil için özel SEO sıfırlansın mı?',
+    saved: 'SEO kaydedildi',
+    resetDone: 'SEO varsayılana döndü',
   },
   settings: {
     title: 'Ayarlar',

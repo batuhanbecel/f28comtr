@@ -6,11 +6,12 @@ import { shouldSkipOptimization } from "@/lib/blob"
 import { GRID_IMAGE_QUALITY } from "@/lib/imageConfig"
 import { AI_WORK_CARD_SIZES } from "@/lib/imageSizes"
 import { useInView } from "@/lib/useInView"
-import { useLanguage } from "@/context/LanguageContext"
+import type { AiPoweredPageCopy } from '@/lib/pageCopy.types'
 import type { AiPoweredWork } from "@/lib/aiPoweredWorks"
 
 interface WorkCardProps {
   work: AiPoweredWork
+  filtersCopy: AiPoweredPageCopy['filters']
   priority?: boolean
   onOpen?: () => void
   onMeasure?: (src: string, w: number, h: number) => void
@@ -18,20 +19,20 @@ interface WorkCardProps {
 
 export const WorkCard = memo(function WorkCard({
   work,
+  filtersCopy,
   priority = false,
   onOpen,
   onMeasure,
 }: WorkCardProps) {
-  const { t } = useLanguage()
   const { ref, inView } = useInView<HTMLButtonElement>({
     rootMargin: "400px 0px",
     initial: priority,
   })
 
   const categoryLabels: Record<string, string> = {
-    visual: t.aiPowered.filters.visual,
-    video: t.aiPowered.filters.video,
-    hybrid: t.aiPowered.filters.hybrid,
+    visual: filtersCopy.visual,
+    video: filtersCopy.video,
+    hybrid: filtersCopy.hybrid,
   }
 
   const typeLabel = categoryLabels[work.category] ?? work.category

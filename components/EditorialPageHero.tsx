@@ -1,16 +1,20 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useLanguage } from '@/context/LanguageContext';
 import { PageHeader } from '@/components/PageHeader';
 import { HeroReveal } from '@/components/HeroReveal';
 import { ScrollIndicator } from '@/components/ScrollIndicator';
 import { F28LogoBg } from '@/components/F28LogoBg';
+import { translations, type Lang } from '@/lib/translations';
 
-export type EditorialHeroPage = 'production' | 'aiPowered' | 'about' | 'portfolios';
+export type EditorialHeroPage = 'production' | 'aiPowered' | 'aiPoweredPortfolio' | 'about' | 'portfolios' | 'contact';
 
 interface EditorialPageHeroProps {
   page: EditorialHeroPage;
+  /** Server-resolved language — avoids hydration mismatch vs context default. */
+  lang: Lang;
+  /** When set, overrides translation defaults (e.g. Redis-backed page copy). */
+  heroCopy?: { label: string; title: string; description?: string };
   children?: ReactNode;
   scrollSnap?: boolean;
   showScroll?: boolean;
@@ -23,14 +27,16 @@ interface EditorialPageHeroProps {
  */
 export function EditorialPageHero({
   page,
+  lang,
+  heroCopy,
   children,
   scrollSnap = false,
   showScroll = true,
   className = '',
 }: EditorialPageHeroProps) {
-  const { t } = useLanguage();
+  const t = translations[lang];
 
-  const copy: { label: string; title: string; description?: string } = {
+  const builtInCopy: { label: string; title: string; description?: string } = {
     production: {
       label: t.production.sectionLabel,
       title: t.production.heading,
@@ -41,6 +47,11 @@ export function EditorialPageHero({
       title: t.aiPowered.heading,
       description: t.aiPowered.description,
     },
+    aiPoweredPortfolio: {
+      label: t.aiPoweredPortfolio.sectionLabel,
+      title: t.aiPoweredPortfolio.heading,
+      description: t.aiPoweredPortfolio.description,
+    },
     about: {
       label: t.about.sectionLabel,
       title: t.about.heading,
@@ -50,7 +61,14 @@ export function EditorialPageHero({
       label: t.portfolios.sectionLabel,
       title: t.portfolios.heading,
     },
+    contact: {
+      label: t.contact.sectionLabel,
+      title: t.contact.heading,
+      description: t.contact.description,
+    },
   }[page];
+
+  const copy = heroCopy ?? builtInCopy;
 
   return (
     <section

@@ -3,6 +3,9 @@ import { checkAuth } from '@/lib/auth';
 import { getPhotographers, setPhotographers } from '@/lib/db';
 
 export async function GET() {
+  if (!(await checkAuth())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   try {
     const photographers = await getPhotographers();
     return NextResponse.json(photographers);

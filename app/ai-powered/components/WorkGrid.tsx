@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import { BalancedMasonryGrid, Frame } from "@masonry-grid/react"
-import { useLanguage } from "@/context/LanguageContext"
 import type { AiPoweredWork } from "@/lib/aiPoweredWorks"
 import { WorkCard } from "./WorkCard"
 
+import type { AiPoweredPageCopy } from '@/lib/pageCopy.types'
+
 interface WorkGridProps {
   works: AiPoweredWork[]
+  filtersCopy: AiPoweredPageCopy['filters']
   onOpenAt: (index: number) => void
 }
 
@@ -15,8 +17,7 @@ interface WorkGridProps {
 const FRAME_W = 4
 const FRAME_H = 3
 
-export function WorkGrid({ works, onOpenAt }: WorkGridProps) {
-  const { t } = useLanguage()
+export function WorkGrid({ works, filtersCopy, onOpenAt }: WorkGridProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [frameWidth, setFrameWidth] = useState(360)
   const [dims, setDims] = useState<Record<string, { w: number; h: number }>>({})
@@ -46,7 +47,7 @@ export function WorkGrid({ works, onOpenAt }: WorkGridProps) {
   if (works.length === 0) {
     return (
       <div className="py-20 text-center">
-        <p className="text-[13px] text-th-fg/30 tracking-wide">{t.aiPowered.filters.empty}</p>
+        <p className="text-[13px] text-th-fg/30 tracking-wide">{filtersCopy.empty}</p>
       </div>
     )
   }
@@ -60,6 +61,7 @@ export function WorkGrid({ works, onOpenAt }: WorkGridProps) {
             <Frame key={work.id} width={d?.w ?? FRAME_W} height={d?.h ?? FRAME_H}>
               <WorkCard
                 work={work}
+                filtersCopy={filtersCopy}
                 priority={i === 0}
                 onOpen={() => onOpenAt(i)}
                 onMeasure={handleMeasure}

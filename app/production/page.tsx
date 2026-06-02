@@ -1,41 +1,86 @@
 import type { Metadata } from 'next';
-import { getPhotographers } from '@/lib/db';
-import { ParallaxSection } from '@/components/ParallaxSection';
+
 import { Footer } from '@/components/Footer';
-import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
+
 import { EditorialPageHero } from '@/components/EditorialPageHero';
+
 import { ProductionStats } from '@/components/ProductionStats';
+
+import { getProductionMarqueeItems } from '@/lib/productionMarquee';
+
+import { getPageCopy } from '@/lib/pageCopy';
+
+import { getServerLang } from '@/lib/serverLang';
+
 import { generatePageMetadata } from '@/lib/seo';
+
+import { ProductionMarquee } from './components/ProductionMarquee';
+
+import { ProductionSections } from './components/ProductionSections';
+
+
 
 export async function generateMetadata(): Promise<Metadata> {
   return generatePageMetadata('production', '/production');
 }
 
+
+
 export const revalidate = 60;
 
+
+
 export default async function ProductionPage() {
-  const photographers = await getPhotographers();
+
+  const lang = await getServerLang();
+
+  const [copy, marqueeItems] = await Promise.all([
+
+    getPageCopy('production', lang),
+
+    getProductionMarqueeItems(100),
+
+  ]);
+
+
+
+  const heroCopy = {
+
+    label: copy.sectionLabel,
+
+    title: copy.heading,
+
+    description: copy.description,
+
+  };
+
+
 
   return (
-    <ProductionSnapContainer snapMode="heroSnap">
-      <EditorialPageHero page="production" scrollSnap>
-        <ProductionStats projectCount={1000} brandCount={150} inHero />
+
+    <main className="min-h-screen bg-th-bg text-th-fg">
+
+      <EditorialPageHero page="production" lang={lang} heroCopy={heroCopy}>
+
+        <ProductionStats copy={copy} inHero />
+
       </EditorialPageHero>
 
-      {photographers.map((photographer, index) => (
-        <ParallaxSection
-          key={photographer.id}
-          photographer={photographer}
-          index={index}
-          total={photographers.length}
-          fullscreen
-        />
-      ))}
 
-      <div style={{ scrollSnapAlign: 'start' }}>
-        <Footer />
-      </div>
-    </ProductionSnapContainer>
+
+      <ProductionSections copy={copy} />
+
+
+
+      <ProductionMarquee items={marqueeItems} copy={copy} />
+
+
+
+      <Footer />
+
+    </main>
+
   );
+
 }
-
+

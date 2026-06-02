@@ -1,21 +1,20 @@
 'use client';
 
 import { ScrollReveal } from '@/components/ScrollReveal';
-import { useLanguage } from '@/context/LanguageContext';
+import type { AiPoweredPageCopy } from '@/lib/pageCopy.types';
 
 interface AiPoweredStatsProps {
   workCount: number;
   brandCount: number;
+  copy: Pick<AiPoweredPageCopy, 'stats' | 'statsValues'>;
   inHero?: boolean;
 }
 
-export function AiPoweredStats({ workCount, brandCount, inHero = false }: AiPoweredStatsProps) {
-  const { t } = useLanguage();
-
+export function AiPoweredStats({ workCount, brandCount, copy, inHero = false }: AiPoweredStatsProps) {
   const stats = [
-    { value: `${workCount}+`, label: t.aiPowered.stats.projects },
-    { value: `${brandCount}+`, label: t.aiPowered.stats.brands },
-    { value: '2008', label: t.aiPowered.stats.since },
+    { value: `${workCount}+`, label: copy.stats.projects },
+    { value: `${brandCount}+`, label: copy.stats.brands },
+    { value: copy.statsValues.sinceYear, label: copy.stats.since },
   ];
 
   return (

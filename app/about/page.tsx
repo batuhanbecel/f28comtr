@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getPartnerLogos, getClientLogos } from '@/lib/utils';
 import { getPhotographers } from '@/lib/db';
+import { getServerLang } from '@/lib/serverLang';
 import { Footer } from '@/components/Footer';
 import { EditorialPageHero } from '@/components/EditorialPageHero';
 import { LocalizedAboutBrands } from '@/components/LocalizedAboutBrands';
@@ -17,6 +18,7 @@ export const revalidate = 60;
 const SERVICES = ['Photography', 'Videography', 'CGI', 'Animation', 'Editing', 'Motion Graphics'];
 
 export default async function AboutPage() {
+  const lang = await getServerLang();
   const [partnerLogos, clientLogos] = await Promise.all([
     getPartnerLogos(),
     getClientLogos(),
@@ -25,7 +27,7 @@ export default async function AboutPage() {
 
   return (
     <ProductionSnapContainer snapMode="heroSnap">
-      <EditorialPageHero page="about" scrollSnap>
+      <EditorialPageHero page="about" lang={lang} scrollSnap>
         <div className="flex flex-wrap justify-center gap-3 w-full max-w-3xl">
           {SERVICES.map((s, i) => (
             <span key={s} className="editorial-chip">

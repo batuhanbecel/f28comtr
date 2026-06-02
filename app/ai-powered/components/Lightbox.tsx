@@ -1,25 +1,24 @@
 "use client"
 
 import { Lightbox as UnifiedLightbox } from "@/components/Lightbox"
-import { useLanguage } from "@/context/LanguageContext"
+import type { AiPoweredPageCopy } from '@/lib/pageCopy.types'
 import type { AiPoweredWork } from "@/lib/aiPoweredWorks"
 
 interface LightboxProps {
   works: AiPoweredWork[]
+  filtersCopy: AiPoweredPageCopy['filters']
   index: number | null
   onClose: () => void
   onIndexChange: (next: number) => void
 }
 
-export function Lightbox({ works, index, onClose, onIndexChange }: LightboxProps) {
-  const { t } = useLanguage()
-
+export function Lightbox({ works, filtersCopy, index, onClose, onIndexChange }: LightboxProps) {
   const slides = works.map((w) => ({ src: w.imageSrc, alt: w.imageAlt }))
 
   const categoryLabels: Record<string, string> = {
-    visual: t.aiPowered.filters.visual,
-    video: t.aiPowered.filters.video,
-    hybrid: t.aiPowered.filters.hybrid,
+    visual: filtersCopy.visual,
+    video: filtersCopy.video,
+    hybrid: filtersCopy.hybrid,
   }
 
   return (

@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { photographers as staticPhotographers } from '@/lib/data';
 import { getPhotographers } from '@/lib/db';
+import { absoluteUrl } from '@/lib/siteUrl';
 
 export const runtime = 'nodejs';
 export const alt = 'Portfolio';
@@ -42,7 +43,7 @@ export default async function OGImage({ params }: { params: Promise<{ id: string
 
   const previewUrl = photographer.preview.startsWith('http')
     ? photographer.preview
-    : `https://www.f28.com.tr${photographer.preview}`;
+    : absoluteUrl(photographer.preview);
 
   return new ImageResponse(
     (

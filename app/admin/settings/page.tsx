@@ -1,5 +1,4 @@
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { requireAdminSession } from '@/lib/auth';
 import { SiteSettingsClient } from '@/components/admin/SiteSettingsClient';
 import { isRedisConfigured } from '@/lib/db';
 import { AdminPageLayout } from '@/components/admin/AdminPageLayout';
@@ -9,8 +8,7 @@ import { getAdminT } from '@/lib/getAdminT';
 export const dynamic = 'force-dynamic';
 
 export default async function SettingsPage() {
-  const cookieStore = await cookies();
-  if (!cookieStore.get('f28-admin-session')?.value) redirect('/admin/login');
+  await requireAdminSession();
 
   const a = await getAdminT();
   const redisOk = isRedisConfigured();

@@ -4,6 +4,9 @@ import { getPhotographers, setPhotographers } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  if (!(await checkAuth())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   try {
     const { id } = await params;
     const photographers = await getPhotographers();

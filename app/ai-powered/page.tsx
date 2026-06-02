@@ -6,6 +6,8 @@ import { AiPoweredStats } from "./components/AiPoweredStats"
 import { Footer } from "@/components/Footer"
 import { getAiPoweredWorks } from "@/lib/aiPoweredWorks"
 import type { AiPoweredWork } from "@/lib/aiPoweredWorks"
+import { getPageCopy } from "@/lib/pageCopy"
+import { getServerLang } from "@/lib/serverLang"
 import { generatePageMetadata } from "@/lib/seo"
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -14,15 +16,26 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export const revalidate = 60
 
-async function StatsBlock({ worksPromise }: { worksPromise: Promise<AiPoweredWork[]> }) {
+async function StatsBlock({
+  worksPromise,
+  copy,
+}: {
+  worksPromise: Promise<AiPoweredWork[]>
+  copy: Awaited<ReturnType<typeof getPageCopy<'aiPowered'>>>
+}) {
   const works = await worksPromise
   const brandCount = new Set(works.map((w) => w.brandKey)).size
-  return <AiPoweredStats workCount={works.length} brandCount={brandCount} inHero />
+  return <AiPoweredStats workCount={works.length} brandCount={brandCount} copy={copy} inHero />
 }
 
-async function GalleryBlock({ worksPromise }: { worksPromise: Promise<AiPoweredWork[]> }) {
-  const works = await worksPromise
-  return <AiPoweredGallery works={works} />
+async function GalleryBlock({
+  worksPromise,
+}: {
+  worksPromise: Promise<AiPoweredWork[]>
+}) {
+  const [works, lang] = await Promise.all([worksPromise, getServerLang()])
+  const copy = await getPageCopy('aiPowered', lang)
+  return <AiPoweredGallery works={works} copy={copy} />
 }
 
 function StatsSkeleton() {
@@ -59,16 +72,20 @@ function GallerySkeleton() {
   )
 }
 
-export default function AiPoweredPage() {
+export default async function AiPoweredPage() {
+  const lang = await getServerLang();
+  const copy = await getPageCopy('aiPowered', lang);
   const worksPromise = getAiPoweredWorks()
 
   return (
     <>
       <main className="bg-th-bg text-th-fg min-h-screen">
         <AiPoweredHero
+          lang={lang}
+          copy={copy}
           statsSlot={
             <Suspense fallback={<StatsSkeleton />}>
-              <StatsBlock worksPromise={worksPromise} />
+              <StatsBlock worksPromise={worksPromise} copy={copy} />
             </Suspense>
           }
         />

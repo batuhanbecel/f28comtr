@@ -1,5 +1,12 @@
-const CACHE_NAME = 'f28-v2';
+const CACHE_NAME = 'f28-v4';
 const PRECACHE = ['/', '/production', '/ai-powered', '/portfolios', '/about'];
+
+function shouldSkipCache(url: URL): boolean {
+  if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/api/')) return true;
+  if (url.pathname.startsWith('/_next/')) return true;
+  if (url.pathname.endsWith('.js') || url.pathname.endsWith('.mjs')) return true;
+  return false;
+}
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
@@ -20,10 +27,9 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const { request } = e;
 
-  // Skip non-GET, admin, and API requests
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
-  if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/api/')) return;
+  if (shouldSkipCache(url)) return;
 
   // Images: cache-first
   if (
@@ -46,11 +52,11 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // Pages/assets: network-first with cache fallback
+  // HTML pages: network-first with cache fallback (never cache JS bundles)
   e.respondWith(
     fetch(request)
       .then((res) => {
-        if (res.ok && url.origin === self.location.origin) {
+        if (res.ok && url.origin === self.location.origin && request.mode === 'navigate') {
           const clone = res.clone();
           caches.open(CACHE_NAME).then((c) => c.put(request, clone));
         }

@@ -27,6 +27,10 @@ export default function PhotographersPage() {
     try {
       const res = await fetch('/api/admin/photographers');
       if (res.status === 401) { router.push('/admin/login'); return; }
+      if (!res.ok) {
+        toast.error(a.toast.loadFailed);
+        return;
+      }
       setPhotographers(await res.json());
     } catch { toast.error(a.toast.loadFailed); }
     finally { setLoading(false); }

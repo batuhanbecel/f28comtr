@@ -1,17 +1,30 @@
 import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import type { Photographer } from '@/lib/data';
-import { LANG_COOKIE, parseLang } from '@/lib/prefs';
+import type { SeoCopy } from '@/lib/pageCopy.types';
+import { LANG_COOKIE, langFromAcceptLanguage, parseLang } from '@/lib/prefs';
+import { getPageSeo } from '@/lib/siteSeo';
 import { absoluteUrl } from '@/lib/siteUrl';
 import { translations, type Lang } from '@/lib/translations';
 
 const SITE_NAME = 'f/2.8 Production Agency';
 
-export type SeoPageKey = 'home' | 'production' | 'aiPowered' | 'portfolios' | 'about';
+export type SeoPageKey =
+  | 'home'
+  | 'production'
+  | 'aiPowered'
+  | 'aiPoweredPortfolio'
+  | 'portfolios'
+  | 'about'
+  | 'contact';
 
 export async function getMetadataLang(): Promise<Lang> {
   const cookieStore = await cookies();
-  return parseLang(cookieStore.get(LANG_COOKIE)?.value);
+  const fromCookie = cookieStore.get(LANG_COOKIE)?.value;
+  if (fromCookie) return parseLang(fromCookie);
+
+  const headersList = await headers();
+  return langFromAcceptLanguage(headersList.get('accept-language'));
 }
 
 export function getSeoCopy(lang: Lang, page: SeoPageKey) {
@@ -26,6 +39,19 @@ export function formatSeoTemplate(
     (acc, [key, value]) => acc.replaceAll(`{${key}}`, value),
     template,
   );
+}
+
+function languageAlternates(path: string) {
+  const en = absoluteUrl(path);
+  const tr = absoluteUrl(path.includes('?') ? `${path}&lang=tr` : `${path}?lang=tr`);
+  return {
+    canonical: en,
+    languages: {
+      en,
+      tr,
+      'x-default': en,
+    },
+  };
 }
 
 export interface BuildPageMetadataInput {
@@ -47,15 +73,14 @@ export function buildPageMetadata({
 }: BuildPageMetadataInput): Metadata {
   const url = absoluteUrl(path);
   const ogLocale = lang === 'tr' ? 'tr_TR' : 'en_US';
+  const ogLocaleAlternate = lang === 'tr' ? 'en_US' : 'tr_TR';
 
   const metadata: Metadata = {
     title,
     description,
     ...(!noIndex
       ? {
-          alternates: {
-            canonical: url,
-          },
+          alternates: languageAlternates(path),
         }
       : {}),
     openGraph: {
@@ -64,6 +89,7 @@ export function buildPageMetadata({
       url,
       type: 'website',
       locale: ogLocale,
+      alternateLocale: [ogLocaleAlternate],
       siteName: SITE_NAME,
       ...(image ? { images: [{ url: image }] } : {}),
     },
@@ -71,6 +97,7 @@ export function buildPageMetadata({
       card: 'summary_large_image',
       title,
       description,
+      ...(image ? { images: [image] } : {}),
     },
   };
 
@@ -88,8 +115,9 @@ export function buildPageMetadataFromSeoKey(
   overrides?: Partial<Pick<BuildPageMetadataInput, 'title' | 'description' | 'image' | 'noIndex'>> & {
     absoluteTitle?: boolean;
   },
+  seoCopy?: SeoCopy,
 ): Metadata {
-  const copy = getSeoCopy(lang, page);
+  const copy = seoCopy ?? getSeoCopy(lang, page);
   const title = overrides?.title ?? copy.title;
   const base = buildPageMetadata({
     path,
@@ -113,7 +141,8 @@ export async function generatePageMetadata(
   },
 ): Promise<Metadata> {
   const lang = await getMetadataLang();
-  return buildPageMetadataFromSeoKey(lang, page, path, overrides);
+  const seo = await getPageSeo(page, lang);
+  return buildPageMetadataFromSeoKey(lang, page, path, overrides, seo);
 }
 
 export async function generatePhotographerMetadata(

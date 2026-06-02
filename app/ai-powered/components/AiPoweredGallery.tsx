@@ -7,11 +7,14 @@ import { FilterBar } from "./FilterBar"
 import { WorkGrid } from "./WorkGrid"
 import { Lightbox } from "./Lightbox"
 
+import type { AiPoweredPageCopy } from '@/lib/pageCopy.types'
+
 interface AiPoweredGalleryProps {
   works: AiPoweredWork[]
+  copy: Pick<AiPoweredPageCopy, 'filters'>
 }
 
-export function AiPoweredGallery({ works }: AiPoweredGalleryProps) {
+export function AiPoweredGallery({ works, copy }: AiPoweredGalleryProps) {
   const { filters, filtered, counts, brands, setBrand, setCategory } = useAiPoweredFilter(works)
   const deferredFiltered = useDeferredValue(filtered)
   const isFiltering = deferredFiltered !== filtered
@@ -29,6 +32,7 @@ export function AiPoweredGallery({ works }: AiPoweredGalleryProps) {
     <section className="ai-gallery-section">
       <FilterBar
         filters={filters}
+        filtersCopy={copy.filters}
         brands={brands}
         counts={counts}
         onBrand={setBrand}
@@ -39,11 +43,12 @@ export function AiPoweredGallery({ works }: AiPoweredGalleryProps) {
         className="transition-opacity duration-200"
         style={{ opacity: isFiltering ? 0.65 : 1 }}
       >
-        <WorkGrid works={deferredFiltered} onOpenAt={openAt} />
+        <WorkGrid works={deferredFiltered} filtersCopy={copy.filters} onOpenAt={openAt} />
       </div>
 
       <Lightbox
         works={deferredFiltered}
+        filtersCopy={copy.filters}
         index={lightboxIndex}
         onClose={closeLightbox}
         onIndexChange={setLightboxIndex}

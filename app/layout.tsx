@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 import { ViewTransition } from "@/lib/ViewTransition";
 import "./globals.css";
 import { SiteChrome } from "@/components/SiteChrome";
+import { SiteHeader } from "@/components/SiteHeader";
+import type { NavPhotographer } from "@/components/Menu";
 import { CustomCursor } from "@/components/CustomCursor";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
@@ -12,8 +14,11 @@ import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { parseLang, parseTheme } from "@/lib/prefs";
-import { getSiteUrl, absoluteUrl } from "@/lib/siteUrl";
+import { getSiteUrl } from "@/lib/siteUrl";
 import { SITE_NAME } from "@/lib/seo";
+import { getContactInfo } from "@/lib/pageCopy";
+import { getOrganizationStructuredData, getWebsiteStructuredData } from "@/lib/structuredData";
+import { getPhotographers } from "@/lib/db";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -30,8 +35,19 @@ export const metadata: Metadata = {
     template: "%s | f/2.8 Production Agency",
   },
   description:
-    "Professional photography and retouching production agency in Istanbul. Featuring top photographers and retouchers for commercial and creative projects.",
-  keywords: ["photography", "retouching", "production agency", "Istanbul", "commercial photography", "f28"],
+    "Professional photography, video, CGI, and AI-powered production agency in Istanbul since 2008.",
+  keywords: [
+    "photography",
+    "retouching",
+    "production agency",
+    "Istanbul",
+    "commercial photography",
+    "AI-powered production",
+    "videography",
+    "CGI",
+    "f28",
+    "f/2.8 Production",
+  ],
   authors: [{ name: "f/2.8 Production" }],
   creator: "f/2.8 Production",
   publisher: "f/2.8 Production",
@@ -65,36 +81,21 @@ export default async function RootLayout({
   const initialTheme = parseTheme(cookieStore.get("f28_theme")?.value);
   const siteUrl = getSiteUrl();
 
-  const organizationLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: SITE_NAME,
-    url: siteUrl,
-    logo: absoluteUrl('/icon'),
-    description: 'Professional photography and retouching production agency in Istanbul.',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: 'Mecidiyeköy, Kuştepe Mahallesi, Yoncalı Sokak, No: 1',
-      addressLocality: 'Şişli',
-      addressRegion: 'İstanbul',
-      postalCode: '34387',
-      addressCountry: 'TR',
-    },
-    sameAs: [
-      'https://www.instagram.com/f28production',
-      'https://linkedin.com/company/f-2-8-production/',
-    ],
-    foundingDate: '2008',
-    knowsAbout: ['Photography', 'Retouching', 'AI-Powered Production', 'Commercial Photography'],
-  };
+  const [photographers, initialContactInfo] = await Promise.all([
+    getPhotographers(),
+    getContactInfo(initialLang),
+  ]);
+  const navPhotographers: NavPhotographer[] = photographers.map((p) => ({
+    id: p.id,
+    fullName: p.fullName,
+    title: p.title,
+  }));
 
-  const websiteLd = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: SITE_NAME,
-    url: siteUrl,
-    publisher: { '@type': 'Organization', name: SITE_NAME, url: siteUrl },
-  };
+  const organizationLd = getOrganizationStructuredData(siteUrl, initialContactInfo, initialLang);
+  const websiteLd = getWebsiteStructuredData(
+    siteUrl,
+    photographers.map((p) => p.id),
+  );
 
   return (
     <html lang={initialLang} className={inter.variable} data-theme={initialTheme}>
@@ -111,9 +112,10 @@ export default async function RootLayout({
       </head>
       <body className="antialiased bg-th-bg text-th-fg">
         <ThemeProvider initialTheme={initialTheme}>
-          <LanguageProvider initialLang={initialLang}>
+          <LanguageProvider initialLang={initialLang} initialContactInfo={initialContactInfo}>
             <SmoothScrollProvider>
               <CustomCursor />
+              <SiteHeader photographers={navPhotographers} lang={initialLang} />
               <SiteChrome />
               <ViewTransition>{children}</ViewTransition>
               <SpeedInsights />

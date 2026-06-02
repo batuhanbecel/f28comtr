@@ -1,5 +1,5 @@
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { requireAdminSession } from '@/lib/auth';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getPhotographers, getAiPoweredImages, isRedisConfigured } from '@/lib/db';
@@ -10,9 +10,7 @@ import { getAdminT } from '@/lib/getAdminT';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get('f28-admin-session');
-  if (!sessionCookie?.value) redirect('/admin/login');
+  await requireAdminSession();
 
   const a = await getAdminT();
 

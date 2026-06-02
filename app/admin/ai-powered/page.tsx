@@ -243,6 +243,9 @@ export default function AdminAiPowered() {
       actions={
         <>
           {dirty ? <span className="text-amber-400/70 text-[10px] tracking-[0.3em] uppercase">{a.status.unsaved}</span> : null}
+          <Link href="/admin/ai-powered/portfolio" className="btn-editorial text-[10px]">
+            {a.nav.aiPoweredPortfolio}
+          </Link>
           <Link href="/ai-powered" target="_blank" className="btn-editorial text-[10px]">
             {a.actions.viewPage}
           </Link>

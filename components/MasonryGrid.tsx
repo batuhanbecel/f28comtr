@@ -11,6 +11,8 @@ import { Lightbox } from '@/components/Lightbox';
 interface MasonryGridProps {
   images: string[];
   photographerName: string;
+  /** Edge-to-edge masonry; uses viewport width for column sizing. */
+  fullWidth?: boolean;
 }
 
 // Fallback ratio used only until the image's real dimensions are measured.
@@ -62,7 +64,7 @@ const MasonryThumb = memo(function MasonryThumb({
   );
 });
 
-export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
+export function MasonryGrid({ images, photographerName, fullWidth = false }: MasonryGridProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [frameWidth, setFrameWidth] = useState(300);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -86,8 +88,20 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
   useEffect(() => {
     let ticking = false;
     const update = () => {
-      const w = containerRef.current?.clientWidth || window.innerWidth;
-      const cols = w >= 1024 ? 4 : 2;
+      const w = fullWidth
+        ? window.innerWidth
+        : containerRef.current?.clientWidth || window.innerWidth;
+      const cols = fullWidth
+        ? w >= 1536
+          ? 5
+          : w >= 1024
+            ? 4
+            : w >= 640
+              ? 3
+              : 2
+        : w >= 1024
+          ? 4
+          : 2;
       setFrameWidth(Math.floor(w / cols));
       ticking = false;
     };
@@ -99,7 +113,7 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
     };
     window.addEventListener('resize', onResize, { passive: true });
     return () => window.removeEventListener('resize', onResize);
-  }, []);
+  }, [fullWidth]);
 
   const openLightbox = useCallback((img: string) => {
     const idx = visibleImages.indexOf(img);
@@ -112,7 +126,7 @@ export function MasonryGrid({ images, photographerName }: MasonryGridProps) {
 
   return (
     <>
-      <div ref={containerRef} className="masonry-scroll">
+      <div ref={containerRef} className={fullWidth ? 'masonry-scroll w-full' : 'masonry-scroll'}>
         <MasonryGridLib frameWidth={frameWidth} gap={3}>
           {visibleImages.map((image, idx) => {
             const d = dims[image];

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { prefersReducedMotion } from '@/lib/motion';
 
 /**
@@ -8,10 +9,12 @@ import { prefersReducedMotion } from '@/lib/motion';
  * Hover ring via body class (cheaper than :has() on every paint).
  */
 export function CustomCursor() {
+  const pathname = usePathname();
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (pathname.startsWith('/admin')) return;
     if (prefersReducedMotion()) return;
     const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
     if (!mq.matches) return;
@@ -59,7 +62,9 @@ export function CustomCursor() {
       document.removeEventListener('mouseover', onOver);
       mq.removeEventListener('change', onMqChange);
     };
-  }, []);
+  }, [pathname]);
+
+  if (pathname.startsWith('/admin')) return null;
 
   return (
     <>

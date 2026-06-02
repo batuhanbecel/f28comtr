@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import { requireAdminSession } from '@/lib/auth';
 import { getPhotographers, getPhotographerImages } from '@/lib/db';
 import { PhotographerImageGallery } from '@/components/admin/PhotographerImageGallery';
 import { PhotographerInfoForm } from '@/components/admin/PhotographerInfoForm';
@@ -13,6 +14,7 @@ interface PageProps {
 }
 
 export default async function EditPhotographerPage({ params }: PageProps) {
+  await requireAdminSession();
   const { id } = await params;
   const a = await getAdminT();
   const photographers = await getPhotographers();

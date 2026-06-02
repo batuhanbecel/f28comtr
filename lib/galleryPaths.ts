@@ -1,6 +1,6 @@
 /** Pages with large image grids where heavy overlays hurt scroll performance. */
 export function isGalleryHeavyPage(pathname: string): boolean {
-  if (pathname === '/ai-powered' || pathname === '/portfolios') return true;
+  if (pathname === '/ai-powered' || pathname === '/ai-powered/portfolio' || pathname === '/portfolios') return true;
   const staticRoutes = new Set(['/', '/production', '/about']);
   const segments = pathname.split('/').filter(Boolean);
   return segments.length === 1 && !staticRoutes.has(pathname);

@@ -1,5 +1,14 @@
 import { photographers as staticPhotographers, Photographer } from './data';
 import { getPortfolioImages, getAiPoweredImages as getStaticAiPoweredImages } from './utils';
+import {
+  getAiPoweredPortfolio,
+  setAiPoweredPortfolio,
+  getAiPoweredPortfolioImages as getPortfolioImagesFromLib,
+} from './aiPoweredPortfolio';
+import type { AiPortfolioData } from './aiPoweredPortfolio.shared';
+
+export type { AiPortfolioData, AiPortfolioItem, AiPortfolioTag } from './aiPoweredPortfolio.shared';
+export { getAiPoweredPortfolio, setAiPoweredPortfolio } from './aiPoweredPortfolio';
 import { getRedis } from './redis';
 
 export async function getPhotographers(): Promise<Photographer[]> {
@@ -84,6 +93,17 @@ export async function setAiPoweredImages(images: string[]): Promise<void> {
   const redis = getRedis();
   if (!redis) throw new Error('Redis is not configured.');
   await redis.set('ai:images', JSON.stringify(images));
+}
+
+export async function getAiPoweredPortfolioImages(): Promise<string[]> {
+  return getPortfolioImagesFromLib();
+}
+
+export async function setAiPoweredPortfolioImages(images: string[]): Promise<void> {
+  const current = await getAiPoweredPortfolio();
+  const bySrc = new Map(current.items.map((item) => [item.src, item]));
+  const items = images.map((src) => bySrc.get(src) ?? { src, tagIds: [] });
+  await setAiPoweredPortfolio({ tags: current.tags, items });
 }
 
 export function isRedisConfigured(): boolean {

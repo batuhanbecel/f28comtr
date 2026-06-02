@@ -1,22 +1,19 @@
 'use client';
 
 import { ScrollReveal } from '@/components/ScrollReveal';
-import { useLanguage } from '@/context/LanguageContext';
+import type { ProductionPageCopy } from '@/lib/pageCopy.types';
 
 interface ProductionStatsProps {
-  projectCount: number;
-  brandCount: number;
+  copy: Pick<ProductionPageCopy, 'stats' | 'statsValues'>;
   /** Inside HeroReveal — no per-stat scroll stagger */
   inHero?: boolean;
 }
 
-export function ProductionStats({ projectCount, brandCount, inHero = false }: ProductionStatsProps) {
-  const { t } = useLanguage();
-
+export function ProductionStats({ copy, inHero = false }: ProductionStatsProps) {
   const stats = [
-    { value: `${projectCount}+`, label: t.production.stats.projects },
-    { value: `${brandCount}+`, label: t.production.stats.brands },
-    { value: '2008', label: t.production.stats.since },
+    { value: copy.statsValues.projects, label: copy.stats.projects },
+    { value: copy.statsValues.brands, label: copy.stats.brands },
+    { value: copy.statsValues.sinceYear, label: copy.stats.since },
   ];
 
   return (

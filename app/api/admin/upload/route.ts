@@ -3,7 +3,7 @@ import { put, del } from '@vercel/blob';
 import sharp from 'sharp';
 import { checkAuth } from '@/lib/auth';
 import { getRedis } from '@/lib/redis';
-import { getPhotographerImages, setPhotographerImages, getAiPoweredImages, setAiPoweredImages } from '@/lib/db';
+import { getPhotographerImages, setPhotographerImages, getAiPoweredImages, setAiPoweredImages, getAiPoweredPortfolio, setAiPoweredPortfolio } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
 const REDIS_KEYS = {
@@ -69,6 +69,7 @@ export async function POST(request: Request) {
 
     switch (uploadType) {
       case 'ai':      blobPath = `ai-images/${baseName}-${uniqueId}.webp`; break;
+      case 'ai_portfolio': blobPath = `ai-portfolio/${baseName}-${uniqueId}.webp`; break;
       case 'preview': blobPath = `previews/${photographerId}-${baseName}-${uniqueId}.webp`; break;
       case 'landing': blobPath = `landing/${photographerId}-${baseName}-${uniqueId}.webp`; break;
       case 'logos':         blobPath = `logos/${baseName}-${uniqueId}.webp`; break;
@@ -92,6 +93,21 @@ export async function POST(request: Request) {
         await setAiPoweredImages(updatedImages);
         revalidatePaths.push('/ai-powered');
         break;
+      case 'ai_portfolio': {
+        const tagIdsRaw = form.get('tagIds') as string | null;
+        let tagIds: string[] = [];
+        if (tagIdsRaw) {
+          try {
+            const parsed = JSON.parse(tagIdsRaw);
+            if (Array.isArray(parsed)) tagIds = parsed.filter((id) => typeof id === 'string');
+          } catch {}
+        }
+        const portfolio = await getAiPoweredPortfolio();
+        portfolio.items.push({ src: blob.url, tagIds });
+        await setAiPoweredPortfolio(portfolio);
+        revalidatePaths.push('/ai-powered/portfolio');
+        break;
+      }
       case 'preview':
         redisKey = REDIS_KEYS.preview;
         revalidatePaths.push('/production', '/portfolios');
@@ -163,6 +179,13 @@ export async function DELETE(request: Request) {
         await setAiPoweredImages(updatedImages);
         revalidatePaths.push('/ai-powered');
         break;
+      case 'ai_portfolio': {
+        const portfolio = await getAiPoweredPortfolio();
+        portfolio.items = portfolio.items.filter((item) => item.src !== url);
+        await setAiPoweredPortfolio(portfolio);
+        revalidatePaths.push('/ai-powered/portfolio');
+        break;
+      }
       case 'preview':
         redisKey = REDIS_KEYS.preview;
         revalidatePaths.push('/production', '/portfolios');

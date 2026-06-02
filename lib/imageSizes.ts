@@ -10,7 +10,10 @@ export const LIGHTBOX_IMAGE_SIZES =
 
 /** AI gallery masonry card — matches WorkGrid breakpoints (560px / 900px). */
 export const AI_WORK_CARD_SIZES =
-  "(max-width: 560px) 100vw, (max-width: 900px) 50vw, 33vw";
+  "(max-width: 560px) 100vw, (max-width: 1023px) 50vw, 25vw";
+
+/** Production page closing marquee — fixed-height filmstrip cells. */
+export const MARQUEE_THUMB_SIZES = '320px';
 
 /** Portfolio / masonry thumbnail grid. */
 export const MASONRY_THUMB_SIZES = "(max-width: 768px) 50vw, 25vw";

@@ -7,7 +7,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const lang = await getMetadataLang();
   const copy = translations[lang].seo.notFound;
   const meta = buildPageMetadata({
-    path: '/',
+    path: '/404',
     title: copy.title,
     description: copy.description,
     lang,

@@ -1,8 +1,8 @@
 "use client"
 
-import { useLanguage } from "@/context/LanguageContext"
-import type { FilterState } from "../hooks/useAiPoweredFilter"
 import type { WorkCategory } from "@/lib/aiPoweredWorks"
+import type { AiPoweredPageCopy } from '@/lib/pageCopy.types'
+import type { FilterState } from "../hooks/useAiPoweredFilter"
 
 interface BrandOption {
   key: string
@@ -11,6 +11,7 @@ interface BrandOption {
 
 interface FilterBarProps {
   filters: FilterState
+  filtersCopy: AiPoweredPageCopy['filters']
   brands: BrandOption[]
   counts: {
     byBrand: Record<string, number>
@@ -23,31 +24,30 @@ interface FilterBarProps {
 
 export function FilterBar({
   filters,
+  filtersCopy,
   brands,
   counts,
   onBrand,
   onCategory,
   total,
 }: FilterBarProps) {
-  const { t } = useLanguage()
-
   const categoryOptions: { key: WorkCategory | "all"; label: string }[] = [
-    { key: "all", label: t.aiPowered.filters.all },
-    { key: "visual", label: t.aiPowered.filters.visual },
-    { key: "video", label: t.aiPowered.filters.video },
-    { key: "hybrid", label: t.aiPowered.filters.hybrid },
+    { key: "all", label: filtersCopy.all },
+    { key: "visual", label: filtersCopy.visual },
+    { key: "video", label: filtersCopy.video },
+    { key: "hybrid", label: filtersCopy.hybrid },
   ]
 
   const brandOptions = brands.map((b) =>
-    b.key === "all" ? { ...b, label: t.aiPowered.filters.all } : b
+    b.key === "all" ? { ...b, label: filtersCopy.all } : b
   )
 
   return (
     <div className="filter-bar">
       {/* Brand — scrollable pill strip */}
       <div className="filter-group">
-        <span className="filter-label">{t.aiPowered.filters.brand}</span>
-        <div className="filter-pills" role="group" aria-label={t.aiPowered.filters.brand}>
+        <span className="filter-label">{filtersCopy.brand}</span>
+        <div className="filter-pills" role="group" aria-label={filtersCopy.brand}>
           {brandOptions.map((b) => {
             const count = counts.byBrand[b.key] ?? 0
             if (b.key !== "all" && count === 0) return null
@@ -68,8 +68,8 @@ export function FilterBar({
 
       {/* Type — segmented control + live result count */}
       <div className="filter-group">
-        <span className="filter-label">{t.aiPowered.filters.type}</span>
-        <div className="filter-segment" role="group" aria-label={t.aiPowered.filters.type}>
+        <span className="filter-label">{filtersCopy.type}</span>
+        <div className="filter-segment" role="group" aria-label={filtersCopy.type}>
           {categoryOptions.map((c) => {
             const count = counts.byCategory[c.key] ?? 0
             if (c.key !== "all" && count === 0) return null
@@ -88,7 +88,7 @@ export function FilterBar({
 
         <p className="filter-result" aria-live="polite">
           <b>{total}</b>
-          <span>{t.aiPowered.filters.resultsSuffix}</span>
+          <span>{filtersCopy.resultsSuffix}</span>
         </p>
       </div>
     </div>

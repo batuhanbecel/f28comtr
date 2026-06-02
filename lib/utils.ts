@@ -96,3 +96,21 @@ export function getAiPoweredImages(): string[] {
     return [];
   }
 }
+
+export function getAiPoweredPortfolioImages(): string[] {
+  const portfolioPath = path.join(process.cwd(), 'public', 'ai-portfolio');
+  try {
+    const files = fs.readdirSync(portfolioPath);
+    return files
+      .filter(file => {
+        if (!/\.(jpg|jpeg|png|webp)$/i.test(file)) return false;
+        const filePath = path.join(portfolioPath, file);
+        const stats = fs.statSync(filePath);
+        return stats.size > 1024;
+      })
+      .map(file => `/ai-portfolio/${file}`)
+      .sort();
+  } catch {
+    return [];
+  }
+}

@@ -76,8 +76,21 @@ npm run build
 - Ömür Temel
 - Ozan Çakmak
 
+## Environment variables
+
+Copy `.env.example` to `.env.local` and fill in values before running locally or deploying.
+
+Required for full functionality:
+
+- `ADMIN_PASSWORD` — admin panel login
+- `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` — editable page copy, SEO, portfolios
+- `BLOB_READ_WRITE_TOKEN` — image uploads (Vercel Blob)
+- `CONTACT_SMTP_USER` / `CONTACT_SMTP_PASS` — contact form email (Gmail app password)
+- `CONTACT_TO` — recipient (defaults to `info@f28.com.tr`)
+- `NEXT_PUBLIC_SITE_URL` — production URL for metadata and sitemap
+
 ## Contact
 
 - Instagram: @f28production
-- Email: info@f28production.com
+- Email: info@f28.com.tr
 - Location: Istanbul, Turkey
