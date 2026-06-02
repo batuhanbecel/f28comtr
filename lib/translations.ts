@@ -339,7 +339,7 @@ export const translations = {
       aiLabel: 'AI-Powered & Yaratıcılık',
     },
     homeV2: {
-      heroTitle: 'PRODUCTION & AI',
+      heroTitle: 'PRODÜKSİYON & AI',
       servicesMarqueeLabel: 'Hizmetlerimiz',
       selectedWorksLabel: 'Seçili iş',
       selectedWorksHeading: 'SEÇİLİ İŞLER',
