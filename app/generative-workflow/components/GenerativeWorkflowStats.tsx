@@ -1,22 +1,22 @@
-"use client"
+'use client';
 
-import { useLanguage } from "@/context/LanguageContext"
-import { ScrollReveal } from "@/components/ScrollReveal"
+import { ScrollReveal } from '@/components/ScrollReveal';
+import { useLanguage } from '@/context/LanguageContext';
 
-interface AIBasedStatsProps {
-  workCount: number
-  brandCount: number
-  inHero?: boolean
+interface GenerativeWorkflowStatsProps {
+  workCount: number;
+  brandCount: number;
+  inHero?: boolean;
 }
 
-export function AIBasedStats({ workCount, brandCount, inHero = false }: AIBasedStatsProps) {
-  const { t } = useLanguage()
+export function GenerativeWorkflowStats({ workCount, brandCount, inHero = false }: GenerativeWorkflowStatsProps) {
+  const { t } = useLanguage();
 
   const stats = [
-    { value: `${workCount}+`, label: t.aiBased.stats.projects },
-    { value: `${brandCount}+`, label: t.aiBased.stats.brands },
-    { value: "2008", label: t.aiBased.stats.since },
-  ]
+    { value: `${workCount}+`, label: t.generativeWorkflow.stats.projects },
+    { value: `${brandCount}+`, label: t.generativeWorkflow.stats.brands },
+    { value: '2008', label: t.generativeWorkflow.stats.since },
+  ];
 
   return (
     <section className="border-y border-th-fg/[0.12] w-full max-w-2xl mx-auto">
@@ -47,9 +47,5 @@ export function AIBasedStats({ workCount, brandCount, inHero = false }: AIBasedS
         })}
       </div>
     </section>
-  )
-}
-
-export function WorksBadge(_props: { workCount: number }) {
-  return null
+  );
 }

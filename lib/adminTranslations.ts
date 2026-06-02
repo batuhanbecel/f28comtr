@@ -5,7 +5,7 @@ export type AdminTranslations = {
   nav: {
     dashboard: string;
     photographers: string;
-    aiImages: string;
+    generativeWorkflow: string;
     landing: string;
     logos: string;
     previews: string;
@@ -26,19 +26,19 @@ export type AdminTranslations = {
     photographers: string;
     stats: {
       photographers: string;
-      aiImages: string;
+      generativeWorkflow: string;
       redis: string;
       viewSite: string;
     };
     cards: {
       photographersDesc: string;
-      aiDesc: string;
+      generativeWorkflowDesc: string;
       settingsDesc: string;
     };
   };
   photographers: Record<string, string>;
   photographerEdit: Record<string, string>;
-  aiBased: Record<string, string>;
+  generativeWorkflow: Record<string, string>;
   landing: Record<string, string>;
   previews: Record<string, string>;
   logos: Record<string, string>;
@@ -51,7 +51,7 @@ export const adminEn: AdminTranslations = {
   nav: {
     dashboard: 'Dashboard',
     photographers: 'Photographers',
-    aiImages: 'AI Images',
+    generativeWorkflow: 'Generative Workflow',
     landing: 'Landing',
     logos: 'Logos',
     previews: 'Previews',
@@ -122,13 +122,13 @@ export const adminEn: AdminTranslations = {
     photographers: 'Photographers',
     stats: {
       photographers: 'Photographers',
-      aiImages: 'AI Images',
+      generativeWorkflow: 'Generative Workflow',
       redis: 'Redis',
       viewSite: 'View Site',
     },
     cards: {
       photographersDesc: 'Edit roster, reorder, manage previews',
-      aiDesc: 'Reorder and manage AI-generated images',
+      generativeWorkflowDesc: 'Reorder and manage generative workflow images',
       settingsDesc: 'Seed data, cache control, environment',
     },
   },
@@ -164,8 +164,8 @@ export const adminEn: AdminTranslations = {
     noImagesHint: 'Drop images above or click Upload',
     updated: 'Photographer info updated',
   },
-  aiBased: {
-    title: 'AI Images',
+  generativeWorkflow: {
+    title: 'Generative Workflow',
     count: '{count} works — tag each with brand and type, drag to reorder',
     upload: 'Upload',
     defaults: 'Defaults',
@@ -175,7 +175,7 @@ export const adminEn: AdminTranslations = {
     brand: 'Brand',
     year: 'Year',
     titleOptional: 'Title (optional)',
-    noWorks: 'No AI works found',
+    noWorks: 'No generative workflow works found',
     noWorksHint: 'Drop images above or click Upload to add works',
   },
   landing: {
@@ -237,7 +237,7 @@ export const adminTr: AdminTranslations = {
   nav: {
     dashboard: 'Panel',
     photographers: 'Fotoğrafçılar',
-    aiImages: 'AI Görseller',
+    generativeWorkflow: 'Üretken İş Akışı',
     landing: 'Ana Sayfa',
     logos: 'Logolar',
     previews: 'Önizlemeler',
@@ -308,13 +308,13 @@ export const adminTr: AdminTranslations = {
     photographers: 'Fotoğrafçılar',
     stats: {
       photographers: 'Fotoğrafçılar',
-      aiImages: 'AI Görseller',
+      generativeWorkflow: 'Üretken İş Akışı',
       redis: 'Redis',
       viewSite: 'Siteyi Gör',
     },
     cards: {
       photographersDesc: 'Kadroyu düzenle, sırala, önizlemeleri yönet',
-      aiDesc: 'AI görsellerini sırala ve yönet',
+      generativeWorkflowDesc: 'Üretken iş akışı görsellerini sırala ve yönet',
       settingsDesc: 'Veri, önbellek ve ortam ayarları',
     },
   },
@@ -350,8 +350,8 @@ export const adminTr: AdminTranslations = {
     noImagesHint: 'Yukarıya bırakın veya Yükle’ye tıklayın',
     updated: 'Fotoğrafçı bilgileri güncellendi',
   },
-  aiBased: {
-    title: 'AI Görseller',
+  generativeWorkflow: {
+    title: 'Üretken İş Akışı',
     count: '{count} çalışma — marka ve tür etiketleyin, sıralamak için sürükleyin',
     upload: 'Yükleme',
     defaults: 'Varsayılanlar',
@@ -361,7 +361,7 @@ export const adminTr: AdminTranslations = {
     brand: 'Marka',
     year: 'Yıl',
     titleOptional: 'Başlık (isteğe bağlı)',
-    noWorks: 'AI çalışması bulunamadı',
+    noWorks: 'Üretken iş akışı çalışması bulunamadı',
     noWorksHint: 'Yukarıya bırakın veya çalışma eklemek için Yükle’ye tıklayın',
   },
   landing: {

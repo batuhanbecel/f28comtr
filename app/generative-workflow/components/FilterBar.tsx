@@ -1,7 +1,7 @@
 "use client"
 
 import { useLanguage } from "@/context/LanguageContext"
-import type { FilterState } from "../hooks/useAIFilter"
+import type { FilterState } from "../hooks/useGenerativeWorkflowFilter"
 import type { WorkCategory } from "../data/works"
 
 interface BrandOption {
@@ -32,22 +32,22 @@ export function FilterBar({
   const { t } = useLanguage()
 
   const categoryOptions: { key: WorkCategory | "all"; label: string }[] = [
-    { key: "all", label: t.aiBased.filters.all },
-    { key: "visual", label: t.aiBased.filters.visual },
-    { key: "video", label: t.aiBased.filters.video },
-    { key: "hybrid", label: t.aiBased.filters.hybrid },
+    { key: "all", label: t.generativeWorkflow.filters.all },
+    { key: "visual", label: t.generativeWorkflow.filters.visual },
+    { key: "video", label: t.generativeWorkflow.filters.video },
+    { key: "hybrid", label: t.generativeWorkflow.filters.hybrid },
   ]
 
   const brandOptions = brands.map((b) =>
-    b.key === "all" ? { ...b, label: t.aiBased.filters.all } : b
+    b.key === "all" ? { ...b, label: t.generativeWorkflow.filters.all } : b
   )
 
   return (
     <div className="filter-bar">
       {/* Brand — scrollable pill strip */}
       <div className="filter-group">
-        <span className="filter-label">{t.aiBased.filters.brand}</span>
-        <div className="filter-pills" role="group" aria-label={t.aiBased.filters.brand}>
+        <span className="filter-label">{t.generativeWorkflow.filters.brand}</span>
+        <div className="filter-pills" role="group" aria-label={t.generativeWorkflow.filters.brand}>
           {brandOptions.map((b) => {
             const count = counts.byBrand[b.key] ?? 0
             if (b.key !== "all" && count === 0) return null
@@ -68,8 +68,8 @@ export function FilterBar({
 
       {/* Type — segmented control + live result count */}
       <div className="filter-group">
-        <span className="filter-label">{t.aiBased.filters.type}</span>
-        <div className="filter-segment" role="group" aria-label={t.aiBased.filters.type}>
+        <span className="filter-label">{t.generativeWorkflow.filters.type}</span>
+        <div className="filter-segment" role="group" aria-label={t.generativeWorkflow.filters.type}>
           {categoryOptions.map((c) => {
             const count = counts.byCategory[c.key] ?? 0
             if (c.key !== "all" && count === 0) return null
@@ -88,7 +88,7 @@ export function FilterBar({
 
         <p className="filter-result" aria-live="polite">
           <b>{total}</b>
-          <span>{t.aiBased.filters.resultsSuffix}</span>
+          <span>{t.generativeWorkflow.filters.resultsSuffix}</span>
         </p>
       </div>
     </div>

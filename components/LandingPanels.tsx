@@ -165,11 +165,11 @@ export function LandingPanels({ initialImages = [] }: LandingPanelsProps) {
       <div className="w-full lg:w-px h-px lg:h-full flex-shrink-0 z-10 pointer-events-none bg-th-fg/[0.12]" />
 
       <Panel
-        href="/ai-based"
+        href="/generative-workflow"
         imageSrc={aiImage}
-        imageAlt="AI Based"
+        imageAlt={t.nav.generativeWorkflow}
         label={t.landing.aiLabel}
-        heading={t.nav.aiBased}
+        heading={t.nav.generativeWorkflow}
         enterLabel={t.common.enter}
         isDimmed={hovered === 'production'}
         visible={visible}

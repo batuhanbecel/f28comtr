@@ -7,7 +7,7 @@ import { HeroReveal } from '@/components/HeroReveal';
 import { ScrollIndicator } from '@/components/ScrollIndicator';
 import { F28LogoBg } from '@/components/F28LogoBg';
 
-export type EditorialHeroPage = 'production' | 'aiBased' | 'about' | 'portfolios';
+export type EditorialHeroPage = 'production' | 'generativeWorkflow' | 'about' | 'portfolios';
 
 interface EditorialPageHeroProps {
   page: EditorialHeroPage;
@@ -36,10 +36,10 @@ export function EditorialPageHero({
       title: t.production.heading,
       description: t.production.description,
     },
-    aiBased: {
-      label: t.aiBased.sectionLabel,
-      title: t.aiBased.heading,
-      description: t.aiBased.description,
+    generativeWorkflow: {
+      label: t.generativeWorkflow.sectionLabel,
+      title: t.generativeWorkflow.heading,
+      description: t.generativeWorkflow.description,
     },
     about: {
       label: t.about.sectionLabel,

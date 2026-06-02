@@ -5,7 +5,7 @@ export const translations = {
     nav: {
       home: 'HOME',
       production: 'PRODUCTION',
-      aiBased: 'AI BASED',
+      generativeWorkflow: 'GENERATIVE WORKFLOW',
       portfolios: 'PORTFOLIOS',
       about: 'ABOUT US',
     },
@@ -40,7 +40,7 @@ export const translations = {
     },
     landing: {
       productionLabel: 'Photography & Retouching',
-      aiLabel: 'Artificial Intelligence & Creativity',
+      aiLabel: 'Generative Workflow & Creativity',
     },
     production: {
       sectionLabel: 'Istanbul — Since 2008',
@@ -53,11 +53,11 @@ export const translations = {
         since: 'Est. Istanbul',
       },
     },
-    aiBased: {
-      sectionLabel: 'Artificial Intelligence & Creativity',
-      heading: 'AI BASED',
+    generativeWorkflow: {
+      sectionLabel: 'Generative Workflow & Creativity',
+      heading: 'GENERATIVE WORKFLOW',
       description:
-        'We offer a hybrid production process by blending traditional retouching disciplines with the latest generative AI models. By combining our industry-standard craftsmanship with innovative technologies, we produce both creative and highly efficient visual and video content for our brands.',
+        'We offer a hybrid production process by blending traditional retouching disciplines with the latest generative models. By combining our industry-standard craftsmanship with innovative technologies, we produce both creative and highly efficient visual and video content for our brands.',
       worksLabel: 'works',
       stats: {
         projects: 'Completed projects',
@@ -69,8 +69,8 @@ export const translations = {
         heading: 'How we work?',
         steps: [
           { title: 'Brief & concept', sub: 'Brand need and creative direction' },
-          { title: 'AI generation', sub: 'Model selection, prompt, iteration' },
-          { title: 'Hybrid retouching', sub: 'AI plus traditional post-production' },
+          { title: 'Generative production', sub: 'Model selection, prompt, iteration' },
+          { title: 'Hybrid retouching', sub: 'Generative workflow plus traditional post-production' },
           { title: 'Delivery', sub: 'Platform-specific format and dimensions' },
         ],
       },
@@ -121,10 +121,10 @@ export const translations = {
         description:
           'Professional photography and retouching by top photographers. Based in Istanbul since 2008.',
       },
-      aiBased: {
-        title: 'AI Based',
+      generativeWorkflow: {
+        title: 'Generative Workflow',
         description:
-          'Creative visual and video content powered by generative AI and traditional retouching — hybrid production in Istanbul.',
+          'Creative visual and video content powered by generative workflow and traditional retouching — hybrid production in Istanbul.',
       },
       portfolios: {
         title: 'Portfolios',
@@ -167,7 +167,7 @@ export const translations = {
     nav: {
       home: 'ANA SAYFA',
       production: 'PRODÜKSİYON',
-      aiBased: 'YAPAY ZEKA',
+      generativeWorkflow: 'ÜRETKEN İŞ AKIŞI',
       portfolios: 'PORTFÖYLER',
       about: 'HAKKIMIZDA',
     },
@@ -202,7 +202,7 @@ export const translations = {
     },
     landing: {
       productionLabel: 'Fotoğrafçılık & Rötuş',
-      aiLabel: 'Yapay Zeka & Yaratıcılık',
+      aiLabel: 'Üretken İş Akışı & Yaratıcılık',
     },
     production: {
       sectionLabel: 'İstanbul — 2008\'den Beri',
@@ -215,11 +215,11 @@ export const translations = {
         since: 'İstanbul, 2008',
       },
     },
-    aiBased: {
-      sectionLabel: 'Yapay Zeka & Yaratıcılık',
-      heading: 'YAPAY ZEKA',
+    generativeWorkflow: {
+      sectionLabel: 'Üretken İş Akışı & Yaratıcılık',
+      heading: 'ÜRETKEN İŞ AKIŞI',
       description:
-        'Geleneksel retouch disiplinini en güncel üretken yapay zeka modelleriyle harmanlayarak hibrit bir üretim süreci sunuyoruz. Sektör standartlarındaki ustalığımızı inovatif teknolojilerle birleştirerek, markalarımız için hem yaratıcı hem de yüksek verimli görsel ve video içerikler üretiyoruz.',
+        'Geleneksel retouch disiplinini en güncel üretken modellerle harmanlayarak hibrit bir prodüksiyon süreci sunuyoruz. Sektör standartlarındaki ustalığımızı inovatif teknolojilerle birleştirerek, markalarımız için hem yaratıcı hem de yüksek verimli görsel ve video içerikler üretiyoruz.',
       worksLabel: 'çalışma',
       stats: {
         projects: 'Tamamlanan proje',
@@ -231,8 +231,8 @@ export const translations = {
         heading: 'Nasıl çalışıyoruz?',
         steps: [
           { title: 'Brief & konsept', sub: 'Marka ihtiyacı ve yaratıcı yön' },
-          { title: 'AI üretim', sub: 'Model seçimi, prompt ve iterasyon' },
-          { title: 'Hybrid rötüş', sub: 'AI ve geleneksel post prodüksiyon' },
+          { title: 'Üretken üretim', sub: 'Model seçimi, prompt ve iterasyon' },
+          { title: 'Hybrid rötüş', sub: 'Üretken iş akışı ve geleneksel post prodüksiyon' },
           { title: 'Teslimat', sub: 'Platforma özel format ve boyut' },
         ],
       },
@@ -283,10 +283,10 @@ export const translations = {
         description:
           'Önde gelen fotoğrafçılarla profesyonel fotoğrafçılık ve rötuş. 2008\'den beri İstanbul.',
       },
-      aiBased: {
-        title: 'Yapay Zeka',
+      generativeWorkflow: {
+        title: 'Üretken İş Akışı',
         description:
-          'Üretken yapay zeka ve geleneksel rötuşla hibrit görsel ve video prodüksiyon — İstanbul.',
+          'Üretken iş akışı ve geleneksel rötuşla hibrit görsel ve video prodüksiyon — İstanbul.',
       },
       portfolios: {
         title: 'Portföyler',

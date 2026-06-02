@@ -1,10 +1,14 @@
 import { getRedis } from './redis';
-import { getAIImages as getStaticAIImages } from './utils';
-import { WORKS as STATIC_WORKS } from '@/app/ai-based/data/works';
-import type { Work as AIWork, WorkCategory } from '@/app/ai-based/data/works';
+import { getGenerativeWorkflowImages as getStaticGenerativeWorkflowImages } from './utils';
+import { WORKS as STATIC_WORKS } from '@/app/generative-workflow/data/works';
+import type {
+  GenerativeWork,
+  WorkCategory,
+} from '@/app/generative-workflow/data/works';
 
-export type { AIWork, WorkCategory };
+export type { GenerativeWork, WorkCategory };
 
+/** Redis keys kept for backward compatibility with existing production data. */
 const REDIS_KEY = 'ai:works';
 const LEGACY_KEY = 'ai:images';
 
@@ -21,7 +25,7 @@ export function deriveBrandKey(brand: string): string {
     .replace(/(^-|-$)/g, '') || 'other';
 }
 
-function fromUrl(src: string, i: number): AIWork {
+function fromUrl(src: string, i: number): GenerativeWork {
   const id = `untagged-${i}`;
   return {
     id,
@@ -31,12 +35,12 @@ function fromUrl(src: string, i: number): AIWork {
     description: '',
     category: 'visual',
     imageSrc: src,
-    imageAlt: 'AI generated image',
+    imageAlt: 'Generative workflow image',
     year: new Date().getFullYear(),
   };
 }
 
-function isAIWork(v: unknown): v is AIWork {
+function isGenerativeWork(v: unknown): v is GenerativeWork {
   if (!v || typeof v !== 'object') return false;
   const o = v as Record<string, unknown>;
   return (
@@ -47,14 +51,14 @@ function isAIWork(v: unknown): v is AIWork {
   );
 }
 
-export async function getAIWorks(): Promise<AIWork[]> {
+export async function getGenerativeWorks(): Promise<GenerativeWork[]> {
   const redis = getRedis();
 
   if (redis) {
     try {
       const stored = await redis.get(REDIS_KEY);
-      if (Array.isArray(stored) && stored.length > 0 && stored.every(isAIWork)) {
-        return stored as AIWork[];
+      if (Array.isArray(stored) && stored.length > 0 && stored.every(isGenerativeWork)) {
+        return stored as GenerativeWork[];
       }
     } catch {}
 
@@ -68,10 +72,10 @@ export async function getAIWorks(): Promise<AIWork[]> {
 
   if (STATIC_WORKS.length > 0) return STATIC_WORKS;
 
-  return getStaticAIImages().map((url, i) => fromUrl(url, i));
+  return getStaticGenerativeWorkflowImages().map((url, i) => fromUrl(url, i));
 }
 
-export async function setAIWorks(works: AIWork[]): Promise<void> {
+export async function setGenerativeWorks(works: GenerativeWork[]): Promise<void> {
   const redis = getRedis();
   if (!redis) throw new Error('Redis is not configured.');
   const normalized = works.map((w) => ({

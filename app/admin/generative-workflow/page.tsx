@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import { shouldSkipOptimization } from '@/lib/blob';
-import type { AIWork, WorkCategory } from '@/lib/aiWorks';
+import type { GenerativeWork, WorkCategory } from '@/lib/generativeWorks';
 import { AdminPageLayout } from '@/components/admin/AdminPageLayout';
 import { AdminPanel } from '@/components/admin/AdminPanel';
 import { AdminFormField, AdminInput, AdminSelect } from '@/components/admin/AdminFormField';
@@ -48,7 +48,7 @@ async function compressImage(file: File): Promise<File> {
   });
 }
 
-export default function AdminAIBased() {
+export default function AdminGenerativeWorkflow() {
   const a = useAdminT();
   const categoryOptions: { key: WorkCategory; label: string }[] = [
     { key: 'visual', label: a.categories.visual },
@@ -56,7 +56,7 @@ export default function AdminAIBased() {
     { key: 'hybrid', label: a.categories.hybrid },
   ];
   const router = useRouter();
-  const [works, setWorks] = useState<AIWork[]>([]);
+  const [works, setWorks] = useState<GenerativeWork[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
@@ -74,16 +74,16 @@ export default function AdminAIBased() {
 
   const fetchWorks = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/ai-works');
+      const res = await fetch('/api/admin/generative-works');
       if (res.status === 401) { router.push('/admin/login'); return; }
       const data = await res.json();
       setWorks(data.works || []);
     } catch {
-      toast.error('Failed to load AI works');
+      toast.error(a.toast.loadFailed);
     } finally {
       setLoading(false);
     }
-  }, [router]);
+  }, [router, a.toast.loadFailed]);
 
   useEffect(() => { fetchWorks(); }, [fetchWorks]);
 
@@ -99,7 +99,7 @@ export default function AdminAIBased() {
       return true;
     });
 
-  const updateWork = (idx: number, patch: Partial<AIWork>) => {
+  const updateWork = (idx: number, patch: Partial<GenerativeWork>) => {
     setWorks(prev => prev.map((w, i) => {
       if (i !== idx) return w;
       const merged = { ...w, ...patch };
@@ -131,7 +131,7 @@ export default function AdminAIBased() {
         const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
         if (res.ok) {
           const data = await res.json();
-          const newWork: AIWork = {
+          const newWork: GenerativeWork = {
             id: `work-${Date.now()}-${i}`,
             brand,
             brandKey: deriveBrandKey(brand),
@@ -139,7 +139,7 @@ export default function AdminAIBased() {
             description: '',
             category: defaultCategory,
             imageSrc: data.url,
-            imageAlt: `${brand} AI image`,
+            imageAlt: `${brand} generative workflow image`,
             year: new Date().getFullYear(),
           };
           setWorks(prev => [...prev, newWork]);
@@ -158,7 +158,7 @@ export default function AdminAIBased() {
     if (successCount > 0) toast.success(`${successCount} image${successCount > 1 ? 's' : ''} uploaded — remember to Save`);
   }, [defaultBrand, defaultCategory]);
 
-  const handleDelete = async (work: AIWork, idx: number) => {
+  const handleDelete = async (work: GenerativeWork, idx: number) => {
     if (!confirm(`Delete this image? (${work.brand})`)) return;
     try {
       await fetch('/api/admin/upload', {
@@ -175,7 +175,7 @@ export default function AdminAIBased() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await fetch('/api/admin/ai-works', {
+      const res = await fetch('/api/admin/generative-works', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ works }),
@@ -238,12 +238,12 @@ export default function AdminAIBased() {
 
   return (
     <AdminPageLayout
-      title={a.aiBased.title}
+      title={a.generativeWorkflow.title}
       breadcrumb={{ href: '/admin', label: a.nav.dashboard }}
       actions={
         <>
           {dirty ? <span className="text-amber-400/70 text-[10px] tracking-[0.3em] uppercase">{a.status.unsaved}</span> : null}
-          <Link href="/ai-based" target="_blank" className="btn-editorial text-[10px]">
+          <Link href="/generative-workflow" target="_blank" className="btn-editorial text-[10px]">
             {a.actions.viewPage}
           </Link>
           <AdminButton onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
@@ -258,15 +258,15 @@ export default function AdminAIBased() {
       }
     >
       <p className="admin-muted text-xs mb-8">
-        {formatAdmin(a.aiBased.count, { count: works.length })}
+        {formatAdmin(a.generativeWorkflow.count, { count: works.length })}
       </p>
 
-      <AdminPanel label={a.aiBased.upload} title={a.aiBased.defaults} className="mb-6">
+      <AdminPanel label={a.generativeWorkflow.upload} title={a.generativeWorkflow.defaults} className="mb-6">
         <div className="flex flex-wrap items-end gap-4">
-          <AdminFormField label={a.aiBased.brandNext} className="min-w-[180px] flex-1">
+          <AdminFormField label={a.generativeWorkflow.brandNext} className="min-w-[180px] flex-1">
             <AdminInput
               type="text"
-              placeholder={a.aiBased.brandPlaceholder}
+              placeholder={a.generativeWorkflow.brandPlaceholder}
               value={defaultBrand}
               onChange={(e) => setDefaultBrand(e.target.value)}
               list="brand-suggestions"
@@ -275,7 +275,7 @@ export default function AdminAIBased() {
           <datalist id="brand-suggestions">
             {knownBrands.map(b => <option key={b.key} value={b.label} />)}
           </datalist>
-          <AdminFormField label={a.aiBased.type}>
+          <AdminFormField label={a.generativeWorkflow.type}>
             <AdminSelect
               value={defaultCategory}
               onChange={(e) => setDefaultCategory(e.target.value as WorkCategory)}
@@ -333,8 +333,8 @@ export default function AdminAIBased() {
 
         {works.length === 0 ? (
           <div className="text-center py-20 border border-th-fg/[0.05]">
-            <p className="admin-muted text-xs tracking-[0.4em] uppercase">{a.aiBased.noWorks}</p>
-            <p className="admin-muted text-[10px] mt-2">{a.aiBased.noWorksHint}</p>
+            <p className="admin-muted text-xs tracking-[0.4em] uppercase">{a.generativeWorkflow.noWorks}</p>
+            <p className="admin-muted text-[10px] mt-2">{a.generativeWorkflow.noWorksHint}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
@@ -382,7 +382,7 @@ export default function AdminAIBased() {
 
                 <div className="p-3 space-y-2">
                   <div>
-                    <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">{a.aiBased.brand}</label>
+                    <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">{a.generativeWorkflow.brand}</label>
                     <input
                       type="text"
                       value={work.brand}
@@ -393,7 +393,7 @@ export default function AdminAIBased() {
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">{a.aiBased.type}</label>
+                      <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">{a.generativeWorkflow.type}</label>
                       <select
                         value={work.category}
                         onChange={(e) => updateWork(idx, { category: e.target.value as WorkCategory })}
@@ -403,7 +403,7 @@ export default function AdminAIBased() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">{a.aiBased.year}</label>
+                      <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">{a.generativeWorkflow.year}</label>
                       <input
                         type="number"
                         value={work.year}
@@ -413,7 +413,7 @@ export default function AdminAIBased() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">{a.aiBased.titleOptional}</label>
+                    <label className="block text-th-fg/30 text-[9px] tracking-[0.2em] uppercase mb-1">{a.generativeWorkflow.titleOptional}</label>
                     <input
                       type="text"
                       value={work.title}

@@ -7,10 +7,10 @@ import { GRID_IMAGE_QUALITY } from "@/lib/imageConfig"
 import { AI_WORK_CARD_SIZES } from "@/lib/imageSizes"
 import { useInView } from "@/lib/useInView"
 import { useLanguage } from "@/context/LanguageContext"
-import type { Work } from "../data/works"
+import type { GenerativeWork } from "../data/works"
 
 interface WorkCardProps {
-  work: Work
+  work: GenerativeWork
   priority?: boolean
   onOpen?: () => void
   onMeasure?: (src: string, w: number, h: number) => void
@@ -29,9 +29,9 @@ export const WorkCard = memo(function WorkCard({
   })
 
   const categoryLabels: Record<string, string> = {
-    visual: t.aiBased.filters.visual,
-    video: t.aiBased.filters.video,
-    hybrid: t.aiBased.filters.hybrid,
+    visual: t.generativeWorkflow.filters.visual,
+    video: t.generativeWorkflow.filters.video,
+    hybrid: t.generativeWorkflow.filters.hybrid,
   }
 
   const typeLabel = categoryLabels[work.category] ?? work.category

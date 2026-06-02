@@ -1,29 +1,28 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
-import { AIBasedGallery } from "./components/AIBasedGallery"
-import { AIBasedHero } from "./components/AIBasedHero"
-import { AIBasedStats } from "./components/AIBasedStats"
+import { GenerativeWorkflowGallery } from "./components/GenerativeWorkflowGallery"
+import { GenerativeWorkflowHero } from "./components/GenerativeWorkflowHero"
+import { GenerativeWorkflowStats } from "./components/GenerativeWorkflowStats"
 import { Footer } from "@/components/Footer"
-import { getAIWorks } from "@/lib/aiWorks"
-import type { AIWork } from "@/lib/aiWorks"
+import { getGenerativeWorks } from "@/lib/generativeWorks"
+import type { GenerativeWork } from "@/lib/generativeWorks"
 import { generatePageMetadata } from "@/lib/seo"
 
 export async function generateMetadata(): Promise<Metadata> {
-  return generatePageMetadata("aiBased", "/ai-based")
+  return generatePageMetadata("generativeWorkflow", "/generative-workflow")
 }
 
 export const revalidate = 60
 
-async function StatsBlock({ worksPromise }: { worksPromise: Promise<AIWork[]> }) {
+async function StatsBlock({ worksPromise }: { worksPromise: Promise<GenerativeWork[]> }) {
   const works = await worksPromise
   const brandCount = new Set(works.map((w) => w.brandKey)).size
-  return <AIBasedStats workCount={works.length} brandCount={brandCount} inHero />
+  return <GenerativeWorkflowStats workCount={works.length} brandCount={brandCount} inHero />
 }
 
-
-async function GalleryBlock({ worksPromise }: { worksPromise: Promise<AIWork[]> }) {
+async function GalleryBlock({ worksPromise }: { worksPromise: Promise<GenerativeWork[]> }) {
   const works = await worksPromise
-  return <AIBasedGallery works={works} />
+  return <GenerativeWorkflowGallery works={works} />
 }
 
 function StatsSkeleton() {
@@ -60,14 +59,13 @@ function GallerySkeleton() {
   )
 }
 
-export default function AIBasedPage() {
-  // Fire the heavy fetch but don't await — let multiple Suspense boundaries consume it
-  const worksPromise = getAIWorks()
+export default function GenerativeWorkflowPage() {
+  const worksPromise = getGenerativeWorks()
 
   return (
     <>
       <main className="bg-th-bg text-th-fg min-h-screen">
-        <AIBasedHero
+        <GenerativeWorkflowHero
           statsSlot={
             <Suspense fallback={<StatsSkeleton />}>
               <StatsBlock worksPromise={worksPromise} />

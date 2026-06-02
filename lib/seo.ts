@@ -7,7 +7,7 @@ import { translations, type Lang } from '@/lib/translations';
 
 const SITE_NAME = 'f/2.8 Production Agency';
 
-export type SeoPageKey = 'home' | 'production' | 'aiBased' | 'portfolios' | 'about';
+export type SeoPageKey = 'home' | 'production' | 'generativeWorkflow' | 'portfolios' | 'about';
 
 export async function getMetadataLang(): Promise<Lang> {
   const cookieStore = await cookies();

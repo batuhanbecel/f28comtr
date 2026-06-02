@@ -1,5 +1,5 @@
 const CACHE_NAME = 'f28-v2';
-const PRECACHE = ['/', '/production', '/ai-based', '/portfolios', '/about'];
+const PRECACHE = ['/', '/production', '/generative-workflow', '/portfolios', '/about'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(

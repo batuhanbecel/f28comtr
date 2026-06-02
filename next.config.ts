@@ -4,14 +4,34 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: '/portfolio/:id',
-        destination: '/:id',
+        source: '/ai-based',
+        destination: '/generative-workflow',
         permanent: true,
       },
       {
-        source: '/ai-based/work/:id',
-        destination: '/ai-based',
+        source: '/ai-based/:path*',
+        destination: '/generative-workflow/:path*',
+        permanent: true,
+      },
+      {
+        source: '/admin/ai-based',
+        destination: '/admin/generative-workflow',
+        permanent: true,
+      },
+      {
+        source: '/admin/ai-based/:path*',
+        destination: '/admin/generative-workflow/:path*',
+        permanent: true,
+      },
+      {
+        source: '/generative-workflow/work/:id',
+        destination: '/generative-workflow',
         permanent: false,
+      },
+      {
+        source: '/portfolio/:id',
+        destination: '/:id',
+        permanent: true,
       },
     ];
   },

@@ -1,14 +1,14 @@
 "use client"
 
 import { useState, useMemo, useCallback } from "react"
-import type { Work, WorkCategory } from "../data/works"
+import type { GenerativeWork, WorkCategory } from "../data/works"
 
 export interface FilterState {
   brand: string
   category: WorkCategory | "all"
 }
 
-export function useAIFilter(works: Work[]) {
+export function useGenerativeWorkflowFilter(works: GenerativeWork[]) {
   const [filters, setFilters] = useState<FilterState>({
     brand: "all",
     category: "all",
@@ -26,7 +26,7 @@ export function useAIFilter(works: Work[]) {
     setFilters({ brand: "all", category: "all" })
   }, [])
 
-  const filtered: Work[] = useMemo(() => {
+  const filtered: GenerativeWork[] = useMemo(() => {
     return works.filter((work) => {
       const brandMatch =
         filters.brand === "all" || work.brandKey === filters.brand

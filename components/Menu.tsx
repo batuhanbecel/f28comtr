@@ -63,7 +63,7 @@ export function Menu() {
   const menuItems = [
     { href: '/', label: t.nav.home, num: '01' },
     { href: '/production', label: t.nav.production, num: '02' },
-    { href: '/ai-based', label: t.nav.aiBased, num: '03' },
+    { href: '/generative-workflow', label: t.nav.generativeWorkflow, num: '03' },
     { href: '/portfolios', label: t.nav.portfolios, num: '04' },
     { href: '/about', label: t.nav.about, num: '05' },
   ];

@@ -3,7 +3,7 @@ import { put, del } from '@vercel/blob';
 import sharp from 'sharp';
 import { checkAuth } from '@/lib/auth';
 import { getRedis } from '@/lib/redis';
-import { getPhotographerImages, setPhotographerImages, getAIImages, setAIImages } from '@/lib/db';
+import { getPhotographerImages, setPhotographerImages, getGenerativeWorkflowImages, setGenerativeWorkflowImages } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
 const REDIS_KEYS = {
@@ -88,9 +88,9 @@ export async function POST(request: Request) {
 
     switch (uploadType) {
       case 'ai':
-        updatedImages = [...await getAIImages(), blob.url];
-        await setAIImages(updatedImages);
-        revalidatePaths.push('/ai-based');
+        updatedImages = [...await getGenerativeWorkflowImages(), blob.url];
+        await setGenerativeWorkflowImages(updatedImages);
+        revalidatePaths.push('/generative-workflow');
         break;
       case 'preview':
         redisKey = REDIS_KEYS.preview;
@@ -98,7 +98,7 @@ export async function POST(request: Request) {
         break;
       case 'landing':
         redisKey = REDIS_KEYS.landing;
-        revalidatePaths.push('/', '/production', '/ai-based');
+        revalidatePaths.push('/', '/production', '/generative-workflow');
         break;
       case 'logos':
       case 'logos_clients':
@@ -159,9 +159,9 @@ export async function DELETE(request: Request) {
 
     switch (deleteType) {
       case 'ai':
-        updatedImages = (await getAIImages()).filter(img => img !== url);
-        await setAIImages(updatedImages);
-        revalidatePaths.push('/ai-based');
+        updatedImages = (await getGenerativeWorkflowImages()).filter(img => img !== url);
+        await setGenerativeWorkflowImages(updatedImages);
+        revalidatePaths.push('/generative-workflow');
         break;
       case 'preview':
         redisKey = REDIS_KEYS.preview;
@@ -169,7 +169,7 @@ export async function DELETE(request: Request) {
         break;
       case 'landing':
         redisKey = REDIS_KEYS.landing;
-        revalidatePaths.push('/', '/production', '/ai-based');
+        revalidatePaths.push('/', '/production', '/generative-workflow');
         break;
       case 'logos':
       case 'logos_clients':

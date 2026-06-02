@@ -11,7 +11,7 @@ export function Footer() {
   const NAV = [
     { href: '/', label: t.nav.home },
     { href: '/production', label: t.nav.production },
-    { href: '/ai-based', label: t.nav.aiBased },
+    { href: '/generative-workflow', label: t.nav.generativeWorkflow },
     { href: '/portfolios', label: t.nav.portfolios },
     { href: '/about', label: t.nav.about },
   ];
