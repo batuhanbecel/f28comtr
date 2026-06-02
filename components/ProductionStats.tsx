@@ -7,9 +7,10 @@ interface ProductionStatsProps {
   copy: Pick<ProductionPageCopy, 'stats' | 'statsValues'>;
   /** Inside HeroReveal — no per-stat scroll stagger */
   inHero?: boolean;
+  className?: string;
 }
 
-export function ProductionStats({ copy, inHero = false }: ProductionStatsProps) {
+export function ProductionStats({ copy, inHero = false, className = '' }: ProductionStatsProps) {
   const stats = [
     { value: copy.statsValues.projects, label: copy.stats.projects },
     { value: copy.statsValues.brands, label: copy.stats.brands },
@@ -17,7 +18,7 @@ export function ProductionStats({ copy, inHero = false }: ProductionStatsProps) 
   ];
 
   return (
-    <section className="border-y border-th-fg/[0.12] w-full max-w-2xl mx-auto">
+    <section className={`border-y border-th-fg/[0.12] w-full max-w-2xl mx-auto ${className}`.trim()}>
       <div className="flex items-stretch divide-x divide-th-fg/[0.12]">
         {stats.map((stat) => {
           const cell = (

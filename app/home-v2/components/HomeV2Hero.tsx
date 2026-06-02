@@ -1,7 +1,10 @@
 'use client';
 
+import { EditorialButton } from '@/components/EditorialButton';
 import { HeroReveal } from '@/components/HeroReveal';
 import { PageHeader } from '@/components/PageHeader';
+import { ProductionStats } from '@/components/ProductionStats';
+import { useLanguage } from '@/context/LanguageContext';
 import type { ProductionPageCopy } from '@/lib/pageCopy.types';
 import { HomeV2HeroSlider } from './HomeV2HeroSlider';
 
@@ -11,11 +14,7 @@ interface HomeV2HeroProps {
 }
 
 export function HomeV2Hero({ heroTitle, stats }: HomeV2HeroProps) {
-  const statItems = [
-    { value: stats.statsValues.sinceYear, label: stats.stats.since },
-    { value: stats.statsValues.projects, label: stats.stats.projects },
-    { value: stats.statsValues.brands, label: stats.stats.brands },
-  ];
+  const { t } = useLanguage();
 
   return (
     <section className="home-v2-hero relative h-screen min-h-[560px] overflow-hidden flex flex-col">
@@ -29,37 +28,31 @@ export function HomeV2Hero({ heroTitle, stats }: HomeV2HeroProps) {
         aria-hidden
       />
 
-      <div className="relative z-10 flex flex-1 flex-col px-6 md:px-12 pt-28 pb-10 md:pb-14">
-        <HeroReveal className="flex flex-1 flex-col md:flex-row md:items-center md:justify-between gap-10 md:gap-6 w-full max-w-7xl mx-auto">
-          <div className="flex flex-1 items-center justify-center md:flex-[1.2] w-full min-w-0">
-            <PageHeader
-              title={heroTitle}
-              variant="hero"
-              shell={false}
-              animate={false}
-              align="center"
-              className="w-full max-w-5xl"
-            />
+      <div className="relative z-10 flex flex-1 flex-col px-6 md:px-12 pt-28 pb-16 md:pb-20">
+        <HeroReveal className="home-v2-hero-content flex flex-1 flex-col items-center justify-center w-full max-w-5xl mx-auto text-center">
+          <PageHeader
+            title={heroTitle}
+            variant="hero"
+            shell={false}
+            animate={false}
+            align="center"
+            className="w-full"
+          />
+
+          <div className="home-v2-hero-ctas flex flex-wrap items-center justify-center gap-3 md:gap-4">
+            <EditorialButton href="/production" variant="primary">
+              {t.nav.production}
+            </EditorialButton>
+            <EditorialButton href="/ai-powered" variant="light">
+              {t.nav.aiPowered}
+            </EditorialButton>
           </div>
 
-          <aside className="flex shrink-0 flex-row md:flex-col items-stretch justify-center md:items-end md:justify-center gap-0 md:gap-0 border border-th-fg/10 md:min-w-[200px] divide-x md:divide-x-0 md:divide-y divide-th-fg/10">
-            {statItems.map((stat) => (
-              <div
-                key={stat.label}
-                className="flex flex-1 md:flex-none flex-col items-center md:items-end justify-center gap-1.5 py-5 md:py-6 px-4 md:px-6 text-center md:text-right"
-              >
-                <span
-                  className="font-black tracking-tighter text-th-fg leading-none"
-                  style={{ fontSize: 'clamp(1.35rem, 3.2vw, 2.25rem)' }}
-                >
-                  {stat.value}
-                </span>
-                <span className="text-[8px] md:text-[9px] tracking-[0.38em] uppercase font-mono text-th-fg/40 max-w-[10rem] leading-relaxed">
-                  {stat.label}
-                </span>
-              </div>
-            ))}
-          </aside>
+          <ProductionStats
+            copy={stats}
+            inHero
+            className="home-v2-hero-stats w-full max-w-3xl border-th-fg/12"
+          />
         </HeroReveal>
       </div>
     </section>
