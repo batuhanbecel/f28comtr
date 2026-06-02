@@ -74,8 +74,11 @@ export function Menu() {
       <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between gap-3 px-4 py-4 sm:px-5 sm:py-5 md:px-10 md:py-7 transition-all duration-hover ease-brand lg:grid lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-8 ${
         isScrolled || forceBackdrop ? 'bg-th-bg/60 border-b border-th-fg/10 backdrop-blur-xl' : 'border-b border-transparent'
       }`}>
-        <Link href="/" className="relative z-50 shrink-0 transition-opacity duration-hover hover:opacity-70">
-          <F28LogoMark className="h-7 sm:h-8 md:h-10 w-auto text-th-fg" aria-label="f/2.8" />
+        <Link
+          href="/"
+          className="relative z-50 flex shrink-0 items-center h-8 md:h-10 transition-opacity duration-hover hover:opacity-70"
+        >
+          <F28LogoMark className="block h-8 md:h-10 w-auto text-th-fg" aria-label="f/2.8" />
         </Link>
 
         {/* Desktop nav links */}
@@ -101,7 +104,7 @@ export function Menu() {
           })}
         </nav>
 
-        <div className="flex items-center gap-2 sm:gap-3 lg:justify-self-end shrink-0 min-h-8">
+        <div className="flex h-8 md:h-10 items-center gap-2 sm:gap-3 lg:justify-self-end shrink-0">
           <ThemeToggle />
           <span className="w-px h-3 bg-th-fg/15 shrink-0" aria-hidden />
           <LanguageSwitcher compact />

@@ -28,7 +28,7 @@ export function F28LogoMark({
       aria-hidden={ariaHidden}
       aria-label={ariaHidden ? undefined : ariaLabel}
       role={ariaHidden ? 'presentation' : 'img'}
-      className={className}
+      className={`block shrink-0 ${className}`.trim()}
       width={width}
       height={height}
     >
