@@ -70,6 +70,55 @@ export const aiPoweredCollection = defineType({
               description: 'Bu işin Instagram\'daki post linki (opsiyonel).',
             }),
             defineField({
+              name: 'agency',
+              title: 'Agency',
+              type: 'string',
+              description: 'Hangi ajansla çalışıldı? (opsiyonel)',
+            }),
+            defineField({
+              name: 'credits',
+              title: 'Credits',
+              type: 'object',
+              description: 'Bu işte yer alan kişiler.',
+              options: { collapsible: true, collapsed: false },
+              fields: [
+                defineField({
+                  name: 'photographers',
+                  title: 'Photographers',
+                  type: 'array',
+                  description: 'Sitede portfolyosu olanlar reference olarak seçilir; sayfada isim portfolyoya link verir.',
+                  of: [
+                    {
+                      type: 'reference',
+                      to: [{ type: 'photographer' }],
+                      options: { filter: 'title == "PHOTOGRAPHER"' },
+                    },
+                  ],
+                }),
+                defineField({
+                  name: 'aiArtists',
+                  title: 'AI Artists',
+                  type: 'array',
+                  description: 'AI sanatçıları (genelde freelance — isim yeterli).',
+                  of: [{ type: 'string' }],
+                  options: { layout: 'tags' },
+                }),
+                defineField({
+                  name: 'retouchers',
+                  title: 'Retouchers',
+                  type: 'array',
+                  description: 'Sitede portfolyosu olanlar reference olarak seçilir.',
+                  of: [
+                    {
+                      type: 'reference',
+                      to: [{ type: 'photographer' }],
+                      options: { filter: 'title == "RETOUCHER"' },
+                    },
+                  ],
+                }),
+              ],
+            }),
+            defineField({
               name: 'description',
               title: 'Description',
               type: 'text',

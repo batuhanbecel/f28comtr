@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Footer } from '@/components/Footer';
 import { shouldSkipOptimization } from '@/lib/blob';
 import { getAiPoweredWorks, getPageCopy } from '@/lib/cms';
+import type { CreditPerson } from '@/lib/aiPoweredWorks';
 import { getServerLang } from '@/lib/serverLang';
 import { absoluteUrl } from '@/lib/siteUrl';
 
@@ -61,20 +62,34 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
     lang === 'tr'
       ? {
           brand: 'Marka',
+          agency: 'Ajans',
           year: 'Yıl',
           type: 'Tür',
           tags: 'Etiketler',
           instagram: 'Instagram\'da gör',
           back: '← AI Powered\'a dön',
+          photographers: 'Fotoğrafçılar',
+          aiArtists: 'AI Sanatçıları',
+          retouchers: 'Retoucher\'lar',
         }
       : {
           brand: 'Brand',
+          agency: 'Agency',
           year: 'Year',
           type: 'Type',
           tags: 'Tags',
           instagram: 'View on Instagram',
           back: '← Back to AI Powered',
+          photographers: 'Photographers',
+          aiArtists: 'AI Artists',
+          retouchers: 'Retouchers',
         };
+
+  const credits = work.credits ?? { photographers: [], aiArtists: [], retouchers: [] };
+  const hasCredits =
+    credits.photographers.length > 0 ||
+    credits.aiArtists.length > 0 ||
+    credits.retouchers.length > 0;
 
   return (
     <>
@@ -120,6 +135,14 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
                   </dt>
                   <dd className="text-th-fg">{work.brand}</dd>
                 </div>
+                {work.agency ? (
+                  <div className="grid grid-cols-[6rem_1fr] gap-4 items-baseline">
+                    <dt className="text-[10px] tracking-[0.3em] uppercase text-th-fg/40">
+                      {labels.agency}
+                    </dt>
+                    <dd className="text-th-fg">{work.agency}</dd>
+                  </div>
+                ) : null}
                 {work.year ? (
                   <div className="grid grid-cols-[6rem_1fr] gap-4 items-baseline">
                     <dt className="text-[10px] tracking-[0.3em] uppercase text-th-fg/40">
@@ -159,6 +182,29 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
                 </p>
               ) : null}
 
+              {hasCredits ? (
+                <section className="space-y-4 pt-6 border-t border-th-fg/10">
+                  {credits.photographers.length > 0 ? (
+                    <CreditBlock
+                      label={labels.photographers}
+                      people={credits.photographers}
+                    />
+                  ) : null}
+                  {credits.aiArtists.length > 0 ? (
+                    <CreditBlock
+                      label={labels.aiArtists}
+                      people={credits.aiArtists.map((name) => ({ fullName: name }))}
+                    />
+                  ) : null}
+                  {credits.retouchers.length > 0 ? (
+                    <CreditBlock
+                      label={labels.retouchers}
+                      people={credits.retouchers}
+                    />
+                  ) : null}
+                </section>
+              ) : null}
+
               {work.instagramUrl ? (
                 <a
                   href={work.instagramUrl}
@@ -175,5 +221,29 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
       </main>
       <Footer />
     </>
+  );
+}
+
+function CreditBlock({ label, people }: { label: string; people: CreditPerson[] }) {
+  return (
+    <div className="space-y-1.5">
+      <p className="text-[10px] tracking-[0.3em] uppercase text-th-fg/40">{label}</p>
+      <ul className="text-sm text-th-fg">
+        {people.map((p, i) => (
+          <li key={`${p.fullName}-${i}`}>
+            {p.slug ? (
+              <Link
+                href={`/${p.slug}`}
+                className="underline-offset-4 hover:underline text-th-fg hover:text-th-fg transition-colors"
+              >
+                {p.fullName}
+              </Link>
+            ) : (
+              <span>{p.fullName}</span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

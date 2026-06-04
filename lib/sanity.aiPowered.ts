@@ -15,7 +15,13 @@ const AI_WORKS_QUERY = `*[_id == "aiPoweredCollection"][0]{
     imageAlt,
     year,
     tags,
-    instagramUrl
+    instagramUrl,
+    agency,
+    "credits": {
+      "photographers": credits.photographers[]->{ "slug": slug.current, fullName },
+      "aiArtists": credits.aiArtists,
+      "retouchers": credits.retouchers[]->{ "slug": slug.current, fullName }
+    }
   }
 }.works`;
 

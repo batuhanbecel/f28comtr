@@ -1,5 +1,17 @@
 export type WorkCategory = 'visual' | 'video' | 'hybrid';
 
+export interface CreditPerson {
+  /** Photographer slug — set when the person has a Sanity photographer doc. */
+  slug?: string;
+  fullName: string;
+}
+
+export interface AiPoweredCredits {
+  photographers: CreditPerson[];
+  aiArtists: string[];
+  retouchers: CreditPerson[];
+}
+
 export interface AiPoweredWork {
   id: string;
   slug: string;
@@ -13,6 +25,8 @@ export interface AiPoweredWork {
   year: number;
   tags?: string[];
   instagramUrl?: string;
+  agency?: string;
+  credits?: AiPoweredCredits;
 }
 
 export function deriveBrandKey(brand: string): string {
