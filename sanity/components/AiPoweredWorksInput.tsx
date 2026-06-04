@@ -19,14 +19,20 @@ import { workCoverImage } from '../lib/workCoverImage';
 import { ArrayItemEditLayer, openArrayItem } from './ArrayItemEditLayer';
 import { DraggableImageGrid, reorderArray } from './DraggableImageGrid';
 
+type SanityImageItem = {
+  _key?: string;
+  _type?: 'image';
+  asset?: { _ref?: string; _type?: string };
+};
+
 type AiPoweredWorkItem = {
   _key: string;
   _type: 'aiPoweredWork';
   brand?: string;
   title?: string;
   category?: string;
-  images?: { asset?: { _ref?: string }; _type?: string }[];
-  image?: { asset?: { _ref?: string }; _type?: string };
+  images?: SanityImageItem[];
+  image?: SanityImageItem;
   slug?: { current?: string };
 };
 
