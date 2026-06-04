@@ -8,6 +8,7 @@
 import type { Photographer } from '@/lib/data';
 import { contactInfo as staticContactInfo } from '@/lib/data';
 import type { AiPoweredWork } from '@/lib/aiPoweredWorks';
+import { deriveBrandKey } from '@/lib/aiPoweredWorks';
 import type { AiPortfolioData } from '@/lib/aiPoweredPortfolio.shared';
 import type { HomeSelectedWorkStored } from '@/lib/homeSelectedWorks.shared';
 import { HOME_SELECTED_WORKS_MAX } from '@/lib/homeSelectedWorks.shared';
@@ -65,6 +66,12 @@ export async function getAiPoweredWorks(): Promise<AiPoweredWork[]> {
     ...w,
     slug:
       typeof w.slug === 'string' && w.slug.length > 0 ? w.slug : w.id || `work-${i}`,
+    // brandKey is editor-input on Sanity but used as the filter key. Derive
+    // from brand when missing so the filter never silently breaks.
+    brandKey:
+      typeof w.brandKey === 'string' && w.brandKey.length > 0
+        ? w.brandKey
+        : deriveBrandKey(w.brand || 'other'),
   }));
 }
 
