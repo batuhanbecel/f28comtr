@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
 import { AiWorkDetailLayout } from '@/app/ai-powered/components/AiWorkDetailLayout';
+import { AiWorkProjectNav } from '@/app/ai-powered/components/AiWorkProjectNav';
 import { Footer } from '@/components/Footer';
 import { getAiPoweredWorks, getPageCopy } from '@/lib/cms';
 import type { CreditPerson } from '@/lib/aiPoweredWorks';
@@ -67,6 +68,9 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
           tags: 'Etiketler',
           instagram: 'Instagram\'da gör',
           back: '← AI Powered\'a dön',
+          prevProject: 'Önceki Proje',
+          nextProject: 'Sonraki Proje',
+          projectNav: 'Çalışmalar arası gezinme',
           photographers: 'Fotoğrafçı',
           aiArtists: 'AI Sanatçıları',
           retouchers: 'Retoucher\'lar',
@@ -79,6 +83,9 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
           tags: 'Tags',
           instagram: 'View on Instagram',
           back: '← Back to AI Powered',
+          prevProject: 'Previous Project',
+          nextProject: 'Next Project',
+          projectNav: 'Work navigation',
           photographers: 'Photographer',
           aiArtists: 'AI Artists',
           retouchers: 'Retouchers',
@@ -209,6 +216,14 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
                 </a>
               ) : null}
           </AiWorkDetailLayout>
+
+          <AiWorkProjectNav
+            works={works}
+            currentSlug={slug}
+            prevLabel={labels.prevProject}
+            nextLabel={labels.nextProject}
+            ariaLabel={labels.projectNav}
+          />
         </div>
       </main>
       <Footer />
