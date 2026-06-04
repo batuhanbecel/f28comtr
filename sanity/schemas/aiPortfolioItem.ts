@@ -3,32 +3,32 @@ import { orderRankField, orderRankOrdering } from '@sanity/orderable-document-li
 
 export const aiPortfolioItem = defineType({
   name: 'aiPortfolioItem',
-  title: 'AI Portfolio Item',
+  title: 'AI Portfolyo Görseli',
   type: 'document',
   fields: [
     orderRankField({ type: 'aiPortfolioItem' }),
     defineField({
       name: 'image',
-      title: 'Image',
+      title: 'Görsel',
       type: 'image',
       options: { hotspot: true },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'tags',
-      title: 'Tags',
+      title: 'Etiketler',
       description:
-        'Bu fotoğrafın etiketleri. Her etiket için English + Türkçe label gir. Aynı etiketi diğer item\'larda da aynen yazarsan filtre tek bir grup olarak gösterir.',
+        "Bu fotoğrafın etiketleri. Her etiket için İngilizce + Türkçe karşılığını gir. Aynı etiketi diğer görsellerde de aynen yazarsan filtre tek bir grup olarak gösterir.",
       type: 'array',
       of: [
         defineArrayMember({
           type: 'object',
           name: 'inlineTag',
-          title: 'Tag',
+          title: 'Etiket',
           fields: [
             defineField({
               name: 'en',
-              title: 'English',
+              title: 'İngilizce',
               type: 'string',
               validation: (Rule) => Rule.required(),
             }),
@@ -42,7 +42,7 @@ export const aiPortfolioItem = defineType({
           preview: {
             select: { en: 'en', tr: 'tr' },
             prepare: ({ en, tr }) => ({
-              title: en || tr || 'Tag',
+              title: en || tr || 'Etiket',
               subtitle: en && tr ? `${en} / ${tr}` : undefined,
             }),
           },
@@ -62,7 +62,7 @@ export const aiPortfolioItem = defineType({
     prepare({ media, filename, tag0, tag1 }) {
       const tags = [tag0, tag1].filter(Boolean).join(' · ');
       return {
-        title: filename || 'Untitled image',
+        title: filename || 'İsimsiz görsel',
         subtitle: tags || undefined,
         media,
       };

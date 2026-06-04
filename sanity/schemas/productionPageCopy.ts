@@ -3,14 +3,14 @@ import { defineArrayMember, defineField, defineType } from 'sanity';
 /** Production sayfası için tam yapılandırılmış içerik — her field Studio'da ayrı UI. */
 export const productionPageCopy = defineType({
   name: 'productionPageCopy',
-  title: 'Production Page',
+  title: 'Production Sayfası',
   type: 'document',
   groups: [
-    { name: 'hero', title: 'Hero', default: true },
-    { name: 'services', title: 'What We Do' },
-    { name: 'process', title: 'How We Work' },
-    { name: 'deliverables', title: 'What We Deliver' },
-    { name: 'team', title: 'Team' },
+    { name: 'hero', title: 'Üst Bölüm', default: true },
+    { name: 'services', title: 'Hizmetler' },
+    { name: 'process', title: 'Sürecimiz' },
+    { name: 'deliverables', title: 'Çıktılar' },
+    { name: 'team', title: 'Ekip' },
     { name: 'marquee', title: 'Marquee' },
     { name: 'seo', title: 'SEO' },
   ],
@@ -19,34 +19,34 @@ export const productionPageCopy = defineType({
     defineField({
       group: 'hero',
       name: 'sectionLabel',
-      title: 'Section Label',
+      title: 'Bölüm Etiketi',
       type: 'localizedString',
     }),
     defineField({
       group: 'hero',
       name: 'heading',
-      title: 'Heading',
+      title: 'Başlık',
       type: 'localizedString',
     }),
     defineField({
       group: 'hero',
       name: 'description',
-      title: 'Description',
+      title: 'Açıklama',
       type: 'localizedText',
     }),
     defineField({
       group: 'hero',
       name: 'stats',
-      title: 'Stats',
+      title: 'İstatistikler',
       type: 'object',
       options: { collapsible: true, collapsed: false },
       fields: [
-        defineField({ name: 'projectsLabel', title: 'Projects Label', type: 'localizedString' }),
-        defineField({ name: 'brandsLabel', title: 'Brands Label', type: 'localizedString' }),
-        defineField({ name: 'sinceLabel', title: 'Since Label', type: 'localizedString' }),
-        defineField({ name: 'projectsValue', title: 'Projects Value (e.g. 1000+)', type: 'string' }),
-        defineField({ name: 'brandsValue', title: 'Brands Value (e.g. 150+)', type: 'string' }),
-        defineField({ name: 'sinceYear', title: 'Since Year (e.g. 2008)', type: 'string' }),
+        defineField({ name: 'projectsLabel', title: 'Projeler Etiketi', type: 'localizedString' }),
+        defineField({ name: 'brandsLabel', title: 'Markalar Etiketi', type: 'localizedString' }),
+        defineField({ name: 'sinceLabel', title: '"-den beri" Etiketi', type: 'localizedString' }),
+        defineField({ name: 'projectsValue', title: 'Proje Sayısı (örn. 1000+)', type: 'string' }),
+        defineField({ name: 'brandsValue', title: 'Marka Sayısı (örn. 150+)', type: 'string' }),
+        defineField({ name: 'sinceYear', title: 'Kuruluş Yılı (örn. 2008)', type: 'string' }),
       ],
     }),
 
@@ -54,29 +54,29 @@ export const productionPageCopy = defineType({
     defineField({
       group: 'services',
       name: 'services',
-      title: 'Services Section',
+      title: 'Hizmetler Bölümü',
       type: 'object',
       options: { collapsible: true, collapsed: false },
       fields: [
-        defineField({ name: 'sectionLabel', title: 'Section Label', type: 'localizedString' }),
-        defineField({ name: 'heading', title: 'Heading (e.g. "WHAT WE DO")', type: 'localizedString' }),
+        defineField({ name: 'sectionLabel', title: 'Bölüm Etiketi', type: 'localizedString' }),
+        defineField({ name: 'heading', title: 'Başlık (örn. "WHAT WE DO")', type: 'localizedString' }),
         defineField({
           name: 'items',
-          title: 'Service Cards',
+          title: 'Hizmet Kartları',
           description: 'Sıralamak için sürükle, silmek/eklemek için "..." menüsü.',
           type: 'array',
           of: [
             defineArrayMember({
               type: 'object',
               name: 'service',
-              title: 'Service',
+              title: 'Hizmet',
               fields: [
-                defineField({ name: 'title', title: 'Title', type: 'localizedString' }),
-                defineField({ name: 'description', title: 'Description', type: 'localizedText' }),
+                defineField({ name: 'title', title: 'Başlık', type: 'localizedString' }),
+                defineField({ name: 'description', title: 'Açıklama', type: 'localizedText' }),
               ],
               preview: {
                 select: { en: 'title.en', tr: 'title.tr' },
-                prepare: ({ en, tr }) => ({ title: en || tr || 'Untitled service' }),
+                prepare: ({ en, tr }) => ({ title: en || tr || 'İsimsiz hizmet' }),
               },
             }),
           ],
@@ -88,28 +88,28 @@ export const productionPageCopy = defineType({
     defineField({
       group: 'process',
       name: 'process',
-      title: 'Process Section',
+      title: 'Süreç Bölümü',
       type: 'object',
       options: { collapsible: true, collapsed: false },
       fields: [
-        defineField({ name: 'sectionLabel', title: 'Section Label', type: 'localizedString' }),
-        defineField({ name: 'heading', title: 'Heading (e.g. "HOW WE WORK")', type: 'localizedString' }),
+        defineField({ name: 'sectionLabel', title: 'Bölüm Etiketi', type: 'localizedString' }),
+        defineField({ name: 'heading', title: 'Başlık (örn. "HOW WE WORK")', type: 'localizedString' }),
         defineField({
           name: 'steps',
-          title: 'Steps',
+          title: 'Adımlar',
           type: 'array',
           of: [
             defineArrayMember({
               type: 'object',
               name: 'processStep',
-              title: 'Step',
+              title: 'Adım',
               fields: [
-                defineField({ name: 'title', title: 'Title', type: 'localizedString' }),
-                defineField({ name: 'sub', title: 'Subtitle', type: 'localizedString' }),
+                defineField({ name: 'title', title: 'Başlık', type: 'localizedString' }),
+                defineField({ name: 'sub', title: 'Alt Başlık', type: 'localizedString' }),
               ],
               preview: {
                 select: { en: 'title.en', tr: 'title.tr' },
-                prepare: ({ en, tr }) => ({ title: en || tr || 'Untitled step' }),
+                prepare: ({ en, tr }) => ({ title: en || tr || 'İsimsiz adım' }),
               },
             }),
           ],
@@ -121,15 +121,15 @@ export const productionPageCopy = defineType({
     defineField({
       group: 'deliverables',
       name: 'deliverables',
-      title: 'Deliverables Section',
+      title: 'Çıktılar Bölümü',
       type: 'object',
       options: { collapsible: true, collapsed: false },
       fields: [
-        defineField({ name: 'sectionLabel', title: 'Section Label', type: 'localizedString' }),
-        defineField({ name: 'heading', title: 'Heading', type: 'localizedString' }),
+        defineField({ name: 'sectionLabel', title: 'Bölüm Etiketi', type: 'localizedString' }),
+        defineField({ name: 'heading', title: 'Başlık', type: 'localizedString' }),
         defineField({
           name: 'items',
-          title: 'Deliverable Items',
+          title: 'Çıktı Maddeleri',
           type: 'array',
           of: [defineArrayMember({ type: 'localizedString' })],
         }),
@@ -140,13 +140,13 @@ export const productionPageCopy = defineType({
     defineField({
       group: 'team',
       name: 'team',
-      title: 'Team Section',
+      title: 'Ekip Bölümü',
       type: 'object',
       options: { collapsible: true, collapsed: false },
       fields: [
-        defineField({ name: 'sectionLabel', title: 'Section Label', type: 'localizedString' }),
-        defineField({ name: 'description', title: 'Description', type: 'localizedText' }),
-        defineField({ name: 'cta', title: 'CTA Label', type: 'localizedString' }),
+        defineField({ name: 'sectionLabel', title: 'Bölüm Etiketi', type: 'localizedString' }),
+        defineField({ name: 'description', title: 'Açıklama', type: 'localizedText' }),
+        defineField({ name: 'cta', title: 'Buton Yazısı', type: 'localizedString' }),
       ],
     }),
 
@@ -154,19 +154,19 @@ export const productionPageCopy = defineType({
     defineField({
       group: 'marquee',
       name: 'marqueeLabel',
-      title: 'Marquee Label',
+      title: 'Marquee Etiketi',
       type: 'localizedString',
     }),
     defineField({
       group: 'marquee',
       name: 'marqueeRow',
-      title: 'Marquee Row Alt',
+      title: 'Marquee Satır Alt Metni',
       type: 'localizedString',
     }),
     defineField({
       group: 'marquee',
       name: 'marqueeViewImage',
-      title: 'View Image Label',
+      title: '"Görseli Gör" Yazısı',
       type: 'localizedString',
     }),
 
@@ -178,10 +178,10 @@ export const productionPageCopy = defineType({
       type: 'object',
       options: { collapsible: true, collapsed: false },
       fields: [
-        defineField({ name: 'title', title: 'Title', type: 'localizedString' }),
-        defineField({ name: 'description', title: 'Description', type: 'localizedText' }),
+        defineField({ name: 'title', title: 'Başlık', type: 'localizedString' }),
+        defineField({ name: 'description', title: 'Açıklama', type: 'localizedText' }),
       ],
     }),
   ],
-  preview: { prepare: () => ({ title: 'Production Page' }) },
+  preview: { prepare: () => ({ title: 'Production Sayfası' }) },
 });

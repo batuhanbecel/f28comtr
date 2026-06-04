@@ -85,7 +85,11 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
           retouchers: 'Retouchers',
         };
 
-  const credits = work.credits ?? { photographers: [], aiArtists: [], retouchers: [] };
+  const credits = {
+    photographers: work.credits?.photographers ?? [],
+    aiArtists: work.credits?.aiArtists ?? [],
+    retouchers: work.credits?.retouchers ?? [],
+  };
   const hasCredits =
     credits.photographers.length > 0 ||
     credits.aiArtists.length > 0 ||

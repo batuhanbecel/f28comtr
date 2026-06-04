@@ -2,6 +2,7 @@ import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { presentationTool } from 'sanity/presentation';
 import { visionTool } from '@sanity/vision';
+import { trTRLocale } from '@sanity/locale-tr-tr';
 
 import { apiVersion, dataset, projectId, studioBasePath } from './sanity/env';
 import { schemaTypes } from './sanity/schemas';
@@ -11,8 +12,6 @@ import { studioTheme } from './sanity/theme';
 import { locations } from './sanity/locations';
 
 // Studio is always loaded in a browser, so prefer the current origin.
-// This makes dev (localhost) and prod (real domain) auto-detect — without
-// requiring NEXT_PUBLIC_SITE_URL to match the host the editor is on.
 const previewOrigin =
   typeof window !== 'undefined'
     ? window.location.origin
@@ -41,7 +40,14 @@ export default defineConfig({
       resolve: locations,
     }),
     visionTool({ defaultApiVersion: apiVersion }),
+    trTRLocale(),
   ],
+  i18n: {
+    bundles: [],
+  },
+  // Default locale = Turkish
+  // (the locale plugin exposes itself in the user menu; default applies on
+  //  first visit, users can switch back to English if they prefer)
   studio: {
     components: {
       logo: StudioLogo,

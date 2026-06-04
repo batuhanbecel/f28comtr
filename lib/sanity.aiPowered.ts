@@ -45,11 +45,55 @@ function deriveTagId(label: string): string {
   );
 }
 
+interface RawCreditPerson {
+  slug?: string | null;
+  fullName?: string | null;
+}
+
+interface RawCredits {
+  photographers?: RawCreditPerson[] | null;
+  aiArtists?: (string | null)[] | null;
+  retouchers?: RawCreditPerson[] | null;
+}
+
+interface RawAiWork extends Omit<AiPoweredWork, 'credits'> {
+  credits?: RawCredits | null;
+}
+
+function normalizePerson(p: RawCreditPerson): { slug?: string; fullName: string } | null {
+  const fullName = typeof p?.fullName === 'string' && p.fullName.length > 0 ? p.fullName : null;
+  if (!fullName) return null;
+  return {
+    fullName,
+    ...(typeof p.slug === 'string' && p.slug.length > 0 ? { slug: p.slug } : {}),
+  };
+}
+
+function normalizeCredits(raw: RawCredits | null | undefined): AiPoweredWork['credits'] {
+  const photographers = Array.isArray(raw?.photographers)
+    ? raw.photographers.map(normalizePerson).filter((p): p is NonNullable<typeof p> => p !== null)
+    : [];
+  const retouchers = Array.isArray(raw?.retouchers)
+    ? raw.retouchers.map(normalizePerson).filter((p): p is NonNullable<typeof p> => p !== null)
+    : [];
+  const aiArtists = Array.isArray(raw?.aiArtists)
+    ? raw.aiArtists.filter((s): s is string => typeof s === 'string' && s.length > 0)
+    : [];
+  if (photographers.length === 0 && retouchers.length === 0 && aiArtists.length === 0) {
+    return undefined;
+  }
+  return { photographers, aiArtists, retouchers };
+}
+
 export async function getAiPoweredWorksFromSanity(): Promise<AiPoweredWork[]> {
-  const result = await sanityFetch<AiPoweredWork[] | null>(AI_WORKS_QUERY);
-  return (result ?? []).filter(
-    (w): w is AiPoweredWork => Boolean(w?.id && w?.imageSrc && w?.brandKey),
-  );
+  const result = await sanityFetch<RawAiWork[] | null>(AI_WORKS_QUERY);
+  return (result ?? [])
+    .filter((w): w is RawAiWork => Boolean(w?.id && w?.imageSrc && w?.brandKey))
+    .map((w) => ({
+      ...w,
+      agency: typeof w.agency === 'string' && w.agency.length > 0 ? w.agency : undefined,
+      credits: normalizeCredits(w.credits),
+    }));
 }
 
 export async function getAiPoweredPortfolioFromSanity(): Promise<AiPortfolioData> {

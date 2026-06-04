@@ -23,6 +23,7 @@
     "@masonry-grid/react": "^1.1.1",
     "@sanity/client": "^7.22.1",
     "@sanity/image-url": "^2.1.1",
+    "@sanity/locale-tr-tr": "^1.2.33",
     "@sanity/orderable-document-list": "^1.5.1",
     "@sanity/vision": "^5.30.0",
     "@sanity/visual-editing": "^5.4.3",

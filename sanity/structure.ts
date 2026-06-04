@@ -12,11 +12,11 @@ const SINGLETONS = new Set([
 
 export const structure: StructureResolver = (S, context) =>
   S.list()
-    .title('f/2.8')
+    .title('İçerik')
     .items([
       orderableDocumentListDeskItem({
         type: 'photographer',
-        title: 'Photographers',
+        title: 'Fotoğrafçılar',
         S,
         context,
       }),
@@ -28,7 +28,7 @@ export const structure: StructureResolver = (S, context) =>
             .title('AI Powered')
             .items([
               S.listItem()
-                .title('Works')
+                .title('Çalışmalar')
                 .child(
                   S.document()
                     .schemaType('aiPoweredCollection')
@@ -36,7 +36,7 @@ export const structure: StructureResolver = (S, context) =>
                 ),
               orderableDocumentListDeskItem({
                 type: 'aiPortfolioItem',
-                title: 'Portfolio Items',
+                title: 'Portfolyo Görselleri',
                 S,
                 context,
               }),
@@ -44,7 +44,7 @@ export const structure: StructureResolver = (S, context) =>
         ),
       S.divider(),
       S.listItem()
-        .title('Home Selected Works')
+        .title('Anasayfa Öne Çıkan İşler')
         .child(
           S.document()
             .schemaType('homeSelectedWorks')
@@ -52,26 +52,26 @@ export const structure: StructureResolver = (S, context) =>
         ),
       S.divider(),
       S.listItem()
-        .title('Site Assets')
+        .title('Site Görselleri')
         .child(
           S.document().schemaType('siteAssets').documentId('siteAssets'),
         ),
       S.listItem()
-        .title('Production Page Copy')
+        .title('Production Sayfası')
         .child(
           S.document()
             .schemaType('productionPageCopy')
             .documentId('productionPageCopy'),
         ),
       S.listItem()
-        .title('AI Powered Page Copy')
+        .title('AI Powered Sayfası')
         .child(
           S.document()
             .schemaType('aiPoweredPageCopy')
             .documentId('aiPoweredPageCopy'),
         ),
       S.listItem()
-        .title('Contact Page Copy')
+        .title('İletişim Sayfası')
         .child(
           S.document()
             .schemaType('contactPageCopy')
@@ -79,8 +79,8 @@ export const structure: StructureResolver = (S, context) =>
         ),
       S.divider(),
       S.listItem()
-        .title('SEO Overrides')
-        .child(S.documentTypeList('seoOverride').title('SEO Overrides')),
+        .title('SEO Düzenlemeleri')
+        .child(S.documentTypeList('seoOverride').title('SEO Düzenlemeleri')),
     ]);
 
 export const isSingleton = (type: string): boolean => SINGLETONS.has(type);

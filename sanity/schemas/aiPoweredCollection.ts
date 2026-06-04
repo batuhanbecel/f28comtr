@@ -2,44 +2,44 @@ import { defineField, defineType } from 'sanity';
 
 export const aiPoweredCollection = defineType({
   name: 'aiPoweredCollection',
-  title: 'AI Powered Works',
+  title: 'AI Powered Çalışmalar',
   type: 'document',
   fields: [
     defineField({
       name: 'works',
-      title: 'Works',
+      title: 'Çalışmalar',
       description:
-        '/ai-powered sayfasında gösterilen AI-destekli işler. Sıralamayı sürükleyerek değiştir.',
+        '/ai-powered sayfasında gösterilen AI destekli işler. Sıralamayı sürükleyerek değiştirebilirsin.',
       type: 'array',
       of: [
         {
           type: 'object',
           name: 'aiPoweredWork',
-          title: 'Work',
+          title: 'Çalışma',
           fields: [
             defineField({
               name: 'brand',
-              title: 'Brand',
+              title: 'Marka',
               type: 'string',
-              description: 'Marka adı, e.g. "PUMA"',
+              description: 'Marka adı, örn. "PUMA"',
               validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: 'brandKey',
-              title: 'Brand Key',
+              title: 'Marka Anahtarı',
               type: 'string',
-              description: 'URL-safe slug (filtre için).',
+              description: 'Filtre için URL-uyumlu kısa ad (boş bırak; otomatik).',
             }),
             defineField({
               name: 'title',
-              title: 'Title',
+              title: 'Başlık',
               type: 'string',
             }),
             defineField({
               name: 'slug',
               title: 'Slug (detay sayfası URL)',
               type: 'slug',
-              description: '/ai-powered/works/<slug> — title veya brand\'den otomatik üretilir.',
+              description: '/ai-powered/works/<slug> — başlık veya markadan otomatik üretilir.',
               options: {
                 source: (doc, ctx) => {
                   const parent = (ctx.parent ?? {}) as { title?: string; brand?: string };
@@ -57,8 +57,6 @@ export const aiPoweredCollection = defineType({
                     .replace(/ö/g, 'o')
                     .replace(/[^a-z0-9]+/g, '-')
                     .replace(/(^-|-$)/g, ''),
-                // Array içindeki slug için Sanity tarafından otomatik uniqueness
-                // kontrolü yapılamaz; uyarıyı bastırıyoruz.
                 disableArrayWarning: true,
               },
               validation: (Rule) => Rule.required(),
@@ -67,26 +65,27 @@ export const aiPoweredCollection = defineType({
               name: 'instagramUrl',
               title: 'Instagram Post URL',
               type: 'url',
-              description: 'Bu işin Instagram\'daki post linki (opsiyonel).',
+              description: "Bu işin Instagram'daki post linki (opsiyonel).",
             }),
             defineField({
               name: 'agency',
-              title: 'Agency',
+              title: 'Ajans',
               type: 'string',
               description: 'Hangi ajansla çalışıldı? (opsiyonel)',
             }),
             defineField({
               name: 'credits',
-              title: 'Credits',
+              title: 'Künye',
               type: 'object',
-              description: 'Bu işte yer alan kişiler.',
+              description: 'Bu işte yer alan kişiler (opsiyonel).',
               options: { collapsible: true, collapsed: false },
               fields: [
                 defineField({
                   name: 'photographers',
-                  title: 'Photographers',
+                  title: 'Fotoğrafçılar',
                   type: 'array',
-                  description: 'Sitede portfolyosu olanlar reference olarak seçilir; sayfada isim portfolyoya link verir.',
+                  description:
+                    'Sitede portfolyosu olanları referans olarak seç; isim portfolyoya link verir.',
                   of: [
                     {
                       type: 'reference',
@@ -97,7 +96,7 @@ export const aiPoweredCollection = defineType({
                 }),
                 defineField({
                   name: 'aiArtists',
-                  title: 'AI Artists',
+                  title: 'AI Sanatçıları',
                   type: 'array',
                   description: 'AI sanatçıları (genelde freelance — isim yeterli).',
                   of: [{ type: 'string' }],
@@ -105,9 +104,9 @@ export const aiPoweredCollection = defineType({
                 }),
                 defineField({
                   name: 'retouchers',
-                  title: 'Retouchers',
+                  title: "Retoucher'lar",
                   type: 'array',
-                  description: 'Sitede portfolyosu olanlar reference olarak seçilir.',
+                  description: 'Sitede portfolyosu olanları referans olarak seç.',
                   of: [
                     {
                       type: 'reference',
@@ -120,19 +119,19 @@ export const aiPoweredCollection = defineType({
             }),
             defineField({
               name: 'description',
-              title: 'Description',
+              title: 'Açıklama',
               type: 'text',
               rows: 3,
             }),
             defineField({
               name: 'category',
-              title: 'Category',
+              title: 'Tür',
               type: 'string',
               options: {
                 list: [
-                  { title: 'Visual', value: 'visual' },
+                  { title: 'Görsel', value: 'visual' },
                   { title: 'Video', value: 'video' },
-                  { title: 'Hybrid', value: 'hybrid' },
+                  { title: 'Hibrit', value: 'hybrid' },
                 ],
                 layout: 'radio',
               },
@@ -141,25 +140,25 @@ export const aiPoweredCollection = defineType({
             }),
             defineField({
               name: 'image',
-              title: 'Image',
+              title: 'Görsel',
               type: 'image',
               options: { hotspot: true },
               validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: 'imageAlt',
-              title: 'Image Alt Text',
+              title: 'Görsel Alt Metni',
               type: 'string',
             }),
             defineField({
               name: 'year',
-              title: 'Year',
+              title: 'Yıl',
               type: 'number',
               validation: (Rule) => Rule.integer().min(2000).max(2100),
             }),
             defineField({
               name: 'tags',
-              title: 'Tags',
+              title: 'Etiketler',
               type: 'array',
               of: [{ type: 'string' }],
               options: { layout: 'tags' },
@@ -176,7 +175,7 @@ export const aiPoweredCollection = defineType({
             prepare({ brand, title, category, year, media }) {
               const meta = [category, year].filter(Boolean).join(' · ');
               return {
-                title: brand || 'Untitled',
+                title: brand || 'İsimsiz',
                 subtitle: [title, meta].filter(Boolean).join('  —  ') || undefined,
                 media,
               };
@@ -189,7 +188,7 @@ export const aiPoweredCollection = defineType({
   ],
   preview: {
     prepare() {
-      return { title: 'AI Powered Works' };
+      return { title: 'AI Powered Çalışmalar' };
     },
   },
 });

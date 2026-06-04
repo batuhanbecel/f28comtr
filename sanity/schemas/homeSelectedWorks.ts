@@ -2,37 +2,37 @@ import { defineField, defineType } from 'sanity';
 
 export const homeSelectedWorks = defineType({
   name: 'homeSelectedWorks',
-  title: 'Home Selected Works',
+  title: 'Anasayfa Öne Çıkan İşler',
   type: 'document',
   fields: [
     defineField({
       name: 'works',
-      title: 'Selected Works',
+      title: 'Öne Çıkan İşler',
       description:
-        'Anasayfada öne çıkan işler (maksimum 6). Sıralamayı sürükleyerek değiştir.',
+        'Anasayfada gösterilen öne çıkan işler (maksimum 6). Sıralamayı sürükleyerek değiştirebilirsin.',
       type: 'array',
       of: [
         {
           type: 'object',
           name: 'homeSelectedWork',
-          title: 'Selected Work',
+          title: 'Öne Çıkan İş',
           fields: [
             defineField({
               name: 'image',
-              title: 'Image',
+              title: 'Görsel',
               type: 'image',
               options: { hotspot: true },
               validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: 'workTitle',
-              title: 'Work Title',
-              description: 'Boş bırakılırsa fallback başlık kullanılır.',
+              title: 'İş Başlığı',
+              description: 'Boş bırakırsan yedek (fallback) başlık kullanılır.',
               type: 'string',
             }),
             defineField({
               name: 'photographer',
-              title: 'Photographer',
+              title: 'Fotoğrafçı',
               type: 'reference',
               to: [{ type: 'photographer' }],
               validation: (Rule) => Rule.required(),
@@ -48,7 +48,7 @@ export const homeSelectedWorks = defineType({
             prepare({ media, workTitle, name, role }) {
               return {
                 media,
-                title: workTitle || name || 'Untitled',
+                title: workTitle || name || 'İsimsiz',
                 subtitle: [name, role].filter(Boolean).join('  —  ') || undefined,
               };
             },
@@ -61,7 +61,7 @@ export const homeSelectedWorks = defineType({
   ],
   preview: {
     prepare() {
-      return { title: 'Home Selected Works' };
+      return { title: 'Anasayfa Öne Çıkan İşler' };
     },
   },
 });

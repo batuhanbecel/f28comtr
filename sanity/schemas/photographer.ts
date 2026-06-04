@@ -2,28 +2,28 @@ import { defineField, defineType } from 'sanity';
 import { orderRankField, orderRankOrdering } from '@sanity/orderable-document-list';
 
 const AVAILABLE_TAGS = [
-  { title: 'Portrait', value: 'portrait' },
-  { title: 'Commercial', value: 'commercial' },
-  { title: 'Fashion', value: 'fashion' },
-  { title: 'Editorial', value: 'editorial' },
-  { title: 'Product', value: 'product' },
-  { title: 'Lifestyle', value: 'lifestyle' },
-  { title: 'Beauty', value: 'beauty' },
-  { title: 'Food', value: 'food' },
-  { title: 'Architecture', value: 'architecture' },
-  { title: 'Event', value: 'event' },
+  { title: 'Portre', value: 'portrait' },
+  { title: 'Reklam', value: 'commercial' },
+  { title: 'Moda', value: 'fashion' },
+  { title: 'Editöryal', value: 'editorial' },
+  { title: 'Ürün', value: 'product' },
+  { title: 'Yaşam Tarzı', value: 'lifestyle' },
+  { title: 'Güzellik', value: 'beauty' },
+  { title: 'Yemek', value: 'food' },
+  { title: 'Mimari', value: 'architecture' },
+  { title: 'Etkinlik', value: 'event' },
 ];
 
 export const photographer = defineType({
   name: 'photographer',
-  title: 'Photographer',
+  title: 'Fotoğrafçı',
   type: 'document',
   fields: [
     orderRankField({ type: 'photographer' }),
     defineField({
       name: 'slug',
-      title: 'Slug (URL ID)',
-      description: 'URL\'de geçen kısım: f28.com.tr/<slug>',
+      title: 'Slug (URL)',
+      description: "URL'de görünen kısım: f28.com.tr/<slug>",
       type: 'slug',
       options: {
         source: 'fullName',
@@ -44,25 +44,25 @@ export const photographer = defineType({
     }),
     defineField({
       name: 'name',
-      title: 'First Name',
-      description: 'Tek kelime, e.g. "Ozan"',
+      title: 'Ad',
+      description: 'Tek kelime, örn. "Ozan"',
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'fullName',
-      title: 'Full Name',
-      description: 'Tüm isim, büyük harflerle, e.g. "OZAN ÇAKMAK"',
+      title: 'Tam İsim',
+      description: 'Tüm isim büyük harflerle, örn. "OZAN ÇAKMAK"',
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'title',
-      title: 'Title',
+      title: 'Görev',
       type: 'string',
       options: {
         list: [
-          { title: 'Photographer', value: 'PHOTOGRAPHER' },
+          { title: 'Fotoğrafçı', value: 'PHOTOGRAPHER' },
           { title: 'Retoucher', value: 'RETOUCHER' },
         ],
         layout: 'radio',
@@ -71,38 +71,33 @@ export const photographer = defineType({
     }),
     defineField({
       name: 'tags',
-      title: 'Tags',
+      title: 'Etiketler',
       type: 'array',
       of: [{ type: 'string' }],
       options: { list: AVAILABLE_TAGS },
     }),
     defineField({
       name: 'preview',
-      title: 'Preview Image',
-      description: 'Listede ve OG görselinde kullanılır.',
+      title: 'Önizleme Görseli',
+      description: 'Liste ve OG (sosyal paylaşım) görselinde kullanılır.',
       type: 'image',
       options: { hotspot: true },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'portfolioImages',
-      title: 'Portfolio Images',
-      description: 'Detay sayfasında gösterilen tüm portfolyo görselleri (sırayla).',
+      title: 'Portfolyo Görselleri',
+      description: 'Detay sayfasında gösterilen portfolyo görselleri (sırayla).',
       type: 'array',
-      of: [
-        {
-          type: 'image',
-          options: { hotspot: true },
-        },
-      ],
+      of: [{ type: 'image', options: { hotspot: true } }],
       options: { layout: 'grid' },
     }),
     defineField({
       name: 'bio',
-      title: 'Bio',
+      title: 'Biyografi',
       type: 'object',
       fields: [
-        defineField({ name: 'en', title: 'English', type: 'text', rows: 4 }),
+        defineField({ name: 'en', title: 'İngilizce', type: 'text', rows: 4 }),
         defineField({ name: 'tr', title: 'Türkçe', type: 'text', rows: 4 }),
       ],
     }),
@@ -113,7 +108,7 @@ export const photographer = defineType({
     }),
     defineField({
       name: 'website',
-      title: 'Website URL',
+      title: 'Web Sitesi URL',
       type: 'url',
     }),
   ],
