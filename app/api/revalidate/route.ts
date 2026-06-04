@@ -10,7 +10,7 @@ import { parseBody } from 'next-sanity/webhook';
  *   Secret:  SANITY_REVALIDATE_SECRET ile aynı değer
  *   Trigger: Create / Update / Delete
  *   Filter:  _type in ["photographer", "aiPoweredCollection", "aiPortfolioItem",
- *                       "siteAssets", "homeSelectedWorks", "productionPageCopy",
+ *                       "siteAssets", "homeV2PageCopy", "productionPageCopy",
  *                       "aiPoweredPageCopy", "contactPageCopy", "seoOverride"]
  *   Projection: { _type, "slug": slug.current, "pageKey": pageKey }
  */
@@ -78,6 +78,7 @@ function resolvePathsForType(body: WebhookPayload): string[] {
     case 'siteAssets':
       return ['/', '/about', '/production'];
 
+    case 'homeV2PageCopy':
     case 'homeSelectedWorks':
       return ['/home-v2', '/'];
 

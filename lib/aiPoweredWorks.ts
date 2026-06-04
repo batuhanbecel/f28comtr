@@ -12,6 +12,12 @@ export interface AiPoweredCredits {
   retouchers: CreditPerson[];
 }
 
+export interface AiPoweredWorkImage {
+  src: string;
+  width?: number;
+  height?: number;
+}
+
 export interface AiPoweredWork {
   id: string;
   slug: string;
@@ -20,7 +26,13 @@ export interface AiPoweredWork {
   title: string;
   description: string;
   category: WorkCategory;
+  /** All project images in display order. */
+  images: AiPoweredWorkImage[];
+  /** First image — grid cover, OG, filters. */
   imageSrc: string;
+  /** Cover dimensions — detail layout. */
+  imageWidth?: number;
+  imageHeight?: number;
   imageAlt: string;
   year: number;
   tags?: string[];

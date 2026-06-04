@@ -5,9 +5,8 @@ import { Footer } from '@/components/Footer';
 import { HeroSnapBody } from '@/components/HeroSnapBody';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 import type { Photographer } from '@/lib/data';
-import type { HomeSelectedWork } from '@/lib/homeV2.shared';
+import type { HomeSelectedWork, HomeV2Copy } from '@/lib/homeV2.shared';
 import type { ProductionPageCopy } from '@/lib/pageCopy.types';
-import type { translations } from '@/lib/translations';
 import { HomeV2Hero } from './HomeV2Hero';
 import { HomeV2ServicesMarquee } from './HomeV2ServicesMarquee';
 import { HomeV2SelectedWorks } from './HomeV2SelectedWorks';
@@ -15,10 +14,9 @@ import { HomeV2ArtistsGrid } from './HomeV2ArtistsGrid';
 import { HomeV2AiSplit } from './HomeV2AiSplit';
 import { HomeV2ClientLogosMarquee } from './HomeV2ClientLogosMarquee';
 
-type HomeV2Copy = (typeof translations.en)['homeV2'];
-
 interface HomeV2PageContentProps {
   copy: HomeV2Copy;
+  heroImages: string[];
   productionCopy: Pick<ProductionPageCopy, 'stats' | 'statsValues' | 'services'>;
   selectedWorks: HomeSelectedWork[];
   photographers: Photographer[];
@@ -32,6 +30,7 @@ interface HomeV2PageContentProps {
 
 export function HomeV2PageContent({
   copy,
+  heroImages,
   productionCopy,
   selectedWorks,
   photographers,
@@ -50,6 +49,7 @@ export function HomeV2PageContent({
         heroLabel={copy.heroLabel}
         heroTitle={copy.heroTitle}
         heroDescription={copy.heroDescription}
+        heroImages={heroImages}
         stats={productionCopy}
       />
 

@@ -1,0 +1,125 @@
+/**
+ * Full-width Studio panes — document forms and custom gallery desks use the
+ * full content area (similar to AI Portfolyo Görselleri).
+ */
+
+/* Sanity caps document forms at theme.container[1] via FormContainer */
+[data-ui='DocumentPanel'] [class*='FormContainer'] {
+  max-width: none !important;
+  width: 100% !important;
+  margin-inline: 0 !important;
+  box-sizing: border-box;
+}
+
+[data-ui='DocumentPanel'] [data-ui='ScrollContainer'],
+[data-ui='DocumentPanel'] form,
+[data-ui='DocumentPanel'] [data-as='form'] {
+  max-width: none !important;
+  width: 100%;
+}
+
+[data-ui='DocumentPanel'] [class*='RootStack'],
+[data-ui='DocumentPanel'] [class*='FormRowContainer'],
+[data-ui='DocumentPanel'] [class*='FormCell'],
+[data-ui='DocumentPanel'] [class*='ColumnarGrid'],
+[data-ui='DocumentPanel'] fieldset {
+  max-width: none !important;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Gallery fields: use full pane width (break 2-col field layout gutter) */
+[data-ui='DocumentPanel'] fieldset:has(.f28-gallery-wide) [class*='ColumnarGrid'] {
+  grid-template-columns: 1fr !important;
+}
+
+[data-ui='DocumentPanel'] fieldset:has(.f28-gallery-wide) [class*='FormCell']:empty {
+  display: none;
+}
+
+/* Custom structure components (gallery desks) */
+[data-ui='PaneLayout'] [data-ui='ScrollContainer'] {
+  max-width: none !important;
+}
+
+/* Gallery thumb toolbar — force white icons (Sanity UI Button overrides color) */
+.f28-thumb-toolbar-btn,
+.f28-thumb-toolbar-btn svg,
+.f28-thumb-toolbar-btn path {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+.f28-thumb-toolbar-btn svg path[stroke] {
+  fill: none !important;
+  stroke: #ffffff !important;
+}
+
+/* Editable thumb: hover + edit affordance */
+.f28-thumb-card__media {
+  position: relative;
+  overflow: hidden;
+}
+
+.f28-thumb-card__img {
+  transition: transform 0.22s ease;
+}
+
+.f28-thumb-card--editable:hover .f28-thumb-card__img,
+.f28-thumb-card--editable:focus-within .f28-thumb-card__img {
+  transform: scale(1.04);
+}
+
+.f28-thumb-edit-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  pointer-events: none;
+}
+
+.f28-thumb-edit-overlay__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.f28-thumb-card--editable:hover .f28-thumb-edit-overlay,
+.f28-thumb-card--editable:focus-within .f28-thumb-edit-overlay {
+  opacity: 1;
+}
+
+.f28-thumb-card--editable:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* Wide gallery inputs (AI çalışma galerisi, portfolyo desk) */
+.f28-gallery-wide {
+  width: 100%;
+  max-width: none;
+}
+
+.f28-gallery-wide .f28-thumb-grid {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Çalışma galerisi document: full editor width */
+[data-ui='DocumentPanel'] .f28-gallery-wide {
+  padding-right: 0;
+}
+
+/* Array edit modal: prefer wide dialog on large screens */
+@media (min-width: 720px) {
+  [data-ui='Dialog'] [data-ui='DialogCard'] {
+    max-width: min(1120px, calc(100vw - 40px));
+    width: 100%;
+  }
+}

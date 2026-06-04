@@ -2,7 +2,7 @@
 /**
  * Faz 5 — Home Selected Works migration.
  *
- *   Redis `site:home:selected` → singleton "homeSelectedWorks" doc with `works` array
+ *   Redis `site:home:selected` → homeV2PageCopy.works (merged Anasayfa doc)
  *
  * Each entry has photographerId → resolved as a reference to the corresponding
  * photographer-<slug> document (already migrated in Faz 2).
@@ -98,18 +98,18 @@ async function main() {
   }
   if (entries.length > 0) process.stdout.write('\n');
 
-  const doc = {
-    _id: 'homeSelectedWorks',
-    _type: 'homeSelectedWorks',
-    works,
-  };
-
   if (DRY_RUN) {
-    log(`\n[dry] Would upsert singleton with ${works.length} works.`);
-  } else {
-    await sanity.createOrReplace(doc);
-    log(`\n✓ Upserted "homeSelectedWorks" with ${works.length} works.`);
+    log(`\n[dry] Would patch homeV2PageCopy with ${works.length} works.`);
+    return;
   }
+
+  await sanity
+    .transaction()
+    .createIfNotExists({ _id: 'homeV2PageCopy', _type: 'homeV2PageCopy' })
+    .patch('homeV2PageCopy', (p) => p.set({ works }))
+    .commit();
+
+  log(`\n✓ Patched "homeV2PageCopy" with ${works.length} works.`);
 }
 
 async function loadStoredEntries() {

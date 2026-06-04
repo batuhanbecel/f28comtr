@@ -12,6 +12,9 @@ export const LIGHTBOX_IMAGE_SIZES =
 export const AI_WORK_CARD_SIZES =
   "(max-width: 560px) 100vw, (max-width: 1023px) 50vw, 25vw";
 
+/** AI work detail — left column beside metadata aside. */
+export const AI_WORK_DETAIL_SIZES = '(max-width: 1024px) 100vw, 60vw';
+
 /** Production page closing marquee — fixed-height filmstrip cells. */
 export const MARQUEE_THUMB_SIZES = '320px';
 

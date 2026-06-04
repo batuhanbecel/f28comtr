@@ -13,8 +13,12 @@
     "migrate:ai-powered": "node scripts/migrate-ai-powered-to-sanity.mjs",
     "migrate:site-assets": "node scripts/migrate-site-assets-to-sanity.mjs",
     "migrate:home-selected": "node scripts/migrate-home-selected-to-sanity.mjs",
+    "migrate:merge-home-v2": "node scripts/merge-home-selected-into-home-v2.mjs",
+    "migrate:sync-home-draft": "node scripts/sync-home-v2-draft.mjs",
     "migrate:copy-seo": "tsx scripts/migrate-copy-seo-to-sanity.ts",
-    "fix:order-ranks": "node scripts/fix-order-ranks.mjs"
+    "migrate:ai-tags": "node scripts/migrate-ai-tags-to-references.mjs",
+    "fix:order-ranks": "node scripts/fix-order-ranks.mjs",
+    "download:ai-powered": "node scripts/download-ai-powered-assets.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -39,6 +43,7 @@
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.6.0",
     "sanity": "^5.30.0",
+    "sanity-plugin-media": "^4.3.0",
     "styled-components": "^6.4.2"
   },
   "devDependencies": {

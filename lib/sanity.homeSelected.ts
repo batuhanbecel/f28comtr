@@ -1,14 +1,20 @@
 import { sanityFetch } from '@/lib/sanity.fetch';
 import type { HomeSelectedWorkStored } from '@/lib/homeSelectedWorks.shared';
 
-const HOME_SELECTED_QUERY = `*[_id == "homeSelectedWorks"][0]{
-  "works": works[]{
-    "id": _key,
-    "imageSrc": image.asset->url,
-    workTitle,
-    "photographerId": photographer->slug.current
-  }
-}.works`;
+const WORKS_PROJECTION = `works[]{
+  "id": _key,
+  "imageSrc": image.asset->url,
+  workTitle,
+  "photographerId": photographer->slug.current
+}`;
+
+/** Reads featured works; prefers non-empty published list, then legacy singleton. */
+const HOME_SELECTED_QUERY = `coalesce(
+  *[_id == "homeV2PageCopy"][0]{
+    "works": select(count(works) > 0 => works[]{ ${WORKS_PROJECTION} })
+  }.works,
+  *[_id == "homeSelectedWorks"][0]{ works[]{ ${WORKS_PROJECTION} } }.works
+)`;
 
 interface RawEntry {
   id: string | null;

@@ -1997,15 +1997,10 @@ body[data-lightbox-open] nav {
   z-index: -1;
 }
 
-.home-v2-services-marquee-row:hover .home-v2-services-marquee-track[data-ready='true'] {
-  animation-play-state: paused;
-}
-
 .home-v2-services-marquee-track {
   display: flex;
   width: max-content;
   gap: 12px;
-  will-change: transform;
 }
 
 .home-v2-services-marquee-track:not([data-ready='true']) {
@@ -2014,7 +2009,14 @@ body[data-lightbox-open] nav {
 
 .home-v2-services-marquee-track[data-ready='true'] {
   visibility: visible;
-  animation: home-v2-services-marquee var(--marquee-duration, 90s) linear infinite;
+  will-change: transform;
+  animation: home-v2-services-marquee var(--marquee-duration, 90s) linear infinite reverse;
+  animation-play-state: paused;
+}
+
+/* Hover: scroll; mouse leave: pause in place (no reset) */
+.home-v2-services-marquee-row:hover .home-v2-services-marquee-track[data-ready='true'] {
+  animation-play-state: running;
 }
 
 .home-v2-services-marquee-set {

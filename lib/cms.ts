@@ -12,7 +12,7 @@ import { deriveBrandKey } from '@/lib/aiPoweredWorks';
 import type { AiPortfolioData } from '@/lib/aiPoweredPortfolio.shared';
 import type { HomeSelectedWorkStored } from '@/lib/homeSelectedWorks.shared';
 import { HOME_SELECTED_WORKS_MAX } from '@/lib/homeSelectedWorks.shared';
-import type { HomeSelectedWork, HomeSelectedWorkRole } from '@/lib/homeV2.shared';
+import type { HomeSelectedWork, HomeSelectedWorkRole, HomeV2Copy } from '@/lib/homeV2.shared';
 import type { ProductionMarqueeItem } from '@/lib/productionMarquee.shared';
 import type {
   ContactPageCopy,
@@ -40,6 +40,7 @@ import {
   getLogosFromSanity,
 } from '@/lib/sanity.siteAssets';
 import { getHomeSelectedWorksFromSanity } from '@/lib/sanity.homeSelected';
+import { getHomeV2CopyPatchFromSanity } from '@/lib/sanity.homeV2';
 import {
   getPageCopyPatchFromSanity,
   getSeoOverrideFromSanity,
@@ -107,6 +108,14 @@ export async function getF28Logos(): Promise<string[]> {
 
 export async function getSocialLogos(): Promise<string[]> {
   return getLogosFromSanity('social');
+}
+
+// ── Home v2 copy ────────────────────────────────────────────────────────────
+
+export async function getHomeV2Copy(lang: Lang): Promise<HomeV2Copy> {
+  const defaults = translations[lang].homeV2;
+  const patch = await getHomeV2CopyPatchFromSanity(lang);
+  return { ...defaults, ...patch };
 }
 
 // ── Home Selected Works ─────────────────────────────────────────────────────
@@ -224,14 +233,14 @@ export async function getPageSeo(page: SeoPageKey, lang: Lang): Promise<SeoCopy>
 // ── Type re-exports ─────────────────────────────────────────────────────────
 
 export type { Photographer, PhotographerTag } from '@/lib/data';
-export type { AiPoweredWork, WorkCategory } from '@/lib/aiPoweredWorks';
+export type { AiPoweredWork, AiPoweredWorkImage, WorkCategory } from '@/lib/aiPoweredWorks';
 export type {
   AiPortfolioData,
   AiPortfolioItem,
   AiPortfolioTag,
 } from '@/lib/aiPoweredPortfolio.shared';
 export type { ProductionMarqueeItem } from '@/lib/productionMarquee.shared';
-export type { HomeSelectedWork, HomeSelectedWorkRole } from '@/lib/homeV2.shared';
+export type { HomeSelectedWork, HomeSelectedWorkRole, HomeV2Copy, HomeV2HeroSlide } from '@/lib/homeV2.shared';
 export type {
   ProductionPageCopy,
   AiPoweredPageCopy,

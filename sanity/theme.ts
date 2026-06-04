@@ -1,21 +1,20 @@
 import { buildLegacyTheme } from 'sanity';
 
 /**
- * f/2.8 — minimal editorial Studio teması.
+ * f/2.8 Studio teması.
  *
- * Önemli: `--default-button-primary-color` ve `--component-text-color` gibi
- * doğrudan kontrasta etki eden değişkenlere DOKUNULMAZ. Bunlar Sanity'nin
- * default'unda kalır — aksi takdirde Publish/Discard butonlarının yazısı
- * arkasıyla aynı renge gelip görünmez kalıyor.
+ * Üst navbar f/2.8 siyahıyla markalaştırılmış. İçerik alanı Sanity'nin
+ * varsayılan açık temasını kullanır — hem kontrast hem de kullanılabilirlik
+ * bu kombinasyonla en yüksek seviyede.
+ *
+ * NOT: `--brand-primary` kasıtlı olarak mavi tonda bırakıldı.
+ * Siyah verildiğinde `buildLegacyTheme` Publish/Discard butonlarının
+ * yazısını arka planla aynı renge hesaplar → görünmez kalır.
+ * Navigation için siyah kullanmak yeterli; action butonları default mavi
+ * kalınca kontrast sorunsuz olur.
  */
-const props = {
-  // Ana marka rengi — vurgu, focus, primary action background.
-  '--brand-primary': '#111111',
-  '--focus-color': '#111111',
-
-  // Üst nav (workspace selector + tool menu) arka planı — site teması ile uyumlu.
-  '--main-navigation-color': '#0a0a0a',
+export const studioTheme = buildLegacyTheme({
+  '--main-navigation-color': '#111111',
   '--main-navigation-color--inverted': '#ffffff',
-};
-
-export const studioTheme = buildLegacyTheme(props);
+  '--focus-color': '#111111',
+});

@@ -1,5 +1,5 @@
 import { sanityFetch } from '@/lib/sanity.fetch';
-import type { AiPoweredWork } from '@/lib/aiPoweredWorks';
+import type { AiPoweredWork, AiPoweredWorkImage } from '@/lib/aiPoweredWorks';
 import type { AiPortfolioData } from '@/lib/aiPoweredPortfolio.shared';
 
 const AI_WORKS_QUERY = `*[_id == "aiPoweredCollection"][0]{
@@ -11,7 +11,19 @@ const AI_WORKS_QUERY = `*[_id == "aiPoweredCollection"][0]{
     title,
     description,
     category,
-    "imageSrc": image.asset->url,
+    "images": select(
+      count(images) > 0 => images[]{
+        "src": asset->url,
+        "width": asset->metadata.dimensions.width,
+        "height": asset->metadata.dimensions.height
+      },
+      defined(image.asset) => [{
+        "src": image.asset->url,
+        "width": image.asset->metadata.dimensions.width,
+        "height": image.asset->metadata.dimensions.height
+      }],
+      []
+    ),
     imageAlt,
     year,
     tags,
@@ -27,7 +39,10 @@ const AI_WORKS_QUERY = `*[_id == "aiPoweredCollection"][0]{
 
 const AI_PORTFOLIO_QUERY = `*[_type == "aiPortfolioItem"] | order(orderRank asc) {
   "src": image.asset->url,
-  "tags": tags[]{ en, tr }
+  "tags": tags[]{
+    "en": coalesce(@->en, en),
+    "tr": coalesce(@->tr, tr)
+  }
 }`;
 
 function deriveTagId(label: string): string {
@@ -56,8 +71,53 @@ interface RawCredits {
   retouchers?: RawCreditPerson[] | null;
 }
 
-interface RawAiWork extends Omit<AiPoweredWork, 'credits'> {
+interface RawWorkImage {
+  src?: string | null;
+  width?: number | null;
+  height?: number | null;
+}
+
+interface RawAiWork {
+  id: string;
+  slug: string;
+  brand: string;
+  brandKey: string;
+  title: string;
+  description: string;
+  category: AiPoweredWork['category'];
+  images?: RawWorkImage[] | null;
+  imageAlt: string;
+  year: number;
+  tags?: string[];
+  instagramUrl?: string;
+  agency?: string;
   credits?: RawCredits | null;
+}
+
+function normalizeWorkImages(raw: RawWorkImage[] | null | undefined): AiPoweredWorkImage[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter((img): img is RawWorkImage & { src: string } =>
+      typeof img?.src === 'string' && img.src.length > 0,
+    )
+    .map((img) => ({
+      src: img.src,
+      ...(typeof img.width === 'number' && img.width > 0 ? { width: img.width } : {}),
+      ...(typeof img.height === 'number' && img.height > 0 ? { height: img.height } : {}),
+    }));
+}
+
+function withCoverFields(
+  work: Omit<AiPoweredWork, 'imageSrc' | 'imageWidth' | 'imageHeight'>,
+): AiPoweredWork | null {
+  const cover = work.images[0];
+  if (!cover) return null;
+  return {
+    ...work,
+    imageSrc: cover.src,
+    imageWidth: cover.width,
+    imageHeight: cover.height,
+  };
 }
 
 function normalizePerson(p: RawCreditPerson): { slug?: string; fullName: string } | null {
@@ -87,13 +147,35 @@ function normalizeCredits(raw: RawCredits | null | undefined): AiPoweredWork['cr
 
 export async function getAiPoweredWorksFromSanity(): Promise<AiPoweredWork[]> {
   const result = await sanityFetch<RawAiWork[] | null>(AI_WORKS_QUERY);
-  return (result ?? [])
-    .filter((w): w is RawAiWork => Boolean(w?.id && w?.imageSrc && w?.brandKey))
-    .map((w) => ({
-      ...w,
+  const works: AiPoweredWork[] = [];
+
+  for (const w of result ?? []) {
+    if (!w?.id || !w?.brandKey) continue;
+    const images = normalizeWorkImages(w.images);
+    if (images.length === 0) continue;
+
+    const base = {
+      id: w.id,
+      slug: w.slug,
+      brand: w.brand,
+      brandKey: w.brandKey,
+      title: w.title,
+      description: w.description,
+      category: w.category,
+      images,
+      imageAlt: w.imageAlt,
+      year: w.year,
+      tags: w.tags,
+      instagramUrl: w.instagramUrl,
       agency: typeof w.agency === 'string' && w.agency.length > 0 ? w.agency : undefined,
       credits: normalizeCredits(w.credits),
-    }));
+    };
+
+    const normalized = withCoverFields(base);
+    if (normalized) works.push(normalized);
+  }
+
+  return works;
 }
 
 export async function getAiPoweredPortfolioFromSanity(): Promise<AiPortfolioData> {
@@ -102,8 +184,6 @@ export async function getAiPoweredPortfolioFromSanity(): Promise<AiPortfolioData
     | null
   >(AI_PORTFOLIO_QUERY);
 
-  // Collect unique tags across all items. Items sharing the same EN label
-  // (case-insensitive) get merged into a single filter group.
   const tagMap = new Map<string, { id: string; en: string; tr: string }>();
   const items: AiPortfolioData['items'] = [];
 
@@ -135,7 +215,9 @@ export async function getAiPoweredPortfolioImagesFromSanity(): Promise<string[]>
 }
 
 const AI_IMAGES_QUERY = `*[_id == "aiPoweredCollection"][0]{
-  "urls": works[].image.asset->url
+  "urls": array::unique(array::compact(
+    works[].images[].asset->url + works[].image.asset->url
+  ))
 }.urls`;
 
 export async function getAiPoweredImagesFromSanity(): Promise<string[]> {

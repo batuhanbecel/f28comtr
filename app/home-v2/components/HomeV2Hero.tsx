@@ -6,6 +6,7 @@ import { PageHeader } from '@/components/PageHeader';
 import { ProductionStats } from '@/components/ProductionStats';
 import { ScrollIndicator } from '@/components/ScrollIndicator';
 import { useLanguage } from '@/context/LanguageContext';
+import type { HomeV2HeroSlide } from '@/lib/homeV2.shared';
 import type { ProductionPageCopy } from '@/lib/pageCopy.types';
 import { HomeV2HeroSlider } from './HomeV2HeroSlider';
 
@@ -13,6 +14,7 @@ interface HomeV2HeroProps {
   heroLabel: string;
   heroTitle: string;
   heroDescription: string;
+  heroImages: string[];
   stats: Pick<ProductionPageCopy, 'stats' | 'statsValues'>;
 }
 
@@ -20,14 +22,22 @@ export function HomeV2Hero({
   heroLabel,
   heroTitle,
   heroDescription,
+  heroImages,
   stats,
 }: HomeV2HeroProps) {
+  const slides: HomeV2HeroSlide[] | undefined =
+    heroImages.length > 0
+      ? heroImages.map((src, i) => ({
+          src,
+          alt: `f/2.8 Production — selected work ${i + 1}`,
+        }))
+      : undefined;
   const { t } = useLanguage();
 
   return (
     <section className="home-v2-hero relative h-screen min-h-[560px] flex flex-col">
       <div className="home-v2-hero-media absolute inset-0 overflow-hidden" aria-hidden>
-        <HomeV2HeroSlider />
+        <HomeV2HeroSlider slides={slides} />
         <div className="home-v2-hero-scrim absolute inset-0" />
         <div className="home-v2-hero-grain absolute inset-0" />
       </div>

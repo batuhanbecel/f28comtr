@@ -3,6 +3,7 @@ import { structureTool } from 'sanity/structure';
 import { presentationTool } from 'sanity/presentation';
 import { visionTool } from '@sanity/vision';
 import { trTRLocale } from '@sanity/locale-tr-tr';
+import { media } from 'sanity-plugin-media';
 
 import { apiVersion, dataset, projectId, studioBasePath } from './sanity/env';
 import { schemaTypes } from './sanity/schemas';
@@ -40,6 +41,7 @@ export default defineConfig({
       resolve: locations,
     }),
     visionTool({ defaultApiVersion: apiVersion }),
+    media(),
     trTRLocale(),
   ],
   i18n: {

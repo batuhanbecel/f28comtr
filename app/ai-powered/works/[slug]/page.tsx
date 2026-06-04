@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
 
+import { AiWorkDetailLayout } from '@/app/ai-powered/components/AiWorkDetailLayout';
 import { Footer } from '@/components/Footer';
-import { shouldSkipOptimization } from '@/lib/blob';
 import { getAiPoweredWorks, getPageCopy } from '@/lib/cms';
 import type { CreditPerson } from '@/lib/aiPoweredWorks';
 import { getServerLang } from '@/lib/serverLang';
@@ -68,7 +67,7 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
           tags: 'Etiketler',
           instagram: 'Instagram\'da gör',
           back: '← AI Powered\'a dön',
-          photographers: 'Fotoğrafçılar',
+          photographers: 'Fotoğrafçı',
           aiArtists: 'AI Sanatçıları',
           retouchers: 'Retoucher\'lar',
         }
@@ -80,7 +79,7 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
           tags: 'Tags',
           instagram: 'View on Instagram',
           back: '← Back to AI Powered',
-          photographers: 'Photographers',
+          photographers: 'Photographer',
           aiArtists: 'AI Artists',
           retouchers: 'Retouchers',
         };
@@ -107,20 +106,10 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
             {labels.back}
           </Link>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-10 lg:gap-16 items-start">
-            <div className="relative w-full aspect-[4/5] lg:aspect-[3/4] bg-th-fg/[0.04] overflow-hidden">
-              <Image
-                src={work.imageSrc}
-                alt={work.imageAlt || `${work.brand} — ${work.title}`}
-                fill
-                sizes="(max-width: 1024px) 100vw, 60vw"
-                priority
-                className="object-cover"
-                unoptimized={shouldSkipOptimization(work.imageSrc)}
-              />
-            </div>
-
-            <aside className="space-y-8 lg:pt-4">
+          <AiWorkDetailLayout
+            images={work.images}
+            imageAlt={work.imageAlt || `${work.brand} — ${work.title}`}
+          >
               <header className="space-y-3 border-b border-th-fg/10 pb-6">
                 <p className="text-[10px] tracking-[0.4em] uppercase text-th-fg/40">
                   {work.brand}
@@ -219,8 +208,7 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
                   {labels.instagram} ↗
                 </a>
               ) : null}
-            </aside>
-          </div>
+          </AiWorkDetailLayout>
         </div>
       </main>
       <Footer />

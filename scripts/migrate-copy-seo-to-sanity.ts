@@ -56,6 +56,7 @@ async function main() {
   await seedProduction();
   await seedAiPowered();
   await seedContact();
+  await seedHomeV2();
   await seedSeoOverrides();
   console.log('\n✅ Done.');
 }
@@ -222,6 +223,50 @@ async function seedContact() {
   };
 
   await upsert(doc, 'contactPageCopy');
+}
+
+// ── Home v2 ─────────────────────────────────────────────────────────────────
+async function seedHomeV2() {
+  console.log('\n━━━ Home v2 Page ━━━');
+  const enH = en.homeV2;
+  const trH = tr.homeV2;
+
+  const copyFields = {
+    heroLabel: ls(enH.heroLabel, trH.heroLabel),
+    heroTitle: ls(enH.heroTitle, trH.heroTitle),
+    heroDescription: lt(enH.heroDescription, trH.heroDescription),
+    selectedWorksLabel: ls(enH.selectedWorksLabel, trH.selectedWorksLabel),
+    selectedWorksHeading: ls(enH.selectedWorksHeading, trH.selectedWorksHeading),
+    workTitleFallback: ls(enH.workTitleFallback, trH.workTitleFallback),
+    artistsLabel: ls(enH.artistsLabel, trH.artistsLabel),
+    artistsHeading: ls(enH.artistsHeading, trH.artistsHeading),
+    viewAllArtists: ls(enH.viewAllArtists, trH.viewAllArtists),
+    aiSplitLabel: ls(enH.aiSplitLabel, trH.aiSplitLabel),
+    aiSplitTitle: ls(enH.aiSplitTitle, trH.aiSplitTitle),
+    aiSplitBody: lt(enH.aiSplitBody, trH.aiSplitBody),
+    aiSplitCta: ls(enH.aiSplitCta, trH.aiSplitCta),
+    aiWorksStat: ls(enH.aiWorksStat, trH.aiWorksStat),
+    servicesMarqueeLabel: ls(enH.servicesMarqueeLabel, trH.servicesMarqueeLabel),
+    clientsMarqueeLabel: ls(enH.clientsMarqueeLabel, trH.clientsMarqueeLabel),
+  };
+
+  // Patch copy only — never replace the whole doc (preserves works[] on published + draft).
+  if (DRY_RUN) {
+    console.log('  [dry] Would patch homeV2PageCopy + drafts.homeV2PageCopy copy fields');
+    return;
+  }
+
+  const tx = sanity
+    .transaction()
+    .createIfNotExists({ _id: 'homeV2PageCopy', _type: 'homeV2PageCopy' })
+    .createIfNotExists({ _id: 'drafts.homeV2PageCopy', _type: 'homeV2PageCopy' });
+
+  for (const id of ['homeV2PageCopy', 'drafts.homeV2PageCopy'] as const) {
+    tx.patch(id, (p) => p.set(copyFields));
+  }
+
+  await tx.commit();
+  console.log('  ✓ Patched homeV2 copy fields (works preserved)');
 }
 
 // ── SEO overrides (per page) ────────────────────────────────────────────────

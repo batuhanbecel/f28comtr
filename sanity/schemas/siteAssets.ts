@@ -8,7 +8,8 @@ export const siteAssets = defineType({
     defineField({
       name: 'landingImages',
       title: 'Anasayfa Görselleri',
-      description: 'Anasayfa hero / landing panellerinde gösterilen görseller.',
+      description:
+        'Anasayfa (home-v2) hero slayt görselleri. Sıra = slayt sırası. Boşsa varsayılan /public/home görselleri kullanılır.',
       type: 'array',
       of: [{ type: 'image', options: { hotspot: true } }],
       options: { layout: 'grid' },

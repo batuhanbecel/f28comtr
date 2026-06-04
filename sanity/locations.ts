@@ -34,8 +34,8 @@ export const locations: PresentationPluginOptions['resolve'] = {
       locations: [{ title: 'AI Portfolio', href: '/ai-powered/portfolio' }],
     }),
 
-    homeSelectedWorks: defineLocations({
-      message: 'Home (v2) ana sayfasında öne çıkan işler',
+    homeV2PageCopy: defineLocations({
+      message: 'Anasayfa (home-v2) metinleri ve öne çıkan işler',
       tone: 'positive',
       locations: [
         { title: 'Home (preview)', href: '/home-v2' },
