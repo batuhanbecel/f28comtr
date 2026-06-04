@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import { cookies, headers } from 'next/headers';
-import type { Photographer } from '@/lib/data';
-import type { SeoCopy } from '@/lib/pageCopy.types';
 import { LANG_COOKIE, langFromAcceptLanguage, parseLang } from '@/lib/prefs';
-import { getPageSeo } from '@/lib/siteSeo';
+import { getPageSeo, type Photographer, type SeoCopy } from '@/lib/cms';
 import { absoluteUrl } from '@/lib/siteUrl';
 import { translations, type Lang } from '@/lib/translations';
 

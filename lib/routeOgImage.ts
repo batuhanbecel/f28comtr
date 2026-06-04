@@ -1,6 +1,6 @@
 import { createOgImage, OG_CONTENT_TYPE, OG_IMAGE_SIZE } from '@/lib/createOgImage';
 import { getMetadataLang, type SeoPageKey } from '@/lib/seo';
-import { getPageSeo } from '@/lib/siteSeo';
+import { getPageSeo } from '@/lib/cms';
 import type { Lang } from '@/lib/translations';
 
 const OG_FOOTER: Record<Lang, string> = {

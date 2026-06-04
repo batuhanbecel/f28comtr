@@ -53,6 +53,16 @@ const nextConfig: NextConfig = {
         destination: '/:id',
         permanent: true,
       },
+      {
+        source: '/admin',
+        destination: '/studio',
+        permanent: false,
+      },
+      {
+        source: '/admin/:path*',
+        destination: '/studio',
+        permanent: false,
+      },
     ];
   },
   async headers() {
@@ -61,14 +71,17 @@ const nextConfig: NextConfig = {
         source: '/(.*)',
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'X-Frame-Options', value: 'DENY' },
+          // Sanity Studio (same-origin under /studio) needs to embed the
+          // site in its Presentation Tool iframe — SAMEORIGIN allows that.
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Content-Security-Policy', value: "frame-ancestors 'self'" },
           { key: 'X-XSS-Protection', value: '1; mode=block' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
         ],
       },
       {
-        source: '/admin/(.*)',
+        source: '/studio/:path*',
         headers: [
           { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
         ],
@@ -86,11 +99,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '*.public.blob.vercel-storage.com',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.private.blob.vercel-storage.com',
+        hostname: 'cdn.sanity.io',
       },
     ],
   },

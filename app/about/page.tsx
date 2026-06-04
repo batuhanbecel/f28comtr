@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
-import { getPartnerLogos, getClientLogos } from '@/lib/utils';
-import { getPhotographers } from '@/lib/db';
+import { getPartnerLogos, getClientLogos, getPhotographers } from '@/lib/cms';
 import { getServerLang } from '@/lib/serverLang';
 import { Footer } from '@/components/Footer';
 import { EditorialPageHero } from '@/components/EditorialPageHero';

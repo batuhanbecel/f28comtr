@@ -8,7 +8,7 @@ import { Grain } from '@/components/Grain';
 
 export function SiteChrome() {
   const pathname = usePathname();
-  if (pathname.startsWith('/admin')) return null;
+  if (pathname.startsWith('/admin') || pathname.startsWith('/studio')) return null;
   return (
     <>
       <Grain />

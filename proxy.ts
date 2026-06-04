@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { verifyAdminToken } from '@/lib/authToken';
 import {
-  ADMIN_COOKIE,
   LANG_COOKIE,
   PREFS_COOKIE_MAX_AGE,
   THEME_COOKIE,
@@ -10,20 +8,10 @@ import {
 } from '@/lib/prefs';
 
 export async function proxy(request: NextRequest) {
-  const { pathname, searchParams } = request.nextUrl;
+  const { searchParams } = request.nextUrl;
 
   const langParam = searchParams.get('lang');
   const langFromQuery = langParam === 'en' || langParam === 'tr' ? langParam : null;
-
-  if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
-    const token = request.cookies.get(ADMIN_COOKIE)?.value;
-    if (!token || !(await verifyAdminToken(token))) {
-      const login = new URL('/admin/login', request.url);
-      const res = NextResponse.redirect(login);
-      res.cookies.delete(ADMIN_COOKIE);
-      return res;
-    }
-  }
 
   let response: NextResponse;
 

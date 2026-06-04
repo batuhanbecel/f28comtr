@@ -14,7 +14,7 @@ export function CustomCursor() {
   const ringRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (pathname.startsWith('/admin')) return;
+    if (pathname.startsWith('/admin') || pathname.startsWith('/studio')) return;
     if (prefersReducedMotion()) return;
     const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
     if (!mq.matches) return;

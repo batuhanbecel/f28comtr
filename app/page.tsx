@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { LandingPanels } from '@/components/LandingPanels';
-import { getLandingImages } from '@/lib/db';
+import { getLandingImages } from '@/lib/cms';
 import { generatePageMetadata } from '@/lib/seo';
 
 export async function generateMetadata(): Promise<Metadata> {

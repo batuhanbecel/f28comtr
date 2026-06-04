@@ -2,7 +2,6 @@ import type { Lang } from '@/lib/translations';
 
 export const LANG_COOKIE = 'f28_lang';
 export const THEME_COOKIE = 'f28_theme';
-export const ADMIN_COOKIE = 'f28-admin-session';
 export const PREFS_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 export type Theme = 'dark' | 'light';

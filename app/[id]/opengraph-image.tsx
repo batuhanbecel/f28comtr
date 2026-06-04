@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { photographers as staticPhotographers } from '@/lib/data';
-import { getPhotographers } from '@/lib/db';
+import { getPhotographers } from '@/lib/cms';
 import { absoluteUrl } from '@/lib/siteUrl';
 
 export const runtime = 'nodejs';

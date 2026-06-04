@@ -2,6 +2,7 @@
 
 import { memo } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { shouldSkipOptimization } from "@/lib/blob"
 import { GRID_IMAGE_QUALITY } from "@/lib/imageConfig"
 import { AI_WORK_CARD_SIZES } from "@/lib/imageSizes"
@@ -13,7 +14,6 @@ interface WorkCardProps {
   work: AiPoweredWork
   filtersCopy: AiPoweredPageCopy['filters']
   priority?: boolean
-  onOpen?: () => void
   onMeasure?: (src: string, w: number, h: number) => void
 }
 
@@ -21,10 +21,9 @@ export const WorkCard = memo(function WorkCard({
   work,
   filtersCopy,
   priority = false,
-  onOpen,
   onMeasure,
 }: WorkCardProps) {
-  const { ref, inView } = useInView<HTMLButtonElement>({
+  const { ref, inView } = useInView<HTMLAnchorElement>({
     rootMargin: "400px 0px",
     initial: priority,
   })
@@ -39,11 +38,10 @@ export const WorkCard = memo(function WorkCard({
   const ariaLabel = [work.brand, work.title, typeLabel].filter(Boolean).join(" — ")
 
   return (
-    <button
+    <Link
       ref={ref}
-      type="button"
+      href={`/ai-powered/works/${work.slug}`}
       className="ai-work-card card-editorial"
-      onClick={onOpen}
       aria-label={ariaLabel || work.imageAlt}
     >
       <div className="ai-work-image-wrap">
@@ -80,6 +78,6 @@ export const WorkCard = memo(function WorkCard({
           </div>
         </div>
       </div>
-    </button>
+    </Link>
   )
 })

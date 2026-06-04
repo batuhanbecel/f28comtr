@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { photographers as staticPhotographers } from '@/lib/data';
-import { getPhotographers } from '@/lib/db';
+import { getPhotographers } from '@/lib/cms';
 import { buildStaticSitemapEntries } from '@/lib/siteRoutes';
 import { getSiteUrl } from '@/lib/siteUrl';
 

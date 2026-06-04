@@ -1,11 +1,10 @@
 "use client"
 
-import { useState, useCallback, useDeferredValue } from "react"
+import { useDeferredValue } from "react"
 import type { AiPoweredWork } from "@/lib/aiPoweredWorks"
 import { useAiPoweredFilter } from "../hooks/useAiPoweredFilter"
 import { FilterBar } from "./FilterBar"
 import { WorkGrid } from "./WorkGrid"
-import { Lightbox } from "./Lightbox"
 
 import type { AiPoweredPageCopy } from '@/lib/pageCopy.types'
 
@@ -18,15 +17,6 @@ export function AiPoweredGallery({ works, copy }: AiPoweredGalleryProps) {
   const { filters, filtered, counts, brands, setBrand, setCategory } = useAiPoweredFilter(works)
   const deferredFiltered = useDeferredValue(filtered)
   const isFiltering = deferredFiltered !== filtered
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
-
-  const openAt = useCallback((index: number) => {
-    setLightboxIndex(index)
-  }, [])
-
-  const closeLightbox = useCallback(() => {
-    setLightboxIndex(null)
-  }, [])
 
   return (
     <section className="ai-gallery-section">
@@ -43,16 +33,8 @@ export function AiPoweredGallery({ works, copy }: AiPoweredGalleryProps) {
         className="transition-opacity duration-200"
         style={{ opacity: isFiltering ? 0.65 : 1 }}
       >
-        <WorkGrid works={deferredFiltered} filtersCopy={copy.filters} onOpenAt={openAt} />
+        <WorkGrid works={deferredFiltered} filtersCopy={copy.filters} />
       </div>
-
-      <Lightbox
-        works={deferredFiltered}
-        filtersCopy={copy.filters}
-        index={lightboxIndex}
-        onClose={closeLightbox}
-        onIndexChange={setLightboxIndex}
-      />
     </section>
   )
 }

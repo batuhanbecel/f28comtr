@@ -8,9 +8,7 @@ import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 
 import { ProductionStats } from '@/components/ProductionStats';
 
-import { getProductionMarqueeItems } from '@/lib/productionMarquee';
-
-import { getPageCopy } from '@/lib/pageCopy';
+import { getProductionMarqueeItems, getPageCopy } from '@/lib/cms';
 
 import { getServerLang } from '@/lib/serverLang';
 

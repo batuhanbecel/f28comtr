@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getPhotographers } from '@/lib/db';
+import { getPhotographers } from '@/lib/cms';
 import { getServerLang } from '@/lib/serverLang';
 import { PortfoliosList } from './PortfoliosList';
 import { generatePageMetadata } from '@/lib/seo';

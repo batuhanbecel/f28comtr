@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
-import { getPhotographers } from '@/lib/db';
-import { getHomeV2SelectedWorks } from '@/lib/homeV2';
-import { getPageCopy } from '@/lib/pageCopy';
-import { getAiPoweredWorks } from '@/lib/aiPoweredWorks';
+import {
+  getPhotographers,
+  getHomeV2SelectedWorks,
+  getPageCopy,
+  getAiPoweredWorks,
+  getClientLogos,
+  getPartnerLogos,
+} from '@/lib/cms';
 import { getServerLang } from '@/lib/serverLang';
 import { translations } from '@/lib/translations';
-import { getClientLogos, getPartnerLogos } from '@/lib/utils';
 import { HomeV2PageContent } from './components/HomeV2PageContent';
 
 export const revalidate = 60;

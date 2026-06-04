@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getAiPoweredPortfolio } from '@/lib/db';
+import { getAiPoweredPortfolio } from '@/lib/cms';
 import { getServerLang } from '@/lib/serverLang';
 import { AiPoweredPortfolioGallery } from './AiPoweredPortfolioGallery';
 import { generatePageMetadata } from '@/lib/seo';

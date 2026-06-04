@@ -10,14 +10,13 @@ import type { AiPoweredPageCopy } from '@/lib/pageCopy.types'
 interface WorkGridProps {
   works: AiPoweredWork[]
   filtersCopy: AiPoweredPageCopy['filters']
-  onOpenAt: (index: number) => void
 }
 
 // Fallback ratio used only until each image's real dimensions are measured.
 const FRAME_W = 4
 const FRAME_H = 3
 
-export function WorkGrid({ works, filtersCopy, onOpenAt }: WorkGridProps) {
+export function WorkGrid({ works, filtersCopy }: WorkGridProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [frameWidth, setFrameWidth] = useState(360)
   const [dims, setDims] = useState<Record<string, { w: number; h: number }>>({})
@@ -63,7 +62,6 @@ export function WorkGrid({ works, filtersCopy, onOpenAt }: WorkGridProps) {
                 work={work}
                 filtersCopy={filtersCopy}
                 priority={i === 0}
-                onOpen={() => onOpenAt(i)}
                 onMeasure={handleMeasure}
               />
             </Frame>

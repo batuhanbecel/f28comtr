@@ -1,5 +1,3 @@
-import { adminEn, adminTr } from '@/lib/adminTranslations';
-
 export const translations = {
   en: {
     nav: {
@@ -293,7 +291,6 @@ export const translations = {
       tryAgain: 'Try again',
       backHome: 'Back to home',
     },
-    admin: adminEn,
   },
   tr: {
     nav: {
@@ -587,7 +584,6 @@ export const translations = {
       tryAgain: 'Tekrar dene',
       backHome: 'Ana sayfaya dön',
     },
-    admin: adminTr,
   },
 };
 

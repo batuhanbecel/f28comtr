@@ -4,7 +4,7 @@ import { EditorialPageHero } from '@/components/EditorialPageHero';
 import { HeroSnapBody } from '@/components/HeroSnapBody';
 import { HeroSnapTarget } from '@/components/HeroSnapTarget';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
-import { getPageCopy } from '@/lib/pageCopy';
+import { getPageCopy } from '@/lib/cms';
 import { getServerLang } from '@/lib/serverLang';
 import { ContactChannels } from './ContactChannels';
 import { ContactForm } from './ContactForm';

@@ -12,7 +12,7 @@ interface SiteHeaderProps {
 /** Client wrapper; `lang` from server cookie keeps nav labels in sync on SSR + hydrate. */
 export function SiteHeader({ photographers, lang }: SiteHeaderProps) {
   const pathname = usePathname();
-  if (pathname.startsWith('/admin')) return null;
+  if (pathname.startsWith('/admin') || pathname.startsWith('/studio')) return null;
 
   return <Menu photographers={photographers} lang={lang} />;
 }

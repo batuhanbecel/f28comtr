@@ -13,12 +13,12 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
+import { SanityVisualEditing } from "@/components/SanityVisualEditing";
 import { parseLang, parseTheme } from "@/lib/prefs";
 import { getSiteUrl } from "@/lib/siteUrl";
 import { SITE_NAME } from "@/lib/seo";
-import { getContactInfo } from "@/lib/pageCopy";
+import { getContactInfo, getPhotographers } from "@/lib/cms";
 import { getOrganizationStructuredData, getWebsiteStructuredData } from "@/lib/structuredData";
-import { getPhotographers } from "@/lib/db";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -121,6 +121,7 @@ export default async function RootLayout({
               <SpeedInsights />
               <Analytics />
               <ServiceWorkerRegister />
+              <SanityVisualEditing />
             </SmoothScrollProvider>
           </LanguageProvider>
         </ThemeProvider>
