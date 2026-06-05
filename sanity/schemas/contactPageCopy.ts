@@ -1,9 +1,11 @@
 import { defineField, defineType } from 'sanity';
+import { EnvelopeIcon } from '@sanity/icons';
 
 export const contactPageCopy = defineType({
   name: 'contactPageCopy',
   title: 'İletişim Sayfası',
   type: 'document',
+  icon: EnvelopeIcon,
   groups: [
     { name: 'hero', title: 'Üst Bölüm', default: true },
     { name: 'channels', title: 'İletişim Kanalları' },

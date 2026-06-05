@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity';
+import { EarthGlobeIcon } from '@sanity/icons';
 
 const PAGE_KEYS = [
   { title: 'Anasayfa', value: 'home' },
@@ -16,6 +17,7 @@ export const seoOverride = defineType({
   name: 'seoOverride',
   title: 'SEO Düzenlemesi',
   type: 'document',
+  icon: EarthGlobeIcon,
   fields: [
     defineField({
       name: 'pageKey',
@@ -30,8 +32,23 @@ export const seoOverride = defineType({
       type: 'object',
       options: { collapsible: true, collapsed: false },
       fields: [
-        defineField({ name: 'title', title: 'Başlık', type: 'string' }),
-        defineField({ name: 'description', title: 'Açıklama', type: 'text', rows: 3 }),
+        defineField({
+          name: 'title',
+          title: 'Başlık',
+          type: 'string',
+          description: 'Arama sonucu başlığı. ~60 karakter idealdir.',
+          validation: (Rule) =>
+            Rule.max(70).warning('60 karakterin altında tutmak arama sonuçlarında daha iyi görünür.'),
+        }),
+        defineField({
+          name: 'description',
+          title: 'Açıklama',
+          type: 'text',
+          rows: 3,
+          description: 'Meta açıklama. 150–160 karakter idealdir.',
+          validation: (Rule) =>
+            Rule.max(170).warning('160 karakterin altında tutmak arama sonuçlarında daha iyi görünür.'),
+        }),
       ],
     }),
     defineField({
@@ -40,17 +57,33 @@ export const seoOverride = defineType({
       type: 'object',
       options: { collapsible: true, collapsed: false },
       fields: [
-        defineField({ name: 'title', title: 'Başlık', type: 'string' }),
-        defineField({ name: 'description', title: 'Açıklama', type: 'text', rows: 3 }),
+        defineField({
+          name: 'title',
+          title: 'Başlık',
+          type: 'string',
+          description: 'Arama sonucu başlığı. ~60 karakter idealdir.',
+          validation: (Rule) =>
+            Rule.max(70).warning('60 karakterin altında tutmak arama sonuçlarında daha iyi görünür.'),
+        }),
+        defineField({
+          name: 'description',
+          title: 'Açıklama',
+          type: 'text',
+          rows: 3,
+          description: 'Meta açıklama. 150–160 karakter idealdir.',
+          validation: (Rule) =>
+            Rule.max(170).warning('160 karakterin altında tutmak arama sonuçlarında daha iyi görünür.'),
+        }),
       ],
     }),
   ],
   preview: {
-    select: { title: 'pageKey', enTitle: 'en.title', trTitle: 'tr.title' },
-    prepare({ title, enTitle, trTitle }) {
+    select: { pageKey: 'pageKey', enTitle: 'en.title', trTitle: 'tr.title' },
+    prepare({ pageKey, enTitle, trTitle }) {
+      const label = PAGE_KEYS.find((p) => p.value === pageKey)?.title;
       return {
-        title: title || 'İsimsiz',
-        subtitle: [enTitle, trTitle].filter(Boolean).join(' / ') || undefined,
+        title: label || pageKey || 'İsimsiz',
+        subtitle: [enTitle, trTitle].filter(Boolean).join('  /  ') || undefined,
       };
     },
   },

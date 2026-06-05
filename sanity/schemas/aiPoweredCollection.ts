@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
+import { RobotIcon } from '@sanity/icons';
 import { AiPoweredWorksInput } from '../components/AiPoweredWorksInput';
 import { PortfolioImagesInput } from '../components/PortfolioImagesInput';
 
@@ -6,6 +7,7 @@ export const aiPoweredCollection = defineType({
   name: 'aiPoweredCollection',
   title: 'AI Powered Çalışmalar',
   type: 'document',
+  icon: RobotIcon,
   fields: [
     defineField({
       name: 'works',

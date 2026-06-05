@@ -1006,6 +1006,32 @@ body.custom-cursor-active.cursor-on-interactive .cursor-dot[data-visible="true"]
   mix-blend-mode: normal;
 }
 
+::view-transition-old(ai-work-*),
+::view-transition-new(ai-work-*) {
+  animation-duration: var(--duration-vt-photo);
+  animation-timing-function: var(--ease-morph);
+  mix-blend-mode: normal;
+}
+
+/* AI work detail — fixed stage, crossfade layers */
+.ai-work-detail-stage {
+  background: rgb(var(--c-fg) / 0.04);
+  overflow: hidden;
+  max-height: min(85vh, 1200px);
+}
+
+.ai-work-detail-layer {
+  transition:
+    opacity var(--duration-hover) var(--ease-brand),
+    z-index 0s linear var(--duration-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-work-detail-layer {
+    transition: none;
+  }
+}
+
 /* ─── Lightbox: hide fixed header/nav when open ─────────────────────────── */
 body[data-lightbox-open] header,
 body[data-lightbox-open] nav {

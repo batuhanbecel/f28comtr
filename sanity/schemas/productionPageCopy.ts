@@ -1,10 +1,12 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
+import { DesktopIcon } from '@sanity/icons';
 
 /** Production sayfası için tam yapılandırılmış içerik — her field Studio'da ayrı UI. */
 export const productionPageCopy = defineType({
   name: 'productionPageCopy',
   title: 'Production Sayfası',
   type: 'document',
+  icon: DesktopIcon,
   groups: [
     { name: 'hero', title: 'Üst Bölüm', default: true },
     { name: 'services', title: 'Hizmetler' },

@@ -1,10 +1,12 @@
 import { defineField, defineType } from 'sanity';
+import { ImageIcon } from '@sanity/icons';
 import { orderRankField, orderRankOrdering } from '@sanity/orderable-document-list';
 
 export const aiPortfolioItem = defineType({
   name: 'aiPortfolioItem',
   title: 'AI Portfolyo Görseli',
   type: 'document',
+  icon: ImageIcon,
   fields: [
     orderRankField({ type: 'aiPortfolioItem' }),
     defineField({

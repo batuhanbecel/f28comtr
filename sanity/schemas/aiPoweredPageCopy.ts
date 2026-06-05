@@ -1,9 +1,11 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
+import { RobotIcon } from '@sanity/icons';
 
 export const aiPoweredPageCopy = defineType({
   name: 'aiPoweredPageCopy',
   title: 'AI Powered Sayfası',
   type: 'document',
+  icon: RobotIcon,
   groups: [
     { name: 'hero', title: 'Üst Bölüm', default: true },
     { name: 'process', title: 'Sürecimiz' },

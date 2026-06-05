@@ -1,9 +1,11 @@
 import { defineField, defineType } from 'sanity';
+import { TagIcon } from '@sanity/icons';
 
 export const aiTag = defineType({
   name: 'aiTag',
   title: 'AI Portfolyo Etiketi',
   type: 'document',
+  icon: TagIcon,
   fields: [
     defineField({
       name: 'en',

@@ -1,9 +1,11 @@
 import { defineField, defineType } from 'sanity';
+import { ImagesIcon } from '@sanity/icons';
 
 export const siteAssets = defineType({
   name: 'siteAssets',
   title: 'Site Görselleri',
   type: 'document',
+  icon: ImagesIcon,
   fields: [
     defineField({
       name: 'landingImages',
@@ -56,8 +58,21 @@ export const siteAssets = defineType({
     }),
   ],
   preview: {
-    prepare() {
-      return { title: 'Site Görselleri' };
+    select: {
+      landing: 'landingImages.length',
+      clients: 'logos.clients.length',
+      partners: 'logos.partners.length',
+    },
+    prepare({ landing, clients, partners }) {
+      const parts = [
+        typeof landing === 'number' ? `${landing} hero` : null,
+        typeof clients === 'number' ? `${clients} müşteri logosu` : null,
+        typeof partners === 'number' ? `${partners} iş ortağı` : null,
+      ].filter(Boolean);
+      return {
+        title: 'Site Görselleri & Logolar',
+        subtitle: parts.join('  ·  ') || undefined,
+      };
     },
   },
 });

@@ -4,6 +4,7 @@ import { memo } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { shouldSkipOptimization } from "@/lib/blob"
+import { ViewTransition } from "@/lib/ViewTransition"
 import { GRID_IMAGE_QUALITY } from "@/lib/imageConfig"
 import { AI_WORK_CARD_SIZES } from "@/lib/imageSizes"
 import { useInView } from "@/lib/useInView"
@@ -46,23 +47,27 @@ export const WorkCard = memo(function WorkCard({
     >
       <div className="ai-work-image-wrap">
         {inView ? (
-          <Image
-            src={work.imageSrc}
-            alt={work.imageAlt}
-            fill
-            sizes={AI_WORK_CARD_SIZES}
-            className="ai-work-image"
-            loading={priority ? "eager" : "lazy"}
-            fetchPriority={priority ? "high" : undefined}
-            quality={GRID_IMAGE_QUALITY}
-            unoptimized={shouldSkipOptimization(work.imageSrc)}
-            onLoad={(e) => {
-              const img = e.currentTarget
-              if (img.naturalWidth && img.naturalHeight) {
-                onMeasure?.(work.imageSrc, img.naturalWidth, img.naturalHeight)
-              }
-            }}
-          />
+          <ViewTransition name={`ai-work-${work.slug}`}>
+            <div className="absolute inset-0">
+              <Image
+                src={work.imageSrc}
+                alt={work.imageAlt}
+                fill
+                sizes={AI_WORK_CARD_SIZES}
+                className="ai-work-image"
+                loading={priority ? "eager" : "lazy"}
+                fetchPriority={priority ? "high" : undefined}
+                quality={GRID_IMAGE_QUALITY}
+                unoptimized={shouldSkipOptimization(work.imageSrc)}
+                onLoad={(e) => {
+                  const img = e.currentTarget
+                  if (img.naturalWidth && img.naturalHeight) {
+                    onMeasure?.(work.imageSrc, img.naturalWidth, img.naturalHeight)
+                  }
+                }}
+              />
+            </div>
+          </ViewTransition>
         ) : null}
         <div className="ai-work-overlay">
           <div className="ai-work-overlay-inner">

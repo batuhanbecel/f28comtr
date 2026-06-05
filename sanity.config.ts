@@ -9,6 +9,8 @@ import { apiVersion, dataset, projectId, studioBasePath } from './sanity/env';
 import { schemaTypes } from './sanity/schemas';
 import { isSingleton, structure } from './sanity/structure';
 import { StudioLogo } from './sanity/components/StudioLogo';
+import { StudioWordmark } from './sanity/components/StudioWordmark';
+import { StudioShell } from './sanity/components/StudioShell';
 import { studioTheme } from './sanity/theme';
 import { locations } from './sanity/locations';
 
@@ -52,7 +54,8 @@ export default defineConfig({
   //  first visit, users can switch back to English if they prefer)
   studio: {
     components: {
-      logo: StudioLogo,
+      logo: StudioWordmark,
+      layout: StudioShell,
     },
   },
   document: {

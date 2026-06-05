@@ -123,3 +123,235 @@
     width: 100%;
   }
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   f/2.8 — dark cinematic "production command center" polish
+   ACCENT must stay in sync with STUDIO_ACCENT in sanity/theme.ts (#C9A24B)
+   ════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --f28-accent: #c9a24b;
+}
+
+/* Crisper type rendering across the studio */
+[data-ui='ToolScreen'],
+[data-ui='PaneLayout'],
+[data-ui='Navbar'] {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Restrained accent hairline beneath the top navigation */
+[data-ui='Navbar'] {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 1px 0 0 rgba(201, 162, 75, 0.22);
+}
+
+/* Structure list: editorial density + letter-spacing on item labels */
+[data-ui='PaneItem'] [data-ui='Text'] {
+  letter-spacing: 0.01em;
+}
+
+/* Pane headers feel like section labels */
+[data-ui='PaneHeader'] [data-ui='Text'] {
+  letter-spacing: 0.02em;
+}
+
+/* Safety net: keep primary/publish button text readable on the accent fill */
+[data-ui='Button'][data-tone='primary'],
+[data-ui='Button'][data-tone='primary'] [data-ui='Text'],
+[data-ui='Button'][data-tone='positive'] [data-ui='Text'] {
+  color: #0a0a0b !important;
+}
+
+/* Dark, slim scrollbars to match the cinematic base */
+[data-ui='PaneLayout'] *::-webkit-scrollbar,
+[data-ui='ToolScreen'] *::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+[data-ui='PaneLayout'] *::-webkit-scrollbar-thumb,
+[data-ui='ToolScreen'] *::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+[data-ui='PaneLayout'] *::-webkit-scrollbar-thumb:hover,
+[data-ui='ToolScreen'] *::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+  background-clip: padding-box;
+}
+
+/* ── Overview / dashboard ───────────────────────────────────────────────── */
+.f28-dash {
+  width: 100%;
+}
+
+.f28-dash-eyebrow {
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--f28-accent) !important;
+  opacity: 0.85;
+}
+
+.f28-dash-head {
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.f28-dash-section-label {
+  letter-spacing: 0.2em;
+  opacity: 0.6;
+}
+
+.f28-dash-stat {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.f28-dash-stat::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: var(--f28-accent);
+  opacity: 0.5;
+}
+
+.f28-dash-stat:hover {
+  transform: translateY(-1px);
+  border-color: rgba(201, 162, 75, 0.45) !important;
+}
+
+.f28-dash-stat__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  font-size: 20px;
+  border-radius: 8px;
+  color: var(--f28-accent);
+  background: rgba(201, 162, 75, 0.1);
+  border: 1px solid rgba(201, 162, 75, 0.22);
+  flex-shrink: 0;
+}
+
+.f28-dash-row {
+  transition: background 0.15s ease;
+}
+
+.f28-dash-row:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   f/2.8 — branded "production OS" shell layer
+   Studio is forced to the dark scheme (StudioShell); these rules deepen the
+   brand identity. studio.css is only loaded on the /studio route.
+   ════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --f28-bg: #08080a;
+  --f28-bg-elev: #131316;
+  --f28-line: rgba(255, 255, 255, 0.08);
+  --f28-line-strong: rgba(255, 255, 255, 0.14);
+  --f28-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --f28-font-mono: 'SF Mono', ui-monospace, 'JetBrains Mono', Menlo, Consolas, monospace;
+}
+
+/* Anti-flash: keep the page dark before the scheme flips on mount */
+html[data-f28-studio],
+html[data-f28-studio] body {
+  background: var(--f28-bg);
+  color-scheme: dark;
+}
+
+/* Brand typography across the studio */
+html[data-f28-studio] [data-ui='Text'],
+html[data-f28-studio] [data-ui='Heading'],
+html[data-f28-studio] [data-ui='Label'],
+html[data-f28-studio] [data-ui='TextInput'] input,
+html[data-f28-studio] [data-ui='TextArea'] textarea,
+html[data-f28-studio] button,
+html[data-f28-studio] input,
+html[data-f28-studio] textarea {
+  font-family: var(--f28-font-sans);
+}
+
+html[data-f28-studio] [data-ui='Heading'] {
+  letter-spacing: -0.01em;
+}
+
+/* Cinematic ambient — faint vignette + accent glow behind the workspace */
+html[data-f28-studio] [data-ui='ToolScreen'],
+html[data-f28-studio] [data-ui='PaneLayout'] {
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgba(201, 162, 75, 0.06), transparent 60%),
+    radial-gradient(100% 100% at 0% 100%, rgba(255, 255, 255, 0.025), transparent 55%),
+    var(--f28-bg);
+}
+
+/* Navbar — glassy, brand hairline (extends earlier rule) */
+html[data-f28-studio] [data-ui='Navbar'] {
+  background: rgba(8, 8, 10, 0.82);
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
+}
+
+/* Structure list — navigation feels like a production index */
+html[data-f28-studio] [data-ui='PaneItem'] [data-ui='Text'] {
+  letter-spacing: 0.015em;
+}
+
+/* Active / selected nav item — accent rail */
+html[data-f28-studio] [data-ui='PaneItem'][data-selected] {
+  position: relative;
+  background: rgba(201, 162, 75, 0.08) !important;
+}
+html[data-f28-studio] [data-ui='PaneItem'][data-selected]::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--f28-accent);
+}
+
+/* Pane headers read like editorial section labels */
+html[data-f28-studio] [data-ui='PaneHeader'] {
+  border-bottom: 1px solid var(--f28-line);
+}
+
+/* Inputs — refined surfaces + accent focus */
+html[data-f28-studio] [data-ui='TextInput'] input,
+html[data-f28-studio] [data-ui='TextArea'] textarea,
+html[data-f28-studio] [data-ui='Select'] select {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Cards/fieldsets — quiet separation between content blocks */
+html[data-f28-studio] [data-ui='DocumentPanel'] fieldset {
+  border-color: var(--f28-line);
+}
+
+/* Document form: a touch more breathing room */
+html[data-f28-studio] [data-ui='DocumentPanel'] [class*='FormContainer'] {
+  padding-block: 4px;
+}
+
+/* Login screen — branded, not stock */
+html[data-f28-studio] [data-ui='Dialog'] [data-ui='DialogCard'][data-ui='DialogCard'] {
+  border: 1px solid var(--f28-line-strong);
+}
+
+/* Tone down the default avatar/menu noise so the brand reads first */
+html[data-f28-studio] [data-ui='Navbar'] [data-ui='Button'][data-mode='bleed'] {
+  color: rgba(244, 244, 246, 0.85);
+}

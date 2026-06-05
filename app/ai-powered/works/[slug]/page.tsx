@@ -67,10 +67,11 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
           type: 'Tür',
           tags: 'Etiketler',
           instagram: 'Instagram\'da gör',
-          back: '← AI Powered\'a dön',
+          back: 'AI Powered',
           prevProject: 'Önceki Proje',
           nextProject: 'Sonraki Proje',
           projectNav: 'Çalışmalar arası gezinme',
+          moreWorks: 'Diğer çalışmalar',
           photographers: 'Fotoğrafçı',
           aiArtists: 'AI Sanatçıları',
           retouchers: 'Retoucher\'lar',
@@ -82,10 +83,11 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
           type: 'Type',
           tags: 'Tags',
           instagram: 'View on Instagram',
-          back: '← Back to AI Powered',
+          back: 'AI Powered',
           prevProject: 'Previous Project',
           nextProject: 'Next Project',
           projectNav: 'Work navigation',
+          moreWorks: 'More works',
           photographers: 'Photographer',
           aiArtists: 'AI Artists',
           retouchers: 'Retouchers',
@@ -108,66 +110,37 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
           <Link
             href="/ai-powered"
             prefetch={false}
-            className="inline-block mb-10 text-[10px] tracking-[0.3em] uppercase text-th-fg/50 hover:text-th-fg transition-colors"
+            className="section-label mb-10 inline-block text-th-fg/50 transition-colors duration-ui hover:text-th-fg"
           >
-            {labels.back}
+            ← {labels.back}
           </Link>
 
           <AiWorkDetailLayout
+            workSlug={slug}
             images={work.images}
             imageAlt={work.imageAlt || `${work.brand} — ${work.title}`}
           >
-              <header className="space-y-3 border-b border-th-fg/10 pb-6">
-                <p className="text-[10px] tracking-[0.4em] uppercase text-th-fg/40">
-                  {work.brand}
-                </p>
+            <div className="space-y-8">
+              <header className="page-heading-stack gap-4 border-b border-th-fg/10 pb-8">
+                <span className="section-label text-th-fg/40">{work.brand}</span>
                 {work.title ? (
-                  <h1 className="text-3xl lg:text-4xl font-black tracking-tight leading-tight">
-                    {work.title}
-                  </h1>
-                ) : null}
+                  <h1 className="heading-section leading-tight">{work.title}</h1>
+                ) : (
+                  <h1 className="heading-section leading-tight">{work.brand}</h1>
+                )}
               </header>
 
-              <dl className="space-y-5 text-sm">
-                <div className="grid grid-cols-[6rem_1fr] gap-4 items-baseline">
-                  <dt className="text-[10px] tracking-[0.3em] uppercase text-th-fg/40">
-                    {labels.brand}
-                  </dt>
-                  <dd className="text-th-fg">{work.brand}</dd>
-                </div>
-                {work.agency ? (
-                  <div className="grid grid-cols-[6rem_1fr] gap-4 items-baseline">
-                    <dt className="text-[10px] tracking-[0.3em] uppercase text-th-fg/40">
-                      {labels.agency}
-                    </dt>
-                    <dd className="text-th-fg">{work.agency}</dd>
-                  </div>
-                ) : null}
-                {work.year ? (
-                  <div className="grid grid-cols-[6rem_1fr] gap-4 items-baseline">
-                    <dt className="text-[10px] tracking-[0.3em] uppercase text-th-fg/40">
-                      {labels.year}
-                    </dt>
-                    <dd className="text-th-fg">{work.year}</dd>
-                  </div>
-                ) : null}
-                <div className="grid grid-cols-[6rem_1fr] gap-4 items-baseline">
-                  <dt className="text-[10px] tracking-[0.3em] uppercase text-th-fg/40">
-                    {labels.type}
-                  </dt>
-                  <dd className="text-th-fg">{categoryLabel}</dd>
-                </div>
+              <dl className="space-y-5">
+                <MetaRow label={labels.brand} value={work.brand} />
+                {work.agency ? <MetaRow label={labels.agency} value={work.agency} /> : null}
+                {work.year ? <MetaRow label={labels.year} value={String(work.year)} /> : null}
+                <MetaRow label={labels.type} value={categoryLabel} />
                 {work.tags && work.tags.length > 0 ? (
-                  <div className="grid grid-cols-[6rem_1fr] gap-4 items-baseline">
-                    <dt className="text-[10px] tracking-[0.3em] uppercase text-th-fg/40">
-                      {labels.tags}
-                    </dt>
+                  <div className="grid grid-cols-[6rem_1fr] gap-4 items-start">
+                    <dt className="mono-label pt-0.5">{labels.tags}</dt>
                     <dd className="flex flex-wrap gap-1.5">
                       {work.tags.map((t) => (
-                        <span
-                          key={t}
-                          className="inline-block px-2 py-1 text-[10px] tracking-wider uppercase bg-th-fg/[0.06] text-th-fg/70"
-                        >
+                        <span key={t} className="editorial-chip">
                           {t}
                         </span>
                       ))}
@@ -177,18 +150,15 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
               </dl>
 
               {work.description ? (
-                <p className="text-sm leading-relaxed text-th-fg/80 whitespace-pre-line">
+                <p className="body-text text-muted-body whitespace-pre-line leading-relaxed">
                   {work.description}
                 </p>
               ) : null}
 
               {hasCredits ? (
-                <section className="space-y-4 pt-6 border-t border-th-fg/10">
+                <section className="space-y-5 border-t border-th-fg/10 pt-8">
                   {credits.photographers.length > 0 ? (
-                    <CreditBlock
-                      label={labels.photographers}
-                      people={credits.photographers}
-                    />
+                    <CreditBlock label={labels.photographers} people={credits.photographers} />
                   ) : null}
                   {credits.aiArtists.length > 0 ? (
                     <CreditBlock
@@ -197,10 +167,7 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
                     />
                   ) : null}
                   {credits.retouchers.length > 0 ? (
-                    <CreditBlock
-                      label={labels.retouchers}
-                      people={credits.retouchers}
-                    />
+                    <CreditBlock label={labels.retouchers} people={credits.retouchers} />
                   ) : null}
                 </section>
               ) : null}
@@ -210,11 +177,12 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
                   href={work.instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block mt-4 px-5 py-3 text-[10px] tracking-[0.3em] uppercase border border-th-fg/20 hover:bg-th-fg hover:text-th-bg transition-colors"
+                  className="btn-editorial mt-2 inline-flex"
                 >
                   {labels.instagram} ↗
                 </a>
               ) : null}
+            </div>
           </AiWorkDetailLayout>
 
           <AiWorkProjectNav
@@ -223,6 +191,7 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
             prevLabel={labels.prevProject}
             nextLabel={labels.nextProject}
             ariaLabel={labels.projectNav}
+            sectionLabel={labels.moreWorks}
           />
         </div>
       </main>
@@ -231,22 +200,28 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
   );
 }
 
+function MetaRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="grid grid-cols-[6rem_1fr] gap-4 items-baseline">
+      <dt className="mono-label">{label}</dt>
+      <dd className="body-text text-th-fg">{value}</dd>
+    </div>
+  );
+}
+
 function CreditBlock({ label, people }: { label: string; people: CreditPerson[] }) {
   return (
-    <div className="space-y-1.5">
-      <p className="text-[10px] tracking-[0.3em] uppercase text-th-fg/40">{label}</p>
-      <ul className="text-sm text-th-fg">
+    <div className="space-y-2">
+      <p className="mono-label">{label}</p>
+      <ul className="flex flex-wrap gap-2">
         {people.map((p, i) => (
           <li key={`${p.fullName}-${i}`}>
             {p.slug ? (
-              <Link
-                href={`/${p.slug}`}
-                className="underline-offset-4 hover:underline text-th-fg hover:text-th-fg transition-colors"
-              >
+              <Link href={`/${p.slug}`} className="editorial-chip">
                 {p.fullName}
               </Link>
             ) : (
-              <span>{p.fullName}</span>
+              <span className="editorial-chip">{p.fullName}</span>
             )}
           </li>
         ))}

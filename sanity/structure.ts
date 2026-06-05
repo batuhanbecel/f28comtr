@@ -1,6 +1,7 @@
 import type { StructureResolver } from 'sanity/structure';
 import { orderableDocumentListDeskItem } from '@sanity/orderable-document-list';
 import { AiPortfolioGalleryDesk } from './components/AiPortfolioGalleryDesk';
+import { StudioOverview } from './components/StudioOverview';
 import {
   UsersIcon,
   RobotIcon,
@@ -11,6 +12,10 @@ import {
   EarthGlobeIcon,
   ControlsIcon,
   TagIcon,
+  DashboardIcon,
+  DocumentIcon,
+  EnvelopeIcon,
+  CogIcon,
 } from '@sanity/icons';
 
 const SINGLETONS = new Set([
@@ -24,12 +29,26 @@ const SINGLETONS = new Set([
 
 export const structure: StructureResolver = (S, context) =>
   S.list()
-    .title('f/2.8 İçerik Yönetimi')
+    .title('f/2.8 Yönetim')
     .items([
-      // ── Fotoğrafçılar ──────────────────────────────────────────────────
+      // ── Genel Bakış (command center) ───────────────────────────────────
+      S.listItem()
+        .id('genel-bakis')
+        .title('Genel Bakış')
+        .icon(DashboardIcon)
+        .child(
+          S.component()
+            .id('f28-overview')
+            .title('Genel Bakış')
+            .component(StudioOverview),
+        ),
+
+      S.divider(),
+
+      // ── Sanatçılar ─────────────────────────────────────────────────────
       orderableDocumentListDeskItem({
         type: 'photographer',
-        title: 'Fotoğrafçılar',
+        title: 'Fotoğrafçılar & Retoucherlar',
         icon: UsersIcon,
         S,
         context,
@@ -73,37 +92,24 @@ export const structure: StructureResolver = (S, context) =>
 
       S.divider(),
 
-      // ── Anasayfa (metinler + öne çıkan işler) ─────────────────────────
+      // ── Sayfalar ───────────────────────────────────────────────────────
       S.listItem()
-        .id('anasayfa')
-        .title('Anasayfa')
-        .icon(HomeIcon)
-        .child(
-          S.document()
-            .id('metinlerHomeV2')
-            .schemaType('homeV2PageCopy')
-            .documentId('homeV2PageCopy')
-            .title('Anasayfa'),
-        ),
-
-      S.divider(),
-
-      // ── Sayfa İçerikleri (tam genişlik formlar) ───────────────────────
-      S.listItem()
-        .title('Sayfa İçerikleri')
-        .icon(DesktopIcon)
+        .title('Sayfalar')
+        .icon(DocumentIcon)
         .child(
           S.list()
-            .title('Sayfa İçerikleri')
+            .title('Sayfalar')
             .items([
               S.listItem()
-                .title('Site Görselleri & Logolar')
-                .icon(ImageIcon)
+                .id('anasayfa')
+                .title('Anasayfa')
+                .icon(HomeIcon)
                 .child(
                   S.document()
-                    .schemaType('siteAssets')
-                    .documentId('siteAssets')
-                    .title('Site Görselleri & Logolar'),
+                    .id('metinlerHomeV2')
+                    .schemaType('homeV2PageCopy')
+                    .documentId('homeV2PageCopy')
+                    .title('Anasayfa'),
                 ),
               S.listItem()
                 .title('Production Sayfası')
@@ -125,12 +131,34 @@ export const structure: StructureResolver = (S, context) =>
                 ),
               S.listItem()
                 .title('İletişim Sayfası')
-                .icon(DesktopIcon)
+                .icon(EnvelopeIcon)
                 .child(
                   S.document()
                     .schemaType('contactPageCopy')
                     .documentId('contactPageCopy')
                     .title('İletişim Sayfası'),
+                ),
+            ]),
+        ),
+
+      S.divider(),
+
+      // ── Site Ayarları & Medya ──────────────────────────────────────────
+      S.listItem()
+        .title('Site Ayarları & Medya')
+        .icon(CogIcon)
+        .child(
+          S.list()
+            .title('Site Ayarları & Medya')
+            .items([
+              S.listItem()
+                .title('Site Görselleri & Logolar')
+                .icon(ImageIcon)
+                .child(
+                  S.document()
+                    .schemaType('siteAssets')
+                    .documentId('siteAssets')
+                    .title('Site Görselleri & Logolar'),
                 ),
             ]),
         ),

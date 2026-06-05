@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity';
+import { UserIcon } from '@sanity/icons';
 import { orderRankField, orderRankOrdering } from '@sanity/orderable-document-list';
 import { PortfolioImagesInput } from '../components/PortfolioImagesInput';
 
@@ -19,6 +20,7 @@ export const photographer = defineType({
   name: 'photographer',
   title: 'Fotoğrafçı',
   type: 'document',
+  icon: UserIcon,
   groups: [
     { name: 'identity', title: 'Kimlik Bilgileri', default: true },
     { name: 'portfolio', title: 'Portfolyo' },
@@ -147,8 +149,18 @@ export const photographer = defineType({
   preview: {
     select: {
       title: 'fullName',
-      subtitle: 'title',
+      role: 'title',
       media: 'preview',
+      imageCount: 'portfolioImages.length',
+    },
+    prepare({ title, role, media, imageCount }) {
+      const roleLabel = role === 'RETOUCHER' ? 'Retoucher' : 'Fotoğrafçı';
+      const count = typeof imageCount === 'number' ? `${imageCount} görsel` : null;
+      return {
+        title: title || 'İsimsiz',
+        subtitle: [roleLabel, count].filter(Boolean).join('  ·  '),
+        media,
+      };
     },
   },
 });

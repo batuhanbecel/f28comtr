@@ -1,10 +1,12 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
+import { HomeIcon } from '@sanity/icons';
 import { HomeSelectedWorksInput } from '../components/HomeSelectedWorksInput';
 
 export const homeV2PageCopy = defineType({
   name: 'homeV2PageCopy',
   title: 'Anasayfa',
   type: 'document',
+  icon: HomeIcon,
   groups: [
     { name: 'hero', title: 'Hero', default: true },
     { name: 'selectedWorks', title: 'Öne Çıkan İşler' },
