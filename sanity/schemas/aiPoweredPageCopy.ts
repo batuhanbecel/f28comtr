@@ -77,9 +77,7 @@ export const aiPoweredPageCopy = defineType({
         defineField({ name: 'all', title: 'Tümü', type: 'localizedString' }),
         defineField({ name: 'allBrands', title: 'Tüm Markalar', type: 'localizedString' }),
         defineField({ name: 'allTypes', title: 'Tüm Türler', type: 'localizedString' }),
-        defineField({ name: 'visual', title: 'Görsel', type: 'localizedString' }),
-        defineField({ name: 'video', title: 'Video', type: 'localizedString' }),
-        defineField({ name: 'hybrid', title: 'Hibrit', type: 'localizedString' }),
+        // Tür adları (Tamamen YZ / Hibrit) koddan gelir — burada düzenlenmez.
         defineField({ name: 'resultsSuffix', title: 'Sonuç Sonek', type: 'localizedString' }),
         defineField({ name: 'empty', title: 'Boş Durum Mesajı', type: 'localizedString' }),
       ],

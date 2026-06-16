@@ -241,8 +241,14 @@ function mapAiPowered(doc: AiPoweredDoc, lang: Lang): Partial<AiPoweredPageCopy>
   }
 
   if (doc.filters) {
+    // Category type labels (fullAi/hybrid + legacy visual/video) are tied to the
+    // code's category system, not editorial copy. Ignore any stored overrides so
+    // they always come from translations — otherwise stale values (e.g. an old
+    // tr:"Hybrid") would shadow the correct localized label ("Hibrit").
+    const CODE_CONTROLLED = new Set(['visual', 'video', 'hybrid', 'fullAi']);
     const filters: Record<string, string> = {};
     for (const [k, v] of Object.entries(doc.filters)) {
+      if (CODE_CONTROLLED.has(k)) continue;
       const val = pick(v as LocalizedField, lang);
       if (val !== undefined) filters[k] = val;
     }
