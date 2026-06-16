@@ -107,7 +107,7 @@ export const homeV2PageCopy = defineType({
       ],
       options: {
         layout: 'grid',
-        modal: { type: 'dialog', width: 960 },
+        modal: { type: 'dialog', width: 5 },
       },
       validation: (Rule) => Rule.max(6),
       components: {

@@ -17,7 +17,7 @@ export const aiPoweredCollection = defineType({
       type: 'array',
       options: {
         layout: 'grid',
-        modal: { type: 'dialog', width: 960 },
+        modal: { type: 'dialog', width: 5 },
       },
       of: [
         defineArrayMember({
