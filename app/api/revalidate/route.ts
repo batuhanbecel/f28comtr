@@ -51,7 +51,12 @@ export async function POST(req: NextRequest) {
   }
 
   const paths = resolvePathsForType(body);
-  for (const p of paths) revalidatePath(p);
+  for (const p of paths) {
+    // Dynamic routes (e.g. "/ai-powered/works/[slug]") must be revalidated with
+    // the 'page' type so Next matches every generated page under that segment.
+    if (p.includes('[')) revalidatePath(p, 'page');
+    else revalidatePath(p);
+  }
 
   return NextResponse.json({
     revalidated: true,
@@ -70,7 +75,9 @@ function resolvePathsForType(body: WebhookPayload): string[] {
         : ['/portfolios', '/about', '/'];
 
     case 'aiPoweredCollection':
-      return ['/ai-powered', '/'];
+      // The collection holds every work, so also refresh all detail pages
+      // (new slugs + edits to existing ones) via the dynamic route layout.
+      return ['/ai-powered', '/ai-powered/works/[slug]', '/'];
 
     case 'aiPortfolioItem':
       return ['/ai-powered/portfolio'];

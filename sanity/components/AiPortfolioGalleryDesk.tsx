@@ -12,20 +12,23 @@ import { F28_GALLERY_COLUMNS_WIDE, F28_GALLERY_THUMB_HEIGHT_WIDE } from '../lib/
 import { imagePreviewUrl } from '../lib/imagePreview';
 import { orderRankAfter, orderRankBetween } from '../lib/lexorank';
 import { DraggableImageGrid, reorderArray } from './DraggableImageGrid';
+import { AiPortfolioTagEditor, type AiTagOption } from './AiPortfolioTagEditor';
 
 interface AiPortfolioRow {
   _id: string;
   orderRank: string | null;
   image: { asset?: { _ref?: string } } | null;
-  tagLabels?: string[];
+  tags?: AiTagOption[] | null;
 }
 
 const QUERY = `*[_type == "aiPortfolioItem"] | order(orderRank asc) {
   _id,
   orderRank,
   image,
-  "tagLabels": tags[]->en
+  "tags": tags[]->{_id, en, tr}
 }`;
+
+const TAGS_QUERY = `*[_type == "aiTag"] | order(en asc){_id, en, tr}`;
 
 export function AiPortfolioGalleryDesk() {
   const client = useClient({ apiVersion });
@@ -33,6 +36,7 @@ export function AiPortfolioGalleryDesk() {
   const toast = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
   const [rows, setRows] = useState<AiPortfolioRow[]>([]);
+  const [allTags, setAllTags] = useState<AiTagOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -40,12 +44,74 @@ export function AiPortfolioGalleryDesk() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await client.fetch<AiPortfolioRow[]>(QUERY);
+      const [data, tags] = await Promise.all([
+        client.fetch<AiPortfolioRow[]>(QUERY),
+        client.fetch<AiTagOption[]>(TAGS_QUERY),
+      ]);
       setRows(data ?? []);
+      setAllTags(tags ?? []);
     } finally {
       setLoading(false);
     }
   }, [client]);
+
+  const addTag = useCallback(
+    async (rowId: string, tagId: string) => {
+      try {
+        await client
+          .patch(rowId)
+          .setIfMissing({ tags: [] })
+          .append('tags', [{ _type: 'reference', _ref: tagId, _key: randomKey(12) }])
+          .commit();
+        await load();
+      } catch (e) {
+        toast.push({
+          status: 'error',
+          title: 'Etiket eklenemedi',
+          description: e instanceof Error ? e.message : undefined,
+        });
+      }
+    },
+    [client, load, toast],
+  );
+
+  const createAndAddTag = useCallback(
+    async (rowId: string, label: string) => {
+      try {
+        const created = await client.create({ _type: 'aiTag', en: label, tr: label });
+        await client
+          .patch(rowId)
+          .setIfMissing({ tags: [] })
+          .append('tags', [{ _type: 'reference', _ref: created._id, _key: randomKey(12) }])
+          .commit();
+        await load();
+        toast.push({ status: 'success', title: `Etiket oluşturuldu: ${label}` });
+      } catch (e) {
+        toast.push({
+          status: 'error',
+          title: 'Etiket oluşturulamadı',
+          description: e instanceof Error ? e.message : undefined,
+        });
+      }
+    },
+    [client, load, toast],
+  );
+
+  const removeTag = useCallback(
+    async (rowId: string, tagId: string) => {
+      try {
+        await client.patch(rowId).unset([`tags[_ref=="${tagId}"]`]).commit();
+        await load();
+      } catch (e) {
+        toast.push({
+          status: 'error',
+          title: 'Etiket kaldırılamadı',
+          description: e instanceof Error ? e.message : undefined,
+        });
+      }
+    },
+    [client, load, toast],
+  );
 
   useEffect(() => {
     void load();
@@ -151,15 +217,23 @@ export function AiPortfolioGalleryDesk() {
 
   const gridItems = useMemo(
     () =>
-      rows.map((row, index) => {
-        const tags = (row.tagLabels ?? []).filter(Boolean).slice(0, 2).join(' · ');
-        return {
-          id: row._id,
-          previewUrl: imagePreviewUrl(row.image ?? undefined),
-          label: tags || `Görsel ${index + 1}`,
-        };
-      }),
-    [rows],
+      rows.map((row, index) => ({
+        id: row._id,
+        previewUrl: imagePreviewUrl(row.image ?? undefined),
+        // Keep only a small index counter overlaid on the image; tags live in the
+        // footer below so the two no longer stack on top of each other.
+        label: `${index + 1}`,
+        footer: (
+          <AiPortfolioTagEditor
+            tags={row.tags ?? []}
+            allTags={allTags}
+            onAdd={(tagId) => addTag(row._id, tagId)}
+            onCreate={(label) => createAndAddTag(row._id, label)}
+            onRemove={(tagId) => removeTag(row._id, tagId)}
+          />
+        ),
+      })),
+    [rows, allTags, addTag, createAndAddTag, removeTag],
   );
 
   return (
@@ -169,7 +243,8 @@ export function AiPortfolioGalleryDesk() {
           AI Portfolyo Görselleri
         </Text>
         <Text size={1} muted>
-          Görsele tıklayarak etiketleri düzenleyin. Sıra için sol üstteki tutamacı kullanın.
+          Etiketleri doğrudan görselin altından ekleyin — yazıp seçin ya da Enter ile yeni
+          oluşturun. Sıra için sol üstteki tutamacı kullanın.
         </Text>
       </Stack>
 

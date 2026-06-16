@@ -67,12 +67,10 @@ export async function getAiPoweredWorks(): Promise<AiPoweredWork[]> {
     ...w,
     slug:
       typeof w.slug === 'string' && w.slug.length > 0 ? w.slug : w.id || `work-${i}`,
-    // brandKey is editor-input on Sanity but used as the filter key. Derive
-    // from brand when missing so the filter never silently breaks.
-    brandKey:
-      typeof w.brandKey === 'string' && w.brandKey.length > 0
-        ? w.brandKey
-        : deriveBrandKey(w.brand || 'other'),
+    // Always derive the filter key from the brand NAME so works that share a
+    // brand (e.g. three "PUMA" works) collapse into one filter pill ("PUMA 3").
+    // The manual brandKey field on Sanity is intentionally ignored here.
+    brandKey: deriveBrandKey(w.brand || 'other'),
   }));
 }
 

@@ -159,9 +159,13 @@ export const aiPoweredCollection = defineType({
             defineField({
               group: 'credits',
               name: 'brandKey',
-              title: 'Marka Anahtarı',
+              title: 'Marka Anahtarı (otomatik)',
               type: 'string',
-              description: 'Filtre için URL-uyumlu kısa ad (boş bırak; otomatik).',
+              // The site derives the filter key from the brand name, so works
+              // that share a brand always group together. This manual field is
+              // no longer read — hidden to avoid confusion.
+              hidden: true,
+              description: 'Filtre anahtarı marka adından otomatik üretilir.',
             }),
             defineField({
               group: 'credits',

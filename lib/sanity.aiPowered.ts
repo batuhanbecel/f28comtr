@@ -150,7 +150,10 @@ export async function getAiPoweredWorksFromSanity(): Promise<AiPoweredWork[]> {
   const works: AiPoweredWork[] = [];
 
   for (const w of result ?? []) {
-    if (!w?.id || !w?.brandKey) continue;
+    // brandKey is an optional editor field ("leave empty; automatic"). Do NOT
+    // drop works that lack it — cms.ts derives a key from the brand name. Only
+    // an id and at least one image are truly required.
+    if (!w?.id) continue;
     const images = normalizeWorkImages(w.images);
     if (images.length === 0) continue;
 
