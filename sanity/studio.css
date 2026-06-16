@@ -116,6 +116,19 @@
   padding-right: 0;
 }
 
+/* Robust, class-name-agnostic full-width for the works-gallery document.
+   Sanity caps document forms via hashed FormContainer classes that change
+   between versions; when they change, the works gallery re-narrows while the
+   portfolio desk (stable data-ui selectors) stays wide. Scoped via :has() to
+   only the document that renders the gallery, so other forms are untouched.
+   The array edit modal is portaled outside DocumentPanel, so it's unaffected. */
+[data-ui='DocumentPanel']:has(.f28-gallery-wide) [data-ui='ScrollContainer'] :is(div, form, fieldset, ul, li) {
+  max-width: none !important;
+}
+[data-ui='DocumentPanel']:has(.f28-gallery-wide) [class*='ColumnarGrid'] {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
 /* Array edit modal: prefer wide dialog on large screens */
 @media (min-width: 720px) {
   [data-ui='Dialog'] [data-ui='DialogCard'] {
