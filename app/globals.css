@@ -1088,7 +1088,12 @@ body[data-lightbox-open] nav {
   text-transform: uppercase;
   color: rgb(var(--c-fg) / var(--opacity-faint));
   flex-shrink: 0;
-  width: 54px;
+  /* Size to content (with a floor so short labels like MARKA/TÜR still align).
+     A fixed 54px width truncated longer labels like "KATEGORİ", whose text
+     overflowed the box and overlapped the pills. */
+  width: auto;
+  min-width: 54px;
+  white-space: nowrap;
 }
 
 /* Brand pills — scrollable strip */

@@ -30,8 +30,7 @@ export const WorkCard = memo(function WorkCard({
   })
 
   const categoryLabels: Record<string, string> = {
-    visual: filtersCopy.visual,
-    video: filtersCopy.video,
+    fullAi: filtersCopy.fullAi,
     hybrid: filtersCopy.hybrid,
   }
 

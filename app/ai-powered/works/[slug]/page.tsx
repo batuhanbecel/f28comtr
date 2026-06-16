@@ -1,12 +1,19 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 
-import { AiWorkDetailLayout } from '@/app/ai-powered/components/AiWorkDetailLayout';
 import { AiWorkProjectNav } from '@/app/ai-powered/components/AiWorkProjectNav';
+import { MasonryGrid } from '@/components/MasonryGrid';
 import { Footer } from '@/components/Footer';
+import { HeroSnapBody } from '@/components/HeroSnapBody';
+import { HeroSnapTarget } from '@/components/HeroSnapTarget';
+import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 import { getAiPoweredWorks, getPageCopy } from '@/lib/cms';
 import type { CreditPerson } from '@/lib/aiPoweredWorks';
+import { shouldSkipOptimization } from '@/lib/blob';
+import { HERO_IMAGE_SIZES } from '@/lib/imageSizes';
+import { ViewTransition } from '@/lib/ViewTransition';
 import { getServerLang } from '@/lib/serverLang';
 import { absoluteUrl } from '@/lib/siteUrl';
 
@@ -52,8 +59,7 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
 
   const copy = await getPageCopy('aiPowered', lang);
   const categoryLabels: Record<string, string> = {
-    visual: copy.filters.visual,
-    video: copy.filters.video,
+    fullAi: copy.filters.fullAi,
     hybrid: copy.filters.hybrid,
   };
   const categoryLabel = categoryLabels[work.category] ?? work.category;
@@ -68,6 +74,7 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
           tags: 'Etiketler',
           instagram: 'Instagram\'da gör',
           back: 'AI Powered',
+          gallery: 'Görseller',
           prevProject: 'Önceki Proje',
           nextProject: 'Sonraki Proje',
           projectNav: 'Çalışmalar arası gezinme',
@@ -84,6 +91,7 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
           tags: 'Tags',
           instagram: 'View on Instagram',
           back: 'AI Powered',
+          gallery: 'Gallery',
           prevProject: 'Previous Project',
           nextProject: 'Next Project',
           projectNav: 'Work navigation',
@@ -103,88 +111,131 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
     credits.aiArtists.length > 0 ||
     credits.retouchers.length > 0;
 
+  const heroAlt = work.imageAlt || [work.brand, work.title].filter(Boolean).join(' — ');
+  const galleryImages = work.images.map((img) => img.src);
+  const facts = [
+    { label: labels.brand, value: work.brand },
+    work.agency ? { label: labels.agency, value: work.agency } : null,
+    work.year ? { label: labels.year, value: String(work.year) } : null,
+    { label: labels.type, value: categoryLabel },
+  ].filter((f): f is { label: string; value: string } => f !== null);
+
   return (
-    <>
-      <main className="min-h-screen bg-th-bg text-th-fg pt-24 pb-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
-          <Link
-            href="/ai-powered"
-            prefetch={false}
-            className="section-label mb-10 inline-block text-th-fg/50 transition-colors duration-ui hover:text-th-fg"
-          >
-            ← {labels.back}
-          </Link>
+    <ProductionSnapContainer snapMode="heroSnap">
+      {/* ── Hero — cinematic cover, morphs from the grid card ─────────────── */}
+      <section className="relative flex h-[72vh] min-h-[440px] w-full items-end overflow-hidden md:h-screen">
+        {work.imageSrc ? (
+          <ViewTransition name={`ai-work-${slug}`}>
+            <Image
+              src={work.imageSrc}
+              alt={heroAlt}
+              fill
+              priority
+              fetchPriority="high"
+              sizes={HERO_IMAGE_SIZES}
+              quality={90}
+              unoptimized={shouldSkipOptimization(work.imageSrc)}
+              className="object-cover object-center"
+            />
+          </ViewTransition>
+        ) : null}
+        <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--c-bg)/0.96)] via-[rgb(var(--c-bg)/0.5)] to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-[rgb(var(--c-bg)/0.4)] to-transparent" />
 
-          <AiWorkDetailLayout
-            workSlug={slug}
-            images={work.images}
-            imageAlt={work.imageAlt || `${work.brand} — ${work.title}`}
-          >
-            <div className="space-y-8">
-              <header className="page-heading-stack gap-4 border-b border-th-fg/10 pb-8">
-                <span className="section-label text-th-fg/40">{work.brand}</span>
-                {work.title ? (
-                  <h1 className="heading-section leading-tight">{work.title}</h1>
-                ) : (
-                  <h1 className="heading-section leading-tight">{work.brand}</h1>
-                )}
-              </header>
+        <div className="absolute inset-x-0 top-0 z-10">
+          <div className="mx-auto max-w-7xl px-4 pt-24 sm:px-6 lg:px-10">
+            <Link
+              href="/ai-powered"
+              prefetch={false}
+              className="section-label inline-block text-th-fg/60 transition-colors duration-ui hover:text-th-fg"
+            >
+              ← {labels.back}
+            </Link>
+          </div>
+        </div>
 
-              <dl className="space-y-5">
-                <MetaRow label={labels.brand} value={work.brand} />
-                {work.agency ? <MetaRow label={labels.agency} value={work.agency} /> : null}
-                {work.year ? <MetaRow label={labels.year} value={String(work.year)} /> : null}
-                <MetaRow label={labels.type} value={categoryLabel} />
-                {work.tags && work.tags.length > 0 ? (
-                  <div className="grid grid-cols-[6rem_1fr] gap-4 items-start">
-                    <dt className="mono-label pt-0.5">{labels.tags}</dt>
-                    <dd className="flex flex-wrap gap-1.5">
-                      {work.tags.map((t) => (
-                        <span key={t} className="editorial-chip">
-                          {t}
-                        </span>
-                      ))}
-                    </dd>
-                  </div>
-                ) : null}
-              </dl>
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 md:pb-16 lg:px-10">
+          <div className="page-heading-stack gap-4">
+            <span className="section-label section-label--pill text-th-fg/60">{work.brand}</span>
+            <h1 className="heading-hero leading-[1.05]">{work.title || work.brand}</h1>
+          </div>
+        </div>
+      </section>
 
-              {work.description ? (
-                <p className="body-text text-muted-body whitespace-pre-line leading-relaxed">
-                  {work.description}
-                </p>
-              ) : null}
+      <HeroSnapBody className="min-h-screen bg-th-bg text-th-fg">
+        {/* ── Details — editorial facts strip + description + credits ─────── */}
+        <section className="mx-auto max-w-5xl px-4 pt-14 sm:px-6 md:pt-20 lg:px-10">
+          <dl className="grid grid-cols-2 gap-x-6 gap-y-7 border-b border-th-fg/10 pb-10 sm:grid-cols-4">
+            {facts.map((f) => (
+              <div key={f.label} className="space-y-1.5">
+                <dt className="mono-label">{f.label}</dt>
+                <dd className="body-text text-th-fg">{f.value}</dd>
+              </div>
+            ))}
+          </dl>
 
-              {hasCredits ? (
-                <section className="space-y-5 border-t border-th-fg/10 pt-8">
-                  {credits.photographers.length > 0 ? (
-                    <CreditBlock label={labels.photographers} people={credits.photographers} />
-                  ) : null}
-                  {credits.aiArtists.length > 0 ? (
-                    <CreditBlock
-                      label={labels.aiArtists}
-                      people={credits.aiArtists.map((name) => ({ fullName: name }))}
-                    />
-                  ) : null}
-                  {credits.retouchers.length > 0 ? (
-                    <CreditBlock label={labels.retouchers} people={credits.retouchers} />
-                  ) : null}
-                </section>
-              ) : null}
+          {work.description ? (
+            <p className="body-text mt-10 max-w-3xl whitespace-pre-line leading-relaxed text-muted-body">
+              {work.description}
+            </p>
+          ) : null}
 
-              {work.instagramUrl ? (
-                <a
-                  href={work.instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-editorial mt-2 inline-flex"
-                >
-                  {labels.instagram} ↗
-                </a>
-              ) : null}
+          {work.tags && work.tags.length > 0 ? (
+            <div className="mt-8 flex flex-wrap gap-1.5">
+              {work.tags.map((t) => (
+                <span key={t} className="editorial-chip">
+                  {t}
+                </span>
+              ))}
             </div>
-          </AiWorkDetailLayout>
+          ) : null}
 
+          {hasCredits ? (
+            <section className="mt-10 grid gap-6 border-t border-th-fg/10 pt-10 sm:grid-cols-3">
+              {credits.photographers.length > 0 ? (
+                <CreditBlock label={labels.photographers} people={credits.photographers} />
+              ) : null}
+              {credits.aiArtists.length > 0 ? (
+                <CreditBlock
+                  label={labels.aiArtists}
+                  people={credits.aiArtists.map((name) => ({ fullName: name }))}
+                />
+              ) : null}
+              {credits.retouchers.length > 0 ? (
+                <CreditBlock label={labels.retouchers} people={credits.retouchers} />
+              ) : null}
+            </section>
+          ) : null}
+
+          {work.instagramUrl ? (
+            <a
+              href={work.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-editorial mt-10 inline-flex"
+            >
+              {labels.instagram} ↗
+            </a>
+          ) : null}
+        </section>
+
+        {/* ── Gallery — full-bleed masonry, native mixed-orientation layout ── */}
+        {galleryImages.length > 0 ? (
+          <HeroSnapTarget className="hero-snap-target--pad">
+            <section className="ai-portfolio-section pt-12 md:pt-16">
+              <p className="section-label section-label--pill mx-auto mb-8 max-w-5xl px-4 sm:px-6 lg:px-10">
+                {labels.gallery}
+              </p>
+              <MasonryGrid
+                images={galleryImages}
+                photographerName={[work.brand, work.title].filter(Boolean).join(' — ') || work.brand}
+                fullWidth
+              />
+            </section>
+          </HeroSnapTarget>
+        ) : null}
+
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
           <AiWorkProjectNav
             works={works}
             currentSlug={slug}
@@ -194,18 +245,10 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
             sectionLabel={labels.moreWorks}
           />
         </div>
-      </main>
-      <Footer />
-    </>
-  );
-}
 
-function MetaRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="grid grid-cols-[6rem_1fr] gap-4 items-baseline">
-      <dt className="mono-label">{label}</dt>
-      <dd className="body-text text-th-fg">{value}</dd>
-    </div>
+        <Footer />
+      </HeroSnapBody>
+    </ProductionSnapContainer>
   );
 }
 

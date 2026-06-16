@@ -78,13 +78,12 @@ export const aiPoweredCollection = defineType({
               type: 'string',
               options: {
                 list: [
-                  { title: 'Görsel', value: 'visual' },
-                  { title: 'Video', value: 'video' },
-                  { title: 'Hibrit', value: 'hybrid' },
+                  { title: 'Tamamen YZ (Full AI)', value: 'fullAi' },
+                  { title: 'Hibrit (Hybrid)', value: 'hybrid' },
                 ],
                 layout: 'radio',
               },
-              initialValue: 'visual',
+              initialValue: 'fullAi',
               validation: (Rule) => Rule.required(),
             }),
             defineField({

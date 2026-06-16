@@ -33,8 +33,7 @@ export function FilterBar({
 }: FilterBarProps) {
   const categoryOptions: { key: WorkCategory | "all"; label: string }[] = [
     { key: "all", label: filtersCopy.all },
-    { key: "visual", label: filtersCopy.visual },
-    { key: "video", label: filtersCopy.video },
+    { key: "fullAi", label: filtersCopy.fullAi },
     { key: "hybrid", label: filtersCopy.hybrid },
   ]
 

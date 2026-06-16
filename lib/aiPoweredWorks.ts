@@ -1,4 +1,4 @@
-export type WorkCategory = 'visual' | 'video' | 'hybrid';
+export type WorkCategory = 'fullAi' | 'hybrid';
 
 export interface CreditPerson {
   /** Photographer slug — set when the person has a Sanity photographer doc. */

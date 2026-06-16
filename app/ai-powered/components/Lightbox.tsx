@@ -16,8 +16,7 @@ export function Lightbox({ works, filtersCopy, index, onClose, onIndexChange }: 
   const slides = works.map((w) => ({ src: w.imageSrc, alt: w.imageAlt }))
 
   const categoryLabels: Record<string, string> = {
-    visual: filtersCopy.visual,
-    video: filtersCopy.video,
+    fullAi: filtersCopy.fullAi,
     hybrid: filtersCopy.hybrid,
   }
 
