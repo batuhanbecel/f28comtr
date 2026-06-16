@@ -1,5 +1,6 @@
 import { sanityFetch } from '@/lib/sanity.fetch';
 import type { AiPoweredWork, AiPoweredWorkImage } from '@/lib/aiPoweredWorks';
+import { normalizeWorkCategory } from '@/lib/aiPoweredWorks';
 import type { AiPortfolioData } from '@/lib/aiPoweredPortfolio.shared';
 
 const AI_WORKS_QUERY = `*[_id == "aiPoweredCollection"][0]{
@@ -84,7 +85,7 @@ interface RawAiWork {
   brandKey: string;
   title: string;
   description: string;
-  category: AiPoweredWork['category'];
+  category: string;
   images?: RawWorkImage[] | null;
   imageAlt: string;
   year: number;
@@ -164,7 +165,7 @@ export async function getAiPoweredWorksFromSanity(): Promise<AiPoweredWork[]> {
       brandKey: w.brandKey,
       title: w.title,
       description: w.description,
-      category: w.category,
+      category: normalizeWorkCategory(w.category),
       images,
       imageAlt: w.imageAlt,
       year: w.year,

@@ -41,6 +41,16 @@ export interface AiPoweredWork {
   credits?: AiPoweredCredits;
 }
 
+/**
+ * Map any stored category value to the current two-type system. Legacy works
+ * still hold 'visual' / 'video' until migrated; collapse those (and anything
+ * unknown) to 'fullAi' so the site never shows a raw value or drops a work
+ * from the type filter — no data migration required.
+ */
+export function normalizeWorkCategory(raw: string | null | undefined): WorkCategory {
+  return raw === 'hybrid' ? 'hybrid' : 'fullAi';
+}
+
 export function deriveBrandKey(brand: string): string {
   return (
     brand
