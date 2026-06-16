@@ -116,17 +116,35 @@
   padding-right: 0;
 }
 
-/* Robust, class-name-agnostic full-width for the works-gallery document.
-   Sanity caps document forms via hashed FormContainer classes that change
-   between versions; when they change, the works gallery re-narrows while the
-   portfolio desk (stable data-ui selectors) stays wide. Scoped via :has() to
-   only the document that renders the gallery, so other forms are untouched.
-   The array edit modal is portaled outside DocumentPanel, so it's unaffected. */
-[data-ui='DocumentPanel']:has(.f28-gallery-wide) [data-ui='ScrollContainer'] :is(div, form, fieldset, ul, li) {
+/* Confirmed from the rendered DOM: the works-gallery form is capped by the
+   styled-component `FormContainer-sc-*` (NOT a data-ui="Container", which isn't
+   present), and the field row adds an empty left gutter cell. Earlier rules
+   relied on a `[data-ui='DocumentPanel']` ancestor that doesn't match, so they
+   never applied. These target the real classes directly, scoped via
+   :has(.f28-gallery-wide) so only the gallery document is affected. */
+[class*='FormContainer']:has(.f28-gallery-wide),
+[class*='RootWrapper']:has(.f28-gallery-wide) {
+  max-width: none !important;
+  width: 100% !important;
+  margin-inline: 0 !important;
+}
+/* The field row keeps an empty left "gutter" cell that pushes the field to the
+   right. Neutralise the grid entirely (display:block) so the cells become full
+   width, hide the empty gutter cell, and force the field cell + its inner grid
+   to span everything. */
+[class*='FormRowContainer']:has(.f28-gallery-wide) {
+  display: block !important;
+}
+[class*='FormRowContainer']:has(.f28-gallery-wide) > [class*='FormCell']:empty {
+  display: none !important;
+}
+[class*='FormCell']:has(.f28-gallery-wide) {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
   max-width: none !important;
 }
-[data-ui='DocumentPanel']:has(.f28-gallery-wide) [class*='ColumnarGrid'] {
-  grid-template-columns: minmax(0, 1fr) !important;
+[class*='ColumnarGrid']:has(> .f28-gallery-wide) {
+  display: block !important;
 }
 
 /* Array edit modal: prefer wide dialog on large screens */

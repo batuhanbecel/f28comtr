@@ -135,7 +135,8 @@ export function AiPoweredWorksInput(props: ArrayOfObjectsInputProps) {
   );
 
   return (
-    <Stack className="f28-gallery-wide" space={4}>
+    <div className="f28-gallery-wide" style={{ width: '100%' }}>
+    <Stack space={4}>
       {!readOnly ? (
         <Card
           padding={4}
@@ -204,5 +205,6 @@ export function AiPoweredWorksInput(props: ArrayOfObjectsInputProps) {
 
       <ArrayItemEditLayer {...props} />
     </Stack>
+    </div>
   );
 }
