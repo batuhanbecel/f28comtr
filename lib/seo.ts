@@ -163,14 +163,10 @@ export async function generatePhotographerMetadata(
 
   const copy = translations[lang].seo.photographer;
   const title = formatSeoTemplate(copy.titleTemplate, { name: photographer.fullName });
-  let description = formatSeoTemplate(copy.descriptionTemplate, {
+  const description = formatSeoTemplate(copy.descriptionTemplate, {
     name: photographer.fullName,
     title: photographer.title,
   });
-  const bio = photographer.bio?.[lang]?.trim();
-  if (bio) {
-    description = bio.length > 160 ? `${bio.slice(0, 157)}…` : bio;
-  }
 
   const preview = photographer.preview;
   const image = preview.startsWith('http') ? preview : absoluteUrl(preview);

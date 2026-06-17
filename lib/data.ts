@@ -1,18 +1,3 @@
-export const AVAILABLE_TAGS = [
-  'portrait',
-  'commercial',
-  'fashion',
-  'editorial',
-  'product',
-  'lifestyle',
-  'beauty',
-  'food',
-  'architecture',
-  'event',
-] as const;
-
-export type PhotographerTag = typeof AVAILABLE_TAGS[number];
-
 export interface Photographer {
   id: string;
   name: string;
@@ -20,10 +5,6 @@ export interface Photographer {
   title: string;
   folder: string;
   preview: string;
-  tags?: PhotographerTag[];
-  bio?: { en: string; tr: string };
-  instagram?: string;
-  website?: string;
 }
 
 export const photographers: Photographer[] = [
@@ -34,7 +15,6 @@ export const photographers: Photographer[] = [
     title: 'PHOTOGRAPHER',
     folder: 'ozan-cakmak',
     preview: '/portfolios/previews/ozan-cakmak.webp',
-    tags: ['commercial', 'portrait', 'fashion']
   },
   {
     id: 'emre-yunusoglu',
@@ -43,7 +23,6 @@ export const photographers: Photographer[] = [
     title: 'PHOTOGRAPHER',
     folder: 'emre-yunusoglu',
     preview: '/portfolios/previews/emre-yunusoglu.webp',
-    tags: ['commercial', 'portrait', 'lifestyle']
   },
   {
     id: 'berkin-metin',
@@ -52,7 +31,6 @@ export const photographers: Photographer[] = [
     title: 'PHOTOGRAPHER',
     folder: 'berkin-metin',
     preview: '/portfolios/previews/berkin-metin.webp',
-    tags: ['fashion', 'editorial', 'portrait']
   },
   {
     id: 'yonca-muslubas',
@@ -61,7 +39,6 @@ export const photographers: Photographer[] = [
     title: 'PHOTOGRAPHER',
     folder: 'yonca-muslubas',
     preview: '/portfolios/previews/yonca-muslubas.webp',
-    tags: ['fashion', 'beauty', 'editorial']
   },
   {
     id: 'haldun-kirkbir',
@@ -70,7 +47,6 @@ export const photographers: Photographer[] = [
     title: 'PHOTOGRAPHER',
     folder: 'haldun-kirkbir',
     preview: '/portfolios/previews/haldun-kirkbir.webp',
-    tags: ['commercial', 'portrait']
   },
   {
     id: 'omur-temel',
@@ -79,7 +55,6 @@ export const photographers: Photographer[] = [
     title: 'PHOTOGRAPHER',
     folder: 'omur-temel',
     preview: '/portfolios/previews/omur-temel.webp',
-    tags: ['commercial', 'product', 'lifestyle']
   },
   {
     id: 'kerem-cakmak',
@@ -88,7 +63,6 @@ export const photographers: Photographer[] = [
     title: 'RETOUCHER',
     folder: 'kerem-cakmak',
     preview: '/portfolios/previews/kerem-cakmak.webp',
-    tags: ['beauty', 'fashion', 'portrait']
   },
   {
     id: 'dogu-biricik',
@@ -97,7 +71,6 @@ export const photographers: Photographer[] = [
     title: 'RETOUCHER',
     folder: 'dogu-biricik',
     preview: '/portfolios/previews/dogu-biricik.webp',
-    tags: ['commercial', 'beauty', 'product']
   },
   {
     id: 'batuhan-becel',
@@ -106,7 +79,6 @@ export const photographers: Photographer[] = [
     title: 'RETOUCHER',
     folder: 'batuhan-becel',
     preview: '/portfolios/previews/batuhan-becel.jpg',
-    tags: ['portrait', 'beauty', 'editorial']
   }
 ];
 

@@ -230,7 +230,7 @@ export async function getPageSeo(page: SeoPageKey, lang: Lang): Promise<SeoCopy>
 
 // ── Type re-exports ─────────────────────────────────────────────────────────
 
-export type { Photographer, PhotographerTag } from '@/lib/data';
+export type { Photographer } from '@/lib/data';
 export type { AiPoweredWork, AiPoweredWorkImage, WorkCategory } from '@/lib/aiPoweredWorks';
 export type {
   AiPortfolioData,

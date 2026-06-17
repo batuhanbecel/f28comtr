@@ -7,11 +7,7 @@ const PHOTOGRAPHERS_QUERY = `*[_type == "photographer"] | order(orderRank asc, f
   fullName,
   title,
   "folder": slug.current,
-  "preview": preview.asset->url,
-  tags,
-  bio,
-  instagram,
-  website
+  "preview": preview.asset->url
 }`;
 
 const PHOTOGRAPHER_IMAGES_QUERY = `*[_type == "photographer" && slug.current == $slug][0]{

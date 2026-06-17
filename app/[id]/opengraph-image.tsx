@@ -67,19 +67,29 @@ export default async function OGImage({ params }: { params: Promise<{ id: string
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            opacity: 0.45,
+            opacity: 1,
           }}
         />
 
-        {/* Gradient overlays */}
+        {/* Gradient overlays — keep the photo dominant, just enough scrim for text */}
         <div
           style={{
             position: 'absolute',
             bottom: 0,
             left: 0,
             right: 0,
-            height: '70%',
-            background: 'linear-gradient(to top, rgba(0,0,0,0.95), transparent)',
+            height: '75%',
+            background: 'linear-gradient(to top, rgba(0,0,0,0.92), rgba(0,0,0,0.35) 45%, transparent)',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '28%',
+            background: 'linear-gradient(to bottom, rgba(0,0,0,0.55), transparent)',
           }}
         />
 

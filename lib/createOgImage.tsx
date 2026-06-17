@@ -5,12 +5,18 @@ export const OG_CONTENT_TYPE = 'image/png';
 
 interface CreateOgImageOptions {
   alt: string;
+  /** Kept for callers; not rendered — the logo is the focal point now. */
   title: string;
   subtitle?: string;
   footer?: string;
 }
 
-export function createOgImage({ title, subtitle, footer }: CreateOgImageOptions) {
+/**
+ * General-page OG card: the centered f/2.8 logo mark on a dark field. Because
+ * the mark sits dead-center, it survives the square crop some link previews
+ * apply (the old centered headline got sliced to "…Production Agen…").
+ */
+export function createOgImage({ subtitle, footer }: CreateOgImageOptions) {
   return new ImageResponse(
     (
       <div
@@ -21,74 +27,61 @@ export function createOgImage({ title, subtitle, footer }: CreateOgImageOptions)
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#000',
+          background: '#0a0a0a',
           position: 'relative',
         }}
       >
+        {/* Subtle technical grid */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            opacity: 0.04,
+            opacity: 0.05,
             backgroundImage:
               'linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
+            backgroundSize: '64px 64px',
           }}
         />
 
-        <div style={{ width: 48, height: 1, background: 'rgba(255,255,255,0.25)', marginBottom: 32 }} />
-
-        <div
-          style={{
-            fontSize: 14,
-            fontWeight: 400,
-            letterSpacing: '0.5em',
-            color: 'rgba(255,255,255,0.35)',
-            textTransform: 'uppercase',
-            marginBottom: 16,
-          }}
+        {/* f/2.8 logo mark (inlined from components/F28LogoMark) */}
+        <svg
+          width={384}
+          height={228}
+          viewBox="0 0 1082.33 641.85"
+          fill="#ffffff"
+          style={{ display: 'block' }}
         >
-          f/2.8
-        </div>
+          <path d="M925.82,641.47l-23.52-.05c-50.08-3.55-95.53-29.66-123.79-68.34-32.02-43.83-40.76-98.19-25.25-148.82,14.05-45.88,46.73-82.61,90.21-103.29-92.31-43.72-125.03-154.56-72.89-240.28C798.29,35.16,848.51,3.59,904.48.56h19.51c82.36,4.87,149.68,69.23,157.55,151.6,5.21,54.47-15.58,107.2-57.4,143.57l-20.65-23.6c58.42-50.42,63.8-138.73,11.88-195.7-50.69-55.61-136.26-60.13-192.33-10.06-60.26,53.8-61.53,147.38-1.69,202.64,24.62,22.73,57.41,36.41,91.58,36.26,87.12-.4,160.56,65.59,168.69,152.5l-.03,31.72c-7.75,82.46-74.32,145.92-155.75,151.97ZM1051.04,473.56c0-75.58-61.31-136.85-136.94-136.85s-136.94,61.27-136.94,136.85,61.31,136.85,136.94,136.85,136.94-61.27,136.94-136.85Z" />
+          <path d="M31.98,641.85H0S.12,157.31.12,157.31C6.66,72.8,73.55,5.7,158.16.67c7.05-1.22,13.32-.49,20.37-.07,88.69,5.3,158.4,79.48,158.04,168.01l-31.24-.05c-.13-76.2-62.29-137.86-138.64-136.98-71.74.82-133.03,58.4-134.73,131.27l-.6,193.92h150.02s-.02,31.22-.02,31.22l-149.86.02.49,253.83Z" />
+          <polygon points="246.84 641.85 207.98 641.85 482.83 275.72 521.9 275.97 246.84 641.85" />
+          <path d="M713.35,641.85h-336.61s292.88-391.03,292.88-391.03c33.71-44.92,36.78-105.79,7.44-153.65-28.25-46.08-81.77-72.17-136.41-64.21-67.51,9.84-117.59,68.04-117.43,135.69l-31.3-.04c-.2-88.96,69.84-163.12,158.9-168.06l19.3.02c58.62,3.24,110.57,37.81,137.4,86.65,30.41,55.36,27.2,120.65-5.66,172.17l-6.15,8.76-256.75,342.24h274.04s.33,31.46.33,31.46Z" />
+          <polygon points="761.3 641.84 728.34 641.84 728.32 610.38 761.56 610.38 761.3 641.84" />
+        </svg>
 
+        {/* Divider + tagline (stays near center → square-crop safe) */}
+        <div style={{ width: 56, height: 1, background: 'rgba(255,255,255,0.22)', marginTop: 48, marginBottom: 24 }} />
         <div
           style={{
-            fontSize: title.length > 14 ? 72 : 96,
-            fontWeight: 900,
-            color: '#fff',
-            letterSpacing: '-0.03em',
-            lineHeight: 1,
+            fontSize: 22,
+            fontWeight: 400,
+            letterSpacing: '0.34em',
+            color: 'rgba(255,255,255,0.55)',
+            textTransform: 'uppercase',
             textAlign: 'center',
             paddingInline: 48,
           }}
         >
-          {title}
+          {subtitle ?? 'Production Agency'}
         </div>
 
-        {subtitle ? (
-          <div
-            style={{
-              fontSize: 16,
-              fontWeight: 400,
-              letterSpacing: '0.3em',
-              color: 'rgba(255,255,255,0.2)',
-              textTransform: 'uppercase',
-              marginTop: 28,
-              textAlign: 'center',
-              paddingInline: 48,
-            }}
-          >
-            {subtitle}
-          </div>
-        ) : null}
-
+        {/* Footer (location) */}
         <div
           style={{
             position: 'absolute',
-            bottom: 40,
-            fontSize: 12,
+            bottom: 44,
+            fontSize: 13,
             letterSpacing: '0.4em',
-            color: 'rgba(255,255,255,0.15)',
+            color: 'rgba(255,255,255,0.18)',
             textTransform: 'uppercase',
           }}
         >

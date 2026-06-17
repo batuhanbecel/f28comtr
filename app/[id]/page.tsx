@@ -11,7 +11,6 @@ import { MasonryGridSkeleton } from '@/components/MasonryGridSkeleton';
 import { Footer } from '@/components/Footer';
 import { DownloadPortfolio } from '@/components/DownloadPortfolio';
 import { PhotographerHeroHeader } from '@/components/PhotographerHeroHeader';
-import { PhotographerBio } from '@/components/PhotographerBio';
 import { HeroSnapBody } from '@/components/HeroSnapBody';
 import { HeroSnapTarget } from '@/components/HeroSnapTarget';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
@@ -125,11 +124,6 @@ export default async function PortfolioPage({ params }: PageProps) {
 
       {/* Grid — streams in after hero */}
       <HeroSnapBody>
-        <PhotographerBio
-          bio={photographer.bio}
-          instagram={photographer.instagram}
-          website={photographer.website}
-        />
         <HeroSnapTarget className="hero-snap-target--pad">
         <section className="pb-12">
           <Suspense fallback={<MasonryGridSkeleton />}>

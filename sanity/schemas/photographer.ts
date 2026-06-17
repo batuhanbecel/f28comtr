@@ -3,19 +3,6 @@ import { UserIcon } from '@sanity/icons';
 import { orderRankField, orderRankOrdering } from '@sanity/orderable-document-list';
 import { PortfolioImagesInput } from '../components/PortfolioImagesInput';
 
-const AVAILABLE_TAGS = [
-  { title: 'Portre', value: 'portrait' },
-  { title: 'Reklam', value: 'commercial' },
-  { title: 'Moda', value: 'fashion' },
-  { title: 'Editöryal', value: 'editorial' },
-  { title: 'Ürün', value: 'product' },
-  { title: 'Yaşam Tarzı', value: 'lifestyle' },
-  { title: 'Güzellik', value: 'beauty' },
-  { title: 'Yemek', value: 'food' },
-  { title: 'Mimari', value: 'architecture' },
-  { title: 'Etkinlik', value: 'event' },
-];
-
 export const photographer = defineType({
   name: 'photographer',
   title: 'Fotoğrafçı',
@@ -24,7 +11,6 @@ export const photographer = defineType({
   groups: [
     { name: 'identity', title: 'Kimlik Bilgileri', default: true },
     { name: 'portfolio', title: 'Portfolyo' },
-    { name: 'bio', title: 'Biyografi & Sosyal' },
   ],
   fields: [
     orderRankField({ type: 'photographer' }),
@@ -86,15 +72,6 @@ export const photographer = defineType({
     }),
     defineField({
       group: 'identity',
-      name: 'tags',
-      title: 'Uzmanlık Alanları',
-      description: 'Portfolyolar sayfasında filtre olarak kullanılır. Birden fazla seçebilirsiniz.',
-      type: 'array',
-      of: [{ type: 'string' }],
-      options: { list: AVAILABLE_TAGS },
-    }),
-    defineField({
-      group: 'identity',
       name: 'preview',
       title: 'Kapak Görseli',
       description: 'Portfolyolar listesinde ve sosyal medya paylaşımlarında (OG) kullanılır. Dikey oran (2:3) önerilir.',
@@ -115,34 +92,6 @@ export const photographer = defineType({
       components: {
         input: PortfolioImagesInput,
       },
-    }),
-
-    // ── Biyografi & Sosyal ────────────────────────────────────────────────
-    defineField({
-      group: 'bio',
-      name: 'bio',
-      title: 'Biyografi',
-      description: 'Detay sayfasının alt bölümünde gösterilir. Her iki dilde de doldurun.',
-      type: 'object',
-      options: { collapsible: false },
-      fields: [
-        defineField({ name: 'tr', title: 'Türkçe', type: 'text', rows: 5 }),
-        defineField({ name: 'en', title: 'İngilizce', type: 'text', rows: 5 }),
-      ],
-    }),
-    defineField({
-      group: 'bio',
-      name: 'instagram',
-      title: 'Instagram',
-      description: 'Tam URL, örn. https://instagram.com/ozancakmak',
-      type: 'url',
-    }),
-    defineField({
-      group: 'bio',
-      name: 'website',
-      title: 'Kişisel Web Sitesi',
-      description: 'Varsa kişisel portfolyo veya web sitesi adresi.',
-      type: 'url',
     }),
   ],
   orderings: [orderRankOrdering],
