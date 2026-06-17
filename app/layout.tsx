@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
-import { Inter } from "next/font/google";
+import { Inter, Geist_Mono } from "next/font/google";
 import { ViewTransition } from "@/lib/ViewTransition";
 import "./globals.css";
 import { SiteChrome } from "@/components/SiteChrome";
@@ -23,6 +23,15 @@ import { getOrganizationStructuredData, getWebsiteStructuredData } from "@/lib/s
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
+  display: "swap",
+});
+
+// Mono for `.mono-label` / `.caption-text` etc. (wires up the long-referenced
+// but previously-undefined --font-mono, which had been falling back to the
+// device's system monospace).
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -98,7 +107,7 @@ export default async function RootLayout({
   );
 
   return (
-    <html lang={initialLang} className={inter.variable} data-theme={initialTheme}>
+    <html lang={initialLang} className={`${inter.variable} ${geistMono.variable}`} data-theme={initialTheme}>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <script
