@@ -7,9 +7,12 @@ import { shouldSkipOptimization } from "@/lib/blob"
 import { ViewTransition } from "@/lib/ViewTransition"
 import { GRID_IMAGE_QUALITY } from "@/lib/imageConfig"
 import { AI_WORK_CARD_SIZES } from "@/lib/imageSizes"
-import { useInView } from "@/lib/useInView"
 import type { AiPoweredPageCopy } from '@/lib/pageCopy.types'
 import type { AiPoweredWork } from "@/lib/aiPoweredWorks"
+
+// Matches the portfolio masonry grid: tiny blurred JPEG shown while the real
+// image loads, so cards never flash an empty box.
+const BLUR = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
 
 interface WorkCardProps {
   work: AiPoweredWork
@@ -24,11 +27,6 @@ export const WorkCard = memo(function WorkCard({
   priority = false,
   onMeasure,
 }: WorkCardProps) {
-  const { ref, inView } = useInView<HTMLAnchorElement>({
-    rootMargin: "400px 0px",
-    initial: priority,
-  })
-
   const categoryLabels: Record<string, string> = {
     fullAi: filtersCopy.fullAi,
     hybrid: filtersCopy.hybrid,
@@ -39,35 +37,34 @@ export const WorkCard = memo(function WorkCard({
 
   return (
     <Link
-      ref={ref}
       href={`/ai-powered/works/${work.slug}`}
       className="ai-work-card card-editorial"
       aria-label={ariaLabel || work.imageAlt}
     >
       <div className="ai-work-image-wrap">
-        {inView ? (
-          <ViewTransition name={`ai-work-${work.slug}`}>
-            <div className="absolute inset-0">
-              <Image
-                src={work.imageSrc}
-                alt={work.imageAlt}
-                fill
-                sizes={AI_WORK_CARD_SIZES}
-                className="ai-work-image"
-                loading={priority ? "eager" : "lazy"}
-                fetchPriority={priority ? "high" : undefined}
-                quality={GRID_IMAGE_QUALITY}
-                unoptimized={shouldSkipOptimization(work.imageSrc)}
-                onLoad={(e) => {
-                  const img = e.currentTarget
-                  if (img.naturalWidth && img.naturalHeight) {
-                    onMeasure?.(work.imageSrc, img.naturalWidth, img.naturalHeight)
-                  }
-                }}
-              />
-            </div>
-          </ViewTransition>
-        ) : null}
+        <ViewTransition name={`ai-work-${work.slug}`}>
+          <div className="absolute inset-0">
+            <Image
+              src={work.imageSrc}
+              alt={work.imageAlt}
+              fill
+              sizes={AI_WORK_CARD_SIZES}
+              className="ai-work-image"
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : undefined}
+              quality={GRID_IMAGE_QUALITY}
+              placeholder="blur"
+              blurDataURL={BLUR}
+              unoptimized={shouldSkipOptimization(work.imageSrc)}
+              onLoad={(e) => {
+                const img = e.currentTarget
+                if (img.naturalWidth && img.naturalHeight) {
+                  onMeasure?.(work.imageSrc, img.naturalWidth, img.naturalHeight)
+                }
+              }}
+            />
+          </div>
+        </ViewTransition>
         <div className="ai-work-overlay">
           <div className="ai-work-overlay-inner">
             <span className="ai-work-overlay-brand">{work.brand}</span>
