@@ -188,10 +188,24 @@
   letter-spacing: 0.02em;
 }
 
-/* Safety net: keep primary/publish button text readable on the accent fill */
-[data-ui='Button'][data-tone='primary'],
-[data-ui='Button'][data-tone='primary'] [data-ui='Text'],
-[data-ui='Button'][data-tone='positive'] [data-ui='Text'] {
+/* Publish / primary action buttons.
+   The legacy theme's solid button fill stopped applying after a Sanity update,
+   leaving the Publish button dark-on-dark (invisible). Force a visible accent
+   fill + dark, readable text directly — independent of the theme. Only solid
+   buttons (not bleed/ghost) so transparent toolbar buttons keep their look. */
+[data-ui='Button'][data-tone='primary'][data-mode='default'],
+[data-ui='Button'][data-tone='positive'][data-mode='default'],
+[data-ui='Button'][data-tone='primary']:not([data-mode]),
+[data-ui='Button'][data-tone='positive']:not([data-mode]) {
+  background-color: var(--f28-accent) !important;
+  border-color: var(--f28-accent) !important;
+}
+[data-ui='Button'][data-tone='primary'][data-mode='default'] [data-ui='Text'],
+[data-ui='Button'][data-tone='positive'][data-mode='default'] [data-ui='Text'],
+[data-ui='Button'][data-tone='primary']:not([data-mode]) [data-ui='Text'],
+[data-ui='Button'][data-tone='positive']:not([data-mode]) [data-ui='Text'],
+[data-ui='Button'][data-tone='primary'][data-mode='default'],
+[data-ui='Button'][data-tone='positive'][data-mode='default'] {
   color: #0a0a0b !important;
 }
 
