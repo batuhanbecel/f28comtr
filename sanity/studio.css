@@ -193,20 +193,32 @@
    leaving the Publish button dark-on-dark (invisible). Force a visible accent
    fill + dark, readable text directly — independent of the theme. Only solid
    buttons (not bleed/ghost) so transparent toolbar buttons keep their look. */
-[data-ui='Button'][data-tone='primary'][data-mode='default'],
-[data-ui='Button'][data-tone='positive'][data-mode='default'],
-[data-ui='Button'][data-tone='primary']:not([data-mode]),
-[data-ui='Button'][data-tone='positive']:not([data-mode]) {
+/* Confirmed from the DOM: the Publish button has NO data-tone/data-mode — it's a
+   default-tone button the dark theme paints near-black (#16161A), so it vanished
+   on the dark bg, and every [data-tone] selector missed it. Target it directly
+   by its unique publish icon (locale-independent) + the action testid, and give
+   it the accent fill with dark text. Also cover any real primary/positive solid
+   buttons as a bonus. */
+[data-ui='Button']:has(svg[data-sanity-icon='publish']),
+[data-testid='action-publish'],
+[data-testid='action-yayımla'],
+[data-ui='Button'][data-tone='primary']:not([data-mode='ghost']):not([data-mode='bleed']),
+[data-ui='Button'][data-tone='positive']:not([data-mode='ghost']):not([data-mode='bleed']) {
   background-color: var(--f28-accent) !important;
   border-color: var(--f28-accent) !important;
+  --card-bg-color: var(--f28-accent) !important;
+  --card-fg-color: #0a0a0b !important;
 }
-[data-ui='Button'][data-tone='primary'][data-mode='default'] [data-ui='Text'],
-[data-ui='Button'][data-tone='positive'][data-mode='default'] [data-ui='Text'],
-[data-ui='Button'][data-tone='primary']:not([data-mode]) [data-ui='Text'],
-[data-ui='Button'][data-tone='positive']:not([data-mode]) [data-ui='Text'],
-[data-ui='Button'][data-tone='primary'][data-mode='default'],
-[data-ui='Button'][data-tone='positive'][data-mode='default'] {
+[data-ui='Button']:has(svg[data-sanity-icon='publish']) *,
+[data-testid='action-publish'] *,
+[data-testid='action-yayımla'] *,
+[data-ui='Button'][data-tone='primary']:not([data-mode='ghost']):not([data-mode='bleed']) *,
+[data-ui='Button'][data-tone='positive']:not([data-mode='ghost']):not([data-mode='bleed']) * {
   color: #0a0a0b !important;
+}
+/* Disabled publish (nothing to publish): stay visible but clearly muted. */
+[data-ui='Button']:has(svg[data-sanity-icon='publish'])[data-disabled='true'] {
+  opacity: 0.5 !important;
 }
 
 /* Dark, slim scrollbars to match the cinematic base */

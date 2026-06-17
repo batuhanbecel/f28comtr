@@ -128,18 +128,22 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
             <aside className="order-1 self-start lg:order-2 lg:sticky lg:top-24">
               <div className="space-y-8">
                 <header className="page-heading-stack gap-3 border-b border-th-fg/10 pb-6">
-                  <span className="section-label text-th-fg/40">{work.brand}</span>
+                  <span className="text-[11px] font-medium uppercase tracking-[0.26em] text-th-fg/40">
+                    {work.brand}
+                  </span>
                   <h1 className="heading-section leading-tight">{work.title || work.brand}</h1>
                 </header>
 
-                <dl className="space-y-5">
+                <dl className="divide-y divide-th-fg/[0.06]">
                   <MetaRow label={labels.brand} value={work.brand} />
                   {work.agency ? <MetaRow label={labels.agency} value={work.agency} /> : null}
                   {work.year ? <MetaRow label={labels.year} value={String(work.year)} /> : null}
                   <MetaRow label={labels.type} value={categoryLabel} />
                   {work.tags && work.tags.length > 0 ? (
-                    <div className="grid grid-cols-[5rem_1fr] items-start gap-4">
-                      <dt className="mono-label pt-0.5">{labels.tags}</dt>
+                    <div className="grid grid-cols-[4.5rem_1fr] items-start gap-5 py-3.5">
+                      <dt className="pt-1 text-[10.5px] font-medium uppercase tracking-[0.2em] text-th-fg/35">
+                        {labels.tags}
+                      </dt>
                       <dd className="flex flex-wrap gap-1.5">
                         {work.tags.map((t) => (
                           <span key={t} className="editorial-chip">
@@ -203,19 +207,21 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
   );
 }
 
+const META_LABEL = 'text-[10.5px] font-medium uppercase tracking-[0.2em] text-th-fg/35';
+
 function MetaRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="grid grid-cols-[5rem_1fr] items-baseline gap-4">
-      <dt className="mono-label">{label}</dt>
-      <dd className="body-text text-th-fg">{value}</dd>
+    <div className="grid grid-cols-[4.5rem_1fr] items-baseline gap-5 py-3.5">
+      <dt className={`${META_LABEL} pt-0.5`}>{label}</dt>
+      <dd className="text-[15px] leading-snug text-th-fg/90">{value}</dd>
     </div>
   );
 }
 
 function CreditBlock({ label, people }: { label: string; people: CreditPerson[] }) {
   return (
-    <div className="space-y-2">
-      <p className="mono-label">{label}</p>
+    <div className="space-y-2.5">
+      <p className={META_LABEL}>{label}</p>
       <ul className="flex flex-wrap gap-2">
         {people.map((p, i) => (
           <li key={`${p.fullName}-${i}`}>
