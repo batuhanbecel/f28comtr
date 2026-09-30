@@ -10,5 +10,19 @@ export function orderRankBetween(before: string | null, after: string | null): s
 
 export function orderRankAfter(last: string | null): string {
   if (!last) return LexoRank.middle().toString();
-  return LexoRank.parse(last).genNext().toString();
+  try {
+    return LexoRank.parse(last).genNext().toString();
+  } catch {
+    return LexoRank.middle().genNext().toString();
+  }
 }
+
+export function orderRankBefore(first: string | null): string {
+  if (!first) return LexoRank.middle().toString();
+  try {
+    return LexoRank.parse(first).genPrev().toString();
+  } catch {
+    return LexoRank.middle().genPrev().toString();
+  }
+}
+

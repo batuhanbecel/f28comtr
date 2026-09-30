@@ -157,7 +157,12 @@ export function DownloadPortfolio({ images, photographer }: Props) {
 
       // ── COVER PAGE ─────────────────────────────────────────────────
       setProgress(2);
-      const cover = await loadImg(photographer.preview, 2200, 0.88);
+      let cover: Img | null = null;
+      try {
+        cover = await loadImg(photographer.preview, 2200, 0.88);
+      } catch (e) {
+        console.warn('Cover preview image failed to load, continuing with minimal cover:', e);
+      }
       setProgress(5);
 
       pdf.setFillColor(0, 0, 0);
@@ -165,9 +170,11 @@ export function DownloadPortfolio({ images, photographer }: Props) {
 
       // Cover image — top portion with solid black below
       const coverSplit = PH * 0.55;
-      const coverAspect = cover.w / cover.h;
-      const coverImgH = PW / coverAspect;
-      pdf.addImage(cover.dataUrl, 'JPEG', 0, 0, PW, Math.min(coverImgH, coverSplit + 12), undefined, 'FAST');
+      if (cover && cover.w > 0) {
+        const coverAspect = cover.w / cover.h;
+        const coverImgH = PW / coverAspect;
+        pdf.addImage(cover.dataUrl, 'JPEG', 0, 0, PW, Math.min(coverImgH, coverSplit + 12), undefined, 'FAST');
+      }
       pdf.setFillColor(0, 0, 0);
       pdf.rect(0, coverSplit - 8, PW, PH - coverSplit + 8, 'F');
 

@@ -1,23 +1,26 @@
 # f/28 Production Agency Website
 
-A modern Next.js 16.1 website for f/28 production agency, showcasing photographer and retoucher portfolios.
+A modern Next.js 16 website for f/28 production agency, showcasing photographer and retoucher portfolios.
 
 ## Features
 
-- **Homepage**: 7 full-screen sections featuring each photographer with background images
-- **Portfolios Page**: Grid view of all photographers
-- **Individual Portfolio Pages**: Masonry grid layout (3 columns) displaying each photographer's work
-- **About Us Page**: Company information and brand logos
-- **Fullscreen Hamburger Menu**: With background image and contact information
-- **Optimized Performance**: WebP images, lazy loading, and Next.js Image optimization
+- **Homepage**: Modern hero slides, selected campaign works, studio stats, and brand partners
+- **Portfolios Page**: Grid view of all photographers & retouchers with text index
+- **Individual Portfolio Pages**: Masonry grid layout displaying each artist's work with client-side PDF portfolio download
+- **AI Powered Gallery**: Showcase for generative and hybrid AI retouching works with category & brand filtering
+- **Production Showcase**: Snap-scroll showcase of production team and service statistics
+- **About Us Page**: Agency statement, metrics, and curated client/partner logo grids
+- **Contact Page**: Inquiries and booking form powered by Nodemailer
+- **Sanity Studio v5**: Embedded Headless CMS at `/studio` with live visual editing and ISR revalidation
 
 ## Tech Stack
 
-- Next.js 16.1
+- Next.js 16 (App Router, Proxy, View Transitions)
 - React 19
-- TypeScript
-- Tailwind CSS
-- Sharp (image optimization)
+- TypeScript 5
+- Tailwind CSS & Editorial Design Tokens
+- Sanity Studio v5 (`next-sanity`, Visual Editing)
+- Framer Motion
 
 ## Getting Started
 
@@ -26,71 +29,52 @@ A modern Next.js 16.1 website for f/28 production agency, showcasing photographe
 npm install
 ```
 
-2. Run the development server:
+2. Configure environment variables (see below).
+
+3. Run the development server:
 ```bash
 npm run dev
 ```
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Project Structure
-
-```
-f28comtr/
-├── app/
-│   ├── about/          # About Us page
-│   ├── portfolio/[id]/ # Dynamic portfolio pages
-│   ├── portfolios/     # Portfolios listing page
-│   ├── fonts/          # Custom fonts
-│   ├── layout.tsx      # Root layout
-│   ├── page.tsx        # Homepage
-│   └── globals.css     # Global styles
-├── components/
-│   ├── Menu.tsx        # Hamburger menu component
-│   └── MasonryGrid.tsx # Masonry grid for portfolios
-├── lib/
-│   ├── data.ts         # Photographer data
-│   └── utils.ts        # Utility functions
-├── public/
-│   ├── portfolios/     # Portfolio images
-│   ├── logos/          # Brand and f/28 logos
-│   └── menubg.webp     # Menu background
-└── package.json
-```
+4. Open [http://localhost:3000](http://localhost:3000) for the website or [http://localhost:3000/studio](http://localhost:3000/studio) for Sanity Studio.
 
 ## Deployment
 
-This project is configured for deployment on Vercel:
-
+Configured for deployment on Vercel:
 ```bash
 npm run build
 ```
 
-## Photographers
+## Photographers & Retouchers
 
-- Yonca Muslubaş
-- Berkin Metin
-- Doğu Biricik
-- Emre Yunusoğlu
-- Kerem Çakmak
-- Ömür Temel
-- Ozan Çakmak
+- Yonca Muslubaş (Photographer)
+- Berkin Metin (Photographer)
+- Doğu Biricik (Retoucher)
+- Emre Yunusoğlu (Photographer)
+- Haldun Kırkbir (Photographer)
+- Kerem Çakmak (Retoucher)
+- Ömür Temel (Photographer)
+- Ozan Çakmak (Photographer)
+- Batuhan Becel (Retoucher)
 
-## Environment variables
+## Environment Variables
 
 Copy `.env.example` to `.env.local` and fill in values before running locally or deploying.
 
 Required for full functionality:
 
-- `ADMIN_PASSWORD` — admin panel login
-- `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` — editable page copy, SEO, portfolios
-- `BLOB_READ_WRITE_TOKEN` — image uploads (Vercel Blob)
-- `CONTACT_SMTP_USER` / `CONTACT_SMTP_PASS` — contact form email (Gmail app password)
-- `CONTACT_TO` — recipient (defaults to `info@f28.com.tr`)
-- `NEXT_PUBLIC_SITE_URL` — production URL for metadata and sitemap
+- `NEXT_PUBLIC_SITE_URL` — production URL for metadata, sitemap, and canonical links
+- `NEXT_PUBLIC_SANITY_PROJECT_ID` — Sanity project ID
+- `NEXT_PUBLIC_SANITY_DATASET` — Sanity dataset (e.g. `production`)
+- `SANITY_API_READ_TOKEN` — Viewer token for Visual Editing / draft mode
+- `SANITY_API_WRITE_TOKEN` — Editor token for migration scripts
+- `SANITY_REVALIDATE_SECRET` — Webhook secret for ISR on-demand revalidation
+- `CONTACT_SMTP_USER` / `CONTACT_SMTP_PASS` — contact form SMTP credentials
+- `CONTACT_TO` — recipient email address (defaults to `info@f28.com.tr`)
 
 ## Contact
 
 - Instagram: @f28production
 - Email: info@f28.com.tr
 - Location: Istanbul, Turkey
+

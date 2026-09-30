@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sendContactEmail } from '@/lib/contactMail';
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
 
 export const runtime = 'nodejs';
 
@@ -7,6 +8,26 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: Request) {
   try {
+    const ip = getClientIp(request);
+    // Allow at most 5 contact requests per 10 minutes per IP
+    const rateLimit = checkRateLimit(ip, { windowMs: 10 * 60 * 1000, max: 5 });
+
+    if (!rateLimit.success) {
+      const retryAfterSeconds = Math.ceil((rateLimit.reset - Date.now()) / 1000);
+      return NextResponse.json(
+        { error: 'rate_limited', message: 'Too many requests. Please try again later.' },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(retryAfterSeconds),
+            'X-RateLimit-Limit': String(rateLimit.limit),
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': String(rateLimit.reset),
+          },
+        },
+      );
+    }
+
     const body = (await request.json()) as {
       name?: string;
       email?: string;

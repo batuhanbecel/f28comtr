@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { photographers as staticPhotographers } from '@/lib/data';
-import { getPhotographers } from '@/lib/cms';
+import { getPhotographers, getAiPoweredWorks } from '@/lib/cms';
 import { buildStaticSitemapEntries } from '@/lib/siteRoutes';
 import { getSiteUrl } from '@/lib/siteUrl';
 
@@ -22,5 +22,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  return [...buildStaticSitemapEntries(baseUrl), ...photographerUrls];
+  let aiWorkUrls: MetadataRoute.Sitemap = [];
+  try {
+    const aiWorks = await getAiPoweredWorks();
+    aiWorkUrls = aiWorks
+      .filter((w) => Boolean(w.slug))
+      .map((w) => ({
+        url: `${baseUrl}/ai-powered/works/${w.slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly',
+        priority: 0.7,
+      }));
+  } catch {
+    /* fallback to empty if fetch fails */
+  }
+
+  return [...buildStaticSitemapEntries(baseUrl), ...photographerUrls, ...aiWorkUrls];
 }
+

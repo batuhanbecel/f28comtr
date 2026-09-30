@@ -25,7 +25,14 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  return staticPhotographers.map((photographer) => ({
+  let list = staticPhotographers;
+  try {
+    const cmsPhotographers = await getPhotographers();
+    if (cmsPhotographers.length > 0) list = cmsPhotographers;
+  } catch {
+    /* fallback to static */
+  }
+  return list.map((photographer) => ({
     id: photographer.id,
   }));
 }

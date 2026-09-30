@@ -10,7 +10,7 @@ import { randomKey } from '@sanity/util/content';
 import { apiVersion } from '../env';
 import { F28_GALLERY_COLUMNS_WIDE, F28_GALLERY_THUMB_HEIGHT_WIDE } from '../lib/galleryGrid';
 import { imagePreviewUrl } from '../lib/imagePreview';
-import { orderRankAfter, orderRankBetween } from '../lib/lexorank';
+import { orderRankBefore, orderRankBetween } from '../lib/lexorank';
 import { DraggableImageGrid, reorderArray } from './DraggableImageGrid';
 import { AiPortfolioTagEditor, type AiTagOption } from './AiPortfolioTagEditor';
 
@@ -132,12 +132,12 @@ export function AiPortfolioGalleryDesk() {
       if (!files?.length) return;
       setUploading(true);
       try {
-        const lastRank = rows.length > 0 ? rows[rows.length - 1]?.orderRank : null;
-        let nextRank = orderRankAfter(lastRank);
+        let currentFirstRank = rows.length > 0 ? rows[0]?.orderRank : null;
         let lastId: string | null = null;
         for (const file of Array.from(files)) {
           if (!file.type.startsWith('image/')) continue;
           const asset = await client.assets.upload('image', file, { filename: file.name });
+          const nextRank = orderRankBefore(currentFirstRank);
           const created = await client.create({
             _type: 'aiPortfolioItem',
             image: {
@@ -147,7 +147,7 @@ export function AiPortfolioGalleryDesk() {
             orderRank: nextRank,
           });
           lastId = created._id;
-          nextRank = orderRankAfter(nextRank);
+          currentFirstRank = nextRank;
         }
         await load();
         if (lastId) {

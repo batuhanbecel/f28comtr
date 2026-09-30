@@ -35,7 +35,8 @@ Before any Next.js work, read the relevant documentation. Training data is outda
 - **i18n:** cookie `f28_lang` (set in `proxy.ts`, read in `app/layout.tsx`, mirrored in `LanguageContext`)
 - **Theme:** cookie `f28_theme` (same flow via `ThemeContext`)
 - **Images:** shared sizes in `lib/imageSizes.ts`, blob proxy via `shouldSkipOptimization()`
-- **AI gallery:** client-state lightbox in `AIBasedGallery` (no per-work URLs)
+- **AI gallery:** `/ai-powered` grid + per-work URLs at `/ai-powered/works/[slug]` + client-state lightbox
+- **CMS & Studio:** Embedded Sanity Studio at `/studio` (`sanity.config.ts`, custom UI via `sanity/studio.css`), Visual Editing via `/api/draft-mode` and ISR via `/api/revalidate`
 - **View transitions:** `lib/ViewTransition.tsx` + `experimental.viewTransition` in `next.config.ts` — photographer card→detail morph only; root crossfade is opacity-only (no blur)
 
 ## Design & Motion
@@ -44,9 +45,9 @@ Before any Next.js work, read the relevant documentation. Training data is outda
 - **Editorial layout:** `.page-heading-stack` (label + title always vertical), `.page-section`, `.editorial-panel`, `.editorial-grid`, `.heading-section`, `.editorial-chip`, `.section-label` (block; pill variant `section-label--pill`)
 - **Public primitives:** `components/PageHeader.tsx` (rule + label + title + desc; `SectionHeader` for in-page sections), `components/PageSection.tsx`, `components/EditorialButton.tsx` (`btn-editorial` variants)
 - **Hero:** `components/PageHero.tsx` wraps `PageHeader` with `variant="hero"`; `LocalizedHero` re-exports from `components/LocalizedHero.tsx`. Custom hero slots (e.g. AI stats) use `PageHeader` directly.
-- **Admin primitives:** `components/admin/AdminPageLayout.tsx`, `AdminPanel.tsx`, `AdminFormField.tsx` (+ `AdminInput`/`AdminTextarea`/`AdminSelect`), `AdminButton.tsx`, `AdminDropzone.tsx` — same editorial tokens as public (`admin-input`, `admin-label`, `btn-editorial`)
+- **Studio primitives:** Sanity Studio theme in `sanity/theme.ts`, custom shell components in `sanity/components/` and `sanity/studio.css`
 - **Reveal:** above-fold `fade-in-up`; below-fold `ScrollReveal` + `hooks/useScrollReveal.ts` (`.scroll-reveal.in-view`)
-- **Lightbox:** single `components/Lightbox.tsx` — used by `MasonryGrid` and AI gallery wrapper `app/ai-based/components/Lightbox.tsx`
+- **Lightbox:** single `components/Lightbox.tsx` — used by `MasonryGrid` and AI gallery wrapper `app/ai-powered/components/Lightbox.tsx`
 - **Parallax:** `hooks/useDirectParallax.ts` + shared scroll bus `lib/parallaxScrollBus.ts` — event-driven, no perpetual RAF; mouse parallax off on mobile / `prefers-reduced-motion`
 - **Hover scale:** grid thumbs use `.thumb-hover-scale` (1.04, `--duration-hover`)
 - **Grain:** `isPerfHeavyPage()` in `lib/galleryPaths.ts` — off on landing, production, galleries

@@ -113,7 +113,8 @@ export function HomeV2HeroSlider({ slides: slidesProp }: HomeV2HeroSliderProps) 
                 fill
                 className="home-v2-hero-slide-image object-cover"
                 sizes={HERO_IMAGE_SIZES}
-                priority={i === 0}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                fetchPriority={i === 0 ? 'high' : undefined}
                 quality={90}
                 unoptimized={shouldSkipOptimization(slide.src)}
               />

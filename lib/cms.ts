@@ -6,7 +6,10 @@
  */
 
 import type { Photographer } from '@/lib/data';
-import { contactInfo as staticContactInfo } from '@/lib/data';
+import {
+  contactInfo as staticContactInfo,
+  photographers as staticPhotographers,
+} from '@/lib/data';
 import type { AiPoweredWork } from '@/lib/aiPoweredWorks';
 import { deriveBrandKey } from '@/lib/aiPoweredWorks';
 import type { AiPortfolioData } from '@/lib/aiPoweredPortfolio.shared';
@@ -52,74 +55,137 @@ const DEFAULT_MARQUEE_LIMIT = 100;
 // ── Photographers ───────────────────────────────────────────────────────────
 
 export async function getPhotographers(): Promise<Photographer[]> {
-  return getPhotographersFromSanity();
+  try {
+    const list = await getPhotographersFromSanity();
+    if (list && list.length > 0) return list;
+  } catch (error) {
+    console.error('[CMS] getPhotographers failed, falling back to static data:', error);
+  }
+  return staticPhotographers;
 }
 
 export async function getPhotographerImages(photographerId: string): Promise<string[]> {
-  return getPhotographerImagesFromSanity(photographerId);
+  try {
+    return await getPhotographerImagesFromSanity(photographerId);
+  } catch (error) {
+    console.error(`[CMS] getPhotographerImages failed for ${photographerId}:`, error);
+    return [];
+  }
 }
 
 // ── AI Powered ──────────────────────────────────────────────────────────────
 
 export async function getAiPoweredWorks(): Promise<AiPoweredWork[]> {
-  const works = await getAiPoweredWorksFromSanity();
-  return works.map((w, i) => ({
-    ...w,
-    slug:
-      typeof w.slug === 'string' && w.slug.length > 0 ? w.slug : w.id || `work-${i}`,
-    // Always derive the filter key from the brand NAME so works that share a
-    // brand (e.g. three "PUMA" works) collapse into one filter pill ("PUMA 3").
-    // The manual brandKey field on Sanity is intentionally ignored here.
-    brandKey: deriveBrandKey(w.brand || 'other'),
-  }));
+  try {
+    const works = await getAiPoweredWorksFromSanity();
+    return works.map((w, i) => ({
+      ...w,
+      slug:
+        typeof w.slug === 'string' && w.slug.length > 0 ? w.slug : w.id || `work-${i}`,
+      brandKey: deriveBrandKey(w.brand || 'other'),
+    }));
+  } catch (error) {
+    console.error('[CMS] getAiPoweredWorks failed:', error);
+    return [];
+  }
 }
 
 export async function getAiPoweredImages(): Promise<string[]> {
-  return getAiPoweredImagesFromSanity();
+  try {
+    return await getAiPoweredImagesFromSanity();
+  } catch (error) {
+    console.error('[CMS] getAiPoweredImages failed:', error);
+    return [];
+  }
 }
 
 export async function getAiPoweredPortfolio(): Promise<AiPortfolioData> {
-  return getAiPoweredPortfolioFromSanity();
+  try {
+    return await getAiPoweredPortfolioFromSanity();
+  } catch (error) {
+    console.error('[CMS] getAiPoweredPortfolio failed:', error);
+    return { items: [], tags: [] };
+  }
 }
 
 export async function getAiPoweredPortfolioImages(): Promise<string[]> {
-  return getAiPoweredPortfolioImagesFromSanity();
+  try {
+    return await getAiPoweredPortfolioImagesFromSanity();
+  } catch (error) {
+    console.error('[CMS] getAiPoweredPortfolioImages failed:', error);
+    return [];
+  }
 }
 
 // ── Site Assets (landing + logos) ───────────────────────────────────────────
 
 export async function getLandingImages(): Promise<string[]> {
-  return getLandingImagesFromSanity();
+  try {
+    return await getLandingImagesFromSanity();
+  } catch (error) {
+    console.error('[CMS] getLandingImages failed:', error);
+    return [];
+  }
 }
 
 export async function getClientLogos(): Promise<string[]> {
-  return getLogosFromSanity('clients');
+  try {
+    return await getLogosFromSanity('clients');
+  } catch (error) {
+    console.error('[CMS] getClientLogos failed:', error);
+    return [];
+  }
 }
 
 export async function getPartnerLogos(): Promise<string[]> {
-  return getLogosFromSanity('partners');
+  try {
+    return await getLogosFromSanity('partners');
+  } catch (error) {
+    console.error('[CMS] getPartnerLogos failed:', error);
+    return [];
+  }
 }
 
 export async function getF28Logos(): Promise<string[]> {
-  return getLogosFromSanity('f28');
+  try {
+    return await getLogosFromSanity('f28');
+  } catch (error) {
+    console.error('[CMS] getF28Logos failed:', error);
+    return [];
+  }
 }
 
 export async function getSocialLogos(): Promise<string[]> {
-  return getLogosFromSanity('social');
+  try {
+    return await getLogosFromSanity('social');
+  } catch (error) {
+    console.error('[CMS] getSocialLogos failed:', error);
+    return [];
+  }
 }
 
 // ── Home v2 copy ────────────────────────────────────────────────────────────
 
 export async function getHomeV2Copy(lang: Lang): Promise<HomeV2Copy> {
   const defaults = translations[lang].homeV2;
-  const patch = await getHomeV2CopyPatchFromSanity(lang);
-  return { ...defaults, ...patch };
+  try {
+    const patch = await getHomeV2CopyPatchFromSanity(lang);
+    return { ...defaults, ...patch };
+  } catch (error) {
+    console.error('[CMS] getHomeV2Copy failed, falling back to defaults:', error);
+    return defaults;
+  }
 }
 
 // ── Home Selected Works ─────────────────────────────────────────────────────
 
 export async function getHomeSelectedWorks(): Promise<HomeSelectedWorkStored[]> {
-  return getHomeSelectedWorksFromSanity();
+  try {
+    return await getHomeSelectedWorksFromSanity();
+  } catch (error) {
+    console.error('[CMS] getHomeSelectedWorks failed:', error);
+    return [];
+  }
 }
 
 export async function getHomeV2SelectedWorks(
@@ -193,8 +259,13 @@ export async function getPageCopy<K extends PageCopyKey>(
   page: K,
   lang: Lang,
 ): Promise<PageCopyByKey[K]> {
-  const patch = await getPageCopyPatchFromSanity(page, lang);
-  return mergePageCopyWithDefaults(page, lang, patch ?? undefined);
+  try {
+    const patch = await getPageCopyPatchFromSanity(page, lang);
+    return mergePageCopyWithDefaults(page, lang, patch ?? undefined);
+  } catch (error) {
+    console.error(`[CMS] getPageCopy failed for ${page}, using defaults:`, error);
+    return mergePageCopyWithDefaults(page, lang, undefined);
+  }
 }
 
 export async function getContactInfo(lang: Lang): Promise<ContactPageCopy['info']> {
@@ -210,20 +281,27 @@ export async function getContactInfo(lang: Lang): Promise<ContactPageCopy['info'
 
 export async function getPageSeo(page: SeoPageKey, lang: Lang): Promise<SeoCopy> {
   const defaults = { ...translations[lang].seo[page] };
-  const override = (await getSeoOverrideFromSanity(page, lang)) ?? {};
+  let override = {};
+  try {
+    override = (await getSeoOverrideFromSanity(page, lang)) ?? {};
+  } catch (error) {
+    console.error(`[CMS] getPageSeo override failed for ${page}:`, error);
+  }
   let merged = deepMerge(
     defaults as Record<string, unknown>,
     override as Record<string, unknown>,
   ) as SeoCopy;
 
   if (PAGE_COPY_KEYS.has(page as PageCopyKey)) {
-    const copy = await getPageCopy(page as PageCopyKey, lang);
-    if (copy?.seo) {
-      merged = deepMerge(
-        merged as Record<string, unknown>,
-        copy.seo as Record<string, unknown>,
-      ) as SeoCopy;
-    }
+    try {
+      const copy = await getPageCopy(page as PageCopyKey, lang);
+      if (copy?.seo) {
+        merged = deepMerge(
+          merged as Record<string, unknown>,
+          copy.seo as Record<string, unknown>,
+        ) as SeoCopy;
+      }
+    } catch {}
   }
   return merged;
 }
