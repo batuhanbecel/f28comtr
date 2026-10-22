@@ -38,7 +38,7 @@ function ProjectNavCard({
       prefetch={false}
       className={`group card-editorial flex w-full max-w-md flex-col gap-4 p-4 transition-[outline-color,box-shadow] duration-[var(--duration-hover)] sm:p-5 ${align}`}
     >
-      <span className="section-label text-th-fg/40 transition-colors duration-ui group-hover:text-th-fg/70">
+      <span className="section-label transition-opacity duration-ui group-hover:opacity-100">
         {direction === 'prev' ? `← ${label}` : `${label} →`}
       </span>
       <div

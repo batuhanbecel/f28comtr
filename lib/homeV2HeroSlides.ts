@@ -6,7 +6,7 @@ export const HOME_V2_HERO_SLIDES = [
 ] as const;
 
 /** Crossfade duration — keep in sync with CSS (--home-v2-hero-fade-ms). */
-export const HOME_V2_HERO_FADE_MS = 2400;
+export const HOME_V2_HERO_FADE_MS = 1200;
 
 /** Time each slide is primary before advancing. */
 export const HOME_V2_HERO_HOLD_MS = 5600;

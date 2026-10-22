@@ -4,6 +4,7 @@ import { PageSection } from '@/components/PageSection';
 import { HeroSnapTarget } from '@/components/HeroSnapTarget';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import type { AiPoweredPageCopy } from '@/lib/pageCopy.types';
+import { DisplayCase } from '@/components/DisplayCase';
 
 interface AiPoweredProcessStripProps {
   copy: AiPoweredPageCopy;
@@ -18,7 +19,7 @@ export function AiPoweredProcessStrip({ copy }: AiPoweredProcessStripProps) {
       <PageSection border className="pt-6 md:pt-8 pb-16 md:py-20" aria-label={copy.process.sectionLabel}>
         <ScrollReveal className="page-heading-stack mb-10">
           <span className="section-label">{copy.process.sectionLabel}</span>
-          <h2 className="heading-section">{copy.process.heading}</h2>
+          <h2 className="heading-section"><DisplayCase>{copy.process.heading}</DisplayCase></h2>
         </ScrollReveal>
 
         <ScrollReveal>

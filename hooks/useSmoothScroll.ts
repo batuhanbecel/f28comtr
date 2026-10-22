@@ -1,38 +1,26 @@
 'use client';
 
 import { useEffect } from 'react';
+import { prefersReducedMotion } from '@/lib/motion';
 
+/** In-page `#hash` links: smooth scroll and move keyboard focus to the target. */
 export function useSmoothScroll() {
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a[href^="#"]');
+      const link = (e.target as HTMLElement).closest('a[href^="#"]');
       if (!link) return;
-      e.preventDefault();
       const id = link.getAttribute('href')?.slice(1);
-      if (!id) return;
-      const el = document.getElementById(id);
-      if (el) {
-        setTimeout(() => {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 0);
+      const el = id ? document.getElementById(id) : null;
+      if (!el) return;
+      e.preventDefault();
+      el.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+      if (!el.hasAttribute('tabindex') && !el.matches('a, button, input, select, textarea')) {
+        el.setAttribute('tabindex', '-1');
       }
-    };
-
-    const handleWheel = (e: WheelEvent) => {
-      // Only apply to main content scroll, not custom snap containers
-      const target = e.target as Element;
-      const closestSnap = target.closest('[data-snap-container]');
-      if (closestSnap) return;
-      // Default smooth scroll is already set on html, no need to override
+      el.focus({ preventScroll: true });
     };
 
     document.addEventListener('click', handleAnchorClick);
-    document.addEventListener('wheel', handleWheel, { passive: true });
-
-    return () => {
-      document.removeEventListener('click', handleAnchorClick);
-      document.removeEventListener('wheel', handleWheel);
-    };
+    return () => document.removeEventListener('click', handleAnchorClick);
   }, []);
 }

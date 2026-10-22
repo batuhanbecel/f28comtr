@@ -2,6 +2,7 @@ import type { SchemaTypeDefinition } from 'sanity';
 
 import { localizedString, localizedText } from './_objects/localizedString';
 import { photographer } from './photographer';
+import { productionProject } from './productionProject';
 import { aiPoweredCollection } from './aiPoweredCollection';
 import { aiPortfolioItem } from './aiPortfolioItem';
 import { siteAssets } from './siteAssets';
@@ -16,6 +17,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   localizedString,
   localizedText,
   photographer,
+  productionProject,
   aiPoweredCollection,
   aiPortfolioItem,
   aiTag,

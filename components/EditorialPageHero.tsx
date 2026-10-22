@@ -1,10 +1,8 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { PageHeader } from '@/components/PageHeader';
 import { HeroReveal } from '@/components/HeroReveal';
-import { ScrollIndicator } from '@/components/ScrollIndicator';
-import { F28LogoBg } from '@/components/F28LogoBg';
+import { DisplayCase } from '@/components/DisplayCase';
 import { translations, type Lang } from '@/lib/translations';
 
 export type EditorialHeroPage = 'production' | 'aiPowered' | 'aiPoweredPortfolio' | 'about' | 'portfolios' | 'contact';
@@ -70,28 +68,25 @@ export function EditorialPageHero({
 
   const copy = heroCopy ?? builtInCopy;
 
-  return (
-    <section
-      className={`hero-screen h-screen flex flex-col items-center justify-center px-6 md:px-12 text-center relative overflow-hidden ${className}`.trim()}
-      style={scrollSnap ? { scrollSnapAlign: 'start' } : undefined}
-    >
-      <F28LogoBg />
-      <HeroReveal className="flex flex-col items-center w-full max-w-5xl flex-1 justify-center relative z-10">
-        <PageHeader
-          label={copy.label}
-          title={copy.title}
-          description={copy.description}
-          variant="hero"
-          preline
-          animate={false}
-          shell={false}
-        />
-        {children ? (
-          <div className="mt-8 w-full flex flex-col items-center">{children}</div>
-        ) : null}
-      </HeroReveal>
-      {showScroll ? <ScrollIndicator inHero /> : null}
-    </section>
+  // Compact, left-aligned editorial header: title left, intro right on wide screens.
+  // `scrollSnap` / `showScroll` are accepted for call-site compatibility but no longer used.
+  void scrollSnap;
+  void showScroll;
 
+  return (
+    <section className={`editorial-hero ${className}`.trim()}>
+      <HeroReveal className="editorial-hero__inner">
+        <div className="editorial-hero__title">
+          {copy.label ? <span className="section-label">{copy.label}</span> : null}
+          <h1 className="heading-hero" style={{ whiteSpace: 'pre-line' }}>
+            <DisplayCase>{copy.title}</DisplayCase>
+          </h1>
+        </div>
+        {copy.description ? (
+          <p className="editorial-hero__intro body-text text-muted-body">{copy.description}</p>
+        ) : null}
+        {children ? <div className="editorial-hero__extra">{children}</div> : null}
+      </HeroReveal>
+    </section>
   );
 }

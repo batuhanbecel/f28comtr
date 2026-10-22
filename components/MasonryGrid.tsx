@@ -32,9 +32,11 @@ const MasonryThumb = memo(function MasonryThumb({
   onMeasure: (src: string, w: number, h: number) => void;
 }) {
   return (
-    <div
-      className="relative w-full h-full cursor-pointer group overflow-hidden bg-th-fg/[0.03] card-editorial"
+    <button
+      type="button"
+      className="relative block w-full h-full p-0 text-left cursor-pointer group overflow-hidden bg-th-fg/[0.03] card-editorial"
       onClick={onOpen}
+      aria-label={alt}
     >
       <Image
         src={src}
@@ -55,12 +57,12 @@ const MasonryThumb = memo(function MasonryThumb({
         }}
       />
       {/* Hover overlay — matches AI grid: same theme-aware tint + foreground expand icon */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-ui ease-brand pointer-events-none flex items-center justify-center bg-[rgb(var(--c-bg)/0.72)]">
+      <div aria-hidden="true" className="absolute inset-0 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-ui ease-brand pointer-events-none flex items-center justify-center bg-[rgb(var(--c-bg)/0.72)]">
         <svg className="w-6 h-6 text-th-fg/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.25}>
           <path strokeLinecap="square" d="M7 17L17 7M17 7H7M17 7v10" />
         </svg>
       </div>
-    </div>
+    </button>
   );
 });
 
@@ -80,9 +82,9 @@ export function MasonryGrid({ images, photographerName, fullWidth = false }: Mas
 
   const visibleImages = deferredImages;
 
-  const slides = visibleImages.map((src) => ({
+  const slides = visibleImages.map((src, idx) => ({
     src,
-    alt: `${photographerName} — portfolio photograph`,
+    alt: `${photographerName} — ${idx + 1} / ${visibleImages.length}`,
   }));
 
   useEffect(() => {
@@ -134,7 +136,7 @@ export function MasonryGrid({ images, photographerName, fullWidth = false }: Mas
               <Frame key={image} width={d?.w ?? FRAME_W} height={d?.h ?? FRAME_H}>
                 <MasonryThumb
                   src={image}
-                  alt={photographerName}
+                  alt={slides[idx]?.alt ?? photographerName}
                   onOpen={() => openLightbox(image)}
                   onMeasure={handleMeasure}
                 />

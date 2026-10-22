@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { photographers as staticPhotographers } from '@/lib/data';
-import { getPhotographers, getAiPoweredWorks } from '@/lib/cms';
+import { getPhotographers, getAiPoweredWorks, getProductionProjects } from '@/lib/cms';
 import { buildStaticSitemapEntries } from '@/lib/siteRoutes';
 import { getSiteUrl } from '@/lib/siteUrl';
 
@@ -37,6 +37,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     /* fallback to empty if fetch fails */
   }
 
-  return [...buildStaticSitemapEntries(baseUrl), ...photographerUrls, ...aiWorkUrls];
+  const productionProjectUrls: MetadataRoute.Sitemap = (await getProductionProjects()).map((p) => ({
+    url: `${baseUrl}/production/works/${p.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  }));
+
+  return [
+    ...buildStaticSitemapEntries(baseUrl),
+    ...photographerUrls,
+    ...productionProjectUrls,
+    ...aiWorkUrls,
+  ];
 }
 

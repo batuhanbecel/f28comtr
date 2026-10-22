@@ -12,6 +12,7 @@ import { GRID_IMAGE_QUALITY } from '@/lib/imageConfig';
 import { MARQUEE_THUMB_SIZES } from '@/lib/imageSizes';
 import type { ProductionMarqueeItem } from '@/lib/productionMarquee.shared';
 import type { ProductionPageCopy } from '@/lib/pageCopy.types';
+import { DisplayCase } from '@/components/DisplayCase';
 
 interface ProductionMarqueeProps {
   items: ProductionMarqueeItem[];
@@ -114,7 +115,7 @@ export function ProductionMarquee({ items, copy }: ProductionMarqueeProps) {
         <div className="production-network-layout">
           <ScrollReveal className="production-network-copy page-heading-stack">
             <span className="section-label">{copy.team.sectionLabel}</span>
-            <h2 className="heading-section">{copy.marqueeLabel}</h2>
+            <h2 className="heading-section"><DisplayCase>{copy.marqueeLabel}</DisplayCase></h2>
             <p className="text-[15px] md:text-base leading-relaxed text-muted-body max-w-md">
               {copy.team.description}
             </p>

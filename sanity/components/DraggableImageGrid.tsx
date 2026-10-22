@@ -19,7 +19,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { DragHandleIcon, EditIcon, TrashIcon } from '@sanity/icons';
 import { Box, Card, Flex, Grid, Spinner, Text } from '@sanity/ui';
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 export interface DraggableGridItem {
   id: string;
@@ -85,6 +85,13 @@ function SortableImageCard({
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
   });
+  // Two-step delete: first click arms the button, second click (within 4s) removes.
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  useEffect(() => {
+    if (!confirmingDelete) return;
+    const timer = setTimeout(() => setConfirmingDelete(false), 4000);
+    return () => clearTimeout(timer);
+  }, [confirmingDelete]);
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
@@ -193,15 +200,26 @@ function SortableImageCard({
             <button
               type="button"
               className="f28-thumb-toolbar-btn"
-              title="Sil"
-              aria-label="Sil"
-              style={deleteBtnStyle}
+              title={confirmingDelete ? 'Silmek için tekrar tıkla' : 'Sil'}
+              aria-label={confirmingDelete ? 'Silmeyi onayla' : 'Sil'}
+              style={
+                confirmingDelete
+                  ? { ...deleteBtnStyle, width: 'auto', padding: '0 8px', gap: 4, fontSize: 12, fontWeight: 600, lineHeight: 1 }
+                  : deleteBtnStyle
+              }
               onClick={(e) => {
                 e.stopPropagation();
+                if (!confirmingDelete) {
+                  setConfirmingDelete(true);
+                  return;
+                }
+                setConfirmingDelete(false);
                 onRemove();
               }}
+              onBlur={() => setConfirmingDelete(false)}
             >
               <TrashIcon {...toolbarIconProps} />
+              {confirmingDelete ? <span aria-hidden>Sil?</span> : null}
             </button>
           </Flex>
         ) : null}

@@ -32,3 +32,10 @@ export const PARTNER_LOGO_SIZES =
 /** About page client logo grid (grid-cols-4 sm:5 md:7 lg:9). */
 export const CLIENT_LOGO_SIZES =
   "(max-width: 640px) 25vw, (max-width: 1024px) 14vw, 10vw";
+
+/** Production projects — asymmetric 12-col grid; feature tiles span ~7/12. */
+export const EDITORIAL_FEATURE_SIZES = "(max-width: 768px) 100vw, 60vw";
+export const EDITORIAL_TILE_SIZES = "(max-width: 768px) 100vw, 34vw";
+
+/** Home work strip — 4:5 tiles, ~82vw on phones, ~42vh-wide on desktop (≈ 34vw at 16:9). */
+export const WORK_STRIP_SIZES = "(max-width: 768px) 82vw, 34vw";

@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
-import { Inter, Geist_Mono } from "next/font/google";
+import { Inter, Geist, Geist_Mono } from "next/font/google";
 import { ViewTransition } from "@/lib/ViewTransition";
+import { translations } from "@/lib/translations";
 import "./globals.css";
 import { SiteChrome } from "@/components/SiteChrome";
 import { SiteHeader } from "@/components/SiteHeader";
 import type { NavPhotographer } from "@/components/Menu";
-import { CustomCursor } from "@/components/CustomCursor";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -20,8 +20,9 @@ import { SITE_NAME } from "@/lib/seo";
 import { getContactInfo, getPhotographers } from "@/lib/cms";
 import { getOrganizationStructuredData, getWebsiteStructuredData } from "@/lib/structuredData";
 
+// latin-ext carries ş ğ ı İ — without it Turkish letters fall back to a system font.
 const inter = Inter({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   variable: "--font-sans",
   display: "swap",
 });
@@ -30,8 +31,15 @@ const inter = Inter({
 // but previously-undefined --font-mono, which had been falling back to the
 // device's system monospace).
 const geistMono = Geist_Mono({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   variable: "--font-mono",
+  display: "swap",
+});
+
+// Display grotesk for headings (`.heading-*`) — confident, no italics.
+const geistDisplay = Geist({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -107,7 +115,7 @@ export default async function RootLayout({
   );
 
   return (
-    <html lang={initialLang} className={`${inter.variable} ${geistMono.variable}`} data-theme={initialTheme}>
+    <html lang={initialLang} className={`${inter.variable} ${geistMono.variable} ${geistDisplay.variable}`} data-theme={initialTheme}>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <script
@@ -123,10 +131,14 @@ export default async function RootLayout({
         <ThemeProvider initialTheme={initialTheme}>
           <LanguageProvider initialLang={initialLang} initialContactInfo={initialContactInfo}>
             <SmoothScrollProvider>
-              <CustomCursor />
+              <a href="#main-content" className="skip-link">
+                {translations[initialLang].a11y.skipToContent}
+              </a>
               <SiteHeader photographers={navPhotographers} lang={initialLang} />
               <SiteChrome />
-              <ViewTransition>{children}</ViewTransition>
+              <div id="main-content" tabIndex={-1} className="outline-none">
+                <ViewTransition>{children}</ViewTransition>
+              </div>
               <SpeedInsights />
               <Analytics />
               <ServiceWorkerRegister />

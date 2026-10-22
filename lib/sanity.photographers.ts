@@ -1,5 +1,6 @@
 import { sanityFetch } from '@/lib/sanity.fetch';
 import type { Photographer } from '@/lib/data';
+import { toNameCase } from '@/lib/displayCase';
 
 const PHOTOGRAPHERS_QUERY = `*[_type == "photographer"] | order(orderRank asc, fullName asc) {
   "id": slug.current,
@@ -16,7 +17,10 @@ const PHOTOGRAPHER_IMAGES_QUERY = `*[_type == "photographer" && slug.current == 
 
 export async function getPhotographersFromSanity(): Promise<Photographer[]> {
   const result = await sanityFetch<Photographer[] | null>(PHOTOGRAPHERS_QUERY);
-  return (result ?? []).filter((p): p is Photographer => Boolean(p?.id && p?.preview));
+  return (result ?? [])
+    .filter((p): p is Photographer => Boolean(p?.id && p?.preview))
+    // Studio stores names in caps ("OZAN ÇAKMAK"); the site sets names in title case.
+    .map((p) => ({ ...p, fullName: toNameCase(p.fullName) }));
 }
 
 export async function getPhotographerImagesFromSanity(slug: string): Promise<string[]> {

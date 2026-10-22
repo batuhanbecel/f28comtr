@@ -87,7 +87,7 @@ export function Footer() {
                 href={contactInfo.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${linkClass} uppercase tracking-[0.18em] text-xs`}
+                className={linkClass}
               >
                 Instagram
               </Link>
@@ -95,7 +95,7 @@ export function Footer() {
                 href={contactInfo.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${linkClass} uppercase tracking-[0.18em] text-xs`}
+                className={linkClass}
               >
                 LinkedIn
               </Link>

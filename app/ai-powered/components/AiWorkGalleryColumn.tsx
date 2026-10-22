@@ -16,6 +16,8 @@ interface AiWorkGalleryColumnProps {
   workSlug: string;
   images: AiPoweredWorkImage[];
   imageAlt: string;
+  /** View-transition name prefix — matches the grid card the cover morphs from. */
+  transitionPrefix?: string;
 }
 
 /**
@@ -23,7 +25,12 @@ interface AiWorkGalleryColumnProps {
  * natural aspect ratio (no cropping), each opening the shared lightbox. The
  * cover carries the view-transition name so it morphs from the grid card.
  */
-export function AiWorkGalleryColumn({ workSlug, images, imageAlt }: AiWorkGalleryColumnProps) {
+export function AiWorkGalleryColumn({
+  workSlug,
+  images,
+  imageAlt,
+  transitionPrefix = 'ai-work',
+}: AiWorkGalleryColumnProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const open = useCallback((i: number) => setLightboxIndex(i), []);
@@ -64,7 +71,7 @@ export function AiWorkGalleryColumn({ workSlug, images, imageAlt }: AiWorkGaller
             className="group card-editorial relative block w-full cursor-zoom-in overflow-hidden bg-th-fg/[0.04]"
             style={{ aspectRatio: ratio }}
           >
-            {i === 0 ? <ViewTransition name={`ai-work-${workSlug}`}>{node}</ViewTransition> : node}
+            {i === 0 ? <ViewTransition name={`${transitionPrefix}-${workSlug}`}>{node}</ViewTransition> : node}
 
             <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[rgb(var(--c-bg)/0.72)] opacity-0 transition-opacity duration-ui ease-brand group-hover:opacity-100">
               <svg

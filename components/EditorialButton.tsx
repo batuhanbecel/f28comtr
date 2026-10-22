@@ -10,6 +10,7 @@ interface EditorialButtonProps {
   className?: string;
   type?: 'button' | 'submit';
   disabled?: boolean;
+  'aria-busy'?: boolean;
 }
 
 const variantClass: Record<Variant, string> = {
@@ -27,6 +28,7 @@ export function EditorialButton({
   className = '',
   type = 'button',
   disabled,
+  'aria-busy': ariaBusy,
 }: EditorialButtonProps) {
   const cls = `btn-editorial ${variantClass[variant]} ${className}`;
 
@@ -39,7 +41,7 @@ export function EditorialButton({
   }
 
   return (
-    <button type={type} onClick={onClick} disabled={disabled} className={cls}>
+    <button type={type} onClick={onClick} disabled={disabled} aria-busy={ariaBusy} className={cls}>
       {children}
     </button>
   );

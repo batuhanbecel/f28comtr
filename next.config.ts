@@ -110,7 +110,6 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   experimental: {
-    viewTransition: true,
     optimizePackageImports: ['next/image'],
     optimizeCss: true,
   },

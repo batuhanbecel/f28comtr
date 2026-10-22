@@ -109,7 +109,7 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
           <Link
             href="/ai-powered"
             prefetch={false}
-            className="section-label mb-10 inline-block text-th-fg/50 transition-colors duration-ui hover:text-th-fg"
+            className="section-label mb-10 inline-block transition-opacity duration-ui hover:opacity-100"
           >
             ← {labels.back}
           </Link>
@@ -128,7 +128,7 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
             <aside className="order-1 self-start lg:order-2 lg:sticky lg:top-24">
               <div className="space-y-8">
                 <header className="page-heading-stack gap-3 border-b border-th-fg/10 pb-6">
-                  <span className="text-[11px] font-medium uppercase tracking-[0.26em] text-th-fg/40">
+                  <span className="text-[11px] font-medium uppercase tracking-[0.26em] text-th-fg/62">
                     {work.brand}
                   </span>
                   <h1 className="heading-section leading-tight">{work.title || work.brand}</h1>
@@ -141,7 +141,7 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
                   <MetaRow label={labels.type} value={categoryLabel} />
                   {work.tags && work.tags.length > 0 ? (
                     <div className="grid grid-cols-[4.5rem_1fr] items-start gap-5 py-3.5">
-                      <dt className="pt-1 text-[10.5px] font-medium uppercase tracking-[0.2em] text-th-fg/35">
+                      <dt className="pt-1 text-[11px] font-medium uppercase tracking-[0.2em] text-th-fg/62">
                         {labels.tags}
                       </dt>
                       <dd className="flex flex-wrap gap-1.5">
@@ -207,7 +207,7 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
   );
 }
 
-const META_LABEL = 'text-[10.5px] font-medium uppercase tracking-[0.2em] text-th-fg/35';
+const META_LABEL = 'text-[11px] font-medium uppercase tracking-[0.2em] text-th-fg/62';
 
 function MetaRow({ label, value }: { label: string; value: string }) {
   return (

@@ -2,6 +2,7 @@ import { sanityFetch } from '@/lib/sanity.fetch';
 import type { AiPoweredWork, AiPoweredWorkImage } from '@/lib/aiPoweredWorks';
 import { normalizeWorkCategory } from '@/lib/aiPoweredWorks';
 import type { AiPortfolioData } from '@/lib/aiPoweredPortfolio.shared';
+import { toNameCase } from '@/lib/displayCase';
 
 const AI_WORKS_QUERY = `*[_id == "aiPoweredCollection"][0]{
   "works": works[]{
@@ -125,7 +126,7 @@ function normalizePerson(p: RawCreditPerson): { slug?: string; fullName: string 
   const fullName = typeof p?.fullName === 'string' && p.fullName.length > 0 ? p.fullName : null;
   if (!fullName) return null;
   return {
-    fullName,
+    fullName: toNameCase(fullName),
     ...(typeof p.slug === 'string' && p.slug.length > 0 ? { slug: p.slug } : {}),
   };
 }
@@ -167,7 +168,8 @@ export async function getAiPoweredWorksFromSanity(): Promise<AiPoweredWork[]> {
       description: w.description,
       category: normalizeWorkCategory(w.category),
       images,
-      imageAlt: w.imageAlt,
+      // Editors often leave alt empty — derive a meaningful fallback from brand/title.
+      imageAlt: w.imageAlt?.trim() || [w.brand, w.title].filter(Boolean).join(' — ') || 'AI-powered work',
       year: w.year,
       tags: w.tags,
       instagramUrl: w.instagramUrl,

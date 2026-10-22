@@ -2,13 +2,14 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { PageSection } from '@/components/PageSection';
 import { ScrollReveal } from '@/components/ScrollReveal';
-import { SectionHeader } from '@/components/PageHeader';
+import { DisplayCase } from '@/components/DisplayCase';
+import { ScrollerArrow } from '@/components/ScrollerArrow';
 import { useLanguage } from '@/context/LanguageContext';
+import { useScrollerArrows } from '@/hooks/useScrollerArrows';
 import { shouldSkipOptimization } from '@/lib/blob';
 import { GRID_IMAGE_QUALITY } from '@/lib/imageConfig';
-import { MASONRY_THUMB_SIZES } from '@/lib/imageSizes';
+import { WORK_STRIP_SIZES } from '@/lib/imageSizes';
 import type { HomeSelectedWork } from '@/lib/homeV2.shared';
 
 const BLUR =
@@ -18,10 +19,16 @@ interface HomeV2SelectedWorksProps {
   works: HomeSelectedWork[];
   sectionLabel: string;
   heading: string;
+  viewAllLabel: string;
 }
 
-export function HomeV2SelectedWorks({ works, sectionLabel, heading }: HomeV2SelectedWorksProps) {
+/**
+ * Edge-to-edge strip of work, no gutters, scrolls sideways (swipe / trackpad /
+ * arrows). Credits reveal on hover or keyboard focus; always shown on touch.
+ */
+export function HomeV2SelectedWorks({ works, sectionLabel, heading, viewAllLabel }: HomeV2SelectedWorksProps) {
   const { t } = useLanguage();
+  const { trackRef, canPrev, canNext, scrollByPage } = useScrollerArrows<HTMLUListElement>(works.length);
 
   if (works.length === 0) return null;
 
@@ -31,48 +38,51 @@ export function HomeV2SelectedWorks({ works, sectionLabel, heading }: HomeV2Sele
       : (t.titleMap.PHOTOGRAPHER ?? 'Photographer');
 
   return (
-    <PageSection className="py-16 md:py-20">
-      <ScrollReveal>
-        <SectionHeader label={sectionLabel} title={heading} className="mb-10 md:mb-14" />
+    <section className="work-strip-section" aria-labelledby="selected-works-title">
+      <ScrollReveal className="work-strip__head">
+        <div className="page-heading-stack">
+          <span className="section-label">{sectionLabel}</span>
+          <h2 id="selected-works-title" className="heading-section">
+            <DisplayCase>{heading}</DisplayCase>
+          </h2>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link href="/portfolios" className="work-strip__all hover-line">
+            {viewAllLabel}
+          </Link>
+          <ScrollerArrow direction="prev" onClick={() => scrollByPage(-1)} disabled={!canPrev} label={t.a11y.previousImage} />
+          <ScrollerArrow direction="next" onClick={() => scrollByPage(1)} disabled={!canNext} label={t.a11y.nextImage} />
+        </div>
       </ScrollReveal>
 
-      <div className="editorial-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-th-fg/[0.06] border border-th-fg/[0.06]">
-        {works.map((work, i) => (
-          <ScrollReveal key={`${work.imageSrc}-${i}`} delay={0.06 + i * 0.05}>
-            <Link
-              href={work.href}
-              className="group block bg-th-bg editorial-panel overflow-hidden card-editorial"
-            >
-              <div className="relative aspect-[4/3] overflow-hidden bg-th-fg/[0.03]">
+      <ul ref={trackRef} className="work-strip">
+        {works.map((work, i) => {
+          const title = work.workTitle || work.artistName;
+          const meta = work.workTitle ? `${work.artistName} · ${roleLabel(work.role)}` : roleLabel(work.role);
+          return (
+            <li key={`${work.imageSrc}-${i}`} className="work-strip__item">
+              <Link href={work.href} className="work-strip__link">
                 <Image
                   src={work.imageSrc}
-                  alt={`${work.workTitle} — ${work.artistName}`}
+                  alt={work.workTitle ? `${work.workTitle} — ${work.artistName}` : work.artistName}
                   fill
-                  className="object-cover thumb-hover-scale"
-                  sizes={MASONRY_THUMB_SIZES}
+                  className="object-cover"
+                  sizes={WORK_STRIP_SIZES}
                   loading={i < 3 ? 'eager' : 'lazy'}
-                  fetchPriority={i === 0 ? 'high' : undefined}
                   quality={GRID_IMAGE_QUALITY}
                   placeholder="blur"
                   blurDataURL={BLUR}
                   unoptimized={shouldSkipOptimization(work.imageSrc)}
                 />
-              </div>
-              <div className="p-5 md:p-6 border-t border-th-fg/[0.06]">
-                <p className="text-sm md:text-base font-medium tracking-tight text-th-fg/90 group-hover:text-th-fg transition-colors duration-hover">
-                  {work.workTitle}
-                </p>
-                <p className="mt-1 text-xs tracking-[0.18em] uppercase text-th-fg/62">
-                  {work.artistName}
-                </p>
-                <p className="mt-2 caption-text tracking-[0.32em]">
-                  {roleLabel(work.role)}
-                </p>
-              </div>
-            </Link>
-          </ScrollReveal>
-        ))}
-      </div>
-    </PageSection>
+                <span className="work-strip__credit">
+                  <span className="work-strip__title">{title}</span>
+                  <span className="work-strip__meta">{meta}</span>
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }

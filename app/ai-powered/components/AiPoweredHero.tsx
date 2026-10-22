@@ -7,10 +7,9 @@ import type { Lang } from '@/lib/translations';
 interface AiPoweredHeroProps {
   lang: Lang;
   copy: AiPoweredPageCopy;
-  statsSlot?: React.ReactNode;
 }
 
-export function AiPoweredHero({ lang, copy, statsSlot }: AiPoweredHeroProps) {
+export function AiPoweredHero({ lang, copy }: AiPoweredHeroProps) {
   const heroCopy = {
     label: copy.sectionLabel,
     title: copy.heading,
@@ -18,8 +17,6 @@ export function AiPoweredHero({ lang, copy, statsSlot }: AiPoweredHeroProps) {
   };
 
   return (
-    <EditorialPageHero page="aiPowered" lang={lang} heroCopy={heroCopy}>
-      {statsSlot}
-    </EditorialPageHero>
+    <EditorialPageHero page="aiPowered" lang={lang} heroCopy={heroCopy} />
   );
 }

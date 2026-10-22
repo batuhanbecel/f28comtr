@@ -16,6 +16,7 @@ import {
   DocumentIcon,
   EnvelopeIcon,
   CogIcon,
+  CaseIcon,
 } from '@sanity/icons';
 
 const SINGLETONS = new Set([
@@ -50,6 +51,15 @@ export const structure: StructureResolver = (S, context) =>
         type: 'photographer',
         title: 'Fotoğrafçılar & Retoucherlar',
         icon: UsersIcon,
+        S,
+        context,
+      }),
+
+      // ── Prodüksiyon projeleri (case study sayfaları) ─────────────────────
+      orderableDocumentListDeskItem({
+        type: 'productionProject',
+        title: 'Prodüksiyon Projeleri',
+        icon: CaseIcon,
         S,
         context,
       }),

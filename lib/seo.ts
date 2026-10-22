@@ -151,14 +151,16 @@ export async function generatePhotographerMetadata(
   const path = `/${id}`;
 
   if (!photographer) {
-    const copy = translations[lang].seo.photographer;
-    return buildPageMetadata({
+    // Unknown slug renders the global 404 — use the same title so tabs/history read "404".
+    const copy = translations[lang].seo.notFound;
+    const meta = buildPageMetadata({
       path,
-      title: copy.notFoundTitle,
-      description: copy.notFoundDescription,
+      title: copy.title,
+      description: copy.description,
       lang,
       noIndex: true,
     });
+    return { ...meta, title: { absolute: copy.title } };
   }
 
   const copy = translations[lang].seo.photographer;

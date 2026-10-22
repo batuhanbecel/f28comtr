@@ -44,6 +44,11 @@ import {
 } from '@/lib/sanity.siteAssets';
 import { getHomeSelectedWorksFromSanity } from '@/lib/sanity.homeSelected';
 import { getHomeV2CopyPatchFromSanity } from '@/lib/sanity.homeV2';
+import { toNameCase } from '@/lib/displayCase';
+import {
+  getProductionProjectsFromSanity,
+  type ProductionProject,
+} from '@/lib/sanity.productionProjects';
 import {
   getPageCopyPatchFromSanity,
   getSeoOverrideFromSanity,
@@ -61,7 +66,7 @@ export async function getPhotographers(): Promise<Photographer[]> {
   } catch (error) {
     console.error('[CMS] getPhotographers failed, falling back to static data:', error);
   }
-  return staticPhotographers;
+  return staticPhotographers.map((p) => ({ ...p, fullName: toNameCase(p.fullName) }));
 }
 
 export async function getPhotographerImages(photographerId: string): Promise<string[]> {
@@ -74,6 +79,15 @@ export async function getPhotographerImages(photographerId: string): Promise<str
 }
 
 // ── AI Powered ──────────────────────────────────────────────────────────────
+
+export async function getProductionProjects(): Promise<ProductionProject[]> {
+  try {
+    return await getProductionProjectsFromSanity();
+  } catch (error) {
+    console.error('[CMS] getProductionProjects failed:', error);
+    return [];
+  }
+}
 
 export async function getAiPoweredWorks(): Promise<AiPoweredWork[]> {
   try {
@@ -212,7 +226,23 @@ export async function getHomeV2SelectedWorks(
       href: `/${entry.photographerId}`,
     });
   }
-  return resolved;
+  if (resolved.length > 0) return resolved;
+
+  // Nothing curated yet — fall back to one image per artist so the home page
+  // still opens on work. Curated picks in Studio replace this automatically.
+  const pool = await getProductionMarqueeItems(limit);
+  return pool.map((item) => {
+    const photographer = byId.get(item.photographerId);
+    const role: HomeSelectedWorkRole =
+      (photographer?.title ?? 'PHOTOGRAPHER').toUpperCase() === 'RETOUCHER' ? 'retoucher' : 'photographer';
+    return {
+      imageSrc: item.src,
+      workTitle: '',
+      artistName: item.photographerName,
+      role,
+      href: `/${item.photographerId}`,
+    };
+  });
 }
 
 // ── Production Marquee ──────────────────────────────────────────────────────
@@ -309,6 +339,7 @@ export async function getPageSeo(page: SeoPageKey, lang: Lang): Promise<SeoCopy>
 // ── Type re-exports ─────────────────────────────────────────────────────────
 
 export type { Photographer } from '@/lib/data';
+export type { ProductionProject } from '@/lib/sanity.productionProjects';
 export type { AiPoweredWork, AiPoweredWorkImage, WorkCategory } from '@/lib/aiPoweredWorks';
 export type {
   AiPortfolioData,

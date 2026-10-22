@@ -1,3 +1,5 @@
+import { DisplayCase } from '@/components/DisplayCase';
+
 interface PageHeaderProps {
   label?: string;
   title: string;
@@ -48,7 +50,7 @@ export function PageHeader({
             whiteSpace: preline ? 'pre-line' : undefined,
           }}
         >
-          {title}
+          <DisplayCase>{title}</DisplayCase>
         </h1>
         {description ? (
           <p
@@ -81,7 +83,9 @@ export function SectionHeader({ label, title, action, className = '' }: SectionH
     <div className={`flex items-end justify-between gap-6 mb-8 ${className}`}>
       <div className="page-heading-stack">
         {label ? <span className="section-label">{label}</span> : null}
-        <h2 className="heading-section">{title}</h2>
+        <h2 className="heading-section">
+          <DisplayCase>{title}</DisplayCase>
+        </h2>
       </div>
       {action}
     </div>

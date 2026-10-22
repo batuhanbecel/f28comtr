@@ -9,6 +9,11 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./vitest.setup.ts'],
     include: ['tests/**/*.{test,spec}.{ts,tsx}'],
+    // sanity/env.ts asserts these at import time; tests never hit the network.
+    env: {
+      NEXT_PUBLIC_SANITY_PROJECT_ID: 'test-project',
+      NEXT_PUBLIC_SANITY_DATASET: 'test',
+    },
   },
   resolve: {
     alias: {

@@ -42,6 +42,8 @@ export function Menu({ photographers, lang }: MenuProps) {
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const dropdownCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const toggleButtonRef = useRef<HTMLButtonElement>(null);
+  const overlayNavRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
   const t = translations[lang];
 
@@ -76,17 +78,52 @@ export function Menu({ photographers, lang }: MenuProps) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      document.body.dataset.menuOpen = 'true';
       const timer = setTimeout(() => setIsVisible(true), 20);
       return () => clearTimeout(timer);
     }
     setIsVisible(false);
+    delete document.body.dataset.menuOpen;
     const timer = setTimeout(() => { document.body.style.overflow = 'unset'; }, 600);
     return () => clearTimeout(timer);
   }, [isOpen]);
 
   const toggleMenu = useCallback(() => setIsOpen(prev => !prev), []);
   const closeMenu = useCallback(() => setIsOpen(false), []);
-  const forceBackdrop = pathname === '/' || /^\/[^/]+$/.test(pathname);
+
+  // Overlay: move focus into the menu on open; Escape closes and returns focus to the toggle.
+  useEffect(() => {
+    if (!isOpen) return;
+    const focusTimer = setTimeout(() => {
+      overlayNavRef.current?.querySelector<HTMLElement>('a, button')?.focus({ preventScroll: true });
+    }, 120);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setIsOpen(false);
+      toggleButtonRef.current?.focus();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      clearTimeout(focusTimer);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [isOpen]);
+
+  // Desktop dropdown: Escape closes it.
+  useEffect(() => {
+    if (!openDropdown) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpenDropdown(null);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [openDropdown]);
+  // Home and artist pages open on full-bleed photography: transparent header with white type until scrolled.
+  const isPhotoHeroPage = pathname === '/' || photographers.some((p) => pathname === `/${p.id}`);
+  const overHero = isPhotoHeroPage && !isScrolled && !isOpen;
+  const heroHeaderStyle = overHero
+    ? ({ '--c-fg': '255 255 255', '--c-bg': '0 0 0' } as React.CSSProperties)
+    : undefined;
 
   const artistLinks: NavChild[] = photographers.map((p) => ({
     href: `/${p.id}`,
@@ -139,7 +176,8 @@ export function Menu({ photographers, lang }: MenuProps) {
         <Link
           key={item.href}
           href={item.href}
-          className={`group relative text-xs xl:text-[13px] tracking-[0.2em] xl:tracking-[0.22em] uppercase font-medium transition-colors duration-hover ${
+          aria-current={isActive ? 'page' : undefined}
+          className={`group relative text-[0.9375rem] tracking-[0.005em] transition-colors duration-hover ${
             isActive ? 'text-th-fg' : 'text-th-fg/58 hover:text-th-fg/88'
           }`}
         >
@@ -162,14 +200,17 @@ export function Menu({ photographers, lang }: MenuProps) {
         className="relative"
         onMouseEnter={() => openDesktopDropdown(dropdownKey)}
         onMouseLeave={scheduleCloseDropdown}
+        onFocus={() => openDesktopDropdown(dropdownKey)}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) scheduleCloseDropdown();
+        }}
       >
         <Link
           href={item.href}
-          className={`group relative inline-flex items-center gap-1.5 text-xs xl:text-[13px] tracking-[0.2em] xl:tracking-[0.22em] uppercase font-medium transition-colors duration-hover ${
+          aria-current={pathname === item.href ? 'page' : undefined}
+          className={`group relative inline-flex items-center gap-1.5 text-[0.9375rem] tracking-[0.005em] transition-colors duration-hover ${
             isActive ? 'text-th-fg' : 'text-th-fg/58 hover:text-th-fg/88'
           }`}
-          aria-haspopup="true"
-          aria-expanded={isOpenDropdown}
         >
           {item.label}
           <svg
@@ -204,11 +245,12 @@ export function Menu({ photographers, lang }: MenuProps) {
                   {showDivider ? <div className="my-2 mx-3 h-px bg-th-fg/[0.06]" /> : null}
                   <Link
                     href={child.href}
+                    aria-current={pathname === child.href ? 'page' : undefined}
                     className={`block px-4 py-2.5 transition-colors duration-ui hover:bg-th-fg/[0.04] ${
                       childActive ? 'text-th-fg' : 'text-th-fg/55 hover:text-th-fg/85'
                     }`}
                   >
-                    <span className="block text-xs tracking-[0.16em] uppercase font-medium leading-snug">{child.label}</span>
+                    <span className="block text-[0.9375rem] leading-snug">{child.label}</span>
                     {child.meta ? (
                       <span className="block mt-0.5 caption-text tracking-[0.28em]">{child.meta}</span>
                     ) : null}
@@ -234,8 +276,13 @@ export function Menu({ photographers, lang }: MenuProps) {
     if (item.kind === 'link') {
       return (
         <div key={item.href} className="border-b border-white/[0.07]" style={style}>
-          <Link href={item.href} onClick={closeMenu} className="group flex items-baseline gap-5 md:gap-8 py-5 md:py-6">
-            <span className="mono-label text-white/25 w-8 flex-shrink-0">{item.num}</span>
+          <Link
+            href={item.href}
+            onClick={closeMenu}
+            aria-current={isActivePath(pathname, item.href) ? 'page' : undefined}
+            className="group flex items-baseline gap-5 md:gap-8 py-5 md:py-6"
+          >
+            <span className="mono-label text-white/60 w-8 flex-shrink-0">{item.num}</span>
             <span className="heading-section text-white transition-all duration-hover ease-brand group-hover:text-white/50 group-hover:translate-x-2">
               {item.label}
             </span>
@@ -249,7 +296,7 @@ export function Menu({ photographers, lang }: MenuProps) {
     return (
       <div key={item.href} className="border-b border-white/[0.07]" style={style}>
         <div className="flex items-baseline gap-5 md:gap-8 py-5 md:py-6">
-          <span className="mono-label text-white/25 w-8 flex-shrink-0">{item.num}</span>
+          <span className="mono-label text-white/60 w-8 flex-shrink-0">{item.num}</span>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-4">
               <Link
@@ -262,9 +309,10 @@ export function Menu({ photographers, lang }: MenuProps) {
               <button
                 type="button"
                 onClick={() => setMobileExpanded(expanded ? null : item.href)}
-                className="text-white/40 hover:text-white/70 transition-colors p-1"
+                className="text-white/70 hover:text-white transition-colors w-11 h-11 -mr-2 flex items-center justify-center"
                 aria-expanded={expanded}
-                aria-label={expanded ? 'Collapse menu' : 'Expand menu'}
+                aria-controls={`menu-sub-${item.num}`}
+                aria-label={(expanded ? t.a11y.collapseSubmenu : t.a11y.expandSubmenu).replace('{label}', item.label)}
               >
                 <svg
                   className={`w-4 h-4 transition-transform duration-ui ${expanded ? 'rotate-180' : ''}`}
@@ -278,9 +326,9 @@ export function Menu({ photographers, lang }: MenuProps) {
             </div>
 
             {expanded ? (
-              <div className="mt-4 pl-0 space-y-1 border-l border-white/10 ml-0.5">
+              <div id={`menu-sub-${item.num}`} className="mt-4 pl-0 space-y-1 border-l border-white/10 ml-0.5">
                 {item.sectionLabel ? (
-                  <p className="pl-4 pb-2 caption-text text-white/45 tracking-[0.38em]">{item.sectionLabel}</p>
+                  <p className="pl-4 pb-2 caption-text text-white/62 tracking-[0.38em]">{item.sectionLabel}</p>
                 ) : null}
                 {item.children.map((child, childIndex) => (
                   <div key={child.href}>
@@ -290,11 +338,12 @@ export function Menu({ photographers, lang }: MenuProps) {
                     <Link
                       href={child.href}
                       onClick={closeMenu}
-                      className="block pl-4 py-2.5 text-white/58 hover:text-white/88 transition-colors duration-ui"
+                      aria-current={pathname === child.href ? 'page' : undefined}
+                      className="block pl-4 py-2.5 text-white/72 hover:text-white transition-colors duration-ui"
                     >
-                    <span className="block text-xs tracking-[0.18em] uppercase">{child.label}</span>
+                    <span className="block text-base">{child.label}</span>
                     {child.meta ? (
-                      <span className="block mt-0.5 caption-text text-white/45 tracking-[0.28em]">{child.meta}</span>
+                      <span className="block mt-0.5 caption-text text-white/62 tracking-[0.28em]">{child.meta}</span>
                     ) : null}
                     </Link>
                   </div>
@@ -310,16 +359,17 @@ export function Menu({ photographers, lang }: MenuProps) {
   return (
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between gap-3 px-4 py-4 sm:px-5 sm:py-5 md:px-10 md:py-7 transition-all duration-hover ease-brand lg:grid lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-8 ${
-        isScrolled || forceBackdrop ? 'bg-th-bg/60 border-b border-th-fg/10 backdrop-blur-xl' : 'border-b border-transparent'
-      }`}>
+        isScrolled ? 'bg-th-bg/60 border-b border-th-fg/10 backdrop-blur-xl' : 'border-b border-transparent'
+      }`} style={heroHeaderStyle}>
         <Link
           href="/"
+          aria-label={`f/2.8 — ${t.nav.home}`}
           className="relative z-50 flex shrink-0 items-center h-8 md:h-10 transition-opacity duration-hover hover:opacity-70"
         >
-          <F28LogoMark className="block h-8 md:h-10 w-auto text-th-fg" aria-label="f/2.8" />
+          <F28LogoMark className="block h-8 md:h-10 w-auto text-th-fg" aria-hidden />
         </Link>
 
-        <nav className="hidden lg:flex items-center justify-center gap-5 xl:gap-9">
+        <nav className="hidden lg:flex items-center justify-center gap-5 xl:gap-9" aria-label={t.a11y.mainNav}>
           {menuItems.map(renderDesktopNavItem)}
         </nav>
 
@@ -328,9 +378,13 @@ export function Menu({ photographers, lang }: MenuProps) {
           <span className="w-px h-3 bg-th-fg/15 shrink-0" aria-hidden />
           <LanguageSwitcher compact />
           <button
+            ref={toggleButtonRef}
+            type="button"
             onClick={toggleMenu}
-            className="relative z-50 flex flex-col justify-center items-end gap-[4px] w-6 h-8 shrink-0 lg:hidden"
-            aria-label="Toggle menu"
+            className="group relative z-50 flex flex-col justify-center items-end gap-[4px] w-10 h-10 -mr-2 pr-2 shrink-0 lg:hidden"
+            aria-label={isOpen ? t.a11y.closeMenu : t.a11y.openMenu}
+            aria-expanded={isOpen}
+            aria-controls="site-menu-overlay"
           >
             <span className={`h-px w-5 bg-th-fg transition-all duration-reveal ease-brand origin-center ${
               isOpen ? 'rotate-45 translate-y-[6px] opacity-100' : 'opacity-60 group-hover:opacity-100'
@@ -346,6 +400,11 @@ export function Menu({ photographers, lang }: MenuProps) {
       </header>
 
       <div
+        id="site-menu-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label={t.a11y.mainNav}
+        inert={!isOpen}
         className={`fixed inset-0 z-40 ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
         style={{
           clipPath: isVisible
@@ -369,11 +428,11 @@ export function Menu({ photographers, lang }: MenuProps) {
                 : 'opacity var(--duration-ui) var(--ease-brand)',
             }}
           >
-            <span className="section-label text-white/45">Istanbul, Turkey</span>
-            <span className="mono-label text-white/40">f/2.8</span>
+            <span className="section-label text-white">{t.footer.city}</span>
+            <span className="mono-label text-white/60">f/2.8</span>
           </div>
 
-          <nav className="flex flex-col my-auto py-10 gap-1">
+          <nav ref={overlayNavRef} className="flex flex-col my-auto py-10 gap-1" aria-label={t.a11y.mainNav}>
             {menuItems.map((item, index) => renderMobileNavItem(item, index))}
           </nav>
 
@@ -389,17 +448,19 @@ export function Menu({ photographers, lang }: MenuProps) {
           >
             <div className="flex items-center gap-6">
               <Link href={contactInfo.instagram} target="_blank" rel="noopener noreferrer"
-                className="section-label text-white/50 hover:text-white/85 transition-colors duration-ui hover-line">
+                className="section-label text-white transition-opacity duration-ui hover:opacity-100 hover-line">
                 Instagram
+                <span className="sr-only"> {t.a11y.opensInNewTab}</span>
               </Link>
-              <span className="w-px h-3 bg-white/10" />
+              <span className="w-px h-3 bg-white/10" aria-hidden />
               <Link href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer"
-                className="section-label text-white/50 hover:text-white/85 transition-colors duration-ui hover-line">
+                className="section-label text-white transition-opacity duration-ui hover:opacity-100 hover-line">
                 LinkedIn
+                <span className="sr-only"> {t.a11y.opensInNewTab}</span>
               </Link>
             </div>
             <a href={`mailto:${contactInfo.email}`}
-              className="section-label text-white/50 hover:text-white/85 transition-colors duration-ui hover-line">
+              className="section-label text-white transition-opacity duration-ui hover:opacity-100 hover-line">
               {contactInfo.email}
             </a>
           </div>

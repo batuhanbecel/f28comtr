@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { shouldSkipOptimization } from '@/lib/blob';
 import type { HomeV2HeroSlide } from '@/lib/homeV2.shared';
 import { HERO_IMAGE_SIZES } from '@/lib/imageSizes';
+import { useLanguage } from '@/context/LanguageContext';
 import {
   HOME_V2_HERO_FADE_MS,
   HOME_V2_HERO_INTERVAL_MS,
@@ -22,6 +23,7 @@ export function HomeV2HeroSlider({ slides: slidesProp }: HomeV2HeroSliderProps) 
     [slidesProp],
   );
 
+  const { t } = useLanguage();
   const [current, setCurrent] = useState(0);
   const [previous, setPrevious] = useState<number | null>(null);
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -83,7 +85,6 @@ export function HomeV2HeroSlider({ slides: slidesProp }: HomeV2HeroSliderProps) 
         ['--home-v2-hero-fade-ms' as string]: `${HOME_V2_HERO_FADE_MS}ms`,
         ['--home-v2-hero-interval-ms' as string]: `${HOME_V2_HERO_INTERVAL_MS}ms`,
       }}
-      aria-hidden
     >
       {slides.map((slide, i) => {
         const isCurrent = i === current;
@@ -130,7 +131,7 @@ export function HomeV2HeroSlider({ slides: slidesProp }: HomeV2HeroSliderProps) 
               key={`${slide.src}-dot-${i}`}
               type="button"
               className={`home-v2-hero-slider-dot${i === current ? ' is-active' : ''}`}
-              aria-label={`Slide ${i + 1}`}
+              aria-label={t.a11y.slide.replace('{n}', String(i + 1))}
               aria-current={i === current ? 'true' : undefined}
               onClick={() => transitionTo(i)}
             />

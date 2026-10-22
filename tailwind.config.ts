@@ -18,6 +18,19 @@ export default {
           'surface': 'rgb(var(--c-surface) / <alpha-value>)',
         },
       },
+      // Fine-grained alpha steps used by the editorial palette (text-th-fg/58 etc.).
+      // Tailwind's default scale is multiples of 5, so these would emit no CSS otherwise.
+      opacity: {
+        '12': '0.12',
+        '52': '0.52',
+        '58': '0.58',
+        '62': '0.62',
+        '68': '0.68',
+        '72': '0.72',
+        '78': '0.78',
+        '82': '0.82',
+        '88': '0.88',
+      },
       transitionTimingFunction: {
         brand: 'var(--ease-brand)',
         morph: 'var(--ease-morph)',

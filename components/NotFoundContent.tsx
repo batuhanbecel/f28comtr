@@ -9,16 +9,16 @@ export function NotFoundContent() {
 
   return (
     <main className="min-h-screen bg-th-bg text-th-fg flex flex-col items-center justify-center px-6 relative overflow-hidden">
-      <div className="mb-12">
+      <div className="mb-12" aria-hidden="true">
         <F28Logo width={220} className="text-th-fg" delay={0} />
       </div>
 
       <div className="text-center space-y-4">
         <p className="section-label section-label--pill mx-auto">{t.notFound.title}</p>
-        <p className="body-text text-muted-body">{t.notFound.description}</p>
+        <h1 className="body-text text-muted-body">{t.notFound.description}</h1>
         <div className="pt-4">
           <EditorialButton href="/">
-            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <svg className="w-3 h-3" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="square" d="M19 12H5M12 5l-7 7 7 7" />
             </svg>
             {t.notFound.backHome}

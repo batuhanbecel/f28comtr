@@ -4,7 +4,7 @@
 
 Before any Next.js work, read the relevant documentation. Training data is outdated — the docs are the source of truth.
 
-**Documentation sources (Next.js 16.2.6):**
+**Documentation sources (Next.js 16.4.2):**
 
 - Index: https://nextjs.org/docs/llms.txt
 - Image: https://nextjs.org/docs/app/api-reference/components/image
@@ -12,7 +12,7 @@ Before any Next.js work, read the relevant documentation. Training data is outda
 - Route Handlers: https://nextjs.org/docs/app/building-your-application/routing/route-handlers
 - Proxy (formerly Middleware): https://nextjs.org/docs/messages/middleware-to-proxy
 
-> Note: `node_modules/next/dist/docs/` is not shipped in this version. Use the URLs above.
+> Note: Next 16.4 ships its docs in `node_modules/next/dist/docs/` (01-app, 02-pages, 03-architecture) — prefer those local files; the URLs above are the fallback.
 
 ## Image checklist
 
@@ -37,7 +37,7 @@ Before any Next.js work, read the relevant documentation. Training data is outda
 - **Images:** shared sizes in `lib/imageSizes.ts`, blob proxy via `shouldSkipOptimization()`
 - **AI gallery:** `/ai-powered` grid + per-work URLs at `/ai-powered/works/[slug]` + client-state lightbox
 - **CMS & Studio:** Embedded Sanity Studio at `/studio` (`sanity.config.ts`, custom UI via `sanity/studio.css`), Visual Editing via `/api/draft-mode` and ISR via `/api/revalidate`
-- **View transitions:** `lib/ViewTransition.tsx` + `experimental.viewTransition` in `next.config.ts` — photographer card→detail morph only; root crossfade is opacity-only (no blur)
+- **View transitions:** `lib/ViewTransition.tsx` + React 19.3 stable `ViewTransition` (no config flag needed) — photographer card→detail morph only; root crossfade is opacity-only (no blur)
 
 ## Design & Motion
 

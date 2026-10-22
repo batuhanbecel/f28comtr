@@ -4,6 +4,7 @@ import { PageSection } from '@/components/PageSection';
 import { HeroSnapTarget } from '@/components/HeroSnapTarget';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import type { ProductionPageCopy } from '@/lib/pageCopy.types';
+import { DisplayCase } from '@/components/DisplayCase';
 
 interface ProductionSectionsProps {
   copy: ProductionPageCopy;
@@ -25,7 +26,7 @@ export function ProductionSections({ copy }: ProductionSectionsProps) {
         <PageSection className="pt-6 md:pt-8 pb-16 md:pb-20">
           <ScrollReveal className="page-heading-stack mb-10 md:mb-14">
             <span className="section-label">{services.sectionLabel}</span>
-            <h2 className="heading-section">{services.heading}</h2>
+            <h2 className="heading-section"><DisplayCase>{services.heading}</DisplayCase></h2>
           </ScrollReveal>
 
           <div className="editorial-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -51,7 +52,7 @@ export function ProductionSections({ copy }: ProductionSectionsProps) {
         <PageSection border className="py-16 md:py-20">
           <ScrollReveal className="page-heading-stack mb-10">
             <span className="section-label">{process.sectionLabel}</span>
-            <h2 className="heading-section">{process.heading}</h2>
+            <h2 className="heading-section"><DisplayCase>{process.heading}</DisplayCase></h2>
           </ScrollReveal>
 
           <ol className={processStripClass}>
@@ -73,7 +74,7 @@ export function ProductionSections({ copy }: ProductionSectionsProps) {
         <PageSection className="py-16 md:py-20">
           <ScrollReveal className="page-heading-stack mb-10">
             <span className="section-label">{deliverables.sectionLabel}</span>
-            <h2 className="heading-section">{deliverables.heading}</h2>
+            <h2 className="heading-section"><DisplayCase>{deliverables.heading}</DisplayCase></h2>
           </ScrollReveal>
 
           <ScrollReveal>

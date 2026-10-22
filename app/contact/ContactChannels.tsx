@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { ContactPageCopy } from '@/lib/pageCopy.types';
+import { DisplayCase } from '@/components/DisplayCase';
 
 interface ContactChannelsProps {
   copy: ContactPageCopy;
@@ -31,7 +32,7 @@ export function ContactChannels({ copy }: ContactChannelsProps) {
     <div className="contact-channels">
       <div className="page-heading-stack mb-8 md:mb-10">
         <span className="section-label">{copy.channelsLabel}</span>
-        <h2 className="heading-section">{copy.channelsHeading}</h2>
+        <h2 className="heading-section"><DisplayCase>{copy.channelsHeading}</DisplayCase></h2>
       </div>
 
       <ul className="contact-channel-list">

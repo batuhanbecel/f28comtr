@@ -1,12 +1,12 @@
 export const translations = {
   en: {
     nav: {
-      home: 'HOME',
-      production: 'PRODUCTION',
-      aiPowered: 'AI-POWERED',
-      portfolios: 'PORTFOLIOS',
-      about: 'ABOUT US',
-      contact: 'CONTACT',
+      home: 'Home',
+      production: 'Production',
+      aiPowered: 'AI-Powered',
+      portfolios: 'Portfolios',
+      about: 'About Us',
+      contact: 'Contact',
       allPortfolios: 'All Portfolios',
       ourArtists: 'Our Artists',
       aiPoweredGallery: 'Works',
@@ -26,6 +26,26 @@ export const translations = {
       navigation: 'Navigation',
       contact: 'Contact',
       follow: 'Follow',
+    },
+    a11y: {
+      skipToContent: 'Skip to content',
+      openMenu: 'Open menu',
+      closeMenu: 'Close menu',
+      expandSubmenu: 'Show {label} links',
+      collapseSubmenu: 'Hide {label} links',
+      backToTop: 'Back to top',
+      previousImage: 'Previous image',
+      nextImage: 'Next image',
+      imageViewer: 'Image viewer',
+      switchToLight: 'Switch to light mode',
+      switchToDark: 'Switch to dark mode',
+      language: 'Language',
+      mainNav: 'Main navigation',
+      opensInNewTab: '(opens in a new tab)',
+      required: 'required',
+      previousArtists: 'Previous artists',
+      nextArtists: 'Next artists',
+      slide: 'Slide {n}',
     },
     titleMap: {
       'Photographer': 'Photographer',
@@ -68,6 +88,8 @@ export const translations = {
     production: {
       sectionLabel: 'Istanbul — Since 2008',
       heading: 'PRODUCTION',
+      projectsLabel: 'Selected projects',
+      projectsHeading: 'Recent production',
       description:
         'Based in Istanbul since 2008, f/2.8 Production delivers high-quality photography and video services through an international portfolio. Working with many leading brands from around the world, the team provides efficient solutions for photography, video, CGI, animation, editing, and motion graphics.',
       stats: {
@@ -204,6 +226,8 @@ export const translations = {
         error: 'Something went wrong. Please try again or email us directly.',
         required: 'Please fill in all fields.',
         invalidEmail: 'Please enter a valid email address.',
+        fieldRequired: 'This field is required.',
+        rateLimited: 'Too many messages in a short time. Please try again in a few minutes.',
       },
     },
     aiPoweredPortfolio: {
@@ -293,12 +317,12 @@ export const translations = {
   },
   tr: {
     nav: {
-      home: 'ANA SAYFA',
-      production: 'PRODÜKSİYON',
-      aiPowered: 'AI-POWERED',
-      portfolios: 'PORTFÖYLER',
-      about: 'HAKKIMIZDA',
-      contact: 'İLETİŞİM',
+      home: 'Ana Sayfa',
+      production: 'Prodüksiyon',
+      aiPowered: 'AI-Powered',
+      portfolios: 'Portföyler',
+      about: 'Hakkımızda',
+      contact: 'İletişim',
       allPortfolios: 'Tüm Portföyler',
       ourArtists: 'Sanatçılarımız',
       aiPoweredGallery: 'Çalışmalarımız',
@@ -318,6 +342,26 @@ export const translations = {
       navigation: 'Gezinti',
       contact: 'İletişim',
       follow: 'Takip Et',
+    },
+    a11y: {
+      skipToContent: 'İçeriğe geç',
+      openMenu: 'Menüyü aç',
+      closeMenu: 'Menüyü kapat',
+      expandSubmenu: '{label} bağlantılarını göster',
+      collapseSubmenu: '{label} bağlantılarını gizle',
+      backToTop: 'Başa dön',
+      previousImage: 'Önceki görsel',
+      nextImage: 'Sonraki görsel',
+      imageViewer: 'Görsel görüntüleyici',
+      switchToLight: 'Açık temaya geç',
+      switchToDark: 'Koyu temaya geç',
+      language: 'Dil',
+      mainNav: 'Ana menü',
+      opensInNewTab: '(yeni sekmede açılır)',
+      required: 'zorunlu',
+      previousArtists: 'Önceki sanatçılar',
+      nextArtists: 'Sonraki sanatçılar',
+      slide: 'Slayt {n}',
     },
     titleMap: {
       'Photographer': 'Fotoğrafçı',
@@ -360,12 +404,14 @@ export const translations = {
     production: {
       sectionLabel: 'İstanbul — 2008\'den Beri',
       heading: 'PRODÜKSİYON',
+      projectsLabel: 'Seçili projeler',
+      projectsHeading: 'Son prodüksiyonlar',
       description:
         '2008\'den bu yana İstanbul merkezli f/2.8 Production, uluslararası portföyüyle yüksek kaliteli fotoğrafçılık ve video hizmetleri sunmaktadır. Dünyanın dört bir yanındaki önde gelen markalarla çalışan ekip; fotoğrafçılık, video, CGI, animasyon, kurgu ve hareketli grafik alanlarında etkin çözümler sunmaktadır.',
       stats: {
         projects: 'Tamamlanan proje',
         brands: 'Çalışılan marka',
-        since: 'İstanbul, 2008',
+        since: 'İstanbul’da kuruldu',
       },
       services: {
         sectionLabel: 'Yetkinlikler',
@@ -435,7 +481,7 @@ export const translations = {
       stats: {
         projects: 'Tamamlanan proje',
         brands: 'Çalışılan marka',
-        since: 'İstanbul, 2008',
+        since: 'İstanbul’da kuruldu',
       },
       process: {
         sectionLabel: 'Çalışma Sürecimiz',
@@ -496,6 +542,8 @@ export const translations = {
         error: 'Bir hata oluştu. Lütfen tekrar deneyin veya doğrudan e-posta gönderin.',
         required: 'Lütfen tüm alanları doldurun.',
         invalidEmail: 'Geçerli bir e-posta adresi girin.',
+        fieldRequired: 'Bu alan zorunludur.',
+        rateLimited: 'Kısa sürede çok fazla mesaj gönderildi. Lütfen birkaç dakika sonra tekrar deneyin.',
       },
     },
     aiPoweredPortfolio: {

@@ -2,6 +2,7 @@ import { defineArrayMember, defineField, defineType } from 'sanity';
 import { RobotIcon } from '@sanity/icons';
 import { AiPoweredWorksInput } from '../components/AiPoweredWorksInput';
 import { PortfolioImagesInput } from '../components/PortfolioImagesInput';
+import { slugifyTr } from '../lib/slugify';
 
 export const aiPoweredCollection = defineType({
   name: 'aiPoweredCollection',
@@ -98,20 +99,23 @@ export const aiPoweredCollection = defineType({
                   return parent.title || parent.brand || 'work';
                 },
                 maxLength: 80,
-                slugify: (input) =>
-                  input
-                    .toLowerCase()
-                    .replace(/ı/g, 'i')
-                    .replace(/ş/g, 's')
-                    .replace(/ç/g, 'c')
-                    .replace(/ğ/g, 'g')
-                    .replace(/ü/g, 'u')
-                    .replace(/ö/g, 'o')
-                    .replace(/[^a-z0-9]+/g, '-')
-                    .replace(/(^-|-$)/g, ''),
+                slugify: slugifyTr,
                 disableArrayWarning: true,
               },
-              validation: (Rule) => Rule.required(),
+              validation: (Rule) =>
+                Rule.required().custom((slug, context) => {
+                  const current = (slug as { current?: string } | undefined)?.current;
+                  if (!current) return true;
+                  const parentKey = (context.parent as { _key?: string } | undefined)?._key;
+                  const works = ((context.document as { works?: unknown[] } | undefined)?.works ?? []) as {
+                    _key?: string;
+                    slug?: { current?: string };
+                  }[];
+                  const duplicate = works.some((w) => w._key !== parentKey && w.slug?.current === current);
+                  return duplicate
+                    ? 'Bu slug başka bir çalışmada da kullanılıyor — iki sayfa aynı adrese düşer. Farklı bir slug girin.'
+                    : true;
+                }),
             }),
             defineField({
               group: 'content',
@@ -146,7 +150,15 @@ export const aiPoweredCollection = defineType({
               group: 'content',
               name: 'imageAlt',
               title: 'Görsel Alt Metni',
+              description:
+                'Görseli görmeyen kullanıcılar (ekran okuyucu) ve Google için kısa açıklama, örn. "PUMA Speedcat — stüdyoda kırmızı ayakkabı". Boş bırakılırsa "Marka — Başlık" kullanılır.',
               type: 'string',
+              validation: (Rule) => [
+                Rule.max(160).warning('Alt metin 160 karakteri geçmesin.'),
+                Rule.custom((value) =>
+                  typeof value === 'string' && value.trim() ? true : 'Alt metin önerilir — erişilebilirlik ve SEO için.',
+                ).warning(),
+              ],
             }),
             defineField({
               group: 'credits',

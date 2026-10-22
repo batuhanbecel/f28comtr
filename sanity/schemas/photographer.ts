@@ -2,6 +2,7 @@ import { defineField, defineType } from 'sanity';
 import { UserIcon } from '@sanity/icons';
 import { orderRankField, orderRankOrdering } from '@sanity/orderable-document-list';
 import { PortfolioImagesInput } from '../components/PortfolioImagesInput';
+import { slugifyTr } from '../lib/slugify';
 
 export const photographer = defineType({
   name: 'photographer',
@@ -41,17 +42,7 @@ export const photographer = defineType({
       options: {
         source: 'fullName',
         maxLength: 64,
-        slugify: (input) =>
-          input
-            .toLowerCase()
-            .replace(/ı/g, 'i')
-            .replace(/ş/g, 's')
-            .replace(/ç/g, 'c')
-            .replace(/ğ/g, 'g')
-            .replace(/ü/g, 'u')
-            .replace(/ö/g, 'o')
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)/g, ''),
+        slugify: slugifyTr,
       },
       validation: (Rule) => Rule.required(),
     }),
