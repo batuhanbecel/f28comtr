@@ -298,15 +298,30 @@ export async function getPageCopy<K extends PageCopyKey>(
   }
 }
 
-export async function getContactInfo(lang: Lang): Promise<ContactPageCopy['info']> {
+export interface FooterCta {
+  label: string;
+  heading: string;
+}
+
+/** Site-wide contact details plus the footer call-to-action (Sanity "İletişim Sayfası"). */
+export async function getSiteContact(
+  lang: Lang,
+): Promise<{ info: ContactPageCopy['info']; footerCta: FooterCta }> {
   const copy = await getPageCopy('contact', lang);
   return {
-    email: copy.info.email || staticContactInfo.email,
-    instagram: copy.info.instagram || staticContactInfo.instagram,
-    linkedin: copy.info.linkedin || staticContactInfo.linkedin,
-    address: copy.info.address || staticContactInfo.address,
-    city: copy.info.city || staticContactInfo.city,
+    info: {
+      email: copy.info.email || staticContactInfo.email,
+      instagram: copy.info.instagram || staticContactInfo.instagram,
+      linkedin: copy.info.linkedin || staticContactInfo.linkedin,
+      address: copy.info.address || staticContactInfo.address,
+      city: copy.info.city || staticContactInfo.city,
+    },
+    footerCta: { label: copy.footerCtaLabel, heading: copy.footerCtaHeading },
   };
+}
+
+export async function getContactInfo(lang: Lang): Promise<ContactPageCopy['info']> {
+  return (await getSiteContact(lang)).info;
 }
 
 export async function getPageSeo(page: SeoPageKey, lang: Lang): Promise<SeoCopy> {

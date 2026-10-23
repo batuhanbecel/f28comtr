@@ -9,11 +9,12 @@ export const productionPageCopy = defineType({
   icon: DesktopIcon,
   groups: [
     { name: 'hero', title: 'Üst Bölüm', default: true },
+    { name: 'projects', title: 'Projeler' },
     { name: 'services', title: 'Hizmetler' },
     { name: 'process', title: 'Sürecimiz' },
     { name: 'deliverables', title: 'Çıktılar' },
-    { name: 'team', title: 'Ekip' },
-    { name: 'marquee', title: 'Marquee' },
+    { name: 'team', title: 'İş Şeridi' },
+    { name: 'marquee', title: 'İş Şeridi Başlığı' },
     { name: 'seo', title: 'SEO' },
   ],
   fields: [
@@ -36,10 +37,26 @@ export const productionPageCopy = defineType({
       title: 'Açıklama',
       type: 'localizedText',
     }),
+    // ── Projects (case studies listed from "Prodüksiyon Projeleri") ─────
+    defineField({
+      group: 'projects',
+      name: 'projectsLabel',
+      title: 'Projeler Etiketi',
+      description: 'Proje ızgarasının üstündeki küçük etiket. Projeler "Prodüksiyon Projeleri" bölümünden yönetilir.',
+      type: 'localizedString',
+    }),
+    defineField({
+      group: 'projects',
+      name: 'projectsHeading',
+      title: 'Projeler Başlığı',
+      type: 'localizedString',
+    }),
+
     defineField({
       group: 'hero',
       name: 'stats',
       title: 'İstatistikler',
+      description: 'Rakamlar "Hakkımızda" sayfasında gösterilir (proje, marka sayısı ve kuruluş yılı).',
       type: 'object',
       options: { collapsible: true, collapsed: false },
       fields: [
@@ -142,7 +159,8 @@ export const productionPageCopy = defineType({
     defineField({
       group: 'team',
       name: 'team',
-      title: 'Ekip Bölümü',
+      title: 'İş Şeridi',
+      description: 'Sayfadaki kaydırılabilir iş şeridi: etiket, sağdaki kısa açıklama ve "portfolyolar" bağlantısı.',
       type: 'object',
       options: { collapsible: true, collapsed: false },
       fields: [
@@ -156,20 +174,23 @@ export const productionPageCopy = defineType({
     defineField({
       group: 'marquee',
       name: 'marqueeLabel',
-      title: 'Marquee Etiketi',
+      title: 'İş Şeridi Başlığı',
+      description: 'Örn. "Seçili prodüksiyon işleri".',
       type: 'localizedString',
     }),
     defineField({
       group: 'marquee',
       name: 'marqueeRow',
-      title: 'Marquee Satır Alt Metni',
+      title: 'Marquee Satır Alt Metni (kullanılmıyor)',
       type: 'localizedString',
+      hidden: true,
     }),
     defineField({
       group: 'marquee',
       name: 'marqueeViewImage',
-      title: '"Görseli Gör" Yazısı',
+      title: '"Görseli Gör" Yazısı (kullanılmıyor)',
       type: 'localizedString',
+      hidden: true,
     }),
 
     // ── SEO ─────────────────────────────────────────────────────────────

@@ -16,6 +16,7 @@ Before any Next.js work, read the relevant documentation. Training data is outda
 
 ## Image checklist
 
+- Import `Image` from `@/components/Image`, never `next/image` directly — it routes Sanity CDN URLs through Sanity's own resizer (`lib/sanityImageLoader.ts`) instead of `/_next/image` (Sanity originals can be 10k+ px and time out)
 - Never use deprecated `priority` — use `loading="eager"` and/or `fetchPriority="high"` for LCP candidates only (one per viewport)
 - Every `fill` image must have a correct `sizes` prop — use constants from `lib/imageSizes.ts`
 - Lightbox/modal images: `LIGHTBOX_IMAGE_SIZES`, not `100vw`
@@ -41,17 +42,17 @@ Before any Next.js work, read the relevant documentation. Training data is outda
 
 ## Design & Motion
 
-- **Tokens:** CSS vars in `app/globals.css` (`--ease-brand`, `--ease-morph`, `--ease-snappy`, `--duration-reveal/hover/ui`); mirrored in `lib/motion.ts` and Tailwind `duration-*` / `ease-*` extends
-- **Editorial layout:** `.page-heading-stack` (label + title always vertical), `.page-section`, `.editorial-panel`, `.editorial-grid`, `.heading-section`, `.editorial-chip`, `.section-label` (block; pill variant `section-label--pill`)
-- **Public primitives:** `components/PageHeader.tsx` (rule + label + title + desc; `SectionHeader` for in-page sections), `components/PageSection.tsx`, `components/EditorialButton.tsx` (`btn-editorial` variants)
-- **Hero:** `components/PageHero.tsx` wraps `PageHeader` with `variant="hero"`; `LocalizedHero` re-exports from `components/LocalizedHero.tsx`. Custom hero slots (e.g. AI stats) use `PageHeader` directly.
-- **Studio primitives:** Sanity Studio theme in `sanity/theme.ts`, custom shell components in `sanity/components/` and `sanity/studio.css`
-- **Reveal:** above-fold `fade-in-up`; below-fold `ScrollReveal` + `hooks/useScrollReveal.ts` (`.scroll-reveal.in-view`)
-- **Lightbox:** single `components/Lightbox.tsx` — used by `MasonryGrid` and AI gallery wrapper `app/ai-powered/components/Lightbox.tsx`
-- **Parallax:** `hooks/useDirectParallax.ts` + shared scroll bus `lib/parallaxScrollBus.ts` — event-driven, no perpetual RAF; mouse parallax off on mobile / `prefers-reduced-motion`
-- **Hover scale:** grid thumbs use `.thumb-hover-scale` (1.04, `--duration-hover`)
-- **Grain:** `isPerfHeavyPage()` in `lib/galleryPaths.ts` — off on landing, production, galleries
-- **Custom cursor:** kept on fine pointer; disabled under `prefers-reduced-motion`
-- **No styled-jsx** for AI filter/process — styles in `globals.css` (`.filter-*`, `.process-*`)
+One "gallery" language across every page — reuse these, don't invent per-page variants:
 
-<!-- END:nextjs-agent-rules -->
+- **Type:** Geist (`--font-display`, weight 600, tight tracking) for headings, Inter for body. No serif, no italics, no glow/gradient text. CMS headings typed in caps are sentence-cased at render via `components/DisplayCase.tsx` / `lib/displayCase.ts`; person names via `toNameCase`. Nav labels are Title Case in `lib/translations.ts`.
+- **Sections:** `.g-section` (hairline top, shared rhythm; `--flush` when an edge-to-edge grid closes it) + `components/gallery/BlockHead.tsx` (label + title left, intro/actions right). Never name a class `.block` — it collides with Tailwind's `block`.
+- **Imagery:** edge-to-edge and gapless. `components/gallery/Tile.tsx` (credit bottom-left, shown on hover/focus, always on touch), `.bleed-grid` with `--cols-sm/md/lg`, `components/gallery/WorkStrip.tsx` (sideways strip + arrows). Index pages (/portfolios) keep credits visible (`showCredit`). Photo galleries (MasonryGrid, AI WorkGrid) use 3 columns from 768px up, 2 on phones. No dark hover overlays on photographs.
+- **Text lists:** `.index-list` (numbered hairline rows) for services/process; `.contact-rows` for channels; `.tag-list` for short items. No cards/panels.
+- **Logos:** `components/gallery/LogoWall.tsx` (edge-to-edge hairline grid, monochrome).
+- **Studio numbers** live only on About (`components/AboutStats.tsx`).
+- **Home** (`app/home-v2/`): cinematic numbered reel hero (`.home-v2-hero--cine` clip-path opening + `.reel-*`; slides = first 6 Studio "Öne Çıkan İşler", landing images only as fallback; the active number's fill animation advances the reel) → `HomeAiScene` (pinned scroll scene; scroll writes `--open`; first 4 works of the Studio AI collection) → selected-work strip → `HomeArtistRoster` → clients wall. Every visible string maps to a field in the Sanity "Anasayfa" document (`lib/sanity.homeV2.ts`, translation fallbacks in `lib/translations.ts`); footer CTA comes from "İletişim Sayfası". When adding copy, add the Sanity field + mapping too — editors expect to change it in Studio.
+- **Tokens:** CSS vars in `app/globals.css` (`--ease-*`, `--duration-*`, `--text-*`, `--opacity-*`); mirrored in `lib/motion.ts` and Tailwind extends (incl. extra opacity steps 12/52/58/62/68/72/78/82/88).
+- **Motion:** above-fold `.hero-reveal`; below-fold `ScrollReveal` (`as="li"` inside lists). Native scrolling only — no scroll-jacking, no custom cursor, no grain. Respect `prefers-reduced-motion`.
+- **Header & menu:** `.site-header` (transparent → frosted when scrolled, hides on scroll down / returns on scroll up); below `lg` only logo + "Menu" — theme/language live in the `.menu-sheet` (page colour, numbered hairline rows, follows the theme). Write `backdrop-filter` unprefixed — the CSS pipeline drops the whole declaration pair otherwise.
+- **Lightbox:** single `components/Lightbox.tsx` (focus trap, swipe, scroll lock).
+- **Accessibility floor:** visible `:focus-visible` ring, skip link, 4.5:1 text contrast, 44px touch targets, labels on icon buttons.

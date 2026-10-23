@@ -25,10 +25,21 @@ export interface HomeV2Copy {
   aiSplitBody: string;
   aiSplitCta: string;
   aiWorksStat: string;
+  aiSceneLeft: string;
+  aiSceneRight: string;
+  artistsIntro: string;
   clientsMarqueeLabel: string;
+  clientsHeading: string;
+  clientsIntro: string;
 }
 
 export interface HomeV2HeroSlide {
   src: string;
   alt: string;
+  /** Work title shown in the hero index caption. */
+  title?: string;
+  /** Artist credit shown next to the title. */
+  credit?: string;
+  /** Where the caption links (the artist's portfolio). */
+  href?: string;
 }

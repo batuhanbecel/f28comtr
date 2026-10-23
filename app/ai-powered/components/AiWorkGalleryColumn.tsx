@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import Image from '@/components/Image';
 import { useCallback, useState } from 'react';
 
 import { Lightbox } from '@/components/Lightbox';
@@ -68,22 +68,11 @@ export function AiWorkGalleryColumn({
             type="button"
             onClick={() => open(i)}
             aria-label={slides[i]?.alt ?? imageAlt}
-            className="group card-editorial relative block w-full cursor-zoom-in overflow-hidden bg-th-fg/[0.04]"
+            className="tile relative block w-full cursor-zoom-in"
             style={{ aspectRatio: ratio }}
           >
             {i === 0 ? <ViewTransition name={`${transitionPrefix}-${workSlug}`}>{node}</ViewTransition> : node}
 
-            <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[rgb(var(--c-bg)/0.72)] opacity-0 transition-opacity duration-ui ease-brand group-hover:opacity-100">
-              <svg
-                className="h-6 w-6 text-th-fg/70"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.25}
-              >
-                <path strokeLinecap="square" d="M7 17L17 7M17 7H7M17 7v10" />
-              </svg>
-            </span>
           </button>
         );
       })}

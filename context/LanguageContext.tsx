@@ -14,6 +14,8 @@ interface LanguageContextValue {
   setLang: (l: Lang) => void;
   t: T;
   contactInfo: SiteContactInfo;
+  /** Footer call-to-action from the CMS contact document. */
+  footerCta: { label: string; heading: string };
 }
 
 const LanguageContext = createContext<LanguageContextValue>({
@@ -27,16 +29,22 @@ const LanguageContext = createContext<LanguageContextValue>({
     address: staticContactInfo.address,
     city: staticContactInfo.city,
   },
+  footerCta: {
+    label: translations.en.contact.footerCtaLabel,
+    heading: translations.en.contact.footerCtaHeading,
+  },
 });
 
 export function LanguageProvider({
   children,
   initialLang = 'en',
   initialContactInfo,
+  footerCta,
 }: {
   children: React.ReactNode;
   initialLang?: Lang;
   initialContactInfo: SiteContactInfo;
+  footerCta: { label: string; heading: string };
 }) {
   const [lang, setLangState] = useState<Lang>(initialLang);
   const router = useRouter();
@@ -57,7 +65,7 @@ export function LanguageProvider({
 
   return (
     <LanguageContext.Provider
-      value={{ lang, setLang, t: translations[lang], contactInfo: initialContactInfo }}
+      value={{ lang, setLang, t: translations[lang], contactInfo: initialContactInfo, footerCta }}
     >
       {children}
     </LanguageContext.Provider>

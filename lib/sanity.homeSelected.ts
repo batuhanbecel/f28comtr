@@ -1,19 +1,22 @@
 import { sanityFetch } from '@/lib/sanity.fetch';
 import type { HomeSelectedWorkStored } from '@/lib/homeSelectedWorks.shared';
 
-const WORKS_PROJECTION = `works[]{
+/** Fields projected from each featured-work array item. */
+const WORK_FIELDS = `{
   "id": _key,
   "imageSrc": image.asset->url,
   workTitle,
   "photographerId": photographer->slug.current
 }`;
 
-/** Reads featured works; prefers non-empty published list, then legacy singleton. */
+/**
+ * Reads featured works; prefers the Home page document's list, then the legacy
+ * singleton. (The projection used to be nested — `works[]{ works[]{…} }` —
+ * which returned empty items, so curated works never reached the site.)
+ */
 const HOME_SELECTED_QUERY = `coalesce(
-  *[_id == "homeV2PageCopy"][0]{
-    "works": select(count(works) > 0 => works[]{ ${WORKS_PROJECTION} })
-  }.works,
-  *[_id == "homeSelectedWorks"][0]{ works[]{ ${WORKS_PROJECTION} } }.works
+  select(count(*[_id == "homeV2PageCopy"][0].works) > 0 => *[_id == "homeV2PageCopy"][0].works[]${WORK_FIELDS}),
+  *[_id == "homeSelectedWorks"][0].works[]${WORK_FIELDS}
 )`;
 
 interface RawEntry {

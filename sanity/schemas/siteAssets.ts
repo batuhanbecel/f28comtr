@@ -11,7 +11,7 @@ export const siteAssets = defineType({
       name: 'landingImages',
       title: 'Anasayfa Görselleri',
       description:
-        'Anasayfa (home-v2) hero slayt görselleri. Sıra = slayt sırası. Boşsa varsayılan /public/home görselleri kullanılır.',
+        'Yedek hero görselleri: Anasayfa hero\'su "Anasayfa → Öne Çıkan İşler" listesinden gelir; bu görseller yalnızca o liste boşsa kullanılır.',
       type: 'array',
       of: [{ type: 'image', options: { hotspot: true } }],
       options: { layout: 'grid' },

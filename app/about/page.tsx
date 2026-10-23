@@ -6,7 +6,6 @@ import { EditorialPageHero } from '@/components/EditorialPageHero';
 import { LocalizedAboutBrands } from '@/components/LocalizedAboutBrands';
 import { AboutStats } from '@/components/AboutStats';
 import { HeroSnapBody } from '@/components/HeroSnapBody';
-import { HeroSnapTarget } from '@/components/HeroSnapTarget';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 import { generatePageMetadata } from '@/lib/seo';
 
@@ -26,18 +25,16 @@ export default async function AboutPage() {
   ]);
 
   return (
-    <ProductionSnapContainer snapMode="heroSnap">
+    <ProductionSnapContainer>
       <EditorialPageHero page="about" lang={lang} />
 
       <HeroSnapBody>
-        <HeroSnapTarget>
         <AboutStats
           photographerCount={photographers.length}
           clientCount={clientLogos.length}
           partnerCount={partnerLogos.length}
           production={{ stats: productionCopy.stats, statsValues: productionCopy.statsValues }}
         />
-        </HeroSnapTarget>
 
         <LocalizedAboutBrands partnerLogos={partnerLogos} clientLogos={clientLogos} />
         <Footer />

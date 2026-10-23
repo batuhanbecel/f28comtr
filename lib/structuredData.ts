@@ -65,6 +65,8 @@ export function getWebsiteStructuredData(siteUrl: string, photographerIds: strin
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: SITE_NAME,
+    // Short forms people search for; Google picks the site name from these.
+    alternateName: ['f/2.8 Production', 'f/2.8', 'f28'],
     url: siteUrl,
     publisher: { '@type': 'Organization', name: SITE_NAME, url: siteUrl },
     inLanguage: ['en', 'tr'],
