@@ -1,5 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { HomeIcon } from '@sanity/icons';
+import { HomeWorkImageInput } from '../components/HomeWorkImageInput';
 import { HomeSelectedWorksInput } from '../components/HomeSelectedWorksInput';
 
 export const homeV2PageCopy = defineType({
@@ -62,7 +63,7 @@ export const homeV2PageCopy = defineType({
       name: 'works',
       title: 'Öne Çıkan İşler',
       description:
-        'Anasayfada gösterilen işler (en fazla 6). Aynı işler, aynı sırayla hero\'nun numaralı slaytlarıdır (01–06). Sırayı sürükleyerek veya kartlardan değiştirebilirsiniz.',
+        'Anasayfada gösterilen işler (en fazla 6). Aynı işler, aynı sırayla hero\'nun numaralı slaytlarıdır (01–06). Fotoğrafçıyı seçip portfolyosundan ekleyin; sırayı sürükleyerek değiştirin.',
       type: 'array',
       of: [
         defineArrayMember({
@@ -71,24 +72,26 @@ export const homeV2PageCopy = defineType({
           title: 'Öne Çıkan İş',
           fields: [
             defineField({
+              name: 'photographer',
+              title: 'Fotoğrafçı',
+              type: 'reference',
+              to: [{ type: 'photographer' }],
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
               name: 'image',
               title: 'Görsel',
+              description: 'Seçili fotoğrafçının portfolyosundan seçin ya da bilgisayardan yükleyin.',
               type: 'image',
               options: { hotspot: true },
               validation: (Rule) => Rule.required(),
+              components: { input: HomeWorkImageInput },
             }),
             defineField({
               name: 'workTitle',
               title: 'İş Başlığı',
               description: 'Boş bırakırsan yedek başlık kullanılır.',
               type: 'string',
-            }),
-            defineField({
-              name: 'photographer',
-              title: 'Fotoğrafçı',
-              type: 'reference',
-              to: [{ type: 'photographer' }],
-              validation: (Rule) => Rule.required(),
             }),
           ],
           preview: {
