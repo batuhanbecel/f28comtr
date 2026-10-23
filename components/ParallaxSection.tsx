@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
-import Image from 'next/image';
+import Image from '@/components/Image';
 import { EditorialButton } from '@/components/EditorialButton';
 import { useLanguage } from '@/context/LanguageContext';
 import { shouldSkipOptimization } from '@/lib/blob';

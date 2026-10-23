@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import Image from '@/components/Image';
 import { memo, useState, useEffect, useCallback, useDeferredValue, useRef } from 'react';
 import { BalancedMasonryGrid as MasonryGridLib, Frame } from '@masonry-grid/react';
 import { shouldSkipOptimization } from '@/lib/blob';
@@ -16,6 +16,7 @@ interface MasonryGridProps {
 }
 
 // Fallback ratio used only until the image's real dimensions are measured.
+const GRID_GAP = 3;
 const FRAME_W = 4;
 const FRAME_H = 5;
 const BLUR = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q==";
@@ -34,7 +35,7 @@ const MasonryThumb = memo(function MasonryThumb({
   return (
     <button
       type="button"
-      className="relative block w-full h-full p-0 text-left cursor-pointer group overflow-hidden bg-th-fg/[0.03] card-editorial"
+      className="tile relative block w-full h-full p-0 text-left cursor-zoom-in"
       onClick={onOpen}
       aria-label={alt}
     >
@@ -42,7 +43,7 @@ const MasonryThumb = memo(function MasonryThumb({
         src={src}
         alt={alt}
         fill
-        className="object-cover object-top thumb-hover-scale"
+        className="object-cover object-top"
         loading="lazy"
         sizes={MASONRY_THUMB_SIZES}
         quality={GRID_IMAGE_QUALITY}
@@ -56,12 +57,6 @@ const MasonryThumb = memo(function MasonryThumb({
           }
         }}
       />
-      {/* Hover overlay — matches AI grid: same theme-aware tint + foreground expand icon */}
-      <div aria-hidden="true" className="absolute inset-0 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-ui ease-brand pointer-events-none flex items-center justify-center bg-[rgb(var(--c-bg)/0.72)]">
-        <svg className="w-6 h-6 text-th-fg/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.25}>
-          <path strokeLinecap="square" d="M7 17L17 7M17 7H7M17 7v10" />
-        </svg>
-      </div>
     </button>
   );
 });
@@ -90,21 +85,13 @@ export function MasonryGrid({ images, photographerName, fullWidth = false }: Mas
   useEffect(() => {
     let ticking = false;
     const update = () => {
-      const w = fullWidth
-        ? window.innerWidth
-        : containerRef.current?.clientWidth || window.innerWidth;
-      const cols = fullWidth
-        ? w >= 1536
-          ? 5
-          : w >= 1024
-            ? 4
-            : w >= 640
-              ? 3
-              : 2
-        : w >= 1024
-          ? 4
-          : 2;
-      setFrameWidth(Math.floor(w / cols));
+      // Measure the grid itself — window.innerWidth includes the scrollbar.
+      const w = containerRef.current?.clientWidth || document.documentElement.clientWidth;
+      // Shared gallery columns: 3 from tablet up (work stays large), 2 on phones.
+      const cols = w >= 768 ? 3 : 2;
+      // The grid is `repeat(auto-fill, minmax(frameWidth, 1fr))` with a gap, so the
+      // gaps must come out of the width or the last column never fits.
+      setFrameWidth(Math.floor((w - GRID_GAP * (cols - 1)) / cols));
       ticking = false;
     };
     update();
@@ -113,8 +100,15 @@ export function MasonryGrid({ images, photographerName, fullWidth = false }: Mas
       ticking = true;
       requestAnimationFrame(update);
     };
+    // Re-measure when the grid itself resizes — it can report 0 while
+    // `content-visibility: auto` keeps it unrendered off-screen.
+    const observer = new ResizeObserver(onResize);
+    if (containerRef.current) observer.observe(containerRef.current);
     window.addEventListener('resize', onResize, { passive: true });
-    return () => window.removeEventListener('resize', onResize);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', onResize);
+    };
   }, [fullWidth]);
 
   const openLightbox = useCallback((img: string) => {
@@ -129,7 +123,7 @@ export function MasonryGrid({ images, photographerName, fullWidth = false }: Mas
   return (
     <>
       <div ref={containerRef} className={fullWidth ? 'masonry-scroll w-full' : 'masonry-scroll'}>
-        <MasonryGridLib frameWidth={frameWidth} gap={3}>
+        <MasonryGridLib frameWidth={frameWidth} gap={GRID_GAP}>
           {visibleImages.map((image, idx) => {
             const d = dims[image];
             return (

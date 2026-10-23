@@ -33,6 +33,8 @@ interface ProductionDoc {
   sectionLabel?: LocalizedField;
   heading?: LocalizedField;
   description?: LocalizedField;
+  projectsLabel?: LocalizedField;
+  projectsHeading?: LocalizedField;
   stats?: {
     projectsLabel?: LocalizedField;
     brandsLabel?: LocalizedField;
@@ -85,6 +87,8 @@ function mapProduction(doc: ProductionDoc, lang: Lang): Partial<ProductionPageCo
   setIf('sectionLabel', pick(doc.sectionLabel, lang));
   setIf('heading', pick(doc.heading, lang));
   setIf('description', pick(doc.description, lang));
+  setIf('projectsLabel', pick(doc.projectsLabel, lang));
+  setIf('projectsHeading', pick(doc.projectsHeading, lang));
 
   if (doc.stats) {
     const stats = omitUndefined({
@@ -280,6 +284,8 @@ interface ContactDoc {
   addressLabel?: LocalizedField;
   formLabel?: LocalizedField;
   formHeading?: LocalizedField;
+  footerCtaLabel?: LocalizedField;
+  footerCtaHeading?: LocalizedField;
   form?: Record<string, LocalizedField>;
   info?: {
     email?: string;
@@ -308,6 +314,8 @@ function mapContact(doc: ContactDoc, lang: Lang): Partial<ContactPageCopy> {
   setIf('addressLabel', pick(doc.addressLabel, lang));
   setIf('formLabel', pick(doc.formLabel, lang));
   setIf('formHeading', pick(doc.formHeading, lang));
+  setIf('footerCtaLabel', pick(doc.footerCtaLabel, lang));
+  setIf('footerCtaHeading', pick(doc.footerCtaHeading, lang));
 
   if (doc.form) {
     const form: Record<string, string> = {};

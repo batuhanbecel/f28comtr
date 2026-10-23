@@ -11,8 +11,8 @@ export const homeV2PageCopy = defineType({
     { name: 'hero', title: 'Hero', default: true },
     { name: 'selectedWorks', title: 'Öne Çıkan İşler' },
     { name: 'artists', title: 'Sanatçılar' },
-    { name: 'aiSplit', title: 'AI Bölümü' },
-    { name: 'other', title: 'Diğer' },
+    { name: 'aiSplit', title: 'AI Sahnesi' },
+    { name: 'other', title: 'Müşteriler' },
   ],
   fields: [
     defineField({
@@ -26,12 +26,15 @@ export const homeV2PageCopy = defineType({
       group: 'hero',
       name: 'heroTitle',
       title: 'Hero Başlığı',
+      description: 'Hero cümlesinin beyaz ilk kısmı, örn. "Prodüksiyonun en iyi hali".',
       type: 'localizedString',
     }),
     defineField({
       group: 'hero',
       name: 'heroDescription',
       title: 'Hero Açıklaması',
+      description:
+        'Cümlenin devamı. İçindeki "fotoğrafçılık", "rötuş" ve "hibrit AI prodüksiyon" (EN: "photography", "retouch", "hybrid AI production") kelimeleri otomatik olarak ilgili sayfaya bağlanır.',
       type: 'localizedText',
     }),
 
@@ -59,7 +62,7 @@ export const homeV2PageCopy = defineType({
       name: 'works',
       title: 'Öne Çıkan İşler',
       description:
-        'Anasayfada gösterilen işler (en fazla 6). Sırayı sürükleyerek veya kartlardan değiştirebilirsiniz.',
+        'Anasayfada gösterilen işler (en fazla 6). Aynı işler, aynı sırayla hero\'nun numaralı slaytlarıdır (01–06). Sırayı sürükleyerek veya kartlardan değiştirebilirsiniz.',
       type: 'array',
       of: [
         defineArrayMember({
@@ -129,11 +132,33 @@ export const homeV2PageCopy = defineType({
     }),
     defineField({
       group: 'artists',
+      name: 'artistsIntro',
+      title: 'Sanatçılar Açıklaması',
+      description: 'Başlığın sağındaki kısa cümle, örn. "Birlikte çalıştığımız fotoğrafçı ve retoucherlar".',
+      type: 'localizedString',
+    }),
+    defineField({
+      group: 'artists',
       name: 'viewAllArtists',
       title: '"Tümünü Gör" Yazısı',
       type: 'localizedString',
     }),
 
+    defineField({
+      group: 'aiSplit',
+      name: 'aiSceneLeft',
+      title: 'Sahne — Üst Yazı',
+      description:
+        'Kaydırınca büyüyen görselin üstündeki kısa cümle, örn. "Made with AI." Sahnede AI Powered koleksiyonunun ilk 4 işi gösterilir; sırayı AI Powered → Çalışma Galerisi\'nden değiştirebilirsiniz.',
+      type: 'localizedString',
+    }),
+    defineField({
+      group: 'aiSplit',
+      name: 'aiSceneRight',
+      title: 'Sahne — Alt Yazı',
+      description: 'Görselin altındaki kısa cümle, örn. "Finished by hand."',
+      type: 'localizedString',
+    }),
     defineField({
       group: 'aiSplit',
       name: 'aiSplitLabel',
@@ -161,22 +186,39 @@ export const homeV2PageCopy = defineType({
     defineField({
       group: 'aiSplit',
       name: 'aiWorksStat',
-      title: 'AI İş Sayısı Etiketi',
-      description: 'Örn. "AI iş" / "AI works"',
+      title: 'AI İş Sayısı Etiketi (kullanılmıyor)',
+      description: 'Eski tasarımdan kalma; sitede gösterilmiyor.',
       type: 'localizedString',
+      hidden: true,
     }),
 
     defineField({
       group: 'other',
       name: 'servicesMarqueeLabel',
-      title: 'Hizmetler Marquee Etiketi',
+      title: 'Hizmetler Marquee Etiketi (kullanılmıyor)',
+      description: 'Eski tasarımdan kalma; sitede gösterilmiyor.',
       type: 'localizedString',
+      hidden: true,
     }),
     defineField({
       group: 'other',
       name: 'clientsMarqueeLabel',
-      title: 'Müşteri Logoları Marquee Etiketi',
+      title: 'Müşteriler Etiketi',
+      description: 'Logo duvarının üstündeki küçük etiket, örn. "Clients". Logolar Site Ayarları & Medya\'dan yönetilir.',
       type: 'localizedString',
+    }),
+    defineField({
+      group: 'other',
+      name: 'clientsHeading',
+      title: 'Müşteriler Başlığı',
+      description: 'Örn. "Birlikte çalıştığımız markalar".',
+      type: 'localizedString',
+    }),
+    defineField({
+      group: 'other',
+      name: 'clientsIntro',
+      title: 'Müşteriler Açıklaması',
+      type: 'localizedText',
     }),
   ],
   preview: {

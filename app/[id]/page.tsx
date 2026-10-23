@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
+import Image from '@/components/Image';
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import { photographers as staticPhotographers } from '@/lib/data';

@@ -1,42 +1,32 @@
 'use client';
 
-import { PageSection } from '@/components/PageSection';
-import { HeroSnapTarget } from '@/components/HeroSnapTarget';
+import { BlockHead } from '@/components/gallery/BlockHead';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import type { AiPoweredPageCopy } from '@/lib/pageCopy.types';
-import { DisplayCase } from '@/components/DisplayCase';
 
 interface AiPoweredProcessStripProps {
   copy: AiPoweredPageCopy;
 }
 
+/** AI workflow — the same numbered hairline list as Production's process. */
 export function AiPoweredProcessStrip({ copy }: AiPoweredProcessStripProps) {
   const steps = copy.process.steps ?? [];
   if (steps.length === 0) return null;
 
   return (
-    <HeroSnapTarget className="hero-snap-target--pad">
-      <PageSection border className="pt-6 md:pt-8 pb-16 md:py-20" aria-label={copy.process.sectionLabel}>
-        <ScrollReveal className="page-heading-stack mb-10">
-          <span className="section-label">{copy.process.sectionLabel}</span>
-          <h2 className="heading-section"><DisplayCase>{copy.process.heading}</DisplayCase></h2>
-        </ScrollReveal>
-
-        <ScrollReveal>
-          <ol className="process-strip">
-            {steps.map((step, i) => (
-              <li key={`${step.title}-${i}`} className="process-step">
-                <div className="step-head">
-                  <span className="step-num">{String(i + 1).padStart(2, '0')}</span>
-                  <span className="step-rule" aria-hidden="true" />
-                </div>
-                <h3 className="step-title">{step.title}</h3>
-                <p className="step-sub">{step.sub}</p>
-              </li>
-            ))}
-          </ol>
-        </ScrollReveal>
-      </PageSection>
-    </HeroSnapTarget>
+    <section className="g-section" aria-labelledby="ai-process-title">
+      <BlockHead id="ai-process-title" label={copy.process.sectionLabel} title={copy.process.heading} />
+      <div className="g-inner">
+        <ol className="index-list">
+          {steps.map((step, i) => (
+            <ScrollReveal key={`${step.title}-${i}`} as="li" className="index-list__row" delay={Math.min(i, 6) * 0.04}>
+              <span className="index-list__num">{String(i + 1).padStart(2, '0')}</span>
+              <h3 className="index-list__title">{step.title}</h3>
+              <p className="index-list__body">{step.sub}</p>
+            </ScrollReveal>
+          ))}
+        </ol>
+      </div>
+    </section>
   );
 }

@@ -7,6 +7,8 @@ import { WorkCard } from "./WorkCard"
 
 import type { AiPoweredPageCopy } from '@/lib/pageCopy.types'
 
+const GRID_GAP = 2
+
 interface WorkGridProps {
   works: AiPoweredWork[]
   filtersCopy: AiPoweredPageCopy['filters']
@@ -29,8 +31,11 @@ export function WorkGrid({ works, filtersCopy }: WorkGridProps) {
     let ticking = false
     const update = () => {
       const w = containerRef.current?.clientWidth || window.innerWidth
-      const cols = w >= 1024 ? 4 : 2
-      setFrameWidth(Math.floor(w / cols))
+      // Shared gallery columns: 3 from tablet up (work stays large), 2 on phones.
+      const cols = w >= 768 ? 3 : 2
+      // The grid is `repeat(auto-fill, minmax(frameWidth, 1fr))` with a gap, so the
+      // gaps must come out of the width or the last column never fits.
+      setFrameWidth(Math.floor((w - GRID_GAP * (cols - 1)) / cols))
       ticking = false
     }
     update()
@@ -53,7 +58,7 @@ export function WorkGrid({ works, filtersCopy }: WorkGridProps) {
 
   return (
     <div ref={containerRef} className="ai-work-masonry">
-      <BalancedMasonryGrid frameWidth={frameWidth} gap={2}>
+      <BalancedMasonryGrid frameWidth={frameWidth} gap={GRID_GAP}>
         {works.map((work, i) => {
           const d = dims[work.imageSrc]
           return (

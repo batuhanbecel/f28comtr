@@ -17,7 +17,7 @@ import { SanityVisualEditing } from "@/components/SanityVisualEditing";
 import { parseLang, parseTheme } from "@/lib/prefs";
 import { getSiteUrl } from "@/lib/siteUrl";
 import { SITE_NAME } from "@/lib/seo";
-import { getContactInfo, getPhotographers } from "@/lib/cms";
+import { getSiteContact, getPhotographers } from "@/lib/cms";
 import { getOrganizationStructuredData, getWebsiteStructuredData } from "@/lib/structuredData";
 
 // latin-ext carries ş ğ ı İ — without it Turkish letters fall back to a system font.
@@ -98,10 +98,11 @@ export default async function RootLayout({
   const initialTheme = parseTheme(cookieStore.get("f28_theme")?.value);
   const siteUrl = getSiteUrl();
 
-  const [photographers, initialContactInfo] = await Promise.all([
+  const [photographers, siteContact] = await Promise.all([
     getPhotographers(),
-    getContactInfo(initialLang),
+    getSiteContact(initialLang),
   ]);
+  const initialContactInfo = siteContact.info;
   const navPhotographers: NavPhotographer[] = photographers.map((p) => ({
     id: p.id,
     fullName: p.fullName,
@@ -129,7 +130,11 @@ export default async function RootLayout({
       </head>
       <body className="antialiased bg-th-bg text-th-fg">
         <ThemeProvider initialTheme={initialTheme}>
-          <LanguageProvider initialLang={initialLang} initialContactInfo={initialContactInfo}>
+          <LanguageProvider
+            initialLang={initialLang}
+            initialContactInfo={initialContactInfo}
+            footerCta={siteContact.footerCta}
+          >
             <SmoothScrollProvider>
               <a href="#main-content" className="skip-link">
                 {translations[initialLang].a11y.skipToContent}

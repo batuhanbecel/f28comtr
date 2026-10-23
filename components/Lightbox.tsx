@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useCallback, useRef, useState } from 'react';
-import Image from 'next/image';
+import Image from '@/components/Image';
 import { shouldSkipOptimization } from '@/lib/blob';
 import { LIGHTBOX_IMAGE_QUALITY } from '@/lib/imageConfig';
 import { LIGHTBOX_IMAGE_SIZES } from '@/lib/imageSizes';

@@ -1,6 +1,7 @@
 'use client';
 
 import { useLanguage } from '@/context/LanguageContext';
+import { BlockHead } from '@/components/gallery/BlockHead';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import type { ProductionPageCopy } from '@/lib/pageCopy.types';
 
@@ -12,9 +13,9 @@ interface AboutStatsProps {
   production: Pick<ProductionPageCopy, 'stats' | 'statsValues'>;
 }
 
-/** The one place the studio's numbers live — large serif figures, left aligned. */
+/** The one place the studio's numbers live — large figures on hairlines. */
 export function AboutStats({ photographerCount, clientCount, partnerCount, production }: AboutStatsProps) {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const tr = lang === 'tr';
 
   const stats = [
@@ -27,15 +28,18 @@ export function AboutStats({ photographerCount, clientCount, partnerCount, produ
   ];
 
   return (
-    <section className="about-stats page-section">
-      <dl className="about-stats__grid">
-        {stats.map((stat, i) => (
-          <ScrollReveal key={stat.label} delay={i * 0.05} className="about-stats__item">
-            <dt className="about-stats__label">{stat.label}</dt>
-            <dd className="about-stats__value">{stat.value}</dd>
-          </ScrollReveal>
-        ))}
-      </dl>
+    <section className="g-section" aria-labelledby="about-stats-title">
+      <BlockHead id="about-stats-title" label={t.about.statsLabel} title={t.about.statsHeading} />
+      <div className="g-inner">
+        <dl className="about-stats__grid">
+          {stats.map((stat, i) => (
+            <ScrollReveal key={stat.label} delay={i * 0.05} className="about-stats__item">
+              <dt className="about-stats__label">{stat.label}</dt>
+              <dd className="about-stats__value">{stat.value}</dd>
+            </ScrollReveal>
+          ))}
+        </dl>
+      </div>
     </section>
   );
 }

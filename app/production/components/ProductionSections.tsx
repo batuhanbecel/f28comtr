@@ -1,93 +1,69 @@
 'use client';
 
-import { PageSection } from '@/components/PageSection';
-import { HeroSnapTarget } from '@/components/HeroSnapTarget';
+import { BlockHead } from '@/components/gallery/BlockHead';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import type { ProductionPageCopy } from '@/lib/pageCopy.types';
-import { DisplayCase } from '@/components/DisplayCase';
 
 interface ProductionSectionsProps {
   copy: ProductionPageCopy;
 }
 
+const num = (i: number) => String(i + 1).padStart(2, '0');
+
+/** Services, process and deliverables as numbered hairline lists — no cards. */
 export function ProductionSections({ copy }: ProductionSectionsProps) {
   const { services, process, deliverables } = copy;
   const serviceItems = services.items ?? [];
   const processSteps = process.steps ?? [];
-  const deliverableItems = deliverables.items ?? [];
-  const visibleDeliverables = deliverableItems.filter(Boolean);
-  const processStripClass =
-    processSteps.length === 5 ? 'process-strip process-strip--five' : 'process-strip';
+  const deliverableItems = (deliverables.items ?? []).filter(Boolean);
 
   return (
     <>
       {serviceItems.length > 0 ? (
-        <HeroSnapTarget className="hero-snap-target--pad">
-        <PageSection className="pt-6 md:pt-8 pb-16 md:pb-20">
-          <ScrollReveal className="page-heading-stack mb-10 md:mb-14">
-            <span className="section-label">{services.sectionLabel}</span>
-            <h2 className="heading-section"><DisplayCase>{services.heading}</DisplayCase></h2>
-          </ScrollReveal>
-
-          <div className="editorial-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {serviceItems.map((item, i) => (
-              <ScrollReveal key={`${item.title}-${i}`} delay={0.08 + i * 0.05}>
-                <article className="editorial-panel h-full p-8 md:p-10 flex flex-col gap-4">
-                  <span className="mono-label">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <h3 className="text-base md:text-lg font-medium tracking-tight text-th-fg/90">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-muted-body">{item.description}</p>
-                </article>
-              </ScrollReveal>
-            ))}
+        <section className="g-section" aria-labelledby="services-title">
+          <BlockHead id="services-title" label={services.sectionLabel} title={services.heading} />
+          <div className="g-inner">
+            <ol className="index-list">
+              {serviceItems.map((item, i) => (
+                <ScrollReveal key={`${item.title}-${i}`} as="li" className="index-list__row" delay={Math.min(i, 6) * 0.04}>
+                  <span className="index-list__num">{num(i)}</span>
+                  <h3 className="index-list__title">{item.title}</h3>
+                  <p className="index-list__body">{item.description}</p>
+                </ScrollReveal>
+              ))}
+            </ol>
           </div>
-        </PageSection>
-        </HeroSnapTarget>
+        </section>
       ) : null}
 
       {processSteps.length > 0 ? (
-        <PageSection border className="py-16 md:py-20">
-          <ScrollReveal className="page-heading-stack mb-10">
-            <span className="section-label">{process.sectionLabel}</span>
-            <h2 className="heading-section"><DisplayCase>{process.heading}</DisplayCase></h2>
-          </ScrollReveal>
-
-          <ol className={processStripClass}>
-            {processSteps.map((step, i) => (
-              <li key={`${step.title}-${i}`} className="process-step">
-                <div className="step-head">
-                  <span className="step-num">{String(i + 1).padStart(2, '0')}</span>
-                  <span className="step-rule" aria-hidden="true" />
-                </div>
-                <h3 className="step-title">{step.title}</h3>
-                <p className="step-sub">{step.sub}</p>
-              </li>
-            ))}
-          </ol>
-        </PageSection>
+        <section className="g-section" aria-labelledby="process-title">
+          <BlockHead id="process-title" label={process.sectionLabel} title={process.heading} />
+          <div className="g-inner">
+            <ol className="index-list">
+              {processSteps.map((step, i) => (
+                <ScrollReveal key={`${step.title}-${i}`} as="li" className="index-list__row" delay={Math.min(i, 6) * 0.04}>
+                  <span className="index-list__num">{num(i)}</span>
+                  <h3 className="index-list__title">{step.title}</h3>
+                  <p className="index-list__body">{step.sub}</p>
+                </ScrollReveal>
+              ))}
+            </ol>
+          </div>
+        </section>
       ) : null}
 
-      {visibleDeliverables.length > 0 ? (
-        <PageSection className="py-16 md:py-20">
-          <ScrollReveal className="page-heading-stack mb-10">
-            <span className="section-label">{deliverables.sectionLabel}</span>
-            <h2 className="heading-section"><DisplayCase>{deliverables.heading}</DisplayCase></h2>
-          </ScrollReveal>
-
-          <ScrollReveal>
-            <div className="flex flex-wrap gap-3 max-w-4xl">
-              {visibleDeliverables.map((item, i) => (
-                <span key={`${item}-${i}`} className="editorial-chip">
-                  <span className="mono-label">{String(i + 1).padStart(2, '0')}</span>
-                  {item}
-                </span>
+      {deliverableItems.length > 0 ? (
+        <section className="g-section" aria-labelledby="deliverables-title">
+          <BlockHead id="deliverables-title" label={deliverables.sectionLabel} title={deliverables.heading} />
+          <div className="g-inner">
+            <ul className="tag-list">
+              {deliverableItems.map((item, i) => (
+                <li key={`${item}-${i}`}>{item}</li>
               ))}
-            </div>
-          </ScrollReveal>
-        </PageSection>
+            </ul>
+          </div>
+        </section>
       ) : null}
     </>
   );

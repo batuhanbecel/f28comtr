@@ -1,7 +1,7 @@
 "use client"
 
 import { memo } from "react"
-import Image from "next/image"
+import Image from "@/components/Image"
 import Link from "next/link"
 import { shouldSkipOptimization } from "@/lib/blob"
 import { ViewTransition } from "@/lib/ViewTransition"
@@ -38,7 +38,7 @@ export const WorkCard = memo(function WorkCard({
   return (
     <Link
       href={`/ai-powered/works/${work.slug}`}
-      className="ai-work-card card-editorial"
+      className="ai-work-card"
       aria-label={ariaLabel || work.imageAlt}
     >
       <div className="ai-work-image-wrap">

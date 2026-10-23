@@ -10,5 +10,3 @@ export const HOME_V2_HERO_FADE_MS = 1200;
 
 /** Time each slide is primary before advancing. */
 export const HOME_V2_HERO_HOLD_MS = 5600;
-
-export const HOME_V2_HERO_INTERVAL_MS = HOME_V2_HERO_HOLD_MS + HOME_V2_HERO_FADE_MS;

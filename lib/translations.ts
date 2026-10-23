@@ -11,6 +11,8 @@ export const translations = {
       ourArtists: 'Our Artists',
       aiPoweredGallery: 'Works',
       aiPoweredPortfolio: 'Portfolio',
+      menu: 'Menu',
+      close: 'Close',
     },
     common: {
       scroll: 'Scroll',
@@ -84,6 +86,11 @@ export const translations = {
       aiSplitCta: 'View works',
       aiWorksStat: 'AI works',
       clientsMarqueeLabel: 'Clients',
+      clientsHeading: 'Brands we work with',
+      clientsIntro: 'A selection of the brands we have photographed, retouched and produced for.',
+      artistsIntro: 'Photographers and retouchers we work with',
+      aiSceneLeft: 'Made with AI.',
+      aiSceneRight: 'Finished by hand.',
     },
     production: {
       sectionLabel: 'Istanbul — Since 2008',
@@ -198,6 +205,8 @@ export const translations = {
       partnerAgencies: 'PARTNER AGENCIES',
       whoWeWorkWith: 'Who We Work With',
       clientsHeading: 'CLIENTS',
+      statsLabel: 'Since 2008',
+      statsHeading: 'The studio in numbers',
     },
     portfolios: {
       sectionLabel: 'Our Work',
@@ -206,6 +215,8 @@ export const translations = {
     contact: {
       sectionLabel: 'Get in touch',
       heading: 'CONTACT',
+      footerCtaLabel: 'Get in touch',
+      footerCtaHeading: 'Have a project in mind?',
       description: 'Send us a message — we will get back to you as soon as we can.',
       channelsLabel: 'Direct',
       channelsHeading: 'REACH US',
@@ -252,6 +263,7 @@ export const translations = {
       follow: 'Follow',
       rights: 'All rights reserved.',
       city: 'Istanbul, Turkey',
+      backToTop: 'Back to top',
     },
     seo: {
       home: {
@@ -327,6 +339,8 @@ export const translations = {
       ourArtists: 'Sanatçılarımız',
       aiPoweredGallery: 'Çalışmalarımız',
       aiPoweredPortfolio: 'Portföyler',
+      menu: 'Menü',
+      close: 'Kapat',
     },
     common: {
       scroll: 'Kaydır',
@@ -400,6 +414,11 @@ export const translations = {
       aiSplitCta: 'İşleri gör',
       aiWorksStat: 'AI iş',
       clientsMarqueeLabel: 'Müşterilerimiz',
+      clientsHeading: 'Birlikte çalıştığımız markalar',
+      clientsIntro: 'Fotoğrafladığımız, rötuşladığımız ve prodüksiyonunu üstlendiğimiz markalardan bir seçki.',
+      artistsIntro: 'Birlikte çalıştığımız fotoğrafçı ve retoucherlar',
+      aiSceneLeft: 'Yapay zekâyla üretildi.',
+      aiSceneRight: 'Elde tamamlandı.',
     },
     production: {
       sectionLabel: 'İstanbul — 2008\'den Beri',
@@ -419,7 +438,7 @@ export const translations = {
         items: [
           {
             title: 'Fotoğrafçılık',
-            description: 'Kampanya, lookbook, e-ticaret, still life ve location çekimleri.',
+            description: 'Global markalar için kampanya, lookbook, e-ticaret, ürün ve dış mekân çekimleri.',
           },
           {
             title: 'AI Tabanlı İçerik Üretimi',
@@ -427,15 +446,15 @@ export const translations = {
           },
           {
             title: 'CGI & Rötuş',
-            description: 'Compositing, beauty, set extension ve print/digital post prodüksiyon.',
+            description: 'Kompozit çalışmalar, güzellik rötuşu, set genişletme ve basılı/dijital için üst düzey post prodüksiyon.',
           },
           {
             title: 'Video',
-            description: 'Reklam filmi, sosyal medya içeriği, product video ve marka hikâyesi.',
+            description: 'Reklam filmi, sosyal medya içeriği, ürün videosu ve hareketle anlatılan marka hikâyeleri.',
           },
           {
             title: 'Kurgu',
-            description: 'Offline/online edit, grading hazırlığı ve platform master kesimleri.',
+            description: 'Offline ve online kurgu, renk düzenlemeye hazırlık ve platformlara hazır final kurgular.',
           },
         ],
       },
@@ -443,11 +462,11 @@ export const translations = {
         sectionLabel: 'Sürecimiz',
         heading: 'NASIL ÇALIŞIYORUZ',
         steps: [
-          { title: 'Brief & planlama', sub: 'Marka ihtiyacı, yaratıcı yön, shot list ve takvim' },
-          { title: 'Prodüksiyon', sub: 'Stüdyo veya location çekimi, doğru ekip ve talent' },
-          { title: 'Post & rötuş', sub: 'Compositing, color ve high-end finishing' },
-          { title: 'Adaptasyon', sub: 'Kanal bazlı crop, format ve versiyonlar' },
-          { title: 'Teslimat', sub: 'Final asset\'ler, arşiv ve ekibinize devir' },
+          { title: 'Brief & planlama', sub: 'Marka ihtiyacı, yaratıcı yön, çekim listesi ve takvim' },
+          { title: 'Prodüksiyon', sub: 'Doğru ekip ve oyuncularla stüdyo ya da dış mekân çekimi' },
+          { title: 'Post prodüksiyon & rötuş', sub: 'Kompozit, renk düzenleme ve üst düzey son dokunuşlar' },
+          { title: 'Adaptasyon', sub: 'Her kanal için kırpım, format ve versiyonlar' },
+          { title: 'Teslimat', sub: 'Final dosyalar, arşiv ve ekibinize teslim' },
         ],
       },
       deliverables: {
@@ -514,6 +533,8 @@ export const translations = {
       partnerAgencies: 'ORTAK AJANSLAR',
       whoWeWorkWith: 'Birlikte Çalıştıklarımız',
       clientsHeading: 'MÜŞTERİLER',
+      statsLabel: '2008\'den beri',
+      statsHeading: 'Rakamlarla stüdyo',
     },
     portfolios: {
       sectionLabel: 'Çalışmalarımız',
@@ -522,6 +543,8 @@ export const translations = {
     contact: {
       sectionLabel: 'Bize ulaşın',
       heading: 'İLETİŞİM',
+      footerCtaLabel: 'İletişime geçin',
+      footerCtaHeading: 'Aklınızda bir proje mi var?',
       description: 'Mesajınızı gönderin — en kısa sürede size dönüş yapacağız.',
       channelsLabel: 'Doğrudan',
       channelsHeading: 'BİZE ULAŞIN',
@@ -568,6 +591,7 @@ export const translations = {
       follow: 'Takip Et',
       rights: 'Tüm hakları saklıdır.',
       city: 'İstanbul, Türkiye',
+      backToTop: 'Başa dön',
     },
     seo: {
       home: {

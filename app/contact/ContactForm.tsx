@@ -2,7 +2,6 @@
 
 import { useRef, useState, type FormEvent } from 'react';
 import { EditorialButton } from '@/components/EditorialButton';
-import { SectionHeader } from '@/components/PageHeader';
 import type { ContactPageCopy } from '@/lib/pageCopy.types';
 
 interface ContactFormProps {
@@ -133,8 +132,6 @@ export function ContactForm({ copy }: ContactFormProps) {
 
   return (
     <div className="contact-form-wrap">
-      <SectionHeader label={copy.formLabel} title={copy.formHeading} className="mb-10 md:mb-12" />
-
       <form ref={formRef} onSubmit={handleSubmit} className="contact-form" noValidate>
         <div className="contact-form-grid">
           <label className="contact-field">

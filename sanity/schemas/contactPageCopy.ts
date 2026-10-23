@@ -11,6 +11,7 @@ export const contactPageCopy = defineType({
     { name: 'channels', title: 'İletişim Kanalları' },
     { name: 'form', title: 'Form' },
     { name: 'info', title: 'İletişim Bilgileri' },
+    { name: 'footer', title: 'Footer Çağrısı' },
     { name: 'seo', title: 'SEO' },
   ],
   fields: [
@@ -57,7 +58,35 @@ export const contactPageCopy = defineType({
         defineField({ name: 'error', title: 'Hata Mesajı', type: 'localizedString' }),
         defineField({ name: 'required', title: 'Zorunlu Alan Mesajı', type: 'localizedString' }),
         defineField({ name: 'invalidEmail', title: 'Geçersiz Email Mesajı', type: 'localizedString' }),
+        defineField({
+          name: 'fieldRequired',
+          title: 'Boş Alan Mesajı',
+          description: 'Her boş alanın altında gösterilir, örn. "Bu alan zorunludur."',
+          type: 'localizedString',
+        }),
+        defineField({
+          name: 'rateLimited',
+          title: 'Çok Fazla Mesaj Uyarısı',
+          description: 'Kısa sürede çok fazla gönderim yapılırsa gösterilir.',
+          type: 'localizedString',
+        }),
       ],
+    }),
+
+    // ── Footer CTA (every page) ─────────────────────────────────────────
+    defineField({
+      group: 'footer',
+      name: 'footerCtaLabel',
+      title: 'Footer Etiketi',
+      description: 'Her sayfanın sonundaki büyük çağrının üstündeki küçük etiket, örn. "İletişime geçin".',
+      type: 'localizedString',
+    }),
+    defineField({
+      group: 'footer',
+      name: 'footerCtaHeading',
+      title: 'Footer Başlığı',
+      description: 'Örn. "Aklınızda bir proje mi var?" — altında e-posta adresi (İletişim Bilgileri) gösterilir.',
+      type: 'localizedString',
     }),
 
     // ── Contact Info ────────────────────────────────────────────────────

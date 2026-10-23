@@ -20,7 +20,7 @@ export default async function ProductionPage() {
   const lang = await getServerLang();
   const [copy, marqueeItems, projects] = await Promise.all([
     getPageCopy('production', lang),
-    getProductionMarqueeItems(100),
+    getProductionMarqueeItems(24),
     getProductionProjects(),
   ]);
 
@@ -34,14 +34,14 @@ export default async function ProductionPage() {
     <ProductionSnapContainer>
       <EditorialPageHero page="production" lang={lang} heroCopy={heroCopy} />
       <HeroSnapBody className="bg-th-bg text-th-fg">
-        {/* Work first: case studies (when published in Studio), then services and process */}
+        {/* Work first: case studies (when published in Studio) and the roster's work, then services and process */}
         <ProductionProjectsGrid
           projects={projects}
           label={copy.projectsLabel}
           heading={copy.projectsHeading}
         />
-        <ProductionSections copy={copy} />
         <ProductionMarquee items={marqueeItems} copy={copy} />
+        <ProductionSections copy={copy} />
         <Footer />
       </HeroSnapBody>
     </ProductionSnapContainer>

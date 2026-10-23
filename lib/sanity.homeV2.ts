@@ -26,7 +26,12 @@ const HOME_V2_COPY_QUERY = `*[_id == "homeV2PageCopy"][0]{
   aiSplitCta,
   aiWorksStat,
   servicesMarqueeLabel,
-  clientsMarqueeLabel
+  clientsMarqueeLabel,
+  aiSceneLeft,
+  aiSceneRight,
+  artistsIntro,
+  clientsHeading,
+  clientsIntro
 }`;
 
 interface HomeV2Doc {
@@ -46,6 +51,11 @@ interface HomeV2Doc {
   aiWorksStat?: LocalizedField;
   servicesMarqueeLabel?: LocalizedField;
   clientsMarqueeLabel?: LocalizedField;
+  aiSceneLeft?: LocalizedField;
+  aiSceneRight?: LocalizedField;
+  artistsIntro?: LocalizedField;
+  clientsHeading?: LocalizedField;
+  clientsIntro?: LocalizedField;
 }
 
 function mapHomeV2Patch(doc: HomeV2Doc | null, lang: Lang): Partial<HomeV2Copy> {
@@ -68,6 +78,11 @@ function mapHomeV2Patch(doc: HomeV2Doc | null, lang: Lang): Partial<HomeV2Copy> 
     'aiWorksStat',
     'servicesMarqueeLabel',
     'clientsMarqueeLabel',
+    'aiSceneLeft',
+    'aiSceneRight',
+    'artistsIntro',
+    'clientsHeading',
+    'clientsIntro',
   ];
   for (const key of fields) {
     const value = pick(doc[key] as LocalizedField, lang);

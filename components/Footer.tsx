@@ -6,8 +6,12 @@ import { FOOTER_NAV } from '@/lib/siteRoutes';
 import { F28LogoMark } from '@/components/F28LogoMark';
 import { useLanguage } from '@/context/LanguageContext';
 
+/**
+ * Closes every page: a large project call-to-action, then a quiet hairline
+ * grid (studio · pages · contact · follow) and the legal line.
+ */
 export function Footer() {
-  const { t, contactInfo: ctxContact } = useLanguage();
+  const { t, contactInfo: ctxContact, footerCta } = useLanguage();
   const contactInfo = {
     email: ctxContact.email || staticContactInfo.email,
     instagram: ctxContact.instagram || staticContactInfo.instagram,
@@ -16,99 +20,97 @@ export function Footer() {
     city: ctxContact.city || staticContactInfo.city,
   };
 
-  const linkClass =
-    'text-th-fg/58 text-sm tracking-wide hover:text-th-fg/90 transition-colors duration-ui w-fit hover-line';
-
-  const childLinkClass =
-    'text-th-fg/52 text-[13px] tracking-wide hover:text-th-fg/82 transition-colors duration-ui w-fit hover-line pl-0';
+  // AI-Powered's sub-pages are listed flat alongside the main pages.
+  const pages = FOOTER_NAV.flatMap((entry) =>
+    entry.kind === 'link'
+      ? [{ href: entry.path, label: t.nav[entry.navKey] }]
+      : [
+          { href: entry.href, label: t.nav[entry.labelKey] },
+          ...entry.children
+            .filter((child) => child.path !== entry.href)
+            .map((child) => ({ href: child.path, label: `${t.nav[entry.labelKey]} ${t.nav[child.navKey]}` })),
+        ],
+  );
 
   return (
-    <footer className="bg-th-bg border-t border-th-fg/10">
-      <div className="page-section max-w-7xl mx-auto w-full">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 pb-12 md:pb-16">
-          <div className="flex flex-col gap-6">
-            <Link href="/" className="opacity-55 hover:opacity-100 transition-opacity duration-ui w-fit hover-line">
-              <F28LogoMark className="h-8 w-auto text-th-fg" />
-            </Link>
-            <div className="space-y-1">
-              <p className="section-label">{t.footer.tagline}</p>
-              <p className="section-label">{t.footer.location}</p>
-            </div>
-          </div>
+    <footer className="site-footer">
+      <div className="g-inner site-footer__cta">
+        <span className="section-label">{footerCta.label}</span>
+        <p className="site-footer__heading">{footerCta.heading}</p>
+        <a href={`mailto:${contactInfo.email}`} className="site-footer__email">
+          {contactInfo.email}
+          <span aria-hidden> →</span>
+        </a>
+      </div>
 
-          <div>
-            <p className="section-label mb-7">{t.footer.navigation}</p>
-            <nav className="flex flex-col gap-3.5" aria-label={t.footer.navigation}>
-              {FOOTER_NAV.map((entry) => {
-                if (entry.kind === 'link') {
-                  return (
-                    <Link key={entry.path} href={entry.path} className={linkClass}>
-                      {t.nav[entry.navKey]}
-                    </Link>
-                  );
-                }
+      <div className="g-inner site-footer__grid">
+        <div className="site-footer__col">
+          <Link href="/" aria-label={`f/2.8 — ${t.nav.home}`} className="w-fit transition-opacity duration-ui hover:opacity-70">
+            <F28LogoMark className="h-9 w-auto text-th-fg" aria-hidden />
+          </Link>
+          <p className="site-footer__muted">
+            {t.footer.tagline}
+            <br />
+            {t.footer.location}
+          </p>
+        </div>
 
-                return (
-                  <div key="ai-powered-group" className="flex flex-col gap-2.5">
-                    <Link href={entry.href} className={linkClass}>
-                      {t.nav[entry.labelKey]}
-                    </Link>
-                    <div className="flex flex-col gap-2 pl-4 border-l border-th-fg/10">
-                      {entry.children.map((child) => (
-                        <Link key={child.path} href={child.path} className={childLinkClass}>
-                          {t.nav[child.navKey]}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </nav>
-          </div>
+        <nav className="site-footer__col" aria-label={t.footer.navigation}>
+          <p className="site-footer__title">{t.footer.navigation}</p>
+          <ul className="site-footer__links">
+            {pages.map((page) => (
+              <li key={page.href}>
+                <Link href={page.href} className="hover-line">
+                  {page.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-          <div>
-            <p className="section-label mb-7">{t.footer.contact}</p>
-            <nav className="flex flex-col gap-3.5 mb-8" aria-label={t.footer.contact}>
-              <Link href="/contact" className={linkClass}>
+        <div className="site-footer__col">
+          <p className="site-footer__title">{t.footer.contact}</p>
+          <ul className="site-footer__links">
+            <li>
+              <Link href="/contact" className="hover-line">
                 {t.footer.contactPage}
               </Link>
-              <a href={`mailto:${contactInfo.email}`} className={linkClass}>
+            </li>
+            <li>
+              <a href={`mailto:${contactInfo.email}`} className="hover-line">
                 {contactInfo.email}
               </a>
-              <p className="text-th-fg/58 text-sm leading-relaxed tracking-wide">
-                {contactInfo.address}
-                <br />
-                {contactInfo.city}
-              </p>
-            </nav>
-            <p className="section-label mb-4">{t.footer.follow}</p>
-            <div className="flex gap-5">
-              <Link
-                href={contactInfo.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={linkClass}
-              >
-                Instagram
-              </Link>
-              <Link
-                href={contactInfo.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={linkClass}
-              >
-                LinkedIn
-              </Link>
-            </div>
-          </div>
+            </li>
+          </ul>
+          <p className="site-footer__muted">
+            {contactInfo.address}
+            <br />
+            {contactInfo.city}
+          </p>
         </div>
 
-        <div className="border-t border-th-fg/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="section-label">
-            &copy; {new Date().getFullYear()} f/2.8 Production. {t.footer.rights}
-          </p>
-          <p className="mono-label">{t.footer.city}</p>
+        <div className="site-footer__col">
+          <p className="site-footer__title">{t.footer.follow}</p>
+          <ul className="site-footer__links">
+            <li>
+              <a href={contactInfo.instagram} target="_blank" rel="noopener noreferrer" className="hover-line">
+                Instagram<span className="sr-only"> {t.a11y.opensInNewTab}</span>
+              </a>
+            </li>
+            <li>
+              <a href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover-line">
+                LinkedIn<span className="sr-only"> {t.a11y.opensInNewTab}</span>
+              </a>
+            </li>
+          </ul>
         </div>
+      </div>
+
+      <div className="g-inner site-footer__legal">
+        <p>
+          &copy; {new Date().getFullYear()} f/2.8 Production. {t.footer.rights}
+        </p>
+        <p>{t.footer.city}</p>
       </div>
     </footer>
   );

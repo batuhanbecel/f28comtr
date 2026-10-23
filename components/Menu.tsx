@@ -3,13 +3,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { F28LogoMark } from '@/components/F28LogoMark';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations, type Lang } from '@/lib/translations';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { MENU_BG_SIZES } from '@/lib/imageSizes';
 
 export type NavPhotographer = {
   id: string;
@@ -39,6 +37,7 @@ export function Menu({ photographers, lang }: MenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const dropdownCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -55,6 +54,7 @@ export function Menu({ photographers, lang }: MenuProps) {
 
   useEffect(() => {
     let ticking = false;
+    let lastTop = 0;
     const checkScroll = () => {
       if (ticking) return;
       ticking = true;
@@ -62,6 +62,15 @@ export function Menu({ photographers, lang }: MenuProps) {
         const snapContainer = document.querySelector('[data-snap-container]');
         const scrollTop = snapContainer ? (snapContainer as HTMLElement).scrollTop : window.scrollY;
         setIsScrolled(scrollTop > 50);
+        // Header steps out of the way while reading down, returns on any scroll up.
+        const delta = scrollTop - lastTop;
+        if (scrollTop <= 160) {
+          setIsHidden(false);
+          lastTop = scrollTop;
+        } else if (Math.abs(delta) > 6) {
+          setIsHidden(delta > 0);
+          lastTop = scrollTop;
+        }
         ticking = false;
       });
     };
@@ -264,103 +273,95 @@ export function Menu({ photographers, lang }: MenuProps) {
     );
   };
 
+  const revealStyle = (index: number) => ({
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0px)' : 'translateY(24px)',
+    transition: isVisible
+      ? `opacity var(--duration-reveal) var(--ease-brand) ${index * 0.05 + 0.2}s, transform var(--duration-reveal) var(--ease-brand) ${index * 0.05 + 0.2}s`
+      : 'opacity var(--duration-ui) var(--ease-brand), transform var(--duration-ui) var(--ease-brand)',
+  });
+
   const renderMobileNavItem = (item: NavItem, index: number) => {
-    const style = {
-      opacity: isVisible ? 1 : 0,
-      transform: isVisible ? 'translateY(0px)' : 'translateY(32px)',
-      transition: isVisible
-        ? `opacity var(--duration-reveal) var(--ease-brand) ${index * 0.07 + 0.25}s, transform var(--duration-reveal) var(--ease-brand) ${index * 0.07 + 0.25}s`
-        : `opacity var(--duration-ui) var(--ease-brand) ${(menuItems.length - 1 - index) * 0.04}s, transform var(--duration-ui) var(--ease-brand) ${(menuItems.length - 1 - index) * 0.04}s`,
-    };
+    const isActive =
+      isActivePath(pathname, item.href) ||
+      (item.kind === 'dropdown' && item.children.some((child) => isActivePath(pathname, child.href)));
+    const labelClass = `menu-sheet__label ${isActive ? 'is-active' : ''}`;
+    const number = (
+      <span className="menu-sheet__num" aria-hidden>
+        {item.num}
+      </span>
+    );
 
     if (item.kind === 'link') {
       return (
-        <div key={item.href} className="border-b border-white/[0.07]" style={style}>
+        <li key={item.href} className="menu-sheet__row" style={revealStyle(index)}>
           <Link
             href={item.href}
             onClick={closeMenu}
             aria-current={isActivePath(pathname, item.href) ? 'page' : undefined}
-            className="group flex items-baseline gap-5 md:gap-8 py-5 md:py-6"
+            className="menu-sheet__link"
           >
-            <span className="mono-label text-white/60 w-8 flex-shrink-0">{item.num}</span>
-            <span className="heading-section text-white transition-all duration-hover ease-brand group-hover:text-white/50 group-hover:translate-x-2">
-              {item.label}
-            </span>
+            {number}
+            <span className={labelClass}>{item.label}</span>
           </Link>
-        </div>
+        </li>
       );
     }
 
     const expanded = mobileExpanded === item.href;
+    const subId = `menu-sub-${item.num}`;
 
     return (
-      <div key={item.href} className="border-b border-white/[0.07]" style={style}>
-        <div className="flex items-baseline gap-5 md:gap-8 py-5 md:py-6">
-          <span className="mono-label text-white/60 w-8 flex-shrink-0">{item.num}</span>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-4">
-              <Link
-                href={item.href}
-                onClick={closeMenu}
-                className="heading-section text-white transition-all duration-hover ease-brand hover:text-white/50"
-              >
-                {item.label}
-              </Link>
-              <button
-                type="button"
-                onClick={() => setMobileExpanded(expanded ? null : item.href)}
-                className="text-white/70 hover:text-white transition-colors w-11 h-11 -mr-2 flex items-center justify-center"
-                aria-expanded={expanded}
-                aria-controls={`menu-sub-${item.num}`}
-                aria-label={(expanded ? t.a11y.collapseSubmenu : t.a11y.expandSubmenu).replace('{label}', item.label)}
-              >
-                <svg
-                  className={`w-4 h-4 transition-transform duration-ui ${expanded ? 'rotate-180' : ''}`}
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  aria-hidden
-                >
-                  <path d="M2 4.5L6 8.5L10 4.5" stroke="currentColor" strokeWidth="1.2" />
-                </svg>
-              </button>
-            </div>
-
-            {expanded ? (
-              <div id={`menu-sub-${item.num}`} className="mt-4 pl-0 space-y-1 border-l border-white/10 ml-0.5">
-                {item.sectionLabel ? (
-                  <p className="pl-4 pb-2 caption-text text-white/62 tracking-[0.38em]">{item.sectionLabel}</p>
-                ) : null}
-                {item.children.map((child, childIndex) => (
-                  <div key={child.href}>
-                    {item.sectionLabel && childIndex === 1 ? (
-                      <div className="my-2 ml-4 h-px bg-white/[0.06] max-w-[12rem]" aria-hidden />
-                    ) : null}
-                    <Link
-                      href={child.href}
-                      onClick={closeMenu}
-                      aria-current={pathname === child.href ? 'page' : undefined}
-                      className="block pl-4 py-2.5 text-white/72 hover:text-white transition-colors duration-ui"
-                    >
-                    <span className="block text-base">{child.label}</span>
-                    {child.meta ? (
-                      <span className="block mt-0.5 caption-text text-white/62 tracking-[0.28em]">{child.meta}</span>
-                    ) : null}
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            ) : null}
-          </div>
+      <li key={item.href} className="menu-sheet__row" style={revealStyle(index)}>
+        <div className="menu-sheet__link">
+          {number}
+          <Link href={item.href} onClick={closeMenu} className={labelClass}>
+            {item.label}
+          </Link>
+          <button
+            type="button"
+            onClick={() => setMobileExpanded(expanded ? null : item.href)}
+            className="menu-sheet__toggle"
+            aria-expanded={expanded}
+            aria-controls={subId}
+            aria-label={(expanded ? t.a11y.collapseSubmenu : t.a11y.expandSubmenu).replace('{label}', item.label)}
+          >
+            <svg className={`w-3.5 h-3.5 transition-transform duration-ui ${expanded ? 'rotate-45' : ''}`} viewBox="0 0 12 12" fill="none" aria-hidden>
+              <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="1.2" />
+            </svg>
+          </button>
         </div>
-      </div>
+
+        {expanded ? (
+          <ul id={subId} className={`menu-sheet__sub ${item.sectionLabel ? 'menu-sheet__sub--grid' : ''}`}>
+            {item.children.map((child) => (
+              <li key={child.href}>
+                <Link
+                  href={child.href}
+                  onClick={closeMenu}
+                  aria-current={pathname === child.href ? 'page' : undefined}
+                  className="menu-sheet__sublink"
+                >
+                  <span>{child.label}</span>
+                  {child.meta ? <span className="menu-sheet__meta">{child.meta}</span> : null}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </li>
     );
   };
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between gap-3 px-4 py-4 sm:px-5 sm:py-5 md:px-10 md:py-7 transition-all duration-hover ease-brand lg:grid lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-8 ${
-        isScrolled ? 'bg-th-bg/60 border-b border-th-fg/10 backdrop-blur-xl' : 'border-b border-transparent'
-      }`} style={heroHeaderStyle}>
+      <header
+        className={`site-header ${pathname === '/' ? 'site-header--hero-intro ' : ''}${isScrolled ? 'is-scrolled ' : ''}${
+          isHidden && !isOpen && !openDropdown ? 'is-hidden' : ''
+        }`}
+        style={heroHeaderStyle}
+        onFocusCapture={() => setIsHidden(false)}
+      >
         <Link
           href="/"
           aria-label={`f/2.8 — ${t.nav.home}`}
@@ -373,28 +374,26 @@ export function Menu({ photographers, lang }: MenuProps) {
           {menuItems.map(renderDesktopNavItem)}
         </nav>
 
-        <div className="flex h-8 md:h-10 items-center gap-2 sm:gap-3 lg:justify-self-end shrink-0">
-          <ThemeToggle />
-          <span className="w-px h-3 bg-th-fg/15 shrink-0" aria-hidden />
-          <LanguageSwitcher compact />
+        <div className="flex items-center gap-3 lg:justify-self-end shrink-0">
+          <div className="hidden lg:flex items-center gap-3">
+            <ThemeToggle />
+            <span className="w-px h-3 bg-th-fg/15 shrink-0" aria-hidden />
+            <LanguageSwitcher compact />
+          </div>
           <button
             ref={toggleButtonRef}
             type="button"
             onClick={toggleMenu}
-            className="group relative z-50 flex flex-col justify-center items-end gap-[4px] w-10 h-10 -mr-2 pr-2 shrink-0 lg:hidden"
+            className="site-header__menu-btn lg:hidden"
             aria-label={isOpen ? t.a11y.closeMenu : t.a11y.openMenu}
             aria-expanded={isOpen}
             aria-controls="site-menu-overlay"
           >
-            <span className={`h-px w-5 bg-th-fg transition-all duration-reveal ease-brand origin-center ${
-              isOpen ? 'rotate-45 translate-y-[6px] opacity-100' : 'opacity-60 group-hover:opacity-100'
-            }`} />
-            <span className={`h-px bg-th-fg transition-all duration-reveal ease-brand ${
-              isOpen ? 'opacity-0 w-0' : 'w-4 opacity-40'
-            }`} />
-            <span className={`h-px w-3 bg-th-fg transition-all duration-reveal ease-brand origin-center ${
-              isOpen ? '-rotate-45 -translate-y-[6px] w-5 opacity-100' : 'opacity-25'
-            }`} />
+            <span aria-hidden>{isOpen ? t.nav.close : t.nav.menu}</span>
+            <span className={`site-header__burger ${isOpen ? 'is-open' : ''}`} aria-hidden>
+              <span />
+              <span />
+            </span>
           </button>
         </div>
       </header>
@@ -405,64 +404,36 @@ export function Menu({ photographers, lang }: MenuProps) {
         aria-modal="true"
         aria-label={t.a11y.mainNav}
         inert={!isOpen}
-        className={`fixed inset-0 z-40 ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+        className={`menu-sheet lg:hidden ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
         style={{
-          clipPath: isVisible
-            ? 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
-            : 'polygon(0 0, 100% 0, 100% 0, 0 0)',
+          clipPath: isVisible ? 'inset(0 0 0 0)' : 'inset(0 0 100% 0)',
           transition: 'clip-path var(--duration-reveal) var(--ease-brand)',
         }}
       >
-        <div className="absolute inset-0">
-          <Image src="/menubg.webp" alt="" fill className="object-cover" quality={85} loading="lazy" sizes={MENU_BG_SIZES} />
-          <div className="absolute inset-0 bg-black/75" />
-        </div>
-
-        <div className="relative h-full flex flex-col text-white px-8 md:px-16 lg:px-24 py-8 overflow-y-auto">
-          <div
-            className="flex items-center justify-between mb-auto pt-24 md:pt-28"
-            style={{
-              opacity: isVisible ? 1 : 0,
-              transition: isVisible
-                ? 'opacity var(--duration-ui) var(--ease-brand) 0.2s'
-                : 'opacity var(--duration-ui) var(--ease-brand)',
-            }}
-          >
-            <span className="section-label text-white">{t.footer.city}</span>
-            <span className="mono-label text-white/60">f/2.8</span>
-          </div>
-
-          <nav ref={overlayNavRef} className="flex flex-col my-auto py-10 gap-1" aria-label={t.a11y.mainNav}>
-            {menuItems.map((item, index) => renderMobileNavItem(item, index))}
+        <div className="menu-sheet__inner">
+          <nav ref={overlayNavRef} aria-label={t.a11y.mainNav}>
+            <ul className="menu-sheet__list">{menuItems.map((item, index) => renderMobileNavItem(item, index))}</ul>
           </nav>
 
-          <div
-            className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-2"
-            style={{
-              opacity: isVisible ? 1 : 0,
-              transform: isVisible ? 'translateY(0px)' : 'translateY(20px)',
-              transition: isVisible
-                ? 'opacity var(--duration-reveal) var(--ease-brand) 0.7s, transform var(--duration-reveal) var(--ease-brand) 0.7s'
-                : 'opacity var(--duration-ui) var(--ease-brand)',
-            }}
-          >
-            <div className="flex items-center gap-6">
-              <Link href={contactInfo.instagram} target="_blank" rel="noopener noreferrer"
-                className="section-label text-white transition-opacity duration-ui hover:opacity-100 hover-line">
-                Instagram
-                <span className="sr-only"> {t.a11y.opensInNewTab}</span>
-              </Link>
-              <span className="w-px h-3 bg-white/10" aria-hidden />
-              <Link href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer"
-                className="section-label text-white transition-opacity duration-ui hover:opacity-100 hover-line">
-                LinkedIn
-                <span className="sr-only"> {t.a11y.opensInNewTab}</span>
-              </Link>
+          <div className="menu-sheet__foot" style={revealStyle(menuItems.length + 1)}>
+            <div className="menu-sheet__prefs">
+              <LanguageSwitcher />
+              <span className="w-px h-3 bg-th-fg/15 shrink-0" aria-hidden />
+              <ThemeToggle />
             </div>
-            <a href={`mailto:${contactInfo.email}`}
-              className="section-label text-white transition-opacity duration-ui hover:opacity-100 hover-line">
-              {contactInfo.email}
-            </a>
+            <div className="menu-sheet__contact">
+              <a href={`mailto:${contactInfo.email}`} className="hover-line">
+                {contactInfo.email}
+              </a>
+              <span className="menu-sheet__socials">
+                <Link href={contactInfo.instagram} target="_blank" rel="noopener noreferrer" className="hover-line">
+                  Instagram<span className="sr-only"> {t.a11y.opensInNewTab}</span>
+                </Link>
+                <Link href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover-line">
+                  LinkedIn<span className="sr-only"> {t.a11y.opensInNewTab}</span>
+                </Link>
+              </span>
+            </div>
           </div>
         </div>
       </div>
