@@ -14,8 +14,8 @@ export function NotFoundContent() {
       </div>
 
       <div className="text-center space-y-4">
-        <p className="section-label section-label--pill mx-auto">{t.notFound.title}</p>
-        <h1 className="body-text text-muted-body">{t.notFound.description}</h1>
+        <h1 className="section-label section-label--pill mx-auto">{t.notFound.title}</h1>
+        <p className="body-text text-muted-body">{t.notFound.description}</p>
         <div className="pt-4">
           <EditorialButton href="/">
             <svg className="w-3 h-3" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

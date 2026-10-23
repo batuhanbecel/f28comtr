@@ -761,9 +761,8 @@ img, video {
   position: relative;
   outline: 1px solid rgb(var(--c-fg) / 0.06);
   outline-offset: -1px;
-  transition:
-    outline-color var(--duration-hover) var(--ease-brand),
-    box-shadow var(--duration-hover) var(--ease-brand);
+  /* Only the hover shadow animates — the keyboard focus ring appears instantly */
+  transition: box-shadow var(--duration-hover) var(--ease-brand);
 }
 .card-editorial:hover {
   outline-color: rgb(var(--c-fg) / 0.22);
@@ -1064,19 +1063,23 @@ body[data-lightbox-open] nav {
   background: transparent;
   text-align: left;
   font: inherit;
-  outline-offset: -1px;
-  transition: outline-color var(--duration-hover) var(--ease-brand);
+  outline-offset: -3px;
 }
-.ai-work-card:hover .ai-work-overlay,
-.ai-work-card:focus-visible .ai-work-overlay {
-  /* Same credit treatment as .tile: bottom gradient strip, white type */
+/* Same credit treatment as .tile: bottom gradient strip, white type —
+   hidden at rest, revealed on hover / keyboard focus (always on touch). */
+.ai-work-overlay {
   position: absolute;
   inset: auto 0 0 0;
+  z-index: 1;
   padding-top: 3rem;
   background: linear-gradient(to top, rgb(0 0 0 / 0.62), transparent);
   opacity: 0;
   transition: opacity var(--duration-hover) var(--ease-brand);
   pointer-events: none;
+}
+.ai-work-card:hover .ai-work-overlay,
+.ai-work-card:focus-visible .ai-work-overlay {
+  opacity: 1;
 }
 .ai-work-overlay-inner {
   padding: 0 1.25rem 1.1rem;

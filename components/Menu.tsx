@@ -191,8 +191,8 @@ export function Menu({ photographers, lang }: MenuProps) {
           }`}
         >
           {item.label}
-          <span className={`absolute -bottom-1.5 left-0 h-px bg-th-fg transition-all duration-hover ease-brand ${
-            isActive ? 'w-full opacity-60' : 'w-0 opacity-0 group-hover:w-full group-hover:opacity-40'
+          <span className={`absolute -bottom-1.5 left-0 h-px w-full origin-left bg-th-fg transition-[transform,opacity] duration-hover ease-brand ${
+            isActive ? 'scale-x-100 opacity-60' : 'scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-40'
           }`} />
         </Link>
       );
@@ -230,8 +230,8 @@ export function Menu({ photographers, lang }: MenuProps) {
           >
             <path d="M2 4.5L6 8.5L10 4.5" stroke="currentColor" strokeWidth="1.2" />
           </svg>
-          <span className={`absolute -bottom-1.5 left-0 h-px bg-th-fg transition-all duration-hover ease-brand ${
-            isActive ? 'w-full opacity-60' : 'w-0 opacity-0 group-hover:w-full group-hover:opacity-40'
+          <span className={`absolute -bottom-1.5 left-0 h-px w-full origin-left bg-th-fg transition-[transform,opacity] duration-hover ease-brand ${
+            isActive ? 'scale-x-100 opacity-60' : 'scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-40'
           }`} />
         </Link>
 

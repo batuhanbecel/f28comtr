@@ -36,7 +36,7 @@ function ProjectNavCard({
     <Link
       href={`/ai-powered/works/${work.slug}`}
       prefetch={false}
-      className={`group card-editorial flex w-full max-w-md flex-col gap-4 p-4 transition-[outline-color,box-shadow] duration-[var(--duration-hover)] sm:p-5 ${align}`}
+      className={`group card-editorial flex w-full max-w-md flex-col gap-4 p-4 transition-[box-shadow] duration-[var(--duration-hover)] sm:p-5 ${align}`}
     >
       <span className="section-label transition-opacity duration-ui group-hover:opacity-100">
         {direction === 'prev' ? `← ${label}` : `${label} →`}
