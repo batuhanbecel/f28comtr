@@ -37,9 +37,10 @@ export function coverSizesInBox(src: string, boxVw: number, boxAspect: number): 
 }
 
 
-/** Lightbox images in max-w-7xl containers with horizontal padding (object-contain). */
+/** Lightbox image (object-contain) on `.lightbox-stage`: full width minus the
+ *  arrow gutters (13rem) from 768px, minus 1.5rem on phones. */
 export const LIGHTBOX_IMAGE_SIZES =
-  "(max-width: 1280px) calc(100vw - 8rem), 1280px";
+  "(max-width: 767px) calc(100vw - 1.5rem), calc(100vw - 13rem)";
 
 /** AI gallery masonry card — WorkGrid: 2 columns on phones, 3 from 768px. */
 export const AI_WORK_CARD_SIZES = "(max-width: 768px) 50vw, 34vw";

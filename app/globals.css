@@ -1410,6 +1410,17 @@ body[data-lightbox-open] nav {
   opacity: 0;
   transition: opacity var(--duration-hover) var(--ease-brand);
 }
+/* The image gets the whole screen except the close/counter bands and, from
+   768px, the arrow gutters — it was boxed at 80rem × 88vh minus 4rem padding. */
+.lightbox-stage {
+  position: absolute;
+  inset: 4rem 0.75rem 3.5rem;
+}
+@media (min-width: 768px) {
+  .lightbox-stage {
+    inset: 3.75rem 6.5rem;
+  }
+}
 .lightbox-backdrop.is-visible .lightbox-content {
   opacity: 1;
 }
