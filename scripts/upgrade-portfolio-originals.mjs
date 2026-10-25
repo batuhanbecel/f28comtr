@@ -79,8 +79,10 @@ for (const doc of docs) {
 }
 console.log(`${plan.length} images have a larger original in git`);
 
-// 3. Upload each original once, then swap the ref everywhere the old asset is used
+// 3. Upload each original once, then swap the ref everywhere the old asset is used.
+// The old → new map is written after every swap, so a crash leaves a usable undo log.
 const done = new Map();
+const logFile = path.join(ROOT, `upgrade-portfolio-originals.${Date.now()}.json`);
 for (const [i, item] of plan.entries()) {
   if (done.has(item.oldRef)) continue;
   const label = `[${i + 1}/${plan.length}] ${item.photographer} ${path.basename(item.file)} ${item.from} → ${item.to}`;
@@ -89,24 +91,36 @@ for (const [i, item] of plan.entries()) {
     console.log(`${label} (${users.length} doc${users.length === 1 ? '' : 's'})`);
     continue;
   }
-  const asset = await sanity.assets.upload('image', item.buffer, { filename: path.basename(item.file) });
+  const asset = await retry(() => sanity.assets.upload('image', item.buffer, { filename: path.basename(item.file) }));
   for (const { _id } of users) {
-    const doc = await sanity.getDocument(_id);
+    const doc = await retry(() => sanity.getDocument(_id));
     const paths = refPaths(doc, item.oldRef);
     if (paths.length === 0) continue;
-    await sanity
-      .patch(_id)
-      .set(Object.fromEntries(paths.map((p) => [p, asset._id])))
-      .commit();
+    await retry(() =>
+      sanity
+        .patch(_id)
+        .set(Object.fromEntries(paths.map((p) => [p, asset._id])))
+        .commit(),
+    );
   }
   done.set(item.oldRef, asset._id);
+  fs.writeFileSync(logFile, JSON.stringify(Object.fromEntries(done), null, 1));
   console.log(`${label} ✓ ${asset._id}`);
 }
 
-if (!DRY_RUN) {
-  const log = path.join(ROOT, `upgrade-portfolio-originals.${Date.now()}.json`);
-  fs.writeFileSync(log, JSON.stringify(Object.fromEntries(done), null, 1));
-  console.log(`old → new asset map: ${path.relative(ROOT, log)}`);
+if (!DRY_RUN && done.size > 0) console.log(`old → new asset map: ${path.relative(ROOT, logFile)}`);
+
+/** Network hiccups (TLS resets) shouldn't abort a long run — retry a few times. */
+async function retry(fn, attempts = 4) {
+  for (let i = 1; ; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (i >= attempts) throw error;
+      console.warn(`  retry ${i}/${attempts - 1}: ${error.message}`);
+      await new Promise((r) => setTimeout(r, 2000 * i));
+    }
+  }
 }
 
 /** JSON paths of every `_ref` equal to `ref`, keyed by array `_key` so patches stay stable. */
