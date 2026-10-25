@@ -2913,7 +2913,9 @@ body[data-menu-open] .site-header {
 }
 /* AI-Powered's two pages — a hairline list under the item, no box */
 .site-nav__menu {
-  min-width: 13rem;
+  min-width: 14rem;
+  /* Pulled left by the rows' inset so "02.1" sits under the item's "02" */
+  margin-left: -1rem;
   padding: 0.25rem 0;
   border-top: 1px solid rgb(var(--c-fg) / 0.14);
   background: rgb(var(--c-bg));
@@ -2922,7 +2924,7 @@ body[data-menu-open] .site-header {
   display: flex;
   align-items: baseline;
   gap: 0.75rem;
-  padding: 0.7rem 0;
+  padding: 0.7rem 1rem;
   border-bottom: 1px solid rgb(var(--c-fg) / 0.08);
   font-size: 0.9375rem;
   color: rgb(var(--c-fg) / 0.68);
