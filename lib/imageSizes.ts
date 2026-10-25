@@ -22,6 +22,20 @@ export function coverImageSizes(src: string, frameVh = 100): string {
   return `(max-aspect-ratio: ${renderedVh}/100) ${renderedVh}vh, 100vw`;
 }
 
+/**
+ * `sizes` for an `object-cover` image in a fixed-ratio box `boxVw` viewport
+ * widths wide (`boxAspect` = width / height). An image wider than the box is
+ * scaled to the box height and cropped, so it renders boxVw × (image aspect ÷
+ * box aspect) wide — a landscape cover in a 3:4 box needs ~2.7× the box width.
+ */
+export function coverSizesInBox(src: string, boxVw: number, boxAspect: number): string {
+  const match = SANITY_DIMENSIONS_RE.exec(src);
+  if (!match) return `${boxVw}vw`;
+  const aspect = Number(match[1]) / Number(match[2]);
+  if (!Number.isFinite(aspect) || aspect <= 0) return `${boxVw}vw`;
+  return `${Math.ceil(boxVw * Math.max(1, aspect / boxAspect))}vw`;
+}
+
 
 /** Lightbox images in max-w-7xl containers with horizontal padding (object-contain). */
 export const LIGHTBOX_IMAGE_SIZES =
@@ -59,8 +73,11 @@ export const EDITORIAL_TILE_SIZES = "(max-width: 768px) 100vw, 34vw";
  *  declare its largest width (576px) rather than a vw guess that undershoots. */
 export const WORK_STRIP_SIZES = "(max-width: 702px) 82vw, 576px";
 
-/** Edge-to-edge portrait grid (/portfolios): 2 columns up to 1279px, 5 from 1280px. */
-export const ARTIST_GRID_SIZES = "(max-width: 1279px) 50vw, 20vw";
+/** Edge-to-edge 3:4 portrait grid (/portfolios): 2 columns up to 1279px, 5 from
+ *  1280px. Per image, since landscape covers are cropped to the tile height. */
+export function artistGridSizes(src: string): string {
+  return `(max-width: 1279px) ${coverSizesInBox(src, 50, 3 / 4)}, ${coverSizesInBox(src, 20, 3 / 4)}`;
+}
 
 /** Production projects: 1 col phone, 2 cols from tablet. */
 export const PROJECT_GRID_SIZES = "(max-width: 768px) 100vw, 50vw";
@@ -68,6 +85,8 @@ export const PROJECT_GRID_SIZES = "(max-width: 768px) 100vw, 50vw";
 /** Home disciplines: two half-width panels, stacked on phones. */
 export const DISCIPLINE_PANEL_SIZES = "(max-width: 768px) 100vw, 50vw";
 
-/** Home roster sticky preview (~37–40% of the viewport on desktop). Only shown
- *  from 1024px; the images are lazy, so phones never request them. */
-export const ROSTER_PREVIEW_SIZES = "40vw";
+/** Home roster sticky preview: a 3:4 box ~37–40% of the viewport wide, only
+ *  shown from 1024px (lazy, so phones never request it). Use with
+ *  coverSizesInBox() — landscape covers are cropped to the box height. */
+export const ROSTER_PREVIEW_VW = 40;
+export const ROSTER_PREVIEW_ASPECT = 3 / 4;

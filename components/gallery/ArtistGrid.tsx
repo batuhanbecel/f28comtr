@@ -3,7 +3,7 @@
 import { Tile } from '@/components/gallery/Tile';
 import { useLanguage } from '@/context/LanguageContext';
 import type { Photographer } from '@/lib/data';
-import { ARTIST_GRID_SIZES } from '@/lib/imageSizes';
+import { artistGridSizes } from '@/lib/imageSizes';
 import { ViewTransition } from '@/lib/ViewTransition';
 
 /** Edge-to-edge portrait grid for /portfolios — names always visible. */
@@ -19,7 +19,7 @@ export function ArtistGrid({ photographers }: { photographers: Photographer[] })
             href={`/${p.id}`}
             src={p.preview}
             alt={p.fullName}
-            sizes={ARTIST_GRID_SIZES}
+            sizes={artistGridSizes(p.preview)}
             title={p.fullName}
             meta={(t.titleMap as Record<string, string>)[p.title] ?? p.title}
             ratio="3 / 4"

@@ -7,7 +7,7 @@ import { BlockHead } from '@/components/gallery/BlockHead';
 import { useLanguage } from '@/context/LanguageContext';
 import type { Photographer } from '@/lib/data';
 import { shouldSkipOptimization } from '@/lib/blob';
-import { ROSTER_PREVIEW_SIZES } from '@/lib/imageSizes';
+import { coverSizesInBox, ROSTER_PREVIEW_ASPECT, ROSTER_PREVIEW_VW } from '@/lib/imageSizes';
 
 interface HomeArtistRosterProps {
   photographers: Photographer[];
@@ -82,7 +82,7 @@ export function HomeArtistRoster({ photographers, label, heading, intro, viewAll
                 alt=""
                 fill
                 className={`object-cover roster__preview-img ${i === active ? 'is-active' : ''}`}
-                sizes={ROSTER_PREVIEW_SIZES}
+                sizes={coverSizesInBox(p.preview, ROSTER_PREVIEW_VW, ROSTER_PREVIEW_ASPECT)}
                 loading="lazy"
                 unoptimized={shouldSkipOptimization(p.preview)}
               />
