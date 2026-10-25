@@ -2863,6 +2863,92 @@ body[data-menu-open] .site-header {
   backdrop-filter: none;
 }
 
+/* Desktop nav — the site's numbered index in one line: mono numbers, hairline
+   under the current page, the language and the project call on the right. */
+.site-nav {
+  align-items: center;
+  gap: 2rem;
+  margin-left: 1.5rem;
+}
+@media (min-width: 1280px) {
+  .site-nav {
+    gap: 2.75rem;
+    margin-left: 3rem;
+  }
+}
+.site-nav__link {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding-block: 0.6rem;
+  font-size: 0.9375rem;
+  color: rgb(var(--c-fg) / 0.68);
+  transition: color var(--duration-hover) var(--ease-brand);
+}
+.site-nav__link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.2rem;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-hover) var(--ease-brand);
+}
+.site-nav__link:hover,
+.site-nav__link.is-active {
+  color: rgb(var(--c-fg));
+}
+.site-nav__link:hover::after,
+.site-nav__link.is-active::after {
+  transform: scaleX(1);
+}
+.site-nav__num {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  color: rgb(var(--c-fg) / 0.5);
+}
+/* AI-Powered's two pages — a hairline list under the item, no box */
+.site-nav__menu {
+  min-width: 13rem;
+  padding: 0.25rem 0;
+  border-top: 1px solid rgb(var(--c-fg) / 0.14);
+  background: rgb(var(--c-bg));
+}
+.site-nav__menu-link {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid rgb(var(--c-fg) / 0.08);
+  font-size: 0.9375rem;
+  color: rgb(var(--c-fg) / 0.68);
+  transition: color var(--duration-hover) var(--ease-brand);
+}
+.site-nav__menu-link:hover,
+.site-nav__menu-link.is-active {
+  color: rgb(var(--c-fg));
+}
+.site-nav__lang {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  color: rgb(var(--c-fg) / 0.68);
+  transition: color var(--duration-hover) var(--ease-brand);
+}
+.site-nav__lang:hover {
+  color: rgb(var(--c-fg));
+}
+.site-nav__cta {
+  font-size: 0.9375rem;
+  color: rgb(var(--c-fg));
+  white-space: nowrap;
+}
+
 .site-header__menu-btn {
   position: relative;
   z-index: 50;
@@ -3034,6 +3120,15 @@ a.menu-sheet__label:hover {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+/* The email is the sheet's call to action — display size, its own line */
+.menu-sheet__email {
+  flex-basis: 100%;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.375rem, 5vw, 2rem);
+  letter-spacing: -0.03em;
+  color: rgb(var(--c-fg));
 }
 .menu-sheet__contact {
   display: flex;
