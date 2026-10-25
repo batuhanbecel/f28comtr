@@ -44,6 +44,7 @@ export function WorkStrip({ items, label, title, intro, viewAll, id }: WorkStrip
             {viewAll ? (
               <Link href={viewAll.href} className="g-link hover-line mr-3">
                 {viewAll.label}
+                <span aria-hidden> →</span>
               </Link>
             ) : null}
             <ScrollerArrow direction="prev" onClick={() => scrollByPage(-1)} disabled={!canPrev} label={t.a11y.previousImage} />

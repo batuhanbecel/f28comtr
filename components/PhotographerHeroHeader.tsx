@@ -18,6 +18,7 @@ export function PhotographerHeroHeader({ name, title, children }: PhotographerHe
       label={localizedTitle}
       title={name}
       variant="hero"
+      align="left"
       shell={false}
       gradient={false}
     >

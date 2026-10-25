@@ -17,7 +17,7 @@ export function AiPoweredProcessStrip({ copy }: AiPoweredProcessStripProps) {
     <section className="g-section" aria-labelledby="ai-process-title">
       <BlockHead id="ai-process-title" label={copy.process.sectionLabel} title={copy.process.heading} />
       <div className="g-inner">
-        <ol className="index-list">
+        <ol className="index-list index-list--steps">
           {steps.map((step, i) => (
             <ScrollReveal key={`${step.title}-${i}`} as="li" className="index-list__row" delay={Math.min(i, 6) * 0.04}>
               <span className="index-list__num">{String(i + 1).padStart(2, '0')}</span>

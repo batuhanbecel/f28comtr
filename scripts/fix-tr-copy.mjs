@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * One-shot: Production, AI-Powered ve İletişim sayfalarının Türkçe
+ * One-shot: Anasayfa, Production, AI-Powered ve İletişim sayfalarının Türkçe
  * metinlerinde kalan İngilizce ifadeleri (compositing, location, cutdown,
  * "Hybrid rötüş"…) ve tekrar eden etiketleri düzeltir.
  * lib/translations.ts'teki yedek metinlerle aynıdır.
@@ -70,10 +70,30 @@ const CONTACT = {
   'sectionLabel.tr': 'İletişime geçin',
 };
 
+// Labels no longer repeat their titles ("Seçili iş / Seçili işler",
+// "Sanatçılarımız / Sanatçılar"); one word per term: rötuş, portföy
+const HOME_V2 = {
+  'selectedWorksLabel.tr': 'Portföy',
+  'selectedWorksLabel.en': 'Portfolio',
+  'artistsLabel.tr': 'Ekip',
+  'artistsLabel.en': 'Team',
+  'aiSplitLabel.tr': 'AI-Powered prodüksiyon',
+  'aiSplitCta.tr': 'Portföyü gör',
+  'aiSplitBody.tr':
+    "Brief'ten teslimata kadar: model seçimi, prompt, iterasyon ve hibrit rötuş. AI iş akışı ile geleneksel post-prodüksiyon bir arada.",
+};
+
+const AI_POWERED_TERMS = {
+  'description.tr':
+    'Geleneksel rötuş disiplinini en güncel AI modelleriyle harmanlayarak hibrit bir prodüksiyon süreci sunuyoruz. Sektör standartlarındaki ustalığımızı inovatif teknolojilerle birleştirerek, markalarımız için hem yaratıcı hem de yüksek verimli görsel ve video içerikler üretiyoruz.',
+  'filters.hybrid.tr': 'Hibrit',
+};
+
 const DOCS = {
   productionPageCopy: PRODUCTION,
-  aiPoweredPageCopy: AI_POWERED,
+  aiPoweredPageCopy: { ...AI_POWERED, ...AI_POWERED_TERMS },
   contactPageCopy: CONTACT,
+  homeV2PageCopy: HOME_V2,
 };
 
 // Patch the published doc and, if one exists, the open draft so Studio shows the same text.

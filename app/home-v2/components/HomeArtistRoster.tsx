@@ -39,6 +39,7 @@ export function HomeArtistRoster({ photographers, label, heading, intro, viewAll
         actions={
           <Link href="/portfolios" className="g-link hover-line">
             {viewAllLabel}
+            <span aria-hidden> →</span>
           </Link>
         }
       />

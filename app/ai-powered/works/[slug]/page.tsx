@@ -8,6 +8,7 @@ import { Footer } from '@/components/Footer';
 import { getAiPoweredWorks, getPageCopy } from '@/lib/cms';
 import type { CreditPerson } from '@/lib/aiPoweredWorks';
 import { getServerLang } from '@/lib/serverLang';
+import { toNameCase } from '@/lib/displayCase';
 import { absoluteUrl } from '@/lib/siteUrl';
 
 interface PageProps {
@@ -58,66 +59,84 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
   };
   const categoryLabel = categoryLabels[work.category] ?? work.category;
 
+
   const labels =
     lang === 'tr'
       ? {
-          brand: 'Marka',
           agency: 'Ajans',
           year: 'Yıl',
           type: 'Tür',
           tags: 'Etiketler',
           instagram: 'Instagram\'da gör',
-          back: 'AI Powered',
-          prevProject: 'Önceki Proje',
-          nextProject: 'Sonraki Proje',
+          back: 'AI-Powered',
+          prevProject: 'Önceki proje',
+          nextProject: 'Sonraki proje',
           projectNav: 'Çalışmalar arası gezinme',
           moreWorks: 'Diğer çalışmalar',
-          photographers: 'Fotoğrafçı',
-          aiArtists: 'AI Sanatçıları',
-          retouchers: 'Retoucher\'lar',
+          photographers: 'Fotoğraf',
+          aiArtists: 'AI sanatçıları',
+          retouchers: 'Rötuş',
         }
       : {
-          brand: 'Brand',
           agency: 'Agency',
           year: 'Year',
           type: 'Type',
           tags: 'Tags',
           instagram: 'View on Instagram',
-          back: 'AI Powered',
-          prevProject: 'Previous Project',
-          nextProject: 'Next Project',
+          back: 'AI-Powered',
+          prevProject: 'Previous project',
+          nextProject: 'Next project',
           projectNav: 'Work navigation',
           moreWorks: 'More works',
-          photographers: 'Photographer',
-          aiArtists: 'AI Artists',
-          retouchers: 'Retouchers',
+          photographers: 'Photography',
+          aiArtists: 'AI artists',
+          retouchers: 'Retouch',
         };
 
   const credits = {
     photographers: work.credits?.photographers ?? [],
-    aiArtists: work.credits?.aiArtists ?? [],
+    // Typed free-form in Studio, often in caps — same name casing as the roster
+    aiArtists: (work.credits?.aiArtists ?? []).map((name) => ({ fullName: toNameCase(name) })),
     retouchers: work.credits?.retouchers ?? [],
   };
-  const hasCredits =
-    credits.photographers.length > 0 ||
-    credits.aiArtists.length > 0 ||
-    credits.retouchers.length > 0;
+
+  // Brand shows once: as the eyebrow when the work has its own title, else as the title
+  const heading = (
+    <header className="page-heading-stack gap-3">
+      <Link
+        href="/ai-powered"
+        prefetch={false}
+        className="section-label transition-opacity duration-ui hover:opacity-100"
+      >
+        ← {labels.back}
+      </Link>
+      {work.title ? <p className="text-muted-body">{work.brand}</p> : null}
+      <h1 className="heading-section leading-tight">{work.title || work.brand}</h1>
+    </header>
+  );
+
+  const meta: { label: string; value: React.ReactNode }[] = [
+    ...(work.agency ? [{ label: labels.agency, value: work.agency }] : []),
+    ...(work.year ? [{ label: labels.year, value: String(work.year) }] : []),
+    { label: labels.type, value: categoryLabel },
+    ...(work.tags?.length ? [{ label: labels.tags, value: work.tags.join(', ') }] : []),
+    ...(credits.photographers.length
+      ? [{ label: labels.photographers, value: <People people={credits.photographers} /> }]
+      : []),
+    ...(credits.aiArtists.length ? [{ label: labels.aiArtists, value: <People people={credits.aiArtists} /> }] : []),
+    ...(credits.retouchers.length ? [{ label: labels.retouchers, value: <People people={credits.retouchers} /> }] : []),
+  ];
 
   return (
     <>
       <main className="min-h-screen bg-th-bg text-th-fg pb-16 pt-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
-          <Link
-            href="/ai-powered"
-            prefetch={false}
-            className="section-label mb-10 inline-block transition-opacity duration-ui hover:opacity-100"
-          >
-            ← {labels.back}
-          </Link>
+          {/* Phones: title, then the work itself, then the details */}
+          <div className="mb-8 lg:hidden">{heading}</div>
 
           <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-16">
             {/* Image column — large, uncropped, vertical */}
-            <div className="order-2 min-w-0 lg:order-1">
+            <div className="min-w-0">
               <AiWorkGalleryColumn
                 workSlug={slug}
                 images={work.images}
@@ -126,57 +145,23 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
             </div>
 
             {/* Sticky info panel */}
-            <aside className="order-1 self-start lg:order-2 lg:sticky lg:top-24">
+            <aside className="self-start lg:sticky lg:top-24">
               <div className="space-y-8">
-                <header className="page-heading-stack gap-3 border-b border-th-fg/10 pb-6">
-                  <span className="text-[11px] font-medium uppercase tracking-[0.26em] text-th-fg/62">
-                    {work.brand}
-                  </span>
-                  <h1 className="heading-section leading-tight">{work.title || work.brand}</h1>
-                </header>
+                <div className="hidden lg:block">{heading}</div>
 
-                <dl className="divide-y divide-th-fg/[0.06]">
-                  <MetaRow label={labels.brand} value={work.brand} />
-                  {work.agency ? <MetaRow label={labels.agency} value={work.agency} /> : null}
-                  {work.year ? <MetaRow label={labels.year} value={String(work.year)} /> : null}
-                  <MetaRow label={labels.type} value={categoryLabel} />
-                  {work.tags && work.tags.length > 0 ? (
-                    <div className="grid grid-cols-[4.5rem_1fr] items-start gap-5 py-3.5">
-                      <dt className="pt-1 text-[11px] font-medium uppercase tracking-[0.2em] text-th-fg/62">
-                        {labels.tags}
-                      </dt>
-                      <dd className="flex flex-wrap gap-1.5">
-                        {work.tags.map((t) => (
-                          <span key={t} className="editorial-chip">
-                            {t}
-                          </span>
-                        ))}
-                      </dd>
+                <dl className="project-meta">
+                  {meta.map((row) => (
+                    <div key={row.label} className="project-meta__row">
+                      <dt>{row.label}</dt>
+                      <dd>{row.value}</dd>
                     </div>
-                  ) : null}
+                  ))}
                 </dl>
 
                 {work.description ? (
                   <p className="body-text whitespace-pre-line leading-relaxed text-muted-body">
                     {work.description}
                   </p>
-                ) : null}
-
-                {hasCredits ? (
-                  <section className="space-y-5 border-t border-th-fg/10 pt-8">
-                    {credits.photographers.length > 0 ? (
-                      <CreditBlock label={labels.photographers} people={credits.photographers} />
-                    ) : null}
-                    {credits.aiArtists.length > 0 ? (
-                      <CreditBlock
-                        label={labels.aiArtists}
-                        people={credits.aiArtists.map((name) => ({ fullName: name }))}
-                      />
-                    ) : null}
-                    {credits.retouchers.length > 0 ? (
-                      <CreditBlock label={labels.retouchers} people={credits.retouchers} />
-                    ) : null}
-                  </section>
                 ) : null}
 
                 {work.instagramUrl ? (
@@ -208,34 +193,21 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
   );
 }
 
-const META_LABEL = 'text-[11px] font-medium uppercase tracking-[0.2em] text-th-fg/62';
-
-function MetaRow({ label, value }: { label: string; value: string }) {
+function People({ people }: { people: CreditPerson[] }) {
   return (
-    <div className="grid grid-cols-[4.5rem_1fr] items-baseline gap-5 py-3.5">
-      <dt className={`${META_LABEL} pt-0.5`}>{label}</dt>
-      <dd className="text-[15px] leading-snug text-th-fg/90">{value}</dd>
-    </div>
-  );
-}
-
-function CreditBlock({ label, people }: { label: string; people: CreditPerson[] }) {
-  return (
-    <div className="space-y-2.5">
-      <p className={META_LABEL}>{label}</p>
-      <ul className="flex flex-wrap gap-2">
-        {people.map((p, i) => (
-          <li key={`${p.fullName}-${i}`}>
-            {p.slug ? (
-              <Link href={`/${p.slug}`} className="editorial-chip">
-                {p.fullName}
-              </Link>
-            ) : (
-              <span className="editorial-chip">{p.fullName}</span>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      {people.map((p, i) => (
+        <span key={`${p.fullName}-${i}`}>
+          {i > 0 ? ', ' : null}
+          {p.slug ? (
+            <Link href={`/${p.slug}`} className="hover-line">
+              {p.fullName}
+            </Link>
+          ) : (
+            p.fullName
+          )}
+        </span>
+      ))}
+    </>
   );
 }

@@ -973,6 +973,31 @@ body[data-lightbox-open] nav {
   gap: 0.35rem 1.5rem;
   min-width: 0;
 }
+/* Phones: brands on one swipeable row instead of five wrapped rows above the work */
+@media (max-width: 899px) {
+  .filter-pills {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    margin-inline: -1.5rem;
+    padding-inline: 1.5rem;
+  }
+  .filter-pills::-webkit-scrollbar {
+    display: none;
+  }
+  .filter-pill {
+    flex-shrink: 0;
+    min-height: 44px;
+  }
+}
+/* Bleed matches .g-inner's wider gutter on tablets */
+@media (min-width: 768px) and (max-width: 899px) {
+  .filter-pills {
+    margin-inline: -3rem;
+    padding-inline: 3rem;
+  }
+}
 .filter-pill,
 .filter-seg-btn {
   position: relative;
@@ -1368,11 +1393,11 @@ body[data-lightbox-open] nav {
   align-items: center;
   justify-content: center;
   align-self: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 1px solid rgb(var(--c-fg) / 0.14);
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgb(var(--c-fg) / 0.28);
   background: rgb(var(--c-fg) / 0.03);
-  color: rgb(var(--c-fg) / 0.72);
+  color: rgb(var(--c-fg) / 0.88);
   transition:
     border-color var(--duration-ui) ease,
     color var(--duration-ui) ease,
@@ -1570,9 +1595,9 @@ body[data-lightbox-open] nav {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   border-top: 1px solid rgb(var(--c-fg) / 0.12);
 }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .about-stats__grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 .about-stats__item {
@@ -1589,6 +1614,16 @@ body[data-lightbox-open] nav {
   font-size: clamp(3rem, 7vw, 5.75rem);
   line-height: 0.95;
   letter-spacing: -0.045em;
+}
+/* Four figures to a row from 1024px — keep "1000+" clear of its neighbour */
+@media (min-width: 1024px) {
+  .about-stats__value {
+    font-size: clamp(3rem, 5vw, 4.75rem);
+  }
+  .about-stats__item + .about-stats__item {
+    padding-left: 1.5rem;
+    border-left: 1px solid rgb(var(--c-fg) / 0.12);
+  }
 }
 .about-stats__label {
   font-size: var(--text-ui);
@@ -1833,7 +1868,8 @@ body[data-lightbox-open] nav {
 }
 @media (min-width: 900px) {
   .index-list__row {
-    grid-template-columns: 5rem minmax(0, 1fr) minmax(0, 1fr);
+    /* Narrower title column so the description reads with its title, not across a gap */
+    grid-template-columns: 5rem minmax(0, 2fr) minmax(0, 3fr);
     gap: 2rem;
     align-items: baseline;
     padding: 2.25rem 0;
@@ -1853,7 +1889,7 @@ body[data-lightbox-open] nav {
 }
 .index-list__body {
   grid-column: 2;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   line-height: 1.65;
   color: rgb(var(--c-fg) / var(--opacity-muted));
   max-width: 34rem;
@@ -1861,6 +1897,33 @@ body[data-lightbox-open] nav {
 @media (min-width: 900px) {
   .index-list__body {
     grid-column: auto;
+  }
+}
+/* Process steps — side by side from 900px so a process reads as a sequence
+   and doesn't repeat the services list's rhythm */
+@media (min-width: 900px) {
+  .index-list--steps {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    border-bottom: 1px solid rgb(var(--c-fg) / 0.12);
+  }
+  .index-list--steps .index-list__row {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: 0.75rem;
+    padding: 2rem 1.5rem 2.5rem 0;
+    border-bottom: 0;
+  }
+  .index-list--steps .index-list__row + .index-list__row {
+    padding-left: 1.5rem;
+    border-left: 1px solid rgb(var(--c-fg) / 0.12);
+  }
+  .index-list--steps .index-list__title {
+    font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+  }
+  .index-list--steps .index-list__body {
+    font-size: 0.9375rem;
   }
 }
 
