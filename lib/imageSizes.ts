@@ -1,6 +1,27 @@
 /** Full-bleed hero / parallax section backgrounds (w-full). */
 export const HERO_IMAGE_SIZES = "100vw";
 
+/** Sanity asset URLs end in `-{width}x{height}.{ext}`. */
+const SANITY_DIMENSIONS_RE = /-(\d+)x(\d+)\.[a-z0-9]+(?:\?|$)/i;
+
+/**
+ * `sizes` for an `object-cover` image filling a full-width frame `frameVh`
+ * viewport heights tall. On a portrait phone a landscape photo is scaled to
+ * the frame's height, so it renders far wider than the screen: 100vw would
+ * fetch a ~1200px file and stretch it 3–5×, which reads as blur. When the
+ * viewport is narrower than the image (relative to the frame) the rendered
+ * width is aspect × frame height. Falls back to 100vw when the URL carries no
+ * dimensions (non-Sanity images).
+ */
+export function coverImageSizes(src: string, frameVh = 100): string {
+  const match = SANITY_DIMENSIONS_RE.exec(src);
+  if (!match) return HERO_IMAGE_SIZES;
+  const aspect = Number(match[1]) / Number(match[2]);
+  if (!Number.isFinite(aspect) || aspect <= 0) return HERO_IMAGE_SIZES;
+  const renderedVh = Math.ceil(aspect * frameVh);
+  return `(max-aspect-ratio: ${renderedVh}/100) ${renderedVh}vh, 100vw`;
+}
+
 
 /** Lightbox images in max-w-7xl containers with horizontal padding (object-contain). */
 export const LIGHTBOX_IMAGE_SIZES =

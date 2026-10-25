@@ -12,7 +12,7 @@ import {
   HOME_V2_HERO_HOLD_MS,
   HOME_V2_HERO_SLIDES,
 } from '@/lib/homeV2HeroSlides';
-import { HERO_IMAGE_SIZES } from '@/lib/imageSizes';
+import { coverImageSizes } from '@/lib/imageSizes';
 import type { Lang } from '@/lib/translations';
 
 interface HomeV2HeroProps {
@@ -125,7 +125,7 @@ export function HomeV2Hero({ heroLabel, heroTitle, heroDescription, slides: slid
                   alt={isCurrent ? slide.alt : ''}
                   fill
                   className="object-cover"
-                  sizes={HERO_IMAGE_SIZES}
+                  sizes={coverImageSizes(slide.src)}
                   loading={i === 0 ? 'eager' : 'lazy'}
                   fetchPriority={i === 0 ? 'high' : undefined}
                   quality={90}
@@ -141,7 +141,7 @@ export function HomeV2Hero({ heroLabel, heroTitle, heroDescription, slides: slid
                 src={slides[(current + 1) % count].src}
                 alt=""
                 fill
-                sizes={HERO_IMAGE_SIZES}
+                sizes={coverImageSizes(slides[(current + 1) % count].src)}
                 quality={90}
                 loading="lazy"
                 unoptimized={shouldSkipOptimization(slides[(current + 1) % count].src)}

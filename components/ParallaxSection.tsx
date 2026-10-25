@@ -5,7 +5,7 @@ import Image from '@/components/Image';
 import { EditorialButton } from '@/components/EditorialButton';
 import { useLanguage } from '@/context/LanguageContext';
 import { shouldSkipOptimization } from '@/lib/blob';
-import { HERO_IMAGE_SIZES } from '@/lib/imageSizes';
+import { coverImageSizes } from '@/lib/imageSizes';
 
 interface ParallaxSectionProps {
   photographer: {
@@ -53,7 +53,7 @@ export function ParallaxSection({ photographer, index, total, fullscreen }: Para
         className="object-cover object-center"
         loading={index <= 1 ? 'eager' : 'lazy'}
         fetchPriority={index === 0 ? 'high' : undefined}
-        sizes={HERO_IMAGE_SIZES}
+        sizes={coverImageSizes(photographer.preview)}
         quality={85}
         placeholder="blur"
         blurDataURL={BLUR}

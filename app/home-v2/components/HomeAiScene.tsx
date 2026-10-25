@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { DisplayCase } from '@/components/DisplayCase';
 import { shouldSkipOptimization } from '@/lib/blob';
-import { HERO_IMAGE_SIZES } from '@/lib/imageSizes';
+import { coverImageSizes } from '@/lib/imageSizes';
 import { prefersReducedMotion } from '@/lib/motion';
 
 /** An AI Portfolio image in the scene; `caption` is its tags, may be empty. */
@@ -107,7 +107,7 @@ export function HomeAiScene({ images, label, title, body, cta, leftWord, rightWo
               alt={i === active ? image.alt : ''}
               fill
               className={`ai-scene__img object-cover ${i === active ? 'is-active' : ''}`}
-              sizes={HERO_IMAGE_SIZES}
+              sizes={coverImageSizes(image.src)}
               quality={85}
               loading="lazy"
               unoptimized={shouldSkipOptimization(image.src)}

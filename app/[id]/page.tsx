@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { photographers as staticPhotographers } from '@/lib/data';
 import { getPhotographers, getPhotographerImages, type Photographer } from '@/lib/cms';
 import { shouldSkipOptimization } from '@/lib/blob';
-import { HERO_IMAGE_SIZES } from '@/lib/imageSizes';
+import { coverImageSizes } from '@/lib/imageSizes';
 import { MasonryGrid } from '@/components/MasonryGrid';
 import { MasonryGridSkeleton } from '@/components/MasonryGridSkeleton';
 import { Footer } from '@/components/Footer';
@@ -112,7 +112,7 @@ export default async function PortfolioPage({ params }: PageProps) {
             className="object-cover"
             loading="eager"
             fetchPriority="high"
-            sizes={HERO_IMAGE_SIZES}
+            sizes={coverImageSizes(photographer.preview)}
             quality={90}
             unoptimized={shouldSkipOptimization(photographer.preview)}
           />
