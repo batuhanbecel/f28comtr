@@ -3,7 +3,7 @@ import { Footer } from '@/components/Footer';
 import { EditorialPageHero } from '@/components/EditorialPageHero';
 import { HeroSnapBody } from '@/components/HeroSnapBody';
 import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
-import { getProductionMarqueeItems, getPageCopy, getProductionProjects } from '@/lib/cms';
+import { getSelectedWorks, getPageCopy, getProductionProjects } from '@/lib/cms';
 import { getServerLang } from '@/lib/serverLang';
 import { generatePageMetadata } from '@/lib/seo';
 import { ProductionMarquee } from '../components/ProductionMarquee';
@@ -18,9 +18,9 @@ export const revalidate = 60;
 
 export default async function ProductionPage() {
   const lang = await getServerLang();
-  const [copy, marqueeItems, projects] = await Promise.all([
+  const [copy, selectedWorks, projects] = await Promise.all([
     getPageCopy('production', lang),
-    getProductionMarqueeItems(24),
+    getSelectedWorks(),
     getProductionProjects(),
   ]);
 
@@ -40,7 +40,7 @@ export default async function ProductionPage() {
           label={copy.projectsLabel}
           heading={copy.projectsHeading}
         />
-        <ProductionMarquee items={marqueeItems} copy={copy} />
+        <ProductionMarquee items={selectedWorks} copy={copy} />
         <ProductionSections copy={copy} />
         <Footer />
       </HeroSnapBody>

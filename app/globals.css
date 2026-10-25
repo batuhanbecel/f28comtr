@@ -1540,27 +1540,6 @@ body[data-lightbox-open] nav {
     padding: calc(var(--site-header-offset) + 8rem) 3rem 5rem;
   }
 }
-/* Optional lead image under the title — full bleed, so text-led pages still
-   open on the work */
-.editorial-hero--media {
-  padding-bottom: 0;
-  border-bottom: 0;
-}
-.editorial-hero__media {
-  position: relative;
-  margin: 3rem -1.5rem 0;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-  background: rgb(var(--c-fg) / 0.04);
-}
-@media (min-width: 768px) {
-  .editorial-hero__media {
-    margin: 4.5rem -3rem 0;
-    aspect-ratio: 21 / 9;
-    max-height: 80svh;
-    width: auto;
-  }
-}
 .editorial-hero__inner {
   max-width: 80rem;
   margin-inline: auto;

@@ -7,4 +7,6 @@ export interface HomeSelectedWorkStored {
 }
 
 export const HOME_SELECTED_WORKS_MAX = 6;
+/** Site-wide "Seçili İşler" list (Production document) — home mosaic, strips. */
+export const SELECTED_WORKS_MAX = 24;
 export const HOME_SELECTED_WORKS_REDIS_KEY = 'site:home:selected';

@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { HomeIcon } from '@sanity/icons';
-import { HomeWorkImageInput } from '../components/HomeWorkImageInput';
+import { selectedWorkMember } from './_objects/selectedWork';
 import { HomeSelectedWorksInput } from '../components/HomeSelectedWorksInput';
 import { AiSceneItemsInput } from '../components/AiSceneItemsInput';
 import { HOME_AI_SCENE_MAX } from '@/lib/homeV2.shared';
@@ -65,53 +65,10 @@ export const homeV2PageCopy = defineType({
       name: 'works',
       title: 'Öne Çıkan İşler',
       description:
-        'Anasayfada gösterilen işler (en fazla 6). Aynı işler, aynı sırayla hero\'nun numaralı slaytlarıdır (01–06). Fotoğrafçıyı seçip portfolyosundan ekleyin; sırayı sürükleyerek değiştirin.',
+        'Hero\'nun numaralı slaytları (01–06), aynı sırayla. Fotoğrafçıyı seçip portfolyosundan ekleyin; sırayı sürükleyerek değiştirin. Anasayfadaki "Seçili işler" bölümü buradan değil, Prodüksiyon Sayfası → "Seçili İşler" listesinden gelir.',
       type: 'array',
       of: [
-        defineArrayMember({
-          type: 'object',
-          name: 'homeSelectedWork',
-          title: 'Öne Çıkan İş',
-          fields: [
-            defineField({
-              name: 'photographer',
-              title: 'Fotoğrafçı',
-              type: 'reference',
-              to: [{ type: 'photographer' }],
-              validation: (Rule) => Rule.required(),
-            }),
-            defineField({
-              name: 'image',
-              title: 'Görsel',
-              description: 'Seçili fotoğrafçının portfolyosundan seçin ya da bilgisayardan yükleyin.',
-              type: 'image',
-              options: { hotspot: true },
-              validation: (Rule) => Rule.required(),
-              components: { input: HomeWorkImageInput },
-            }),
-            defineField({
-              name: 'workTitle',
-              title: 'İş Başlığı',
-              description: 'Boş bırakırsan yedek başlık kullanılır.',
-              type: 'string',
-            }),
-          ],
-          preview: {
-            select: {
-              media: 'image',
-              workTitle: 'workTitle',
-              name: 'photographer.fullName',
-              role: 'photographer.title',
-            },
-            prepare({ media, workTitle, name, role }) {
-              return {
-                media,
-                title: workTitle || name || 'İsimsiz',
-                subtitle: [name, role].filter(Boolean).join('  —  ') || undefined,
-              };
-            },
-          },
-        }),
+        selectedWorkMember,
       ],
       options: {
         layout: 'grid',

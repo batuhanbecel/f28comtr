@@ -44,3 +44,25 @@ export async function getHomeSelectedWorksFromSanity(): Promise<HomeSelectedWork
       photographerId: e.photographerId,
     }));
 }
+
+/** Site-wide "Seçili İşler" list on the Production document. */
+const SELECTED_WORKS_QUERY = `*[_id == "productionPageCopy"][0].selectedWorks[]${WORK_FIELDS}`;
+
+export async function getSelectedWorksFromSanity(): Promise<HomeSelectedWorkStored[]> {
+  const result = await sanityFetch<RawEntry[] | null>(SELECTED_WORKS_QUERY);
+  return (result ?? [])
+    .filter(
+      (e): e is RawEntry & { id: string; imageSrc: string; photographerId: string } =>
+        typeof e?.id === 'string' &&
+        typeof e?.imageSrc === 'string' &&
+        e.imageSrc.length > 0 &&
+        typeof e?.photographerId === 'string' &&
+        e.photographerId.length > 0,
+    )
+    .map((e) => ({
+      id: e.id,
+      imageSrc: e.imageSrc,
+      workTitle: e.workTitle ?? '',
+      photographerId: e.photographerId,
+    }));
+}

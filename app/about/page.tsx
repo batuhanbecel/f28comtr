@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getPartnerLogos, getClientLogos, getPhotographers, getPageCopy, getProductionMarqueeItems } from '@/lib/cms';
+import { getPartnerLogos, getClientLogos, getPhotographers, getPageCopy, getSelectedWorks } from '@/lib/cms';
 import { ProductionMarquee } from '@/app/production/components/ProductionMarquee';
 import { getServerLang } from '@/lib/serverLang';
 import { Footer } from '@/components/Footer';
@@ -18,29 +18,21 @@ export const revalidate = 60;
 
 export default async function AboutPage() {
   const lang = await getServerLang();
-  const [partnerLogos, clientLogos, photographers, productionCopy, marqueeItems] = await Promise.all([
+  const [partnerLogos, clientLogos, photographers, productionCopy, selectedWorks] = await Promise.all([
     getPartnerLogos(),
     getClientLogos(),
     getPhotographers(),
     getPageCopy('production', lang),
-    getProductionMarqueeItems(12),
+    getSelectedWorks(),
   ]);
-
-  // A different opener than Production's (same roster pool)
-  const [first, lead, ...rest] = marqueeItems;
-  if (first) rest.push(first);
 
   return (
     <ProductionSnapContainer>
-      <EditorialPageHero
-        page="about"
-        lang={lang}
-        media={lead ? { src: lead.src, alt: `${lead.photographerName} — f/2.8 Production` } : undefined}
-      />
+      <EditorialPageHero page="about" lang={lang} />
 
       <HeroSnapBody>
         {/* The work leads — the page would otherwise be text and logos only */}
-        <ProductionMarquee items={rest} copy={productionCopy} />
+        <ProductionMarquee items={selectedWorks} copy={productionCopy} />
         <AboutStats
           photographerCount={photographers.length}
           production={{ stats: productionCopy.stats, statsValues: productionCopy.statsValues }}
