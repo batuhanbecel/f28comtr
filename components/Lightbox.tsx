@@ -191,7 +191,7 @@ export function Lightbox({
       )}
 
       <div
-        className="lightbox-content relative max-w-7xl max-h-[88vh] w-full h-full px-16 md:px-20 py-16"
+        className="lightbox-content lightbox-stage"
         onClick={(e) => e.stopPropagation()}
       >
         <div className={`ai-lightbox-spinner ${isLoaded ? 'is-hidden' : ''}`} aria-hidden="true" />

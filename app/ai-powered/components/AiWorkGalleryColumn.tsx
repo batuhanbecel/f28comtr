@@ -9,8 +9,9 @@ import { LIGHTBOX_IMAGE_QUALITY } from '@/lib/imageConfig';
 import type { AiPoweredWorkImage } from '@/lib/aiPoweredWorks';
 import { ViewTransition } from '@/lib/ViewTransition';
 
+/** The column fills `.page-section` (1.5rem / 3rem gutters) up to max-w-6xl (1152px). */
 const COLUMN_SIZES =
-  '(max-width: 1024px) 100vw, (max-width: 1280px) 62vw, 760px';
+  '(max-width: 767px) calc(100vw - 3rem), (max-width: 1247px) calc(100vw - 6rem), 1152px';
 
 interface AiWorkGalleryColumnProps {
   workSlug: string;
