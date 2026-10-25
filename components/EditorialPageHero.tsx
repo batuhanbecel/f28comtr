@@ -1,8 +1,11 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import Image from '@/components/Image';
 import { HeroReveal } from '@/components/HeroReveal';
 import { DisplayCase } from '@/components/DisplayCase';
+import { shouldSkipOptimization } from '@/lib/blob';
+import { HERO_IMAGE_SIZES } from '@/lib/imageSizes';
 import { translations, type Lang } from '@/lib/translations';
 
 export type EditorialHeroPage = 'production' | 'aiPowered' | 'aiPoweredPortfolio' | 'about' | 'portfolios' | 'contact';
@@ -14,6 +17,8 @@ interface EditorialPageHeroProps {
   /** When set, overrides translation defaults (e.g. Redis-backed page copy). */
   heroCopy?: { label: string; title: string; description?: string };
   children?: ReactNode;
+  /** Full-bleed lead image under the title (the page's LCP when set). */
+  media?: { src: string; alt: string };
   scrollSnap?: boolean;
   showScroll?: boolean;
   className?: string;
@@ -28,6 +33,7 @@ export function EditorialPageHero({
   lang,
   heroCopy,
   children,
+  media,
   scrollSnap = false,
   showScroll = true,
   className = '',
@@ -74,7 +80,7 @@ export function EditorialPageHero({
   void showScroll;
 
   return (
-    <section className={`editorial-hero ${className}`.trim()}>
+    <section className={`editorial-hero ${media ? 'editorial-hero--media' : ''} ${className}`.trim()}>
       <HeroReveal className="editorial-hero__inner">
         <div className="editorial-hero__title">
           {copy.label ? <span className="section-label">{copy.label}</span> : null}
@@ -87,6 +93,20 @@ export function EditorialPageHero({
         ) : null}
         {children ? <div className="editorial-hero__extra">{children}</div> : null}
       </HeroReveal>
+      {media ? (
+        <div className="editorial-hero__media">
+          <Image
+            src={media.src}
+            alt={media.alt}
+            fill
+            className="object-cover"
+            sizes={HERO_IMAGE_SIZES}
+            loading="eager"
+            fetchPriority="high"
+            unoptimized={shouldSkipOptimization(media.src)}
+          />
+        </div>
+      ) : null}
     </section>
   );
 }

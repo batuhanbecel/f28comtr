@@ -168,9 +168,10 @@ img, video {
 }
 
 .heading-hero {
-  font-size: clamp(2.5rem, 7.5vw, 6.75rem);
-  letter-spacing: -0.045em;
-  line-height: 0.98;
+  /* Display scale: page titles carry the page — big, tight, confident */
+  font-size: clamp(3rem, 10vw, 10rem);
+  letter-spacing: -0.055em;
+  line-height: 0.92;
   padding-block: 0.04em 0.06em;
   overflow: visible;
 }
@@ -394,23 +395,11 @@ img, video {
 }
 
 .heading-section {
-  font-size: clamp(1.75rem, 3.6vw, 3rem);
-  letter-spacing: -0.035em;
-  line-height: 1.05;
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  letter-spacing: -0.045em;
+  line-height: 1;
   padding-block: 0.04em 0.08em;
   overflow: visible;
-}
-
-.editorial-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.8rem;
-  border: 1px solid rgb(var(--c-fg) / 0.14);
-  background: rgb(var(--c-fg) / 0.02);
-  font-size: var(--text-ui);
-  letter-spacing: 0.01em;
-  color: rgb(var(--c-fg) / var(--opacity-subtle));
 }
 
 .btn-editorial--primary {
@@ -754,19 +743,6 @@ img, video {
 .btn-editorial--light:hover {
   border-color: rgb(255 255 255 / 0.65);
   background: rgb(255 255 255 / 0.1);
-}
-
-/* Portfolio / grid card frame */
-.card-editorial {
-  position: relative;
-  outline: 1px solid rgb(var(--c-fg) / 0.06);
-  outline-offset: -1px;
-  /* Only the hover shadow animates — the keyboard focus ring appears instantly */
-  transition: box-shadow var(--duration-hover) var(--ease-brand);
-}
-.card-editorial:hover {
-  outline-color: rgb(var(--c-fg) / 0.22);
-  box-shadow: 0 12px 40px rgb(var(--c-fg) / 0.06);
 }
 
 .stats-cell {
@@ -1556,12 +1532,33 @@ body[data-lightbox-open] nav {
 
 /* ─── Editorial page header (Production, AI, About, Portfolios, Contact) ── */
 .editorial-hero {
-  padding: calc(var(--site-header-offset) + 3.5rem) 1.5rem 3.5rem;
+  padding: calc(var(--site-header-offset) + 4.5rem) 1.5rem 3.5rem;
   border-bottom: 1px solid rgb(var(--c-fg) / 0.08);
 }
 @media (min-width: 768px) {
   .editorial-hero {
-    padding: calc(var(--site-header-offset) + 5rem) 3rem 4.5rem;
+    padding: calc(var(--site-header-offset) + 8rem) 3rem 5rem;
+  }
+}
+/* Optional lead image under the title — full bleed, so text-led pages still
+   open on the work */
+.editorial-hero--media {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.editorial-hero__media {
+  position: relative;
+  margin: 3rem -1.5rem 0;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: rgb(var(--c-fg) / 0.04);
+}
+@media (min-width: 768px) {
+  .editorial-hero__media {
+    margin: 4.5rem -3rem 0;
+    aspect-ratio: 21 / 9;
+    max-height: 80svh;
+    width: auto;
   }
 }
 .editorial-hero__inner {
@@ -1570,11 +1567,15 @@ body[data-lightbox-open] nav {
   display: grid;
   gap: 2rem;
 }
+/* Title owns the full width (display scale); intro / details sit under it,
+   pushed right on wide screens */
 @media (min-width: 1024px) {
   .editorial-hero__inner {
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-    align-items: end;
-    column-gap: 4rem;
+    row-gap: 3rem;
+  }
+  .editorial-hero__inner > :not(.editorial-hero__title):not(.editorial-hero__extra) {
+    justify-self: end;
+    width: min(100%, 34rem);
   }
 }
 .editorial-hero__title {
@@ -1656,6 +1657,36 @@ body[data-lightbox-open] nav {
 }
 .work-strip::-webkit-scrollbar {
   display: none;
+}
+/* Work mosaic — large edge-to-edge grid: phones 2 columns (one full-width work,
+   then a pair), 6-column rhythm from 768px (wide + narrow, then three equal) */
+.work-mosaic {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.work-mosaic__item {
+  grid-column: span var(--span-sm, 1);
+}
+.work-mosaic__item .tile {
+  aspect-ratio: 3 / 4 !important;
+}
+.work-mosaic__item--wide-sm .tile {
+  aspect-ratio: 4 / 5 !important;
+}
+@media (min-width: 768px) {
+  .work-mosaic {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-rows: clamp(20rem, 38vw, 46rem);
+  }
+  .work-mosaic__item {
+    grid-column: span var(--span, 2);
+  }
+  .work-mosaic__item .tile,
+  .work-mosaic__item--wide-sm .tile {
+    height: 100%;
+    aspect-ratio: auto !important;
+  }
 }
 .work-strip__item {
   flex: 0 0 auto;
@@ -1853,6 +1884,19 @@ body[data-lightbox-open] nav {
 .tile__meta {
   font-size: var(--text-ui);
   color: rgb(255 255 255 / 0.8);
+}
+/* Index tiles (names always shown) and the large mosaic: display-size credits */
+.tile--credit .tile__title,
+.work-mosaic .tile__title {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.125rem, 1.8vw, 1.75rem);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.tile--credit .tile__credit,
+.work-mosaic .tile__credit {
+  padding: 4rem 1.5rem 1.4rem;
 }
 
 .index-list {

@@ -38,8 +38,8 @@ export const EDITORIAL_TILE_SIZES = "(max-width: 768px) 100vw, 34vw";
  *  declare its largest width (576px) rather than a vw guess that undershoots. */
 export const WORK_STRIP_SIZES = "(max-width: 702px) 82vw, 576px";
 
-/** Edge-to-edge portrait grid: 2 cols phone, 3 tablet, 5 desktop. */
-export const ARTIST_GRID_SIZES = "(max-width: 768px) 50vw, (max-width: 1280px) 34vw, 20vw";
+/** Edge-to-edge portrait grid (/portfolios): 2 columns up to 1279px, 5 from 1280px. */
+export const ARTIST_GRID_SIZES = "(max-width: 1279px) 50vw, 20vw";
 
 /** Production projects: 1 col phone, 2 cols from tablet. */
 export const PROJECT_GRID_SIZES = "(max-width: 768px) 100vw, 50vw";

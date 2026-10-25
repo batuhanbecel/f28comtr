@@ -1,6 +1,6 @@
 'use client';
 
-import { WorkStrip } from '@/components/gallery/WorkStrip';
+import { WorkMosaic } from '@/components/gallery/WorkMosaic';
 import { useLanguage } from '@/context/LanguageContext';
 import type { HomeSelectedWork } from '@/lib/homeV2.shared';
 
@@ -17,7 +17,7 @@ export function HomeV2SelectedWorks({ works, sectionLabel, heading, viewAllLabel
     role === 'retoucher' ? (t.titleMap.RETOUCHER ?? 'Retoucher') : (t.titleMap.PHOTOGRAPHER ?? 'Photographer');
 
   return (
-    <WorkStrip
+    <WorkMosaic
       id="selected-works-title"
       label={sectionLabel}
       title={heading}

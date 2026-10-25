@@ -12,7 +12,7 @@ export function ArtistGrid({ photographers }: { photographers: Photographer[] })
   if (photographers.length === 0) return null;
 
   return (
-    <ul className="bleed-grid" style={{ '--cols-sm': 2, '--cols-md': 3, '--cols-lg': 5 } as React.CSSProperties}>
+    <ul className="bleed-grid" style={{ '--cols-sm': 2, '--cols-md': 2, '--cols-lg': 5 } as React.CSSProperties}>
       {photographers.map((p, i) => (
         <li key={p.id}>
           <Tile

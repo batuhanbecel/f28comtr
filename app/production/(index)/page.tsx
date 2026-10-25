@@ -29,10 +29,17 @@ export default async function ProductionPage() {
     title: copy.heading,
     description: copy.description,
   };
+  // The first roster image opens the page; the strip continues with the rest
+  const [lead, ...rest] = marqueeItems;
 
   return (
     <ProductionSnapContainer>
-      <EditorialPageHero page="production" lang={lang} heroCopy={heroCopy} />
+      <EditorialPageHero
+        page="production"
+        lang={lang}
+        heroCopy={heroCopy}
+        media={lead ? { src: lead.src, alt: `${lead.photographerName} — ${copy.heading}` } : undefined}
+      />
       <HeroSnapBody className="bg-th-bg text-th-fg">
         {/* Work first: case studies (when published in Studio) and the roster's work, then services and process */}
         <ProductionProjectsGrid
@@ -40,7 +47,7 @@ export default async function ProductionPage() {
           label={copy.projectsLabel}
           heading={copy.projectsHeading}
         />
-        <ProductionMarquee items={marqueeItems} copy={copy} />
+        <ProductionMarquee items={rest} copy={copy} />
         <ProductionSections copy={copy} />
         <Footer />
       </HeroSnapBody>

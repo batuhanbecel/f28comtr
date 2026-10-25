@@ -26,13 +26,21 @@ export default async function AboutPage() {
     getProductionMarqueeItems(12),
   ]);
 
+  // A different opener than Production's (same roster pool)
+  const [first, lead, ...rest] = marqueeItems;
+  if (first) rest.push(first);
+
   return (
     <ProductionSnapContainer>
-      <EditorialPageHero page="about" lang={lang} />
+      <EditorialPageHero
+        page="about"
+        lang={lang}
+        media={lead ? { src: lead.src, alt: `${lead.photographerName} — f/2.8 Production` } : undefined}
+      />
 
       <HeroSnapBody>
         {/* The work leads — the page would otherwise be text and logos only */}
-        <ProductionMarquee items={marqueeItems} copy={productionCopy} />
+        <ProductionMarquee items={rest} copy={productionCopy} />
         <AboutStats
           photographerCount={photographers.length}
           production={{ stats: productionCopy.stats, statsValues: productionCopy.statsValues }}
