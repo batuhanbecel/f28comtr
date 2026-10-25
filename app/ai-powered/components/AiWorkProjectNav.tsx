@@ -52,7 +52,7 @@ function ProjectNavCard({
               src={work.imageSrc}
               alt=""
               fill
-              sizes="(max-width: 640px) 50vw, 280px"
+              sizes="(max-width: 640px) 90vw, 280px"
               className="object-cover thumb-hover-scale"
               unoptimized={shouldSkipOptimization(work.imageSrc)}
             />

@@ -26,16 +26,17 @@ export const LANDING_PANEL_SIZES = "(max-width: 768px) 100vw, 50vw";
 export const PARTNER_LOGO_SIZES =
   "(max-width: 640px) 25vw, (max-width: 1024px) 16vw, 12vw";
 
-/** About page client logo grid (grid-cols-4 sm:5 md:7 lg:9). */
+/** Logo wall cells — .logo-wall is 3 / 5 / 6 columns (768px, 1280px). */
 export const CLIENT_LOGO_SIZES =
-  "(max-width: 640px) 25vw, (max-width: 1024px) 14vw, 10vw";
+  "(max-width: 767px) 34vw, (max-width: 1279px) 20vw, 17vw";
 
 /** Production projects — asymmetric 12-col grid; feature tiles span ~7/12. */
 export const EDITORIAL_FEATURE_SIZES = "(max-width: 768px) 100vw, 60vw";
 export const EDITORIAL_TILE_SIZES = "(max-width: 768px) 100vw, 34vw";
 
-/** Home work strip — 4:5 tiles, ~82vw on phones, ~42vh-wide on desktop (≈ 34vw at 16:9). */
-export const WORK_STRIP_SIZES = "(max-width: 768px) 82vw, 34vw";
+/** Work strip tile: min(82vw, clamp(360px, 72vh, 720px) × 0.8) — height-driven, so
+ *  declare its largest width (576px) rather than a vw guess that undershoots. */
+export const WORK_STRIP_SIZES = "(max-width: 702px) 82vw, 576px";
 
 /** Edge-to-edge portrait grid: 2 cols phone, 3 tablet, 5 desktop. */
 export const ARTIST_GRID_SIZES = "(max-width: 768px) 50vw, (max-width: 1280px) 34vw, 20vw";
@@ -46,5 +47,6 @@ export const PROJECT_GRID_SIZES = "(max-width: 768px) 100vw, 50vw";
 /** Home disciplines: two half-width panels, stacked on phones. */
 export const DISCIPLINE_PANEL_SIZES = "(max-width: 768px) 100vw, 50vw";
 
-/** Home roster sticky preview (~40% of the content width on desktop). */
-export const ROSTER_PREVIEW_SIZES = "(max-width: 1023px) 1px, 34vw";
+/** Home roster sticky preview (~37–40% of the viewport on desktop). Only shown
+ *  from 1024px; the images are lazy, so phones never request them. */
+export const ROSTER_PREVIEW_SIZES = "40vw";

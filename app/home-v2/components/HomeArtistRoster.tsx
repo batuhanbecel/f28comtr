@@ -83,7 +83,7 @@ export function HomeArtistRoster({ photographers, label, heading, intro, viewAll
                 fill
                 className={`object-cover roster__preview-img ${i === active ? 'is-active' : ''}`}
                 sizes={ROSTER_PREVIEW_SIZES}
-                loading={i < 2 ? 'eager' : 'lazy'}
+                loading="lazy"
                 unoptimized={shouldSkipOptimization(p.preview)}
               />
             ))}
