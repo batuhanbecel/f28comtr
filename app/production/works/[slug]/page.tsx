@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { AiWorkGalleryColumn } from '@/app/ai-powered/components/AiWorkGalleryColumn';
+import { CaseHero, NextWork, type CaseMetaItem } from '@/components/CaseStudy';
 import { Footer } from '@/components/Footer';
 import { getProductionProjects, type ProductionProject } from '@/lib/cms';
 import type { CreditPerson } from '@/lib/aiPoweredWorks';
@@ -105,12 +106,13 @@ export default async function ProductionProjectPage({ params }: PageProps) {
 
   const project = projects[index];
   const prev = index > 0 ? projects[index - 1] : null;
-  const next = index < projects.length - 1 ? projects[index + 1] : null;
+  // The last project hands over to the first
+  const next = projects.length > 1 ? projects[(index + 1) % projects.length] : null;
   const l = LABELS[lang];
   const description = describe(project, lang);
 
-  const meta: { label: string; value: React.ReactNode }[] = [
-    { label: l.client, value: project.brand },
+  // Client sits above the title, so it isn't repeated in the credits row
+  const meta: CaseMetaItem[] = [
     ...(project.agency ? [{ label: l.agency, value: project.agency }] : []),
     ...(project.year ? [{ label: l.year, value: String(project.year) }] : []),
     ...(project.photographers.length ? [{ label: l.photographers, value: <People people={project.photographers} /> }] : []),
@@ -120,58 +122,33 @@ export default async function ProductionProjectPage({ params }: PageProps) {
   return (
     <>
       <main className="min-h-screen bg-th-bg text-th-fg">
-        <header className="editorial-hero">
-          <div className="editorial-hero__inner">
-            <div className="editorial-hero__title">
-              <Link href="/production" className="section-label transition-opacity duration-ui hover:opacity-100">
-                {l.back}
-              </Link>
-              <h1 className="heading-hero">{project.title}</h1>
-            </div>
-            <div className="flex flex-col gap-8">
-              {description ? <p className="body-text text-muted-body max-w-[34rem]">{description}</p> : null}
-              <dl className="project-meta">
-                {meta.map((row) => (
-                  <div key={row.label} className="project-meta__row">
-                    <dt>{row.label}</dt>
-                    <dd>{row.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          </div>
-        </header>
+        <CaseHero
+          back={{ href: '/production', label: l.back }}
+          eyebrow={project.brand}
+          title={project.title}
+          description={description || undefined}
+          meta={meta}
+        />
 
-        <section className="page-section">
-          <div className="mx-auto max-w-6xl">
-            <AiWorkGalleryColumn
-              workSlug={project.slug}
-              images={project.images}
-              imageAlt={project.imageAlt}
-              transitionPrefix="production-project"
-            />
-          </div>
-        </section>
+        <AiWorkGalleryColumn
+          workSlug={project.slug}
+          images={project.images}
+          imageAlt={project.imageAlt}
+          transitionPrefix="production-project"
+        />
 
-        {prev || next ? (
-          <nav aria-label={l.nav} className="page-section page-section--border">
-            <div className="project-nav">
-              {prev ? (
-                <Link href={`/production/works/${prev.slug}`} className="project-nav__link group">
-                  <span className="text-sm text-th-fg/72">← {l.prev}</span>
-                  <span className="heading-lg group-hover:underline underline-offset-4 decoration-1">{prev.title}</span>
-                </Link>
-              ) : (
-                <span />
-              )}
-              {next ? (
-                <Link href={`/production/works/${next.slug}`} className="project-nav__link project-nav__link--next group">
-                  <span className="text-sm text-th-fg/72">{l.next} →</span>
-                  <span className="heading-lg group-hover:underline underline-offset-4 decoration-1">{next.title}</span>
-                </Link>
-              ) : null}
-            </div>
-          </nav>
+        {next ? (
+          <NextWork
+            ariaLabel={l.nav}
+            prev={prev ? { href: `/production/works/${prev.slug}`, label: l.prev, title: prev.title } : null}
+            next={{
+              href: `/production/works/${next.slug}`,
+              label: l.next,
+              title: `${next.brand} — ${next.title}`,
+              imageSrc: next.imageSrc,
+              imageAlt: next.imageAlt,
+            }}
+          />
         ) : null}
       </main>
       <Footer />

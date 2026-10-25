@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
 import { AiWorkGalleryColumn } from '@/app/ai-powered/components/AiWorkGalleryColumn';
+import { CaseHero, NextWork, type CaseMetaItem } from '@/components/CaseStudy';
 import { Footer } from '@/components/Footer';
 import { getAiPoweredWorks, getPageCopy } from '@/lib/cms';
 import type { CreditPerson } from '@/lib/aiPoweredWorks';
@@ -97,13 +98,13 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
     retouchers: work.credits?.retouchers ?? [],
   };
 
-  // Same case-study layout as Production works: title + details, then the work
+  // Neighbours in the AI grid order; the last work hands over to the first
   const listed = works.filter((w) => w.slug);
   const index = listed.findIndex((w) => w.slug === slug);
   const prev = index > 0 ? listed[index - 1] : null;
-  const next = index >= 0 && index < listed.length - 1 ? listed[index + 1] : null;
+  const next = listed.length > 1 ? listed[(index + 1) % listed.length] : null;
 
-  const meta: { label: string; value: React.ReactNode }[] = [
+  const meta: CaseMetaItem[] = [
     ...(work.agency ? [{ label: labels.agency, value: work.agency }] : []),
     ...(work.year ? [{ label: labels.year, value: String(work.year) }] : []),
     { label: labels.type, value: categoryLabel },
@@ -118,86 +119,53 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
   return (
     <>
       <main className="min-h-screen bg-th-bg text-th-fg">
-        <header className="editorial-hero">
-          <div className="editorial-hero__inner">
-            <div className="editorial-hero__title">
-              <Link
-                href="/ai-powered"
-                prefetch={false}
-                className="section-label transition-opacity duration-ui hover:opacity-100"
-              >
-                ← {labels.back}
-              </Link>
-              {/* Brand shows once: as the eyebrow when the work has its own title */}
-              {work.title ? <p className="text-muted-body">{work.brand}</p> : null}
-              <h1 className="heading-hero">{work.title || work.brand}</h1>
-            </div>
-            <div className="flex flex-col gap-8">
-              {work.description ? (
-                <p className="body-text whitespace-pre-line text-muted-body max-w-[34rem]">{work.description}</p>
-              ) : null}
-              <dl className="project-meta">
-                {meta.map((row) => (
-                  <div key={row.label} className="project-meta__row">
-                    <dt>{row.label}</dt>
-                    <dd>{row.value}</dd>
-                  </div>
-                ))}
-              </dl>
-              {work.instagramUrl ? (
-                <a
-                  href={work.instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-editorial inline-flex w-fit"
-                >
-                  {labels.instagram} ↗
-                </a>
-              ) : null}
-            </div>
-          </div>
-        </header>
+        <CaseHero
+          back={{ href: '/ai-powered', label: labels.back }}
+          eyebrow={work.title ? work.brand : undefined}
+          title={work.title || work.brand}
+          description={work.description || undefined}
+          meta={meta}
+        >
+          {work.instagramUrl ? (
+            <a
+              href={work.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="g-link hover-line"
+            >
+              {labels.instagram} ↗
+            </a>
+          ) : null}
+        </CaseHero>
 
-        <section className="page-section">
-          <div className="mx-auto max-w-6xl">
-            <AiWorkGalleryColumn
-              workSlug={slug}
-              images={work.images}
-              imageAlt={work.imageAlt || `${work.brand} — ${work.title}`}
-            />
-          </div>
-        </section>
+        <AiWorkGalleryColumn
+          workSlug={slug}
+          images={work.images}
+          imageAlt={work.imageAlt || `${work.brand} — ${work.title}`}
+        />
 
-        {prev || next ? (
-          <nav aria-label={labels.projectNav} className="page-section page-section--border">
-            <div className="project-nav">
-              {prev ? (
-                <Link href={`/ai-powered/works/${prev.slug}`} className="project-nav__link group">
-                  <span className="text-sm text-th-fg/72">← {labels.prevProject}</span>
-                  <span className="heading-lg group-hover:underline underline-offset-4 decoration-1">
-                    {prev.title || prev.brand}
-                  </span>
-                </Link>
-              ) : (
-                <span />
-              )}
-              {next ? (
-                <Link href={`/ai-powered/works/${next.slug}`} className="project-nav__link project-nav__link--next group">
-                  <span className="text-sm text-th-fg/72">{labels.nextProject} →</span>
-                  <span className="heading-lg group-hover:underline underline-offset-4 decoration-1">
-                    {next.title || next.brand}
-                  </span>
-                </Link>
-              ) : null}
-            </div>
-          </nav>
+        {next?.imageSrc ? (
+          <NextWork
+            ariaLabel={labels.projectNav}
+            prev={
+              prev
+                ? { href: `/ai-powered/works/${prev.slug}`, label: labels.prevProject, title: prev.title || prev.brand }
+                : null
+            }
+            next={{
+              href: `/ai-powered/works/${next.slug}`,
+              label: labels.nextProject,
+              title: next.title ? `${next.brand} — ${next.title}` : next.brand,
+              imageSrc: next.imageSrc,
+              imageAlt: next.imageAlt,
+            }}
+          />
         ) : null}
       </main>
       <Footer />
     </>
   );
 }
-
 
 function People({ people }: { people: CreditPerson[] }) {
   return (
