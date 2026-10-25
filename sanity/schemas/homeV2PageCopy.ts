@@ -203,6 +203,7 @@ export const homeV2PageCopy = defineType({
       group: 'aiSplit',
       name: 'aiSplitCta',
       title: 'AI Buton Yazısı',
+      description: 'Sahnedeki beyaz buton, AI Powered Portfolyo sayfasına gider. Örn. "View portfolio" / "Portfolyoyu gör".',
       type: 'localizedString',
     }),
     defineField({

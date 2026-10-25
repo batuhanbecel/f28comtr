@@ -133,7 +133,7 @@ export function HomeAiScene({ images, label, title, body, cta, leftWord, rightWo
             <span className="ai-scene__count" aria-hidden>
               {String(active + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
             </span>
-            <Link href="/ai-powered" className="ai-scene__cta">
+            <Link href="/ai-powered/portfolio" className="ai-scene__cta">
               {cta}
               <span aria-hidden> →</span>
             </Link>

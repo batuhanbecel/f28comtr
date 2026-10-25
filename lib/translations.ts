@@ -83,7 +83,7 @@ export const translations = {
       aiSplitTitle: 'Traditional production meets AI',
       aiSplitBody:
         'From brief to delivery: model selection, prompt, iteration and hybrid retouch. AI workflow and traditional post-production in one pipeline.',
-      aiSplitCta: 'View works',
+      aiSplitCta: 'View portfolio',
       aiWorksStat: 'AI works',
       clientsMarqueeLabel: 'Clients',
       clientsHeading: 'Brands we work with',
@@ -411,7 +411,7 @@ export const translations = {
       aiSplitTitle: 'Geleneksel prodüksiyon yapay zeka ile buluşuyor',
       aiSplitBody:
         'Brief\'ten teslimata kadar: model seçimi, prompt, iterasyon ve hibrit retuş. AI iş akışı ile geleneksel post-prodüksiyon bir arada.',
-      aiSplitCta: 'İşleri gör',
+      aiSplitCta: 'Portfolyoyu gör',
       aiWorksStat: 'AI iş',
       clientsMarqueeLabel: 'Müşterilerimiz',
       clientsHeading: 'Birlikte çalıştığımız markalar',
