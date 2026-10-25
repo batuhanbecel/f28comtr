@@ -24,26 +24,6 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/admin/ai-based',
-        destination: '/admin/ai-powered',
-        permanent: true,
-      },
-      {
-        source: '/admin/ai-based/:path*',
-        destination: '/admin/ai-powered/:path*',
-        permanent: true,
-      },
-      {
-        source: '/admin/generative-workflow',
-        destination: '/admin/ai-powered',
-        permanent: true,
-      },
-      {
-        source: '/admin/generative-workflow/:path*',
-        destination: '/admin/ai-powered/:path*',
-        permanent: true,
-      },
-      {
         source: '/ai-powered/work/:id',
         destination: '/ai-powered',
         permanent: false,

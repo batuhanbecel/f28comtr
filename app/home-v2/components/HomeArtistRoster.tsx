@@ -72,18 +72,21 @@ export function HomeArtistRoster({ photographers, label, heading, intro, viewAll
         </ol>
 
         <div className="roster__preview" aria-hidden>
-          {photographers.map((p, i) => (
-            <Image
-              key={p.id}
-              src={p.preview}
-              alt=""
-              fill
-              className={`object-cover roster__preview-img ${i === active ? 'is-active' : ''}`}
-              sizes={ROSTER_PREVIEW_SIZES}
-              loading={i < 2 ? 'eager' : 'lazy'}
-              unoptimized={shouldSkipOptimization(p.preview)}
-            />
-          ))}
+          {/* Positioned frame: the sticky preview isn't a valid `fill` parent */}
+          <div className="roster__preview-frame">
+            {photographers.map((p, i) => (
+              <Image
+                key={p.id}
+                src={p.preview}
+                alt=""
+                fill
+                className={`object-cover roster__preview-img ${i === active ? 'is-active' : ''}`}
+                sizes={ROSTER_PREVIEW_SIZES}
+                loading={i < 2 ? 'eager' : 'lazy'}
+                unoptimized={shouldSkipOptimization(p.preview)}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

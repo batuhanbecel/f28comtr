@@ -109,7 +109,7 @@ export function HomeAiScene({ images, label, title, body, cta, leftWord, rightWo
               className={`ai-scene__img object-cover ${i === active ? 'is-active' : ''}`}
               sizes={HERO_IMAGE_SIZES}
               quality={85}
-              loading={i === 0 ? 'eager' : 'lazy'}
+              loading="lazy"
               unoptimized={shouldSkipOptimization(image.src)}
             />
           ))}

@@ -6,9 +6,9 @@ import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 import { getProductionMarqueeItems, getPageCopy, getProductionProjects } from '@/lib/cms';
 import { getServerLang } from '@/lib/serverLang';
 import { generatePageMetadata } from '@/lib/seo';
-import { ProductionMarquee } from './components/ProductionMarquee';
-import { ProductionProjectsGrid } from './components/ProductionProjectsGrid';
-import { ProductionSections } from './components/ProductionSections';
+import { ProductionMarquee } from '../components/ProductionMarquee';
+import { ProductionProjectsGrid } from '../components/ProductionProjectsGrid';
+import { ProductionSections } from '../components/ProductionSections';
 
 export async function generateMetadata(): Promise<Metadata> {
   return generatePageMetadata('production', '/production');

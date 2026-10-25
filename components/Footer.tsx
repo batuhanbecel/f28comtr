@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { contactInfo as staticContactInfo } from '@/lib/data';
 import { FOOTER_NAV } from '@/lib/siteRoutes';
 import { F28LogoMark } from '@/components/F28LogoMark';
@@ -12,11 +13,14 @@ import { useLanguage } from '@/context/LanguageContext';
  */
 export function Footer() {
   const { t, contactInfo: ctxContact, footerCta } = useLanguage();
+  // The contact page already is the call to action — don't repeat it there.
+  const showCta = usePathname() !== '/contact';
   const contactInfo = {
     email: ctxContact.email || staticContactInfo.email,
     instagram: ctxContact.instagram || staticContactInfo.instagram,
     linkedin: ctxContact.linkedin || staticContactInfo.linkedin,
-    address: ctxContact.address || staticContactInfo.address,
+    // Keep "No: 1" together so the number never wraps onto its own line
+    address: (ctxContact.address || staticContactInfo.address).replace(/No:\s+/g, 'No: '),
     city: ctxContact.city || staticContactInfo.city,
   };
 
@@ -34,14 +38,16 @@ export function Footer() {
 
   return (
     <footer className="site-footer">
-      <div className="g-inner site-footer__cta">
-        <span className="section-label">{footerCta.label}</span>
-        <p className="site-footer__heading">{footerCta.heading}</p>
-        <a href={`mailto:${contactInfo.email}`} className="site-footer__email">
-          {contactInfo.email}
-          <span aria-hidden> →</span>
-        </a>
-      </div>
+      {showCta ? (
+        <div className="g-inner site-footer__cta">
+          <span className="section-label">{footerCta.label}</span>
+          <p className="site-footer__heading">{footerCta.heading}</p>
+          <a href={`mailto:${contactInfo.email}`} className="site-footer__email">
+            {contactInfo.email}
+            <span aria-hidden> →</span>
+          </a>
+        </div>
+      ) : null}
 
       <div className="g-inner site-footer__grid">
         <div className="site-footer__col">

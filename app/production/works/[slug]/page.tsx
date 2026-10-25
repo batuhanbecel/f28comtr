@@ -8,7 +8,7 @@ import { getProductionProjects, type ProductionProject } from '@/lib/cms';
 import type { CreditPerson } from '@/lib/aiPoweredWorks';
 import { getServerLang } from '@/lib/serverLang';
 import { absoluteUrl } from '@/lib/siteUrl';
-import type { Lang } from '@/lib/translations';
+import { translations, type Lang } from '@/lib/translations';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const [projects, lang] = await Promise.all([getProductionProjects(), getServerLang()]);
   const project = projects.find((p) => p.slug === slug);
-  if (!project) return { title: 'Project not found', robots: { index: false } };
+  if (!project) return { title: { absolute: translations[lang].seo.notFound.title }, robots: { index: false } };
 
   const title = `${project.brand} — ${project.title}`;
   const description = describe(project, lang) || `${project.brand} · Production by f/2.8`;

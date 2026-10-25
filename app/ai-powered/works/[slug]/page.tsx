@@ -9,6 +9,7 @@ import { getAiPoweredWorks, getPageCopy } from '@/lib/cms';
 import type { CreditPerson } from '@/lib/aiPoweredWorks';
 import { getServerLang } from '@/lib/serverLang';
 import { absoluteUrl } from '@/lib/siteUrl';
+import { translations } from '@/lib/translations';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -27,9 +28,9 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const works = await getAiPoweredWorks();
+  const [works, lang] = await Promise.all([getAiPoweredWorks(), getServerLang()]);
   const work = works.find((w) => w.slug === slug);
-  if (!work) return { title: 'Work not found' };
+  if (!work) return { title: { absolute: translations[lang].seo.notFound.title }, robots: { index: false } };
 
   const title = [work.brand, work.title].filter(Boolean).join(' — ');
   return {

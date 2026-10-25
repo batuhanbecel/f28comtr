@@ -15,9 +15,11 @@ const OPTIONS: { value: Lang; label: string; name: string }[] = [
 export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
   const { lang, setLang, t } = useLanguage();
 
+  // Touch screens get full 44px targets; mouse keeps the compact header size
+  const touchClass = '[@media(pointer:coarse)]:min-w-11 [@media(pointer:coarse)]:h-11';
   const btnClass = compact
-    ? 'text-xs tracking-[0.12em] min-w-7 h-8 px-1'
-    : 'text-[13px] tracking-[0.22em] min-w-8 h-8 px-1.5';
+    ? `text-xs tracking-[0.12em] min-w-7 h-8 px-1 ${touchClass}`
+    : `text-[13px] tracking-[0.22em] min-w-8 h-8 px-1.5 ${touchClass}`;
 
   return (
     <div className="flex items-center gap-1 z-50 shrink-0" role="group" aria-label={t.a11y.language}>

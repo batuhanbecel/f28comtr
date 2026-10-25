@@ -47,4 +47,4 @@ export const PROJECT_GRID_SIZES = "(max-width: 768px) 100vw, 50vw";
 export const DISCIPLINE_PANEL_SIZES = "(max-width: 768px) 100vw, 50vw";
 
 /** Home roster sticky preview (~40% of the content width on desktop). */
-export const ROSTER_PREVIEW_SIZES = "(max-width: 1024px) 1px, 34vw";
+export const ROSTER_PREVIEW_SIZES = "(max-width: 1023px) 1px, 34vw";
