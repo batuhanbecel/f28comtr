@@ -9,6 +9,23 @@ import { translations, type Lang } from '@/lib/translations';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
+/** Desktop header: one button that switches to the other language. */
+function LanguageToggle() {
+  const { lang, setLang } = useLanguage();
+  const next: Lang = lang === 'tr' ? 'en' : 'tr';
+  return (
+    <button
+      type="button"
+      onClick={() => setLang(next)}
+      lang={next}
+      aria-label={next === 'en' ? 'English' : 'Türkçe'}
+      className="site-nav__lang"
+    >
+      {next.toUpperCase()}
+    </button>
+  );
+}
+
 export type NavPhotographer = {
   id: string;
   fullName: string;
@@ -134,38 +151,26 @@ export function Menu({ photographers, lang }: MenuProps) {
     ? ({ '--c-fg': '255 255 255', '--c-bg': '0 0 0' } as React.CSSProperties)
     : undefined;
 
-  const artistLinks: NavChild[] = photographers.map((p) => ({
-    href: `/${p.id}`,
-    label: p.fullName,
-    meta: (t.titleMap as Record<string, string>)[p.title] ?? p.title,
-  }));
-
+  // Numbered like every index on the site. The logo is the way home; Portfolios
+  // goes straight to its index; Contact is the header's call to action on desktop.
   const menuItems: NavItem[] = [
-    { kind: 'link', href: '/', label: t.nav.home, num: '01' },
-    { kind: 'link', href: '/production', label: t.nav.production, num: '02' },
+    { kind: 'link', href: '/production', label: t.nav.production, num: '01' },
     {
       kind: 'dropdown',
       href: '/ai-powered',
       label: t.nav.aiPowered,
-      num: '03',
+      num: '02',
       children: [
         { href: '/ai-powered', label: t.nav.aiPoweredGallery },
         { href: '/ai-powered/portfolio', label: t.nav.aiPoweredPortfolio },
       ],
     },
-    {
-      kind: 'dropdown',
-      href: '/portfolios',
-      label: t.nav.portfolios,
-      num: '04',
-      sectionLabel: t.nav.ourArtists,
-      children: [
-        { href: '/portfolios', label: t.nav.allPortfolios },
-        ...artistLinks,
-      ],
-    },
-    { kind: 'link', href: '/about', label: t.nav.about, num: '05' },
-    { kind: 'link', href: '/contact', label: t.nav.contact, num: '06' },
+    { kind: 'link', href: '/portfolios', label: t.nav.portfolios, num: '03' },
+    { kind: 'link', href: '/about', label: t.nav.about, num: '04' },
+  ];
+  const sheetItems: NavItem[] = [
+    ...menuItems,
+    { kind: 'link', href: '/contact', label: t.nav.contact, num: '05' },
   ];
 
   const openDesktopDropdown = (key: string) => {
@@ -186,14 +191,12 @@ export function Menu({ photographers, lang }: MenuProps) {
           key={item.href}
           href={item.href}
           aria-current={isActive ? 'page' : undefined}
-          className={`group relative text-[0.9375rem] tracking-[0.005em] transition-colors duration-hover ${
-            isActive ? 'text-th-fg' : 'text-th-fg/58 hover:text-th-fg/88'
-          }`}
+          className={`site-nav__link ${isActive ? 'is-active' : ''}`}
         >
+          <span className="site-nav__num" aria-hidden>
+            {item.num}
+          </span>
           {item.label}
-          <span className={`absolute -bottom-1.5 left-0 h-px w-full origin-left bg-th-fg transition-[transform,opacity] duration-hover ease-brand ${
-            isActive ? 'scale-x-100 opacity-60' : 'scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-40'
-          }`} />
         </Link>
       );
     }
@@ -217,10 +220,11 @@ export function Menu({ photographers, lang }: MenuProps) {
         <Link
           href={item.href}
           aria-current={pathname === item.href ? 'page' : undefined}
-          className={`group relative inline-flex items-center gap-1.5 text-[0.9375rem] tracking-[0.005em] transition-colors duration-hover ${
-            isActive ? 'text-th-fg' : 'text-th-fg/58 hover:text-th-fg/88'
-          }`}
+          className={`site-nav__link ${isActive ? 'is-active' : ''}`}
         >
+          <span className="site-nav__num" aria-hidden>
+            {item.num}
+          </span>
           {item.label}
           <svg
             className={`w-2.5 h-2.5 opacity-50 transition-transform duration-ui ${isOpenDropdown ? 'rotate-180' : ''}`}
@@ -230,44 +234,31 @@ export function Menu({ photographers, lang }: MenuProps) {
           >
             <path d="M2 4.5L6 8.5L10 4.5" stroke="currentColor" strokeWidth="1.2" />
           </svg>
-          <span className={`absolute -bottom-1.5 left-0 h-px w-full origin-left bg-th-fg transition-[transform,opacity] duration-hover ease-brand ${
-            isActive ? 'scale-x-100 opacity-60' : 'scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-40'
-          }`} />
         </Link>
 
         <div
-          className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 transition-all duration-ui ease-brand ${
+          className={`absolute top-full left-0 pt-3 transition-all duration-ui ease-brand ${
             isOpenDropdown ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-1 pointer-events-none'
           }`}
           onMouseEnter={() => openDesktopDropdown(dropdownKey)}
           onMouseLeave={scheduleCloseDropdown}
         >
-          <div className="min-w-[15rem] max-w-[18rem] border border-th-fg/10 bg-th-bg py-2">
-            {item.sectionLabel ? (
-              <p className="px-4 pt-2 pb-1 caption-text tracking-[0.38em]">{item.sectionLabel}</p>
-            ) : null}
-            {item.children.map((child, index) => {
-              const childActive = isActivePath(pathname, child.href);
-              const showDivider = item.sectionLabel && index === 1;
-              return (
-                <div key={child.href}>
-                  {showDivider ? <div className="my-2 mx-3 h-px bg-th-fg/[0.06]" /> : null}
-                  <Link
-                    href={child.href}
-                    aria-current={pathname === child.href ? 'page' : undefined}
-                    className={`block px-4 py-2.5 transition-colors duration-ui hover:bg-th-fg/[0.04] ${
-                      childActive ? 'text-th-fg' : 'text-th-fg/55 hover:text-th-fg/85'
-                    }`}
-                  >
-                    <span className="block text-[0.9375rem] leading-snug">{child.label}</span>
-                    {child.meta ? (
-                      <span className="block mt-0.5 caption-text tracking-[0.28em]">{child.meta}</span>
-                    ) : null}
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
+          <ul className="site-nav__menu">
+            {item.children.map((child, index) => (
+              <li key={child.href}>
+                <Link
+                  href={child.href}
+                  aria-current={pathname === child.href ? 'page' : undefined}
+                  className={`site-nav__menu-link ${isActivePath(pathname, child.href) ? 'is-active' : ''}`}
+                >
+                  <span className="site-nav__num" aria-hidden>
+                    {item.num}.{index + 1}
+                  </span>
+                  {child.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     );
@@ -370,15 +361,21 @@ export function Menu({ photographers, lang }: MenuProps) {
           <F28LogoMark className="block h-8 md:h-10 w-auto text-th-fg" aria-hidden />
         </Link>
 
-        <nav className="hidden lg:flex items-center justify-center gap-5 xl:gap-9" aria-label={t.a11y.mainNav}>
+        <nav className="site-nav hidden lg:flex" aria-label={t.a11y.mainNav}>
           {menuItems.map(renderDesktopNavItem)}
         </nav>
 
         <div className="flex items-center gap-3 lg:justify-self-end shrink-0">
-          <div className="hidden lg:flex items-center gap-3">
-            <ThemeToggle />
-            <span className="w-px h-3 bg-th-fg/15 shrink-0" aria-hidden />
-            <LanguageSwitcher compact />
+          <div className="hidden lg:flex items-center gap-6">
+            <LanguageToggle />
+            <Link
+              href="/contact"
+              aria-current={isActivePath(pathname, '/contact') ? 'page' : undefined}
+              className="site-nav__cta hover-line"
+            >
+              {t.nav.cta}
+              <span aria-hidden> →</span>
+            </Link>
           </div>
           <button
             ref={toggleButtonRef}
@@ -412,19 +409,19 @@ export function Menu({ photographers, lang }: MenuProps) {
       >
         <div className="menu-sheet__inner">
           <nav ref={overlayNavRef} aria-label={t.a11y.mainNav}>
-            <ul className="menu-sheet__list">{menuItems.map((item, index) => renderMobileNavItem(item, index))}</ul>
+            <ul className="menu-sheet__list">{sheetItems.map((item, index) => renderMobileNavItem(item, index))}</ul>
           </nav>
 
-          <div className="menu-sheet__foot" style={revealStyle(menuItems.length + 1)}>
+          <div className="menu-sheet__foot" style={revealStyle(sheetItems.length + 1)}>
+            <a href={`mailto:${contactInfo.email}`} className="menu-sheet__email hover-line">
+              {contactInfo.email}
+            </a>
             <div className="menu-sheet__prefs">
               <LanguageSwitcher />
               <span className="w-px h-3 bg-th-fg/15 shrink-0" aria-hidden />
               <ThemeToggle />
             </div>
             <div className="menu-sheet__contact">
-              <a href={`mailto:${contactInfo.email}`} className="hover-line">
-                {contactInfo.email}
-              </a>
               <span className="menu-sheet__socials">
                 <Link href={contactInfo.instagram} target="_blank" rel="noopener noreferrer" className="hover-line">
                   Instagram<span className="sr-only"> {t.a11y.opensInNewTab}</span>

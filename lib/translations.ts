@@ -13,6 +13,7 @@ export const translations = {
       aiPoweredPortfolio: 'Portfolio',
       menu: 'Menu',
       close: 'Close',
+      cta: 'Start a project',
     },
     common: {
       scroll: 'Scroll',
@@ -337,10 +338,12 @@ export const translations = {
       contact: 'İletişim',
       allPortfolios: 'Tüm Portföyler',
       ourArtists: 'Sanatçılarımız',
-      aiPoweredGallery: 'Çalışmalarımız',
-      aiPoweredPortfolio: 'Portföyler',
+      aiPoweredGallery: 'Çalışmalar',
+      // Singular — "Portföyler" is the photographers' index in the same menu
+      aiPoweredPortfolio: 'Portföy',
       menu: 'Menü',
       close: 'Kapat',
+      cta: 'Proje başlat',
     },
     common: {
       scroll: 'Kaydır',

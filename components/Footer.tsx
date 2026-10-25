@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { contactInfo as staticContactInfo } from '@/lib/data';
 import { FOOTER_NAV } from '@/lib/siteRoutes';
 import { F28LogoMark } from '@/components/F28LogoMark';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { useLanguage } from '@/context/LanguageContext';
 
 /**
@@ -116,7 +117,11 @@ export function Footer() {
         <p>
           &copy; {new Date().getFullYear()} f/2.8 Production. {t.footer.rights}
         </p>
-        <p>{t.footer.city}</p>
+        {/* Theme lives here (and in the phone menu) — the header keeps only the language */}
+        <div className="flex items-center gap-3">
+          <p>{t.footer.city}</p>
+          <ThemeToggle />
+        </div>
       </div>
     </footer>
   );
