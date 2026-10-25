@@ -6,7 +6,7 @@ import { Tile } from '@/components/gallery/Tile';
 import { ScrollerArrow } from '@/components/ScrollerArrow';
 import { useLanguage } from '@/context/LanguageContext';
 import { useScrollerArrows } from '@/hooks/useScrollerArrows';
-import { WORK_STRIP_SIZES } from '@/lib/imageSizes';
+import { coverSizes, WORK_STRIP_SLOTS } from '@/lib/imageSizes';
 
 export interface WorkStripItem {
   href: string;
@@ -59,7 +59,7 @@ export function WorkStrip({ items, label, title, intro, viewAll, id }: WorkStrip
               href={item.href}
               src={item.src}
               alt={item.alt}
-              sizes={WORK_STRIP_SIZES}
+              sizes={coverSizes(item.src, WORK_STRIP_SLOTS)}
               title={item.title}
               meta={item.meta}
               eager={i < 3}

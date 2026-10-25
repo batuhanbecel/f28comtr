@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import { BlockHead } from '@/components/gallery/BlockHead';
 import { Tile } from '@/components/gallery/Tile';
 import type { WorkStripItem } from '@/components/gallery/WorkStrip';
+import { coverSizes } from '@/lib/imageSizes';
 
 interface WorkMosaicProps {
   items: WorkStripItem[];
@@ -41,9 +42,19 @@ function layout(count: number) {
   return out;
 }
 
-const DESKTOP_WIDTH: Record<number, string> = { 6: '100vw', 4: '67vw', 3: '50vw', 2: '34vw' };
-const sizesFor = (span: number, spanSm: number) =>
-  `(max-width: 767px) ${spanSm === 2 ? '100vw' : '50vw'}, ${DESKTOP_WIDTH[span]}`;
+/**
+ * Cover-aware sizes: phones 4:5 (full width) or 3:4 (half) tiles; from 768px
+ * span/6 of the width × a row height of clamp(20rem, 38vw, 46rem) — 42vw
+ * covers the 20rem floor at 768px. Landscape work in a narrow tile is cropped
+ * to the row height, so it needs far more than the tile width.
+ */
+const sizesFor = (src: string, span: number, spanSm: number) =>
+  coverSizes(src, [
+    spanSm === 2
+      ? { media: '(max-width: 767px)', width: 100, height: 125 }
+      : { media: '(max-width: 767px)', width: 50, height: 66.7 },
+    { width: (span / 6) * 100, height: 42 },
+  ]);
 
 /** Large edge-to-edge work grid — the home page's selected work. */
 export function WorkMosaic({ items, label, title, intro, viewAll, id }: WorkMosaicProps) {
@@ -79,7 +90,7 @@ export function WorkMosaic({ items, label, title, intro, viewAll, id }: WorkMosa
                 href={item.href}
                 src={item.src}
                 alt={item.alt}
-                sizes={sizesFor(span, spanSm)}
+                sizes={sizesFor(item.src, span, spanSm)}
                 title={item.title}
                 meta={item.meta}
                 ratio="auto"

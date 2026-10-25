@@ -1,6 +1,6 @@
 import { BlockHead } from '@/components/gallery/BlockHead';
 import { Tile } from '@/components/gallery/Tile';
-import { PROJECT_GRID_SIZES } from '@/lib/imageSizes';
+import { coverSizes, PROJECT_GRID_SLOTS } from '@/lib/imageSizes';
 import { ViewTransition } from '@/lib/ViewTransition';
 import type { ProductionProject } from '@/lib/cms';
 
@@ -24,7 +24,7 @@ export function ProductionProjectsGrid({ projects, label, heading }: ProductionP
               href={`/production/works/${project.slug}`}
               src={project.imageSrc}
               alt={project.imageAlt}
-              sizes={PROJECT_GRID_SIZES}
+              sizes={coverSizes(project.imageSrc, PROJECT_GRID_SLOTS)}
               title={project.title}
               meta={[project.brand, project.year].filter(Boolean).join(' · ')}
               ratio="4 / 3"

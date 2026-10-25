@@ -69,9 +69,40 @@ export const CLIENT_LOGO_SIZES =
 export const EDITORIAL_FEATURE_SIZES = "(max-width: 768px) 100vw, 60vw";
 export const EDITORIAL_TILE_SIZES = "(max-width: 768px) 100vw, 34vw";
 
-/** Work strip tile: min(82vw, clamp(360px, 72vh, 720px) × 0.8) — height-driven, so
- *  declare its largest width (576px) rather than a vw guess that undershoots. */
-export const WORK_STRIP_SIZES = "(max-width: 702px) 82vw, 576px";
+/** One `sizes` slot for an `object-cover` box: its width and height in `unit`. */
+export interface CoverSlot {
+  media?: string;
+  width: number;
+  height: number;
+  unit?: 'vw' | 'px';
+}
+
+/**
+ * `sizes` for an `object-cover` image whose box size is known per breakpoint.
+ * The rendered width is the box width, or — when the image is wider than the
+ * box — the box height × the image aspect (the crop). A landscape photo in a
+ * 4:5 tile needs ~1.9× the tile width; declaring only the tile width fetches a
+ * file that gets stretched, which reads as blur. Non-Sanity URLs (no
+ * dimensions) fall back to the box width.
+ */
+export function coverSizes(src: string, slots: CoverSlot[]): string {
+  const match = SANITY_DIMENSIONS_RE.exec(src);
+  const aspect = match ? Number(match[1]) / Number(match[2]) : 0;
+  return slots
+    .map(({ media, width, height, unit = 'vw' }) => {
+      const rendered = aspect > 0 ? Math.max(width, height * aspect) : width;
+      const value = `${Math.ceil(rendered)}${unit}`;
+      return media ? `${media} ${value}` : value;
+    })
+    .join(', ');
+}
+
+/** Work strip tile: 4:5, min(82vw, clamp(360px, 72vh, 720px) × 0.8) wide — at
+ *  most 576 × 720px. Use with coverSizes() for each image. */
+export const WORK_STRIP_SLOTS: CoverSlot[] = [
+  { media: '(max-width: 702px)', width: 82, height: 102.5 },
+  { width: 576, height: 720, unit: 'px' },
+];
 
 /** Edge-to-edge 3:4 portrait grid (/portfolios): 2 columns up to 1279px, 5 from
  *  1280px. Per image, since landscape covers are cropped to the tile height. */
@@ -79,8 +110,11 @@ export function artistGridSizes(src: string): string {
   return `(max-width: 1279px) ${coverSizesInBox(src, 50, 3 / 4)}, ${coverSizesInBox(src, 20, 3 / 4)}`;
 }
 
-/** Production projects: 1 col phone, 2 cols from tablet. */
-export const PROJECT_GRID_SIZES = "(max-width: 768px) 100vw, 50vw";
+/** Production projects: 4:3 tiles, 1 col phone, 2 cols from tablet. Use with coverSizes(). */
+export const PROJECT_GRID_SLOTS: CoverSlot[] = [
+  { media: '(max-width: 768px)', width: 100, height: 75 },
+  { width: 50, height: 37.5 },
+];
 
 /** Home disciplines: two half-width panels, stacked on phones. */
 export const DISCIPLINE_PANEL_SIZES = "(max-width: 768px) 100vw, 50vw";
