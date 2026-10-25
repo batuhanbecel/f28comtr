@@ -168,9 +168,10 @@ img, video {
 }
 
 .heading-hero {
-  font-size: clamp(2.5rem, 7.5vw, 6.75rem);
-  letter-spacing: -0.045em;
-  line-height: 0.98;
+  /* Display scale: page titles carry the page — big, tight, confident */
+  font-size: clamp(3rem, 10vw, 10rem);
+  letter-spacing: -0.055em;
+  line-height: 0.92;
   padding-block: 0.04em 0.06em;
   overflow: visible;
 }
@@ -394,23 +395,11 @@ img, video {
 }
 
 .heading-section {
-  font-size: clamp(1.75rem, 3.6vw, 3rem);
-  letter-spacing: -0.035em;
-  line-height: 1.05;
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  letter-spacing: -0.045em;
+  line-height: 1;
   padding-block: 0.04em 0.08em;
   overflow: visible;
-}
-
-.editorial-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.8rem;
-  border: 1px solid rgb(var(--c-fg) / 0.14);
-  background: rgb(var(--c-fg) / 0.02);
-  font-size: var(--text-ui);
-  letter-spacing: 0.01em;
-  color: rgb(var(--c-fg) / var(--opacity-subtle));
 }
 
 .btn-editorial--primary {
@@ -756,19 +745,6 @@ img, video {
   background: rgb(255 255 255 / 0.1);
 }
 
-/* Portfolio / grid card frame */
-.card-editorial {
-  position: relative;
-  outline: 1px solid rgb(var(--c-fg) / 0.06);
-  outline-offset: -1px;
-  /* Only the hover shadow animates — the keyboard focus ring appears instantly */
-  transition: box-shadow var(--duration-hover) var(--ease-brand);
-}
-.card-editorial:hover {
-  outline-color: rgb(var(--c-fg) / 0.22);
-  box-shadow: 0 12px 40px rgb(var(--c-fg) / 0.06);
-}
-
 .stats-cell {
   position: relative;
 }
@@ -972,6 +948,31 @@ body[data-lightbox-open] nav {
   flex-wrap: wrap;
   gap: 0.35rem 1.5rem;
   min-width: 0;
+}
+/* Phones: brands on one swipeable row instead of five wrapped rows above the work */
+@media (max-width: 899px) {
+  .filter-pills {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    margin-inline: -1.5rem;
+    padding-inline: 1.5rem;
+  }
+  .filter-pills::-webkit-scrollbar {
+    display: none;
+  }
+  .filter-pill {
+    flex-shrink: 0;
+    min-height: 44px;
+  }
+}
+/* Bleed matches .g-inner's wider gutter on tablets */
+@media (min-width: 768px) and (max-width: 899px) {
+  .filter-pills {
+    margin-inline: -3rem;
+    padding-inline: 3rem;
+  }
 }
 .filter-pill,
 .filter-seg-btn {
@@ -1368,11 +1369,11 @@ body[data-lightbox-open] nav {
   align-items: center;
   justify-content: center;
   align-self: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 1px solid rgb(var(--c-fg) / 0.14);
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgb(var(--c-fg) / 0.28);
   background: rgb(var(--c-fg) / 0.03);
-  color: rgb(var(--c-fg) / 0.72);
+  color: rgb(var(--c-fg) / 0.88);
   transition:
     border-color var(--duration-ui) ease,
     color var(--duration-ui) ease,
@@ -1531,12 +1532,12 @@ body[data-lightbox-open] nav {
 
 /* ─── Editorial page header (Production, AI, About, Portfolios, Contact) ── */
 .editorial-hero {
-  padding: calc(var(--site-header-offset) + 3.5rem) 1.5rem 3.5rem;
+  padding: calc(var(--site-header-offset) + 4.5rem) 1.5rem 3.5rem;
   border-bottom: 1px solid rgb(var(--c-fg) / 0.08);
 }
 @media (min-width: 768px) {
   .editorial-hero {
-    padding: calc(var(--site-header-offset) + 5rem) 3rem 4.5rem;
+    padding: calc(var(--site-header-offset) + 8rem) 3rem 5rem;
   }
 }
 .editorial-hero__inner {
@@ -1545,11 +1546,15 @@ body[data-lightbox-open] nav {
   display: grid;
   gap: 2rem;
 }
+/* Title owns the full width (display scale); intro / details sit under it,
+   pushed right on wide screens */
 @media (min-width: 1024px) {
   .editorial-hero__inner {
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-    align-items: end;
-    column-gap: 4rem;
+    row-gap: 3rem;
+  }
+  .editorial-hero__inner > :not(.editorial-hero__title):not(.editorial-hero__extra) {
+    justify-self: end;
+    width: min(100%, 34rem);
   }
 }
 .editorial-hero__title {
@@ -1570,9 +1575,9 @@ body[data-lightbox-open] nav {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   border-top: 1px solid rgb(var(--c-fg) / 0.12);
 }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .about-stats__grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 .about-stats__item {
@@ -1589,6 +1594,16 @@ body[data-lightbox-open] nav {
   font-size: clamp(3rem, 7vw, 5.75rem);
   line-height: 0.95;
   letter-spacing: -0.045em;
+}
+/* Four figures to a row from 1024px — keep "1000+" clear of its neighbour */
+@media (min-width: 1024px) {
+  .about-stats__value {
+    font-size: clamp(3rem, 5vw, 4.75rem);
+  }
+  .about-stats__item + .about-stats__item {
+    padding-left: 1.5rem;
+    border-left: 1px solid rgb(var(--c-fg) / 0.12);
+  }
 }
 .about-stats__label {
   font-size: var(--text-ui);
@@ -1621,6 +1636,36 @@ body[data-lightbox-open] nav {
 }
 .work-strip::-webkit-scrollbar {
   display: none;
+}
+/* Work mosaic — large edge-to-edge grid: phones 2 columns (one full-width work,
+   then a pair), 6-column rhythm from 768px (wide + narrow, then three equal) */
+.work-mosaic {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.work-mosaic__item {
+  grid-column: span var(--span-sm, 1);
+}
+.work-mosaic__item .tile {
+  aspect-ratio: 3 / 4 !important;
+}
+.work-mosaic__item--wide-sm .tile {
+  aspect-ratio: 4 / 5 !important;
+}
+@media (min-width: 768px) {
+  .work-mosaic {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-rows: clamp(20rem, 38vw, 46rem);
+  }
+  .work-mosaic__item {
+    grid-column: span var(--span, 2);
+  }
+  .work-mosaic__item .tile,
+  .work-mosaic__item--wide-sm .tile {
+    height: 100%;
+    aspect-ratio: auto !important;
+  }
 }
 .work-strip__item {
   flex: 0 0 auto;
@@ -1819,6 +1864,19 @@ body[data-lightbox-open] nav {
   font-size: var(--text-ui);
   color: rgb(255 255 255 / 0.8);
 }
+/* Index tiles (names always shown) and the large mosaic: display-size credits */
+.tile--credit .tile__title,
+.work-mosaic .tile__title {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.125rem, 1.8vw, 1.75rem);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.tile--credit .tile__credit,
+.work-mosaic .tile__credit {
+  padding: 4rem 1.5rem 1.4rem;
+}
 
 .index-list {
   list-style: none;
@@ -1833,7 +1891,8 @@ body[data-lightbox-open] nav {
 }
 @media (min-width: 900px) {
   .index-list__row {
-    grid-template-columns: 5rem minmax(0, 1fr) minmax(0, 1fr);
+    /* Narrower title column so the description reads with its title, not across a gap */
+    grid-template-columns: 5rem minmax(0, 2fr) minmax(0, 3fr);
     gap: 2rem;
     align-items: baseline;
     padding: 2.25rem 0;
@@ -1853,7 +1912,7 @@ body[data-lightbox-open] nav {
 }
 .index-list__body {
   grid-column: 2;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   line-height: 1.65;
   color: rgb(var(--c-fg) / var(--opacity-muted));
   max-width: 34rem;
@@ -1861,6 +1920,33 @@ body[data-lightbox-open] nav {
 @media (min-width: 900px) {
   .index-list__body {
     grid-column: auto;
+  }
+}
+/* Process steps — side by side from 900px so a process reads as a sequence
+   and doesn't repeat the services list's rhythm */
+@media (min-width: 900px) {
+  .index-list--steps {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    border-bottom: 1px solid rgb(var(--c-fg) / 0.12);
+  }
+  .index-list--steps .index-list__row {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: 0.75rem;
+    padding: 2rem 1.5rem 2.5rem 0;
+    border-bottom: 0;
+  }
+  .index-list--steps .index-list__row + .index-list__row {
+    padding-left: 1.5rem;
+    border-left: 1px solid rgb(var(--c-fg) / 0.12);
+  }
+  .index-list--steps .index-list__title {
+    font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+  }
+  .index-list--steps .index-list__body {
+    font-size: 0.9375rem;
   }
 }
 
@@ -1882,16 +1968,24 @@ body[data-lightbox-open] nav {
 }
 .logo-wall__cell {
   position: relative;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 2 / 1;
   border-bottom: 1px solid rgb(var(--c-fg) / 0.1);
   border-right: 1px solid rgb(var(--c-fg) / 0.1);
 }
 .logo-wall__cell img {
   object-fit: contain;
-  padding: 22% 20%;
+  /* Logos are cropped to their artwork (lib/logoTrim.ts), so the cell padding
+     alone sets their size: marks stay within ~30% of the height, 45% of the width */
+  padding: 17.5% 27.5%;
   opacity: 0.7;
   filter: brightness(0);
   transition: opacity var(--duration-hover) var(--ease-brand);
+}
+/* Narrow 3-column cells on phones — give the marks a little more room */
+@media (max-width: 767px) {
+  .logo-wall__cell img {
+    padding: 14% 18%;
+  }
 }
 :root:not([data-theme='light']) .logo-wall__cell img {
   filter: brightness(0) invert(1);

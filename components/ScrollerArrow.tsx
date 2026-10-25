@@ -14,7 +14,7 @@ export function ScrollerArrow({ direction, onClick, disabled, label, className =
       onClick={onClick}
       disabled={disabled}
       aria-label={label}
-      className={`home-v2-artists-arrow shrink-0 disabled:opacity-25 disabled:pointer-events-none ${className}`.trim()}
+      className={`home-v2-artists-arrow shrink-0 disabled:opacity-35 disabled:pointer-events-none ${className}`.trim()}
     >
       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.25} aria-hidden>
         {direction === 'prev' ? (

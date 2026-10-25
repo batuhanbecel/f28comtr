@@ -5,6 +5,7 @@ import {
   getHomeAiSceneImages,
   getClientLogos,
   getLandingImages,
+  getSelectedWorks,
 } from '@/lib/cms';
 import type { HomeV2HeroSlide } from '@/lib/homeV2.shared';
 import { getServerLang } from '@/lib/serverLang';
@@ -17,12 +18,14 @@ export default async function HomeV2Page() {
   const lang = await getServerLang();
   const copy = await getHomeV2Copy(lang);
 
-  const [photographers, clientLogos, selectedWorks, sceneImages, heroImages] = await Promise.all([
+  const [photographers, clientLogos, selectedWorks, sceneImages, heroImages, siteSelectedWorks] = await Promise.all([
     getPhotographers(),
     getClientLogos(),
     getHomeV2SelectedWorks(12, copy.workTitleFallback),
     getHomeAiSceneImages(lang),
     getLandingImages(),
+    // The site-wide "Seçili İşler" list (Production document) — same as Production and About
+    getSelectedWorks(),
   ]);
 
   // AI scene: the AI Portfolio images picked in Studio ("Anasayfa" → AI Sahnesi).
@@ -51,7 +54,7 @@ export default async function HomeV2Page() {
     <HomeV2PageContent
       copy={copy}
       heroSlides={heroSlides}
-      selectedWorks={selectedWorks}
+      selectedWorks={siteSelectedWorks}
       photographers={photographers}
       aiImages={aiImages}
       clientLogos={clientLogos}

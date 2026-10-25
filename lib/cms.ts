@@ -48,7 +48,7 @@ import {
   getLandingImagesFromSanity,
   getLogosFromSanity,
 } from '@/lib/sanity.siteAssets';
-import { getHomeSelectedWorksFromSanity } from '@/lib/sanity.homeSelected';
+import { getHomeSelectedWorksFromSanity, getSelectedWorksFromSanity } from '@/lib/sanity.homeSelected';
 import {
   getHomeAiSceneImagesFromSanity,
   getHomeV2CopyPatchFromSanity,
@@ -309,6 +309,86 @@ export async function getProductionMarqueeItems(
     round++;
   }
   return merged;
+}
+
+// ── Selected works (site-wide) ──────────────────────────────────────────────
+
+/** Small deterministic PRNG — the same seed gives the same picks on every page. */
+function seededRandom(seed: string): () => number {
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) h = Math.imul(h ^ seed.charCodeAt(i), 16777619);
+  return () => {
+    h += 0x6d2b79f5;
+    let t = h;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
+ * The site's one "Seçili İşler" list — home mosaic, Production strip, About.
+ * Studio picks (Production Sayfası → Seçili İşler) win. Empty list: one work
+ * per artist, picked at random once a day (Istanbul date) so every page agrees,
+ * avoiding images already in the home hero reel.
+ */
+export async function getSelectedWorks(workTitleFallback = ''): Promise<HomeSelectedWork[]> {
+  const photographers = await getPhotographers();
+  const byId = new Map(photographers.map((p) => [p.id, p]));
+  const roleOf = (p: Photographer): HomeSelectedWorkRole =>
+    (p.title ?? '').toUpperCase() === 'RETOUCHER' ? 'retoucher' : 'photographer';
+
+  let stored: HomeSelectedWorkStored[] = [];
+  try {
+    stored = await getSelectedWorksFromSanity();
+  } catch (error) {
+    console.error('[CMS] getSelectedWorks failed, using daily picks:', error);
+  }
+  const curated = stored.flatMap((entry) => {
+    const p = byId.get(entry.photographerId);
+    if (!p) return [];
+    return [
+      {
+        imageSrc: entry.imageSrc,
+        workTitle: entry.workTitle.trim() || workTitleFallback,
+        artistName: p.fullName,
+        role: roleOf(p),
+        href: `/${p.id}`,
+      },
+    ];
+  });
+  if (curated.length > 0) return curated;
+
+  // Load every portfolio first, then draw in roster order — drawing inside the
+  // async map would make the sequence depend on network timing
+  const inHero = new Set((await getHomeSelectedWorks()).slice(0, HOME_SELECTED_WORKS_MAX).map((w) => w.imageSrc));
+  const pools = await Promise.all(
+    photographers.map(async (p) => {
+      const images = await getPhotographerImages(p.id);
+      const all = images.length > 0 ? images : p.preview ? [p.preview] : [];
+      const fresh = all.filter((src) => !inHero.has(src));
+      return fresh.length > 0 ? fresh : all;
+    }),
+  );
+  const day = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Istanbul' }).format(new Date());
+  const random = seededRandom(day);
+  const picks: HomeSelectedWork[] = [];
+  photographers.forEach((p, i) => {
+    const pool = pools[i];
+    if (pool.length === 0) return;
+    picks.push({
+      imageSrc: pool[Math.floor(random() * pool.length)],
+      workTitle: '',
+      artistName: p.fullName,
+      role: roleOf(p),
+      href: `/${p.id}`,
+    });
+  });
+  for (let i = picks.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [picks[i], picks[j]] = [picks[j], picks[i]];
+  }
+  return picks;
 }
 
 // ── Page Copy + SEO ─────────────────────────────────────────────────────────

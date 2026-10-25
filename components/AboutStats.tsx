@@ -7,23 +7,21 @@ import type { ProductionPageCopy } from '@/lib/pageCopy.types';
 
 interface AboutStatsProps {
   photographerCount: number;
-  clientCount: number;
-  partnerCount: number;
   /** Studio-wide figures edited in the CMS (projects, brands, founding year). */
   production: Pick<ProductionPageCopy, 'stats' | 'statsValues'>;
 }
 
 /** The one place the studio's numbers live — large figures on hairlines. */
-export function AboutStats({ photographerCount, clientCount, partnerCount, production }: AboutStatsProps) {
+export function AboutStats({ photographerCount, production }: AboutStatsProps) {
   const { lang, t } = useLanguage();
   const tr = lang === 'tr';
 
+  // Client and partner counts were logo counts (18+ clients next to 150+ brands);
+  // the logo walls below already show them
   const stats = [
     { value: production.statsValues.projects, label: production.stats.projects },
     { value: production.statsValues.brands, label: production.stats.brands },
     { value: String(photographerCount), label: tr ? 'Sanatçı' : 'Artists' },
-    { value: `${clientCount}+`, label: tr ? 'Müşteri' : 'Clients' },
-    { value: String(partnerCount), label: tr ? 'Partner ajans' : 'Partner agencies' },
     { value: production.statsValues.sinceYear, label: tr ? 'Kuruluş, İstanbul' : 'Founded in Istanbul' },
   ];
 

@@ -123,11 +123,11 @@ export default async function PortfolioPage({ params }: PageProps) {
 
         {/* Copy sits on photography in both themes — pin theme tokens to white */}
         <div
-          className="relative z-10 text-th-fg px-4 w-full max-w-5xl"
+          className="relative z-10 text-th-fg g-inner w-full"
           style={{ '--c-fg': '255 255 255', '--c-bg': '0 0 0' } as React.CSSProperties}
         >
           <PhotographerHeroHeader name={photographer.fullName} title={photographer.title}>
-            <Suspense fallback={<div className="mx-auto h-11 w-52 border border-th-fg/10 bg-th-fg/[0.03] animate-pulse" aria-hidden="true" />}>
+            <Suspense fallback={<div className="h-11 w-52 border border-th-fg/10 bg-th-fg/[0.03] animate-pulse" aria-hidden="true" />}>
               <DownloadButton imagesPromise={imagesPromise} photographer={photographer} />
             </Suspense>
           </PhotographerHeroHeader>

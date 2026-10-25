@@ -1,9 +1,6 @@
 import Image from '@/components/Image';
 import { CLIENT_LOGO_SIZES } from '@/lib/imageSizes';
-
-/** Logo file → readable brand name ("garanti-bbva.png" → "garanti bbva"). */
-const logoName = (src: string) =>
-  (src.split('/').pop() ?? '').replace(/\.(png|jpe?g|webp|svg|avif)$/i, '').replace(/[-_]+/g, ' ');
+import { logoName } from '@/lib/logoNames';
 
 /** Columns per breakpoint — keep in sync with `.logo-wall` in globals.css. */
 const COLUMNS = { sm: 3, md: 5, lg: 6 } as const;

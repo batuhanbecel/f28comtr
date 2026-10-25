@@ -40,7 +40,7 @@ export function ProductionSections({ copy }: ProductionSectionsProps) {
         <section className="g-section" aria-labelledby="process-title">
           <BlockHead id="process-title" label={process.sectionLabel} title={process.heading} />
           <div className="g-inner">
-            <ol className="index-list">
+            <ol className="index-list index-list--steps">
               {processSteps.map((step, i) => (
                 <ScrollReveal key={`${step.title}-${i}`} as="li" className="index-list__row" delay={Math.min(i, 6) * 0.04}>
                   <span className="index-list__num">{num(i)}</span>

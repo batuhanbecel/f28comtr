@@ -94,7 +94,8 @@ function resolvePathsForType(body: WebhookPayload): string[] {
       return ['/home-v2', '/'];
 
     case 'productionPageCopy':
-      return ['/production'];
+      // Also holds the site-wide "Seçili İşler" list (home mosaic, About strip)
+      return ['/production', '/', '/home-v2', '/about'];
 
     case 'aiPoweredPageCopy':
       return ['/ai-powered', '/ai-powered/portfolio'];

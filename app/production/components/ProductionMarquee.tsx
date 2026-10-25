@@ -1,15 +1,16 @@
 'use client';
 
 import { WorkStrip } from '@/components/gallery/WorkStrip';
-import type { ProductionMarqueeItem } from '@/lib/productionMarquee.shared';
+import type { HomeSelectedWork } from '@/lib/homeV2.shared';
 import type { ProductionPageCopy } from '@/lib/pageCopy.types';
 
 interface ProductionMarqueeProps {
-  items: ProductionMarqueeItem[];
-  copy: Pick<ProductionPageCopy, 'heading' | 'marqueeLabel' | 'team'>;
+  /** The site-wide "Seçili İşler" list (`getSelectedWorks`). */
+  items: HomeSelectedWork[];
+  copy: Pick<ProductionPageCopy, 'marqueeLabel' | 'team'>;
 }
 
-/** Work across the roster — the same edge-to-edge strip as the home page. */
+/** The site's selected works as an edge-to-edge strip — same list as the home mosaic. */
 export function ProductionMarquee({ items, copy }: ProductionMarqueeProps) {
   return (
     <WorkStrip
@@ -18,11 +19,12 @@ export function ProductionMarquee({ items, copy }: ProductionMarqueeProps) {
       title={copy.marqueeLabel}
       intro={copy.team.description}
       viewAll={{ href: '/portfolios', label: copy.team.cta }}
-      items={items.map((item) => ({
-        href: `/${item.photographerId}`,
-        src: item.src,
-        alt: `${item.photographerName} — ${copy.heading}`,
-        title: item.photographerName,
+      items={items.map((work) => ({
+        href: work.href,
+        src: work.imageSrc,
+        alt: work.workTitle ? `${work.workTitle} — ${work.artistName}` : work.artistName,
+        title: work.workTitle || work.artistName,
+        meta: work.workTitle ? work.artistName : undefined,
       }))}
     />
   );

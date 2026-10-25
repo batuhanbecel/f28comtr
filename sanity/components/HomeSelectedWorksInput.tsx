@@ -12,7 +12,7 @@ import {
 } from 'sanity';
 import { randomKey } from '@sanity/util/content';
 
-import { HOME_SELECTED_WORKS_MAX } from '@/lib/homeSelectedWorks.shared';
+import { HOME_SELECTED_WORKS_MAX, SELECTED_WORKS_MAX } from '@/lib/homeSelectedWorks.shared';
 
 import { apiVersion } from '../env';
 import { F28_GALLERY_COLUMNS_WIDE, F28_GALLERY_THUMB_HEIGHT_WIDE } from '../lib/galleryGrid';
@@ -31,6 +31,8 @@ type HomeSelectedWorkItem = {
 
 export function HomeSelectedWorksInput(props: ArrayOfObjectsInputProps) {
   const { value = [], onChange, readOnly, members, onItemOpen } = props;
+  // Hero reel (Anasayfa → works) holds 6; the site-wide list (Production → selectedWorks) more
+  const max = props.path[props.path.length - 1] === 'selectedWorks' ? SELECTED_WORKS_MAX : HOME_SELECTED_WORKS_MAX;
   const works = value as HomeSelectedWorkItem[];
   const client = useClient({ apiVersion });
   const fileRef = useRef<HTMLInputElement>(null);
@@ -38,8 +40,8 @@ export function HomeSelectedWorksInput(props: ArrayOfObjectsInputProps) {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
 
-  const atMax = works.length >= HOME_SELECTED_WORKS_MAX;
-  const slotsLeft = Math.max(0, HOME_SELECTED_WORKS_MAX - works.length);
+  const atMax = works.length >= max;
+  const slotsLeft = Math.max(0, max - works.length);
 
   const patchWorks = useCallback(
     (next: HomeSelectedWorkItem[]) => {
@@ -169,7 +171,7 @@ export function HomeSelectedWorksInput(props: ArrayOfObjectsInputProps) {
                 Öne çıkan iş ekle
               </Text>
               <Text size={1} muted>
-                Fotoğrafçıyı seçin, portfolyosundaki görsellerden ekleyin (en fazla {HOME_SELECTED_WORKS_MAX})
+                Fotoğrafçıyı seçin, portfolyosundaki görsellerden ekleyin (en fazla {max})
               </Text>
             </Stack>
             <Flex gap={2} justify="center" wrap="wrap">
@@ -193,11 +195,11 @@ export function HomeSelectedWorksInput(props: ArrayOfObjectsInputProps) {
 
       {atMax ? (
         <Text size={1} muted>
-          En fazla {HOME_SELECTED_WORKS_MAX} iş eklenebilir. Yeni eklemek için birini silin.
+          En fazla {max} iş eklenebilir. Yeni eklemek için birini silin.
         </Text>
       ) : (
         <Text size={1} muted>
-          {works.length} / {HOME_SELECTED_WORKS_MAX} iş — sıralamak için tutamacı sürükleyin; fotoğrafçı ve
+          {works.length} / {max} iş — sıralamak için tutamacı sürükleyin; fotoğrafçı ve
           başlık için görsele tıklayın
         </Text>
       )}

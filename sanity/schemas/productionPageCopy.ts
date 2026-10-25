@@ -1,5 +1,8 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { DesktopIcon } from '@sanity/icons';
+import { SELECTED_WORKS_MAX } from '@/lib/homeSelectedWorks.shared';
+import { HomeSelectedWorksInput } from '../components/HomeSelectedWorksInput';
+import { selectedWorkMember } from './_objects/selectedWork';
 
 /** Production sayfası için tam yapılandırılmış içerik — her field Studio'da ayrı UI. */
 export const productionPageCopy = defineType({
@@ -9,6 +12,7 @@ export const productionPageCopy = defineType({
   icon: DesktopIcon,
   groups: [
     { name: 'hero', title: 'Üst Bölüm', default: true },
+    { name: 'selectedWorks', title: 'Seçili İşler' },
     { name: 'projects', title: 'Projeler' },
     { name: 'services', title: 'Hizmetler' },
     { name: 'process', title: 'Sürecimiz' },
@@ -168,6 +172,25 @@ export const productionPageCopy = defineType({
         defineField({ name: 'description', title: 'Açıklama', type: 'localizedText' }),
         defineField({ name: 'cta', title: 'Buton Yazısı', type: 'localizedString' }),
       ],
+    }),
+
+    // ── Selected works (site-wide) ──────────────────────────────────────
+    defineField({
+      group: 'selectedWorks',
+      name: 'selectedWorks',
+      title: 'Seçili İşler',
+      description:
+        'Sitenin tek "Seçili işler" listesi: Anasayfadaki "Seçili işler", bu sayfadaki iş şeridi ve Hakkımızda sayfası buradan gelir. Boş bırakırsan her sanatçının portfolyosundan rastgele bir iş gösterilir (seçim her gün değişir). Fotoğrafçıyı seçip portfolyosundan ekleyin; sırayı sürükleyerek değiştirin.',
+      type: 'array',
+      of: [selectedWorkMember],
+      options: {
+        layout: 'grid',
+        modal: { type: 'dialog', width: 5 },
+      },
+      validation: (Rule) => Rule.max(SELECTED_WORKS_MAX),
+      components: {
+        input: HomeSelectedWorksInput,
+      },
     }),
 
     // ── Marquee ─────────────────────────────────────────────────────────

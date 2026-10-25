@@ -242,7 +242,7 @@ export function Menu({ photographers, lang }: MenuProps) {
           onMouseEnter={() => openDesktopDropdown(dropdownKey)}
           onMouseLeave={scheduleCloseDropdown}
         >
-          <div className="min-w-[15rem] max-w-[18rem] border border-th-fg/10 bg-th-bg/95 backdrop-blur-xl shadow-lg py-2">
+          <div className="min-w-[15rem] max-w-[18rem] border border-th-fg/10 bg-th-bg py-2">
             {item.sectionLabel ? (
               <p className="px-4 pt-2 pb-1 caption-text tracking-[0.38em]">{item.sectionLabel}</p>
             ) : null}

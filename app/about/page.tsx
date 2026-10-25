@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { getPartnerLogos, getClientLogos, getPhotographers, getPageCopy } from '@/lib/cms';
+import { getPartnerLogos, getClientLogos, getPhotographers, getPageCopy, getSelectedWorks } from '@/lib/cms';
+import { ProductionMarquee } from '@/app/production/components/ProductionMarquee';
 import { getServerLang } from '@/lib/serverLang';
 import { Footer } from '@/components/Footer';
 import { EditorialPageHero } from '@/components/EditorialPageHero';
@@ -17,11 +18,12 @@ export const revalidate = 60;
 
 export default async function AboutPage() {
   const lang = await getServerLang();
-  const [partnerLogos, clientLogos, photographers, productionCopy] = await Promise.all([
+  const [partnerLogos, clientLogos, photographers, productionCopy, selectedWorks] = await Promise.all([
     getPartnerLogos(),
     getClientLogos(),
     getPhotographers(),
     getPageCopy('production', lang),
+    getSelectedWorks(),
   ]);
 
   return (
@@ -29,10 +31,10 @@ export default async function AboutPage() {
       <EditorialPageHero page="about" lang={lang} />
 
       <HeroSnapBody>
+        {/* The work leads — the page would otherwise be text and logos only */}
+        <ProductionMarquee items={selectedWorks} copy={productionCopy} />
         <AboutStats
           photographerCount={photographers.length}
-          clientCount={clientLogos.length}
-          partnerCount={partnerLogos.length}
           production={{ stats: productionCopy.stats, statsValues: productionCopy.statsValues }}
         />
 

@@ -3,13 +3,12 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
 import { AiWorkGalleryColumn } from '@/app/ai-powered/components/AiWorkGalleryColumn';
-import { AiWorkProjectNav } from '@/app/ai-powered/components/AiWorkProjectNav';
 import { Footer } from '@/components/Footer';
 import { getAiPoweredWorks, getPageCopy } from '@/lib/cms';
 import type { CreditPerson } from '@/lib/aiPoweredWorks';
 import { getServerLang } from '@/lib/serverLang';
+import { toNameCase } from '@/lib/displayCase';
 import { absoluteUrl } from '@/lib/siteUrl';
-import { translations } from '@/lib/translations';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -28,9 +27,9 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const [works, lang] = await Promise.all([getAiPoweredWorks(), getServerLang()]);
-  const work = works.find((w) => w.slug === slug);
-  if (!work) return { title: { absolute: translations[lang].seo.notFound.title }, robots: { index: false } };
+  const work = (await getAiPoweredWorks()).find((w) => w.slug === slug);
+  // 404 before any cookie read — see production/works/[slug]
+  if (!work) notFound();
 
   const title = [work.brand, work.title].filter(Boolean).join(' — ');
   return {
@@ -47,9 +46,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function AiPoweredWorkPage({ params }: PageProps) {
   const { slug } = await params;
-  const [works, lang] = await Promise.all([getAiPoweredWorks(), getServerLang()]);
+  const works = await getAiPoweredWorks();
   const work = works.find((w) => w.slug === slug);
   if (!work) notFound();
+  const lang = await getServerLang();
 
   const copy = await getPageCopy('aiPowered', lang);
   const categoryLabels: Record<string, string> = {
@@ -58,184 +58,162 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
   };
   const categoryLabel = categoryLabels[work.category] ?? work.category;
 
+
   const labels =
     lang === 'tr'
       ? {
-          brand: 'Marka',
           agency: 'Ajans',
           year: 'Yıl',
           type: 'Tür',
           tags: 'Etiketler',
           instagram: 'Instagram\'da gör',
-          back: 'AI Powered',
-          prevProject: 'Önceki Proje',
-          nextProject: 'Sonraki Proje',
+          back: 'AI-Powered',
+          prevProject: 'Önceki proje',
+          nextProject: 'Sonraki proje',
           projectNav: 'Çalışmalar arası gezinme',
-          moreWorks: 'Diğer çalışmalar',
-          photographers: 'Fotoğrafçı',
-          aiArtists: 'AI Sanatçıları',
-          retouchers: 'Retoucher\'lar',
+          photographers: 'Fotoğraf',
+          aiArtists: 'AI sanatçıları',
+          retouchers: 'Rötuş',
         }
       : {
-          brand: 'Brand',
           agency: 'Agency',
           year: 'Year',
           type: 'Type',
           tags: 'Tags',
           instagram: 'View on Instagram',
-          back: 'AI Powered',
-          prevProject: 'Previous Project',
-          nextProject: 'Next Project',
+          back: 'AI-Powered',
+          prevProject: 'Previous project',
+          nextProject: 'Next project',
           projectNav: 'Work navigation',
-          moreWorks: 'More works',
-          photographers: 'Photographer',
-          aiArtists: 'AI Artists',
-          retouchers: 'Retouchers',
+          photographers: 'Photography',
+          aiArtists: 'AI artists',
+          retouchers: 'Retouch',
         };
 
   const credits = {
     photographers: work.credits?.photographers ?? [],
-    aiArtists: work.credits?.aiArtists ?? [],
+    // Typed free-form in Studio, often in caps — same name casing as the roster
+    aiArtists: (work.credits?.aiArtists ?? []).map((name) => ({ fullName: toNameCase(name) })),
     retouchers: work.credits?.retouchers ?? [],
   };
-  const hasCredits =
-    credits.photographers.length > 0 ||
-    credits.aiArtists.length > 0 ||
-    credits.retouchers.length > 0;
+
+  // Same case-study layout as Production works: title + details, then the work
+  const listed = works.filter((w) => w.slug);
+  const index = listed.findIndex((w) => w.slug === slug);
+  const prev = index > 0 ? listed[index - 1] : null;
+  const next = index >= 0 && index < listed.length - 1 ? listed[index + 1] : null;
+
+  const meta: { label: string; value: React.ReactNode }[] = [
+    ...(work.agency ? [{ label: labels.agency, value: work.agency }] : []),
+    ...(work.year ? [{ label: labels.year, value: String(work.year) }] : []),
+    { label: labels.type, value: categoryLabel },
+    ...(work.tags?.length ? [{ label: labels.tags, value: work.tags.join(', ') }] : []),
+    ...(credits.photographers.length
+      ? [{ label: labels.photographers, value: <People people={credits.photographers} /> }]
+      : []),
+    ...(credits.aiArtists.length ? [{ label: labels.aiArtists, value: <People people={credits.aiArtists} /> }] : []),
+    ...(credits.retouchers.length ? [{ label: labels.retouchers, value: <People people={credits.retouchers} /> }] : []),
+  ];
 
   return (
     <>
-      <main className="min-h-screen bg-th-bg text-th-fg pb-16 pt-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
-          <Link
-            href="/ai-powered"
-            prefetch={false}
-            className="section-label mb-10 inline-block transition-opacity duration-ui hover:opacity-100"
-          >
-            ← {labels.back}
-          </Link>
-
-          <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-16">
-            {/* Image column — large, uncropped, vertical */}
-            <div className="order-2 min-w-0 lg:order-1">
-              <AiWorkGalleryColumn
-                workSlug={slug}
-                images={work.images}
-                imageAlt={work.imageAlt || `${work.brand} — ${work.title}`}
-              />
+      <main className="min-h-screen bg-th-bg text-th-fg">
+        <header className="editorial-hero">
+          <div className="editorial-hero__inner">
+            <div className="editorial-hero__title">
+              <Link
+                href="/ai-powered"
+                prefetch={false}
+                className="section-label transition-opacity duration-ui hover:opacity-100"
+              >
+                ← {labels.back}
+              </Link>
+              {/* Brand shows once: as the eyebrow when the work has its own title */}
+              {work.title ? <p className="text-muted-body">{work.brand}</p> : null}
+              <h1 className="heading-hero">{work.title || work.brand}</h1>
             </div>
-
-            {/* Sticky info panel */}
-            <aside className="order-1 self-start lg:order-2 lg:sticky lg:top-24">
-              <div className="space-y-8">
-                <header className="page-heading-stack gap-3 border-b border-th-fg/10 pb-6">
-                  <span className="text-[11px] font-medium uppercase tracking-[0.26em] text-th-fg/62">
-                    {work.brand}
-                  </span>
-                  <h1 className="heading-section leading-tight">{work.title || work.brand}</h1>
-                </header>
-
-                <dl className="divide-y divide-th-fg/[0.06]">
-                  <MetaRow label={labels.brand} value={work.brand} />
-                  {work.agency ? <MetaRow label={labels.agency} value={work.agency} /> : null}
-                  {work.year ? <MetaRow label={labels.year} value={String(work.year)} /> : null}
-                  <MetaRow label={labels.type} value={categoryLabel} />
-                  {work.tags && work.tags.length > 0 ? (
-                    <div className="grid grid-cols-[4.5rem_1fr] items-start gap-5 py-3.5">
-                      <dt className="pt-1 text-[11px] font-medium uppercase tracking-[0.2em] text-th-fg/62">
-                        {labels.tags}
-                      </dt>
-                      <dd className="flex flex-wrap gap-1.5">
-                        {work.tags.map((t) => (
-                          <span key={t} className="editorial-chip">
-                            {t}
-                          </span>
-                        ))}
-                      </dd>
-                    </div>
-                  ) : null}
-                </dl>
-
-                {work.description ? (
-                  <p className="body-text whitespace-pre-line leading-relaxed text-muted-body">
-                    {work.description}
-                  </p>
-                ) : null}
-
-                {hasCredits ? (
-                  <section className="space-y-5 border-t border-th-fg/10 pt-8">
-                    {credits.photographers.length > 0 ? (
-                      <CreditBlock label={labels.photographers} people={credits.photographers} />
-                    ) : null}
-                    {credits.aiArtists.length > 0 ? (
-                      <CreditBlock
-                        label={labels.aiArtists}
-                        people={credits.aiArtists.map((name) => ({ fullName: name }))}
-                      />
-                    ) : null}
-                    {credits.retouchers.length > 0 ? (
-                      <CreditBlock label={labels.retouchers} people={credits.retouchers} />
-                    ) : null}
-                  </section>
-                ) : null}
-
-                {work.instagramUrl ? (
-                  <a
-                    href={work.instagramUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-editorial inline-flex"
-                  >
-                    {labels.instagram} ↗
-                  </a>
-                ) : null}
-              </div>
-            </aside>
+            <div className="flex flex-col gap-8">
+              {work.description ? (
+                <p className="body-text whitespace-pre-line text-muted-body max-w-[34rem]">{work.description}</p>
+              ) : null}
+              <dl className="project-meta">
+                {meta.map((row) => (
+                  <div key={row.label} className="project-meta__row">
+                    <dt>{row.label}</dt>
+                    <dd>{row.value}</dd>
+                  </div>
+                ))}
+              </dl>
+              {work.instagramUrl ? (
+                <a
+                  href={work.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-editorial inline-flex w-fit"
+                >
+                  {labels.instagram} ↗
+                </a>
+              ) : null}
+            </div>
           </div>
+        </header>
 
-          <AiWorkProjectNav
-            works={works}
-            currentSlug={slug}
-            prevLabel={labels.prevProject}
-            nextLabel={labels.nextProject}
-            ariaLabel={labels.projectNav}
-            sectionLabel={labels.moreWorks}
-          />
-        </div>
+        <section className="page-section">
+          <div className="mx-auto max-w-6xl">
+            <AiWorkGalleryColumn
+              workSlug={slug}
+              images={work.images}
+              imageAlt={work.imageAlt || `${work.brand} — ${work.title}`}
+            />
+          </div>
+        </section>
+
+        {prev || next ? (
+          <nav aria-label={labels.projectNav} className="page-section page-section--border">
+            <div className="project-nav">
+              {prev ? (
+                <Link href={`/ai-powered/works/${prev.slug}`} className="project-nav__link group">
+                  <span className="text-sm text-th-fg/72">← {labels.prevProject}</span>
+                  <span className="heading-lg group-hover:underline underline-offset-4 decoration-1">
+                    {prev.title || prev.brand}
+                  </span>
+                </Link>
+              ) : (
+                <span />
+              )}
+              {next ? (
+                <Link href={`/ai-powered/works/${next.slug}`} className="project-nav__link project-nav__link--next group">
+                  <span className="text-sm text-th-fg/72">{labels.nextProject} →</span>
+                  <span className="heading-lg group-hover:underline underline-offset-4 decoration-1">
+                    {next.title || next.brand}
+                  </span>
+                </Link>
+              ) : null}
+            </div>
+          </nav>
+        ) : null}
       </main>
       <Footer />
     </>
   );
 }
 
-const META_LABEL = 'text-[11px] font-medium uppercase tracking-[0.2em] text-th-fg/62';
 
-function MetaRow({ label, value }: { label: string; value: string }) {
+function People({ people }: { people: CreditPerson[] }) {
   return (
-    <div className="grid grid-cols-[4.5rem_1fr] items-baseline gap-5 py-3.5">
-      <dt className={`${META_LABEL} pt-0.5`}>{label}</dt>
-      <dd className="text-[15px] leading-snug text-th-fg/90">{value}</dd>
-    </div>
-  );
-}
-
-function CreditBlock({ label, people }: { label: string; people: CreditPerson[] }) {
-  return (
-    <div className="space-y-2.5">
-      <p className={META_LABEL}>{label}</p>
-      <ul className="flex flex-wrap gap-2">
-        {people.map((p, i) => (
-          <li key={`${p.fullName}-${i}`}>
-            {p.slug ? (
-              <Link href={`/${p.slug}`} className="editorial-chip">
-                {p.fullName}
-              </Link>
-            ) : (
-              <span className="editorial-chip">{p.fullName}</span>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      {people.map((p, i) => (
+        <span key={`${p.fullName}-${i}`}>
+          {i > 0 ? ', ' : null}
+          {p.slug ? (
+            <Link href={`/${p.slug}`} className="hover-line">
+              {p.fullName}
+            </Link>
+          ) : (
+            p.fullName
+          )}
+        </span>
+      ))}
+    </>
   );
 }

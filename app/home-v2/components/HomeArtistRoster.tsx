@@ -39,6 +39,7 @@ export function HomeArtistRoster({ photographers, label, heading, intro, viewAll
         actions={
           <Link href="/portfolios" className="g-link hover-line">
             {viewAllLabel}
+            <span aria-hidden> →</span>
           </Link>
         }
       />
@@ -82,7 +83,7 @@ export function HomeArtistRoster({ photographers, label, heading, intro, viewAll
                 fill
                 className={`object-cover roster__preview-img ${i === active ? 'is-active' : ''}`}
                 sizes={ROSTER_PREVIEW_SIZES}
-                loading={i < 2 ? 'eager' : 'lazy'}
+                loading="lazy"
                 unoptimized={shouldSkipOptimization(p.preview)}
               />
             ))}
