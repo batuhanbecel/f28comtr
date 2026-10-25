@@ -9,7 +9,6 @@ import { getAiPoweredWorks, getPageCopy } from '@/lib/cms';
 import type { CreditPerson } from '@/lib/aiPoweredWorks';
 import { getServerLang } from '@/lib/serverLang';
 import { absoluteUrl } from '@/lib/siteUrl';
-import { translations } from '@/lib/translations';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -28,9 +27,9 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const [works, lang] = await Promise.all([getAiPoweredWorks(), getServerLang()]);
-  const work = works.find((w) => w.slug === slug);
-  if (!work) return { title: { absolute: translations[lang].seo.notFound.title }, robots: { index: false } };
+  const work = (await getAiPoweredWorks()).find((w) => w.slug === slug);
+  // 404 before any cookie read — see production/works/[slug]
+  if (!work) notFound();
 
   const title = [work.brand, work.title].filter(Boolean).join(' — ');
   return {
@@ -47,9 +46,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function AiPoweredWorkPage({ params }: PageProps) {
   const { slug } = await params;
-  const [works, lang] = await Promise.all([getAiPoweredWorks(), getServerLang()]);
+  const works = await getAiPoweredWorks();
   const work = works.find((w) => w.slug === slug);
   if (!work) notFound();
+  const lang = await getServerLang();
 
   const copy = await getPageCopy('aiPowered', lang);
   const categoryLabels: Record<string, string> = {

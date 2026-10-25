@@ -8,13 +8,17 @@ import { getProductionProjects, type ProductionProject } from '@/lib/cms';
 import type { CreditPerson } from '@/lib/aiPoweredWorks';
 import { getServerLang } from '@/lib/serverLang';
 import { absoluteUrl } from '@/lib/siteUrl';
-import { translations, type Lang } from '@/lib/translations';
+import type { Lang } from '@/lib/translations';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
 export const revalidate = 60;
+// The page reads the language cookie. With no published projects
+// generateStaticParams is empty, the build can't see that and marks the route
+// static — unknown slugs then 500 (DYNAMIC_SERVER_USAGE) instead of 404.
+export const dynamic = 'force-dynamic';
 
 const LABELS: Record<Lang, Record<string, string>> = {
   en: {
@@ -52,9 +56,11 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const [projects, lang] = await Promise.all([getProductionProjects(), getServerLang()]);
-  const project = projects.find((p) => p.slug === slug);
-  if (!project) return { title: { absolute: translations[lang].seo.notFound.title }, robots: { index: false } };
+  // 404 before reading the language cookie: unknown slugs render as ISR, where
+  // cookies() throws DYNAMIC_SERVER_USAGE and the response becomes a 500
+  const project = (await getProductionProjects()).find((p) => p.slug === slug);
+  if (!project) notFound();
+  const lang = await getServerLang();
 
   const title = `${project.brand} — ${project.title}`;
   const description = describe(project, lang) || `${project.brand} · Production by f/2.8`;
@@ -92,9 +98,10 @@ function People({ people }: { people: CreditPerson[] }) {
 
 export default async function ProductionProjectPage({ params }: PageProps) {
   const { slug } = await params;
-  const [projects, lang] = await Promise.all([getProductionProjects(), getServerLang()]);
+  const projects = await getProductionProjects();
   const index = projects.findIndex((p) => p.slug === slug);
   if (index === -1) notFound();
+  const lang = await getServerLang();
 
   const project = projects[index];
   const prev = index > 0 ? projects[index - 1] : null;
