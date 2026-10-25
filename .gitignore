@@ -44,3 +44,6 @@ next-env.d.ts
 .vercel
 .env*.local
 .env*
+
+# Undo maps written by scripts/upgrade-portfolio-originals.mjs
+upgrade-portfolio-originals.*.json
