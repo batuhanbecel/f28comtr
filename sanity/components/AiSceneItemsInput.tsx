@@ -2,7 +2,7 @@
 
 import { CheckmarkIcon, ImagesIcon } from '@sanity/icons';
 import { Box, Button, Card, Dialog, Flex, Grid, Spinner, Stack, Text } from '@sanity/ui';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { PatchEvent, set, useClient, type ArrayOfObjectsInputProps } from 'sanity';
 import { randomKey } from '@sanity/util/content';
 
@@ -28,7 +28,7 @@ const PORTFOLIO_QUERY = `*[_type == "aiPortfolioItem" && !(_id in path("drafts.*
  */
 export function AiSceneItemsInput(props: ArrayOfObjectsInputProps) {
   const { onChange, readOnly } = props;
-  const value = (props.value ?? []) as SceneRef[];
+  const value = useMemo(() => (props.value ?? []) as SceneRef[], [props.value]);
   const [open, setOpen] = useState(false);
   const full = value.length >= HOME_AI_SCENE_MAX;
 
@@ -138,7 +138,7 @@ function AiPortfolioPicker({ onClose, onPick, used, max }: AiPortfolioPickerProp
         ) : rows.length === 0 ? (
           <Card padding={4} radius={2} tone="transparent" border>
             <Text size={1} muted>
-              AI Portfolyo'da henüz görsel yok.
+              AI Portfolyo&apos;da henüz görsel yok.
             </Text>
           </Card>
         ) : (
