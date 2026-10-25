@@ -3,10 +3,12 @@ import { UserIcon } from '@sanity/icons';
 import { orderRankField, orderRankOrdering } from '@sanity/orderable-document-list';
 import { PortfolioImagesInput } from '../components/PortfolioImagesInput';
 import { slugifyTr } from '../lib/slugify';
+import { toNameCase } from '@/lib/displayCase';
 
 export const photographer = defineType({
   name: 'photographer',
-  title: 'Fotoğrafçı',
+  // Retouchers live here too — "Sanatçı" names both in lists and "create" menus.
+  title: 'Sanatçı',
   type: 'document',
   icon: UserIcon,
   groups: [
@@ -97,7 +99,8 @@ export const photographer = defineType({
       const roleLabel = role === 'RETOUCHER' ? 'Retoucher' : 'Fotoğrafçı';
       const count = typeof imageCount === 'number' ? `${imageCount} görsel` : null;
       return {
-        title: title || 'İsimsiz',
+        // Names are typed in caps for the site; show them as on the page.
+        title: title ? toNameCase(title) : 'İsimsiz',
         subtitle: [roleLabel, count].filter(Boolean).join('  ·  '),
         media,
       };

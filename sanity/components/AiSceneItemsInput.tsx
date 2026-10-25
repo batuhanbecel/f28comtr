@@ -58,7 +58,9 @@ export function AiSceneItemsInput(props: ArrayOfObjectsInputProps) {
           <Text size={1} muted>
             {full
               ? `En fazla ${HOME_AI_SCENE_MAX} görsel — yenisini eklemek için birini kaldırın.`
-              : `${value.length} / ${HOME_AI_SCENE_MAX} görsel. Boş bırakılırsa AI Portfolyo'nun ilk ${HOME_AI_SCENE_DEFAULT_COUNT} görseli gösterilir.`}
+              : value.length === 0
+                ? `Seçim yok — sitede AI Portfolyo'nun ilk ${HOME_AI_SCENE_DEFAULT_COUNT} görseli gösteriliyor.`
+                : `${value.length} / ${HOME_AI_SCENE_MAX} görsel seçildi.`}
           </Text>
         </Stack>
       ) : null}

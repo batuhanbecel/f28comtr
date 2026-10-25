@@ -35,12 +35,9 @@ export const locations: PresentationPluginOptions['resolve'] = {
     }),
 
     homeV2PageCopy: defineLocations({
-      message: 'Anasayfa (home-v2) metinleri ve öne çıkan işler',
+      message: 'Anasayfadaki tüm metinler, öne çıkan işler ve AI sahnesi',
       tone: 'positive',
-      locations: [
-        { title: 'Home (preview)', href: '/home-v2' },
-        { title: 'Home', href: '/' },
-      ],
+      locations: [{ title: 'Anasayfa', href: '/' }],
     }),
 
     siteAssets: defineLocations({

@@ -245,65 +245,190 @@
   width: 100%;
 }
 
-.f28-dash-eyebrow {
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
-  color: var(--f28-accent) !important;
-  opacity: 0.85;
+.f28-dash-inner {
+  max-width: 1240px;
+  margin-inline: auto;
+  width: 100%;
 }
 
 .f28-dash-head {
-  padding-bottom: 8px;
+  padding-bottom: 24px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .f28-dash-section-label {
-  letter-spacing: 0.2em;
-  opacity: 0.6;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 11px !important;
+  opacity: 0.7;
 }
 
+/* Grids follow the pane width (Sanity UI Grid follows the viewport, which
+   crams cards when the desk sidebar is open on a tablet) */
+.f28-dash-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.f28-dash-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
+  gap: 32px 28px;
+  align-items: start;
+}
+
+/* Live sync dot */
+.f28-dash-live {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #3aa76d;
+  box-shadow: 0 0 0 3px rgba(58, 167, 109, 0.18);
+  flex-shrink: 0;
+}
+.f28-dash-live.is-error {
+  background: #d8503e;
+  box-shadow: 0 0 0 3px rgba(216, 80, 62, 0.18);
+}
+
+/* Stat cards are buttons: whole card opens the list */
 .f28-dash-stat {
-  position: relative;
-  overflow: hidden;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  /* Card-as-button loses the Card border; draw it explicitly */
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   transition:
-    transform 0.18s ease,
-    border-color 0.18s ease;
+    border-color 0.15s ease,
+    background-color 0.15s ease;
 }
-
-.f28-dash-stat::before {
-  content: '';
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 2px;
-  background: var(--f28-accent);
-  opacity: 0.5;
-}
-
 .f28-dash-stat:hover {
-  transform: translateY(-1px);
-  border-color: rgba(201, 162, 75, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  background-color: rgba(255, 255, 255, 0.025) !important;
 }
 
 .f28-dash-stat__icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  font-size: 20px;
+  width: 32px;
+  height: 32px;
+  font-size: 19px;
   border-radius: 8px;
   color: var(--f28-accent);
   background: rgba(201, 162, 75, 0.1);
-  border: 1px solid rgba(201, 162, 75, 0.22);
   flex-shrink: 0;
 }
 
-.f28-dash-row {
-  transition: background 0.15s ease;
+.f28-dash-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
 }
 
-.f28-dash-row:hover {
-  background: rgba(255, 255, 255, 0.04) !important;
+/* Hairline lists (drafts, health, recent, pages) */
+.f28-dash-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.f28-dash-list > li + li {
+  border-top: 1px solid var(--card-border-color, rgba(255, 255, 255, 0.08));
+}
+
+.f28-dash-row {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.f28-dash-row:hover,
+.f28-dash-page:hover {
+  background: rgba(255, 255, 255, 0.035) !important;
+}
+
+.f28-dash-thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.4);
+}
+.f28-dash-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.f28-dash-issue__icon--caution {
+  color: #d9a441;
+}
+.f28-dash-issue__icon--primary {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.f28-dash-path {
+  font-family: var(--f28-font-mono, ui-monospace, monospace);
+}
+
+/* Home showcase: a gapless strip, like the site */
+.f28-dash-strip {
+  display: grid;
+  grid-template-columns: repeat(var(--slots, 6), minmax(0, 1fr));
+  gap: 2px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+@media (max-width: 720px) {
+  .f28-dash-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.f28-dash-strip__item,
+.f28-dash-strip__empty {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 4 / 5;
+  background: rgba(255, 255, 255, 0.04);
+}
+.f28-dash-strip__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.f28-dash-strip__num {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font: 500 10px/1.5 var(--f28-font-mono, ui-monospace, monospace);
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+}
+.f28-dash-strip__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 20px;
+  cursor: pointer;
+}
+.f28-dash-strip__empty:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.f28-dash button:focus-visible,
+.f28-dash [data-ui='Card'][data-as='button']:focus-visible {
+  outline: 2px solid var(--f28-accent);
+  outline-offset: 2px;
 }
 
 /* ════════════════════════════════════════════════════════════════════════
@@ -344,13 +469,10 @@ html[data-f28-studio] [data-ui='Heading'] {
   letter-spacing: -0.01em;
 }
 
-/* Cinematic ambient — faint vignette + accent glow behind the workspace */
+/* Flat workspace background — the site uses no glows, neither does the Studio */
 html[data-f28-studio] [data-ui='ToolScreen'],
 html[data-f28-studio] [data-ui='PaneLayout'] {
-  background:
-    radial-gradient(120% 80% at 100% 0%, rgba(201, 162, 75, 0.06), transparent 60%),
-    radial-gradient(100% 100% at 0% 100%, rgba(255, 255, 255, 0.025), transparent 55%),
-    var(--f28-bg);
+  background: var(--f28-bg);
 }
 
 /* Navbar — glassy, brand hairline (extends earlier rule) */

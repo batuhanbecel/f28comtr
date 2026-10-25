@@ -15,7 +15,6 @@ import {
   DashboardIcon,
   DocumentIcon,
   EnvelopeIcon,
-  CogIcon,
   CaseIcon,
 } from '@sanity/icons';
 
@@ -28,46 +27,56 @@ const SINGLETONS = new Set([
   'contactPageCopy',
 ]);
 
+/**
+ * Desk order follows the site: overview, the home page (edited most), then
+ * artists, production, AI, the other pages, media and SEO. List ids are
+ * stable — the overview links to them (`sanatcilar`, `projeler`,
+ * `ai-powered;ai-portfolyo`, `seo`).
+ */
 export const structure: StructureResolver = (S, context) =>
   S.list()
     .title('f/2.8 Yönetim')
     .items([
-      // ── Genel Bakış (command center) ───────────────────────────────────
       S.listItem()
         .id('genel-bakis')
         .title('Genel Bakış')
         .icon(DashboardIcon)
+        .child(S.component().id('f28-overview').title('Genel Bakış').component(StudioOverview)),
+
+      S.listItem()
+        .id('anasayfa')
+        .title('Anasayfa')
+        .icon(HomeIcon)
         .child(
-          S.component()
-            .id('f28-overview')
-            .title('Genel Bakış')
-            .component(StudioOverview),
+          S.document()
+            .id('metinlerHomeV2')
+            .schemaType('homeV2PageCopy')
+            .documentId('homeV2PageCopy')
+            .title('Anasayfa'),
         ),
 
-      S.divider(),
+      S.divider().title('İçerik'),
 
-      // ── Sanatçılar ─────────────────────────────────────────────────────
       orderableDocumentListDeskItem({
         type: 'photographer',
+        id: 'sanatcilar',
         title: 'Fotoğrafçılar & Retoucherlar',
         icon: UsersIcon,
         S,
         context,
       }),
 
-      // ── Prodüksiyon projeleri (case study sayfaları) ─────────────────────
       orderableDocumentListDeskItem({
         type: 'productionProject',
+        id: 'projeler',
         title: 'Prodüksiyon Projeleri',
         icon: CaseIcon,
         S,
         context,
       }),
 
-      S.divider(),
-
-      // ── AI Powered ─────────────────────────────────────────────────────
       S.listItem()
+        .id('ai-powered')
         .title('AI Powered')
         .icon(RobotIcon)
         .child(
@@ -75,16 +84,7 @@ export const structure: StructureResolver = (S, context) =>
             .title('AI Powered')
             .items([
               S.listItem()
-                .id('aiPortfolyoGorselleri')
-                .title('Portfolyo Görselleri')
-                .icon(ImagesIcon)
-                .child(
-                  S.component()
-                    .id('ai-portfolio-gallery')
-                    .title('AI Portfolyo Görselleri')
-                    .component(AiPortfolioGalleryDesk),
-                ),
-              S.listItem()
+                .id('ai-calismalar')
                 .title('Çalışma Galerisi')
                 .icon(ControlsIcon)
                 .child(
@@ -94,34 +94,35 @@ export const structure: StructureResolver = (S, context) =>
                     .title('AI Powered Çalışmalar'),
                 ),
               S.listItem()
+                .id('ai-portfolyo')
+                .title('Portfolyo Görselleri')
+                .icon(ImagesIcon)
+                .child(
+                  S.component()
+                    .id('ai-portfolio-gallery')
+                    .title('AI Portfolyo Görselleri')
+                    .component(AiPortfolioGalleryDesk),
+                ),
+              S.listItem()
+                .id('ai-etiketler')
                 .title('Etiket Tanımları')
                 .icon(TagIcon)
                 .child(S.documentTypeList('aiTag').title('AI Portfolyo Etiketleri')),
             ]),
         ),
 
-      S.divider(),
+      S.divider().title('Sayfalar & Site'),
 
-      // ── Sayfalar ───────────────────────────────────────────────────────
       S.listItem()
-        .title('Sayfalar')
+        .id('sayfalar')
+        .title('Diğer Sayfalar')
         .icon(DocumentIcon)
         .child(
           S.list()
-            .title('Sayfalar')
+            .title('Diğer Sayfalar')
             .items([
               S.listItem()
-                .id('anasayfa')
-                .title('Anasayfa')
-                .icon(HomeIcon)
-                .child(
-                  S.document()
-                    .id('metinlerHomeV2')
-                    .schemaType('homeV2PageCopy')
-                    .documentId('homeV2PageCopy')
-                    .title('Anasayfa'),
-                ),
-              S.listItem()
+                .id('production')
                 .title('Production Sayfası')
                 .icon(DesktopIcon)
                 .child(
@@ -131,6 +132,7 @@ export const structure: StructureResolver = (S, context) =>
                     .title('Production Sayfası'),
                 ),
               S.listItem()
+                .id('ai-powered-sayfasi')
                 .title('AI Powered Sayfası')
                 .icon(RobotIcon)
                 .child(
@@ -140,6 +142,7 @@ export const structure: StructureResolver = (S, context) =>
                     .title('AI Powered Sayfası'),
                 ),
               S.listItem()
+                .id('iletisim')
                 .title('İletişim Sayfası')
                 .icon(EnvelopeIcon)
                 .child(
@@ -151,32 +154,19 @@ export const structure: StructureResolver = (S, context) =>
             ]),
         ),
 
-      S.divider(),
-
-      // ── Site Ayarları & Medya ──────────────────────────────────────────
       S.listItem()
-        .title('Site Ayarları & Medya')
-        .icon(CogIcon)
+        .id('site-gorselleri')
+        .title('Site Görselleri & Logolar')
+        .icon(ImageIcon)
         .child(
-          S.list()
-            .title('Site Ayarları & Medya')
-            .items([
-              S.listItem()
-                .title('Site Görselleri & Logolar')
-                .icon(ImageIcon)
-                .child(
-                  S.document()
-                    .schemaType('siteAssets')
-                    .documentId('siteAssets')
-                    .title('Site Görselleri & Logolar'),
-                ),
-            ]),
+          S.document()
+            .schemaType('siteAssets')
+            .documentId('siteAssets')
+            .title('Site Görselleri & Logolar'),
         ),
 
-      S.divider(),
-
-      // ── SEO ────────────────────────────────────────────────────────────
       S.listItem()
+        .id('seo')
         .title('SEO Düzenlemeleri')
         .icon(EarthGlobeIcon)
         .child(S.documentTypeList('seoOverride').title('SEO Düzenlemeleri')),
