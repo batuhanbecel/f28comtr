@@ -1,5 +1,5 @@
 import { sanityFetch } from '@/lib/sanity.fetch';
-import type { HomeV2Copy } from '@/lib/homeV2.shared';
+import type { HomeAiSceneImage, HomeV2Copy } from '@/lib/homeV2.shared';
 import type { Lang } from '@/lib/translations';
 
 type LocalizedField = { en?: string | null; tr?: string | null } | null | undefined;
@@ -96,4 +96,23 @@ export async function getHomeV2CopyPatchFromSanity(
 ): Promise<Partial<HomeV2Copy>> {
   const doc = await sanityFetch<HomeV2Doc | null>(HOME_V2_COPY_QUERY);
   return mapHomeV2Patch(doc, lang);
+}
+
+const HOME_AI_SCENE_QUERY = `*[_id == "homeV2PageCopy"][0].aiSceneItems[]->{
+  "src": image.asset->url,
+  "tags": tags[]->{ en, tr }
+}`;
+
+type RawSceneImage = { src?: string | null; tags?: LocalizedField[] | null } | null;
+
+/** The AI Portfolio images picked for the home AI scene, in Studio order. */
+export async function getHomeAiSceneImagesFromSanity(lang: Lang): Promise<HomeAiSceneImage[]> {
+  const rows = await sanityFetch<RawSceneImage[] | null>(HOME_AI_SCENE_QUERY);
+  const out: HomeAiSceneImage[] = [];
+  for (const row of rows ?? []) {
+    if (typeof row?.src !== 'string' || row.src.length === 0) continue;
+    const tags = (row.tags ?? []).map((t) => pick(t, lang)).filter((t): t is string => !!t);
+    out.push({ src: row.src, tags });
+  }
+  return out;
 }

@@ -22,7 +22,7 @@ The website of [f/2.8 Production Agency](https://www.f28.com.tr): artist portfol
 
 | Page | Route | What it does |
 | --- | --- | --- |
-| **Home** | `/` | A cinematic opening (a small frame grows to full screen) leading into a numbered reel of featured work, then a pinned AI scroll scene, a strip of selected work, the artist roster and the client wall |
+| **Home** | `/` | A cinematic numbered reel of featured work (picked from the artists' portfolios in Studio), then a pinned "Made with AI. / Finished by hand." scroll scene showing hand-picked AI Portfolio images, a strip of selected work, the artist roster and the client wall |
 | **Production** | `/production` | Services, process, deliverables and production case studies (`/production/works/[slug]`) |
 | **AI-Powered** | `/ai-powered` | Filterable gallery of generative and hybrid AI work, with a page for each work at `/ai-powered/works/[slug]`, plus a curated portfolio at `/ai-powered/portfolio` |
 | **Portfolios** | `/portfolios` · `/[artist]` | Index of the photographers and retouchers; each artist gets a masonry gallery, a lightbox and a client-side PDF portfolio download |

@@ -2652,17 +2652,6 @@ body[data-lightbox-open] nav {
     text-align: right;
   }
 }
-.ai-scene__work {
-  grid-column: 1 / -1;
-  font-size: 1.0625rem;
-  color: #fff;
-}
-.ai-scene__brand {
-  font-weight: 600;
-}
-.ai-scene__work-title {
-  color: rgb(255 255 255 / 0.8);
-}
 .ai-scene__tag,
 .ai-scene__count {
   font-family: var(--font-mono), ui-monospace, monospace;

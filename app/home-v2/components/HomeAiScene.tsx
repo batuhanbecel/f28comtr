@@ -8,17 +8,15 @@ import { shouldSkipOptimization } from '@/lib/blob';
 import { HERO_IMAGE_SIZES } from '@/lib/imageSizes';
 import { prefersReducedMotion } from '@/lib/motion';
 
-export interface AiSceneWork {
-  slug: string;
-  brand: string;
-  title: string;
-  category: string;
-  imageSrc: string;
-  imageAlt: string;
+/** An AI Portfolio image in the scene; `caption` is its tags, may be empty. */
+export interface AiSceneImage {
+  src: string;
+  alt: string;
+  caption: string;
 }
 
 interface HomeAiSceneProps {
-  works: AiSceneWork[];
+  images: AiSceneImage[];
   label: string;
   title: string;
   body: string;
@@ -27,20 +25,21 @@ interface HomeAiSceneProps {
   rightWord: string;
 }
 
-/** Share of the scroll distance spent opening the frame; the rest steps through works. */
+/** Share of the scroll distance spent opening the frame; the rest steps through images. */
 const OPEN_SHARE = 0.3;
 
 const clamp = (v: number, min = 0, max = 1) => Math.min(max, Math.max(min, v));
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
 /**
- * Pinned scroll scene: the whole first work, shown small like a framed print
+ * Pinned scroll scene: the whole first image, shown small like a framed print
  * between "Made with AI." (above) and "Finished by hand." (below), grows to
- * full screen as you scroll, then steps through featured AI work. Scroll position drives a single CSS variable (`--open`) — no layout
+ * full screen as you scroll, then steps through the AI Portfolio images picked
+ * in Studio. Scroll position drives a single CSS variable (`--open`) — no layout
  * thrash, native scrolling untouched. Reduced motion: frame starts open and
- * works crossfade on scroll.
+ * images crossfade on scroll.
  */
-export function HomeAiScene({ works, label, title, body, cta, leftWord, rightWord }: HomeAiSceneProps) {
+export function HomeAiScene({ images, label, title, body, cta, leftWord, rightWord }: HomeAiSceneProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -48,7 +47,7 @@ export function HomeAiScene({ works, label, title, body, cta, leftWord, rightWor
   useEffect(() => {
     const section = sectionRef.current;
     const stage = stageRef.current;
-    if (!section || !stage || works.length === 0) return;
+    if (!section || !stage || images.length === 0) return;
     const reduced = prefersReducedMotion();
     let frame = 0;
 
@@ -64,7 +63,7 @@ export function HomeAiScene({ works, label, title, body, cta, leftWord, rightWor
       if (pinned) document.body.dataset.aiScene = 'true';
       else delete document.body.dataset.aiScene;
       const stepProgress = clamp((progress - OPEN_SHARE) / (1 - OPEN_SHARE));
-      const next = Math.min(works.length - 1, Math.floor(stepProgress * works.length));
+      const next = Math.min(images.length - 1, Math.floor(stepProgress * images.length));
       setActive((prev) => (prev === next ? prev : next));
     };
     const onScroll = () => {
@@ -80,16 +79,16 @@ export function HomeAiScene({ works, label, title, body, cta, leftWord, rightWor
       window.removeEventListener('resize', onScroll);
       delete document.body.dataset.aiScene;
     };
-  }, [works.length]);
+  }, [images.length]);
 
-  if (works.length === 0) return null;
-  const current = works[active];
+  if (images.length === 0) return null;
+  const current = images[active];
 
   return (
     <section
       ref={sectionRef}
       className="ai-scene"
-      style={{ '--steps': works.length } as React.CSSProperties}
+      style={{ '--steps': images.length } as React.CSSProperties}
       aria-labelledby="ai-scene-title"
     >
       <div ref={stageRef} className="ai-scene__stage">
@@ -101,17 +100,17 @@ export function HomeAiScene({ works, label, title, body, cta, leftWord, rightWor
         </p>
 
         <div className="ai-scene__frame">
-          {works.map((work, i) => (
+          {images.map((image, i) => (
             <Image
-              key={work.slug}
-              src={work.imageSrc}
-              alt={i === active ? work.imageAlt : ''}
+              key={image.src}
+              src={image.src}
+              alt={i === active ? image.alt : ''}
               fill
               className={`ai-scene__img object-cover ${i === active ? 'is-active' : ''}`}
               sizes={HERO_IMAGE_SIZES}
               quality={85}
               loading={i === 0 ? 'eager' : 'lazy'}
-              unoptimized={shouldSkipOptimization(work.imageSrc)}
+              unoptimized={shouldSkipOptimization(image.src)}
             />
           ))}
         </div>
@@ -126,15 +125,13 @@ export function HomeAiScene({ works, label, title, body, cta, leftWord, rightWor
           </div>
 
           <div className="ai-scene__meta">
-            <Link href={`/ai-powered/works/${current.slug}`} className="ai-scene__work hover-line">
-              <span className="ai-scene__brand">{current.brand}</span>
-              {current.title && current.title !== current.brand ? (
-                <span className="ai-scene__work-title"> — {current.title}</span>
-              ) : null}
-            </Link>
-            <span className="ai-scene__tag">{current.category}</span>
+            {current.caption ? (
+              <Link href="/ai-powered/portfolio" className="ai-scene__tag hover-line">
+                {current.caption}
+              </Link>
+            ) : null}
             <span className="ai-scene__count" aria-hidden>
-              {String(active + 1).padStart(2, '0')} / {String(works.length).padStart(2, '0')}
+              {String(active + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
             </span>
             <Link href="/ai-powered" className="ai-scene__cta">
               {cta}

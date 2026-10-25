@@ -33,6 +33,18 @@ export interface HomeV2Copy {
   clientsIntro: string;
 }
 
+/** Most images an editor can pick for the home AI scene. */
+export const HOME_AI_SCENE_MAX = 6;
+/** Images shown in the AI scene when the editor picked none. */
+export const HOME_AI_SCENE_DEFAULT_COUNT = 4;
+
+/** One AI Portfolio image in the home AI scene. */
+export interface HomeAiSceneImage {
+  src: string;
+  /** Portfolio tags in the page language. */
+  tags: string[];
+}
+
 export interface HomeV2HeroSlide {
   src: string;
   alt: string;

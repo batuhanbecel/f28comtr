@@ -2,6 +2,8 @@ import { defineArrayMember, defineField, defineType } from 'sanity';
 import { HomeIcon } from '@sanity/icons';
 import { HomeWorkImageInput } from '../components/HomeWorkImageInput';
 import { HomeSelectedWorksInput } from '../components/HomeSelectedWorksInput';
+import { AiSceneItemsInput } from '../components/AiSceneItemsInput';
+import { HOME_AI_SCENE_MAX } from '@/lib/homeV2.shared';
 
 export const homeV2PageCopy = defineType({
   name: 'homeV2PageCopy',
@@ -152,8 +154,25 @@ export const homeV2PageCopy = defineType({
       name: 'aiSceneLeft',
       title: 'Sahne — Üst Yazı',
       description:
-        'Kaydırınca büyüyen görselin üstündeki kısa cümle, örn. "Made with AI." Sahnede AI Powered koleksiyonunun ilk 4 işi gösterilir; sırayı AI Powered → Çalışma Galerisi\'nden değiştirebilirsiniz.',
+        'Kaydırınca büyüyen görselin üstündeki kısa cümle, örn. "Made with AI."',
       type: 'localizedString',
+    }),
+    defineField({
+      group: 'aiSplit',
+      name: 'aiSceneItems',
+      title: 'Sahne Görselleri',
+      description:
+        'Kaydırınca sırayla gösterilen görseller (en fazla 6), AI Portfolyo\'dan seçilir. Sırayı sürükleyerek değiştirin. Boş bırakılırsa AI Portfolyo\'nun ilk 4 görseli gösterilir.',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'reference',
+          to: [{ type: 'aiPortfolioItem' }],
+        }),
+      ],
+      options: { layout: 'grid' },
+      validation: (Rule) => Rule.max(HOME_AI_SCENE_MAX).unique(),
+      components: { input: AiSceneItemsInput },
     }),
     defineField({
       group: 'aiSplit',

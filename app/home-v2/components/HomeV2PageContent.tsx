@@ -6,7 +6,7 @@ import { ProductionSnapContainer } from '@/components/ProductionSnapContainer';
 import type { Photographer } from '@/lib/data';
 import type { HomeSelectedWork, HomeV2Copy, HomeV2HeroSlide } from '@/lib/homeV2.shared';
 import { HomeV2Hero } from './HomeV2Hero';
-import { HomeAiScene, type AiSceneWork } from './HomeAiScene';
+import { HomeAiScene, type AiSceneImage } from './HomeAiScene';
 import { HomeV2SelectedWorks } from './HomeV2SelectedWorks';
 import { HomeArtistRoster } from './HomeArtistRoster';
 import { HomeV2ClientLogosMarquee } from './HomeV2ClientLogosMarquee';
@@ -14,7 +14,7 @@ import { HomeV2ClientLogosMarquee } from './HomeV2ClientLogosMarquee';
 interface HomeV2PageContentProps {
   copy: HomeV2Copy;
   heroSlides: HomeV2HeroSlide[];
-  aiWorks: AiSceneWork[];
+  aiImages: AiSceneImage[];
   selectedWorks: HomeSelectedWork[];
   photographers: Photographer[];
   clientLogos: string[];
@@ -28,7 +28,7 @@ interface HomeV2PageContentProps {
 export function HomeV2PageContent({
   copy,
   heroSlides,
-  aiWorks,
+  aiImages,
   selectedWorks,
   photographers,
   clientLogos,
@@ -45,7 +45,7 @@ export function HomeV2PageContent({
 
       <HeroSnapBody className="bg-th-bg text-th-fg">
         <HomeAiScene
-          works={aiWorks}
+          images={aiImages}
           label={copy.aiSplitLabel}
           title={copy.aiSplitTitle}
           body={copy.aiSplitBody}

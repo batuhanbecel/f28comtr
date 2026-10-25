@@ -15,7 +15,13 @@ import { deriveBrandKey } from '@/lib/aiPoweredWorks';
 import type { AiPortfolioData } from '@/lib/aiPoweredPortfolio.shared';
 import type { HomeSelectedWorkStored } from '@/lib/homeSelectedWorks.shared';
 import { HOME_SELECTED_WORKS_MAX } from '@/lib/homeSelectedWorks.shared';
-import type { HomeSelectedWork, HomeSelectedWorkRole, HomeV2Copy } from '@/lib/homeV2.shared';
+import type {
+  HomeAiSceneImage,
+  HomeSelectedWork,
+  HomeSelectedWorkRole,
+  HomeV2Copy,
+} from '@/lib/homeV2.shared';
+import { HOME_AI_SCENE_DEFAULT_COUNT } from '@/lib/homeV2.shared';
 import type { ProductionMarqueeItem } from '@/lib/productionMarquee.shared';
 import type {
   ContactPageCopy,
@@ -43,7 +49,10 @@ import {
   getLogosFromSanity,
 } from '@/lib/sanity.siteAssets';
 import { getHomeSelectedWorksFromSanity } from '@/lib/sanity.homeSelected';
-import { getHomeV2CopyPatchFromSanity } from '@/lib/sanity.homeV2';
+import {
+  getHomeAiSceneImagesFromSanity,
+  getHomeV2CopyPatchFromSanity,
+} from '@/lib/sanity.homeV2';
 import { toNameCase } from '@/lib/displayCase';
 import {
   getProductionProjectsFromSanity,
@@ -189,6 +198,25 @@ export async function getHomeV2Copy(lang: Lang): Promise<HomeV2Copy> {
     console.error('[CMS] getHomeV2Copy failed, falling back to defaults:', error);
     return defaults;
   }
+}
+
+/**
+ * Home AI scene: the AI Portfolio images picked in the "Anasayfa" document;
+ * the first portfolio images (Studio order) when none are picked.
+ */
+export async function getHomeAiSceneImages(lang: Lang): Promise<HomeAiSceneImage[]> {
+  try {
+    const picked = await getHomeAiSceneImagesFromSanity(lang);
+    if (picked.length > 0) return picked;
+  } catch (error) {
+    console.error('[CMS] getHomeAiSceneImages failed, falling back to portfolio:', error);
+  }
+  const { items, tags } = await getAiPoweredPortfolio();
+  const byId = new Map(tags.map((t) => [t.id, t[lang]]));
+  return items.slice(0, HOME_AI_SCENE_DEFAULT_COUNT).map((item) => ({
+    src: item.src,
+    tags: item.tagIds.map((id) => byId.get(id)).filter((t): t is string => !!t),
+  }));
 }
 
 // ── Home Selected Works ─────────────────────────────────────────────────────

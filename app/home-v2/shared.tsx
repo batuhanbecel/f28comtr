@@ -2,17 +2,14 @@ import {
   getPhotographers,
   getHomeV2SelectedWorks,
   getHomeV2Copy,
-  getAiPoweredWorks,
+  getHomeAiSceneImages,
   getClientLogos,
   getLandingImages,
-  getPageCopy,
 } from '@/lib/cms';
 import type { HomeV2HeroSlide } from '@/lib/homeV2.shared';
 import { getServerLang } from '@/lib/serverLang';
 import { HomeV2PageContent } from './components/HomeV2PageContent';
 
-/** Works shown in the home AI scene. */
-const AI_SCENE_COUNT = 4;
 /** Featured works in the numbered hero reel. */
 const HERO_REEL_COUNT = 6;
 
@@ -20,25 +17,23 @@ export default async function HomeV2Page() {
   const lang = await getServerLang();
   const copy = await getHomeV2Copy(lang);
 
-  const [photographers, clientLogos, selectedWorks, aiWorks, heroImages, aiCopy] = await Promise.all([
+  const [photographers, clientLogos, selectedWorks, sceneImages, heroImages] = await Promise.all([
     getPhotographers(),
     getClientLogos(),
     getHomeV2SelectedWorks(12, copy.workTitleFallback),
-    getAiPoweredWorks(),
+    getHomeAiSceneImages(lang),
     getLandingImages(),
-    getPageCopy('aiPowered', lang),
   ]);
 
-  // AI scene: the first works in the Studio "Çalışma Galerisi" order.
-  const categoryLabel: Record<string, string> = { fullAi: aiCopy.filters.fullAi, hybrid: aiCopy.filters.hybrid };
-  const aiSceneWorks = aiWorks.slice(0, AI_SCENE_COUNT).map((w) => ({
-    slug: w.slug,
-    brand: w.brand,
-    title: w.title,
-    category: categoryLabel[w.category] ?? w.category,
-    imageSrc: w.imageSrc,
-    imageAlt: w.imageAlt,
-  }));
+  // AI scene: the AI Portfolio images picked in Studio ("Anasayfa" → AI Sahnesi).
+  const aiImages = sceneImages.map((img, i) => {
+    const caption = img.tags.join(' · ');
+    return {
+      src: img.src,
+      caption,
+      alt: caption ? `${copy.aiSplitLabel} — ${caption}` : `${copy.aiSplitLabel} ${i + 1}`,
+    };
+  });
 
   // Hero reel: the first curated "Öne Çıkan İşler"; landing images only when none exist.
   const heroSlides: HomeV2HeroSlide[] =
@@ -58,7 +53,7 @@ export default async function HomeV2Page() {
       heroSlides={heroSlides}
       selectedWorks={selectedWorks}
       photographers={photographers}
-      aiWorks={aiSceneWorks}
+      aiImages={aiImages}
       clientLogos={clientLogos}
     />
   );

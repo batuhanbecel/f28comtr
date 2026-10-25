@@ -80,7 +80,8 @@ function resolvePathsForType(body: WebhookPayload): string[] {
       return ['/ai-powered', '/ai-powered/works/[slug]', '/'];
 
     case 'aiPortfolioItem':
-      return ['/ai-powered/portfolio'];
+      // The home AI scene shows portfolio images too.
+      return ['/ai-powered/portfolio', '/'];
 
     case 'productionProject':
       return ['/production', '/production/works/[slug]', '/'];
