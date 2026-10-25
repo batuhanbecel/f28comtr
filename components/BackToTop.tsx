@@ -42,7 +42,7 @@ export function BackToTop() {
       tabIndex={isVisible ? 0 : -1}
       aria-hidden={!isVisible}
       data-back-to-top
-      className={`fixed bottom-4 right-4 md:bottom-8 md:right-8 z-50 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center border border-th-fg/25 hover:border-th-fg/55 hover:bg-th-fg/10 bg-th-bg/60 backdrop-blur-sm text-th-fg/72 hover:text-th-fg transition-all duration-hover ease-brand ${
+      className={`fixed bottom-4 right-4 md:bottom-8 md:right-8 z-50 w-11 h-11 md:w-12 md:h-12 flex items-center justify-center border border-th-fg/25 hover:border-th-fg/55 hover:bg-th-fg/10 bg-th-bg/60 backdrop-blur-sm text-th-fg/72 hover:text-th-fg transition-all duration-hover ease-brand ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16 pointer-events-none'
       }`}
       aria-label={t.a11y.backToTop}

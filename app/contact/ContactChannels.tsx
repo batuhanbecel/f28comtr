@@ -37,7 +37,7 @@ export function ContactChannels({ copy }: ContactChannelsProps) {
             <span className="index-list__num">04</span>
             <span className="contact-row__label">{copy.addressLabel}</span>
             <p className="contact-row__value contact-row__value--text whitespace-pre-line">
-              {`${copy.info.address}\n${copy.info.city}`}
+              {`${copy.info.address.replace(/No:\s+/g, 'No: ')}\n${copy.info.city}`}
             </p>
           </li>
         </ul>

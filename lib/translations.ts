@@ -473,18 +473,18 @@ export const translations = {
         sectionLabel: 'Çıktılar',
         heading: 'NE TESLİM EDİYORUZ',
         items: [
-          'Kampanya key visual\'ları',
-          'E-ticaret packshot\'ları',
-          'Sosyal cutdown\'lar',
-          'Brand film master\'ları',
+          'Kampanya ana görselleri',
+          'E-ticaret ürün çekimleri',
+          'Sosyal medya kısa versiyonları',
+          'Marka filmi master dosyaları',
           'Baskıya hazır dosyalar',
-          'Platforma özel export\'lar',
+          'Platforma özel çıktılar',
         ],
       },
       team: {
-        sectionLabel: 'Ekibimiz',
+        sectionLabel: 'Ağımız',
         description:
-          'Geniş bir fotoğrafçı ve retoucher ağıyla çalışıyoruz. Her proje için brief\'e uygun yeteneği çekimden final teslimata kadar atıyoruz.',
+          'Geniş bir fotoğrafçı ve rötuşçu ağıyla çalışıyoruz. Her proje için brief\'e en uygun ekibi çekimden final teslimata kadar biz kuruyoruz.',
         cta: 'Portföyleri gör',
       },
       marqueeLabel: 'Seçilmiş prodüksiyon çalışmaları',
@@ -508,7 +508,7 @@ export const translations = {
         steps: [
           { title: 'Brief & konsept', sub: 'Marka ihtiyacı ve yaratıcı yön' },
           { title: 'AI-powered prodüksiyon', sub: 'Model seçimi, prompt ve iterasyon' },
-          { title: 'Hybrid rötüş', sub: 'AI-powered workflow ve geleneksel post prodüksiyon' },
+          { title: 'Hibrit rötuş', sub: 'AI destekli iş akışı ve geleneksel post prodüksiyon' },
           { title: 'Teslimat', sub: 'Platforma özel format ve boyut' },
         ],
       },
@@ -541,7 +541,7 @@ export const translations = {
       heading: 'PORTFÖYLER',
     },
     contact: {
-      sectionLabel: 'Bize ulaşın',
+      sectionLabel: 'İletişime geçin',
       heading: 'İLETİŞİM',
       footerCtaLabel: 'İletişime geçin',
       footerCtaHeading: 'Aklınızda bir proje mi var?',
@@ -584,7 +584,7 @@ export const translations = {
     },
     footer: {
       tagline: 'Fotoğrafçılık & Prodüksiyon',
-      location: 'İstanbul — K. 2008',
+      location: 'İstanbul — 2008\'den beri',
       navigation: 'Gezinti',
       contact: 'İletişim',
       contactPage: 'İletişim formu',

@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 /**
- * One-shot: "Production Sayfası" Türkçe metinlerinde kalan İngilizce
- * ifadeleri (compositing, high-end finishing, location, shot list…)
- * Türkçeleştirir. lib/translations.ts'teki yedek metinlerle aynıdır.
+ * One-shot: Production, AI-Powered ve İletişim sayfalarının Türkçe
+ * metinlerinde kalan İngilizce ifadeleri (compositing, location, cutdown,
+ * "Hybrid rötüş"…) ve tekrar eden etiketleri düzeltir.
+ * lib/translations.ts'teki yedek metinlerle aynıdır.
  *
  * Run:
- *   node scripts/fix-production-tr-copy.mjs
- *   node scripts/fix-production-tr-copy.mjs --dry-run
+ *   node scripts/fix-tr-copy.mjs
+ *   node scripts/fix-tr-copy.mjs --dry-run
  */
 
 import { createClient } from '@sanity/client';
@@ -34,7 +35,15 @@ const sanity = createClient({
   useCdn: false,
 });
 
-const SET = {
+const PRODUCTION = {
+  'team.sectionLabel.tr': 'Ağımız',
+  'team.description.tr':
+    "Geniş bir fotoğrafçı ve rötuşçu ağıyla çalışıyoruz. Her proje için brief'e en uygun ekibi çekimden final teslimata kadar biz kuruyoruz.",
+  'deliverables.items[_key=="deliverable-0"].tr': 'Kampanya ana görselleri',
+  'deliverables.items[_key=="deliverable-1"].tr': 'E-ticaret ürün çekimleri',
+  'deliverables.items[_key=="deliverable-2"].tr': 'Sosyal medya kısa versiyonları',
+  'deliverables.items[_key=="deliverable-3"].tr': 'Marka filmi master dosyaları',
+  'deliverables.items[_key=="deliverable-5"].tr': 'Platforma özel çıktılar',
   'services.items[_key=="service-0"].description.tr':
     'Global markalar için kampanya, lookbook, e-ticaret, ürün ve dış mekân çekimleri.',
   'services.items[_key=="service-2"].description.tr':
@@ -51,17 +60,35 @@ const SET = {
   'process.steps[_key=="step-4"].sub.tr': 'Final dosyalar, arşiv ve ekibinize teslim',
 };
 
-// Patch the published doc and, if one exists, the open draft so Studio shows the same text.
-const ids = ['productionPageCopy', 'drafts.productionPageCopy'];
-const existing = await sanity.fetch('*[_id in $ids]._id', { ids });
+const AI_POWERED = {
+  'process.steps[_key=="step-2"].title.tr': 'Hibrit rötuş',
+  'process.steps[_key=="step-2"].sub.tr': 'AI destekli iş akışı ve geleneksel post prodüksiyon',
+};
 
-for (const id of existing) {
-  if (DRY_RUN) {
-    console.log(`[dry-run] ${id}: ${Object.keys(SET).length} fields`);
-    continue;
+// Hero label repeated the "BİZE ULAŞIN" channels heading
+const CONTACT = {
+  'sectionLabel.tr': 'İletişime geçin',
+};
+
+const DOCS = {
+  productionPageCopy: PRODUCTION,
+  aiPoweredPageCopy: AI_POWERED,
+  contactPageCopy: CONTACT,
+};
+
+// Patch the published doc and, if one exists, the open draft so Studio shows the same text.
+for (const [docId, set] of Object.entries(DOCS)) {
+  const ids = [docId, `drafts.${docId}`];
+  const existing = await sanity.fetch('*[_id in $ids]._id', { ids });
+
+  for (const id of existing) {
+    if (DRY_RUN) {
+      console.log(`[dry-run] ${id}: ${Object.keys(set).length} fields`);
+      continue;
+    }
+    const res = await sanity.patch(id).set(set).commit();
+    console.log(`patched ${res._id} (${res._rev})`);
   }
-  const res = await sanity.patch(id).set(SET).commit();
-  console.log(`patched ${res._id} (${res._rev})`);
 }
 
 function die(message) {
