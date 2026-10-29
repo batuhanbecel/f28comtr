@@ -30,6 +30,11 @@ export const translations = {
       contact: 'Contact',
       follow: 'Follow',
     },
+    /** Artist page strip of the works that credit them. */
+    artistWorks: {
+      label: 'Credits',
+      title: 'Featured work',
+    },
     a11y: {
       skipToContent: 'Skip to content',
       openMenu: 'Open menu',
@@ -360,6 +365,10 @@ export const translations = {
       navigation: 'Gezinti',
       contact: 'İletişim',
       follow: 'Takip Et',
+    },
+    artistWorks: {
+      label: 'Künye',
+      title: 'Yer aldığı işler',
     },
     a11y: {
       skipToContent: 'İçeriğe geç',

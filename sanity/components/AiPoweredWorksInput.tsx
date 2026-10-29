@@ -77,7 +77,7 @@ export function AiPoweredWorksInput(props: ArrayOfObjectsInputProps) {
             _type: 'aiPoweredWork',
             _key: randomKey(12),
             brand: `Marka ${n}`,
-            category: 'visual',
+            category: 'fullAi',
             slug: { current: `work-${slugKey}` },
             images: [
               {
@@ -89,12 +89,13 @@ export function AiPoweredWorksInput(props: ArrayOfObjectsInputProps) {
           });
         }
         if (uploaded.length > 0) {
-          const next = [...works, ...uploaded];
+          // New works go first — editors see them at once instead of dragging them up
+          const next = [...uploaded, ...works];
           patchWorks(next);
-          const last = uploaded[uploaded.length - 1];
-          if (last?._key) {
-            setSelectedKey(last._key);
-            openArrayItem({ members, onItemOpen }, last._key);
+          const first = uploaded[0];
+          if (first?._key) {
+            setSelectedKey(first._key);
+            openArrayItem({ members, onItemOpen }, first._key);
           }
         }
       } finally {
@@ -169,7 +170,7 @@ export function AiPoweredWorksInput(props: ArrayOfObjectsInputProps) {
                 Çalışma görseli ekle
               </Text>
               <Text size={1} muted>
-                Görsel seçin — detay penceresi otomatik açılır
+                Görsel seçin — en başa eklenir, detay penceresi otomatik açılır
               </Text>
             </Stack>
           </Flex>

@@ -79,12 +79,13 @@ export function HomeSelectedWorksInput(props: ArrayOfObjectsInputProps) {
           });
         }
         if (uploaded.length > 0) {
-          const next = [...works, ...uploaded];
+          // New works go first — editors see them at once instead of dragging them up
+          const next = [...uploaded, ...works];
           patchWorks(next);
-          const last = uploaded[uploaded.length - 1];
-          if (last?._key) {
-            setSelectedKey(last._key);
-            openArrayItem({ members, onItemOpen }, last._key);
+          const first = uploaded[0];
+          if (first?._key) {
+            setSelectedKey(first._key);
+            openArrayItem({ members, onItemOpen }, first._key);
           }
         }
       } finally {
@@ -112,8 +113,8 @@ export function HomeSelectedWorksInput(props: ArrayOfObjectsInputProps) {
         photographer: { _type: 'reference', _ref: photographerId },
       }));
       if (added.length === 0) return;
-      patchWorks([...works, ...added]);
-      setSelectedKey(added[added.length - 1]._key);
+      patchWorks([...added, ...works]);
+      setSelectedKey(added[0]._key);
     },
     [atMax, patchWorks, readOnly, slotsLeft, works],
   );
@@ -171,7 +172,7 @@ export function HomeSelectedWorksInput(props: ArrayOfObjectsInputProps) {
                 Öne çıkan iş ekle
               </Text>
               <Text size={1} muted>
-                Fotoğrafçıyı seçin, portfolyosundaki görsellerden ekleyin (en fazla {max})
+                Fotoğrafçıyı seçin, portfolyosundaki görsellerden ekleyin — en başa eklenir (en fazla {max})
               </Text>
             </Stack>
             <Flex gap={2} justify="center" wrap="wrap">

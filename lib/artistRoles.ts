@@ -52,8 +52,12 @@ export function normalizeRoles(raw: unknown): ArtistRole[] {
 }
 
 /** On-page label, e.g. "Fotoğrafçı · AI Sanatçısı" — pass `t.titleMap` or a label map. */
-export function formatRoles(roles: readonly ArtistRole[], labels: Partial<Record<string, string>>): string {
-  return roles.map((role) => labels[role] ?? ARTIST_ROLE_EN_LABELS[role]).join(' · ');
+export function formatRoles(
+  roles: readonly ArtistRole[],
+  labels: Partial<Record<string, string>>,
+  separator = ' · ',
+): string {
+  return roles.map((role) => labels[role] ?? ARTIST_ROLE_EN_LABELS[role]).join(separator);
 }
 
 const ROLE_WORDS: Record<Lang, Record<ArtistRole, string>> = {

@@ -10,8 +10,9 @@ import {
   contactInfo as staticContactInfo,
   photographers as staticPhotographers,
 } from '@/lib/data';
-import type { AiPoweredWork } from '@/lib/aiPoweredWorks';
+import type { AiPoweredWork, CreditPerson } from '@/lib/aiPoweredWorks';
 import { deriveBrandKey } from '@/lib/aiPoweredWorks';
+import { ARTIST_ROLES, type ArtistRole } from '@/lib/artistRoles';
 import type { AiPortfolioData } from '@/lib/aiPoweredPortfolio.shared';
 import type { HomeSelectedWorkStored } from '@/lib/homeSelectedWorks.shared';
 import { HOME_SELECTED_WORKS_MAX } from '@/lib/homeSelectedWorks.shared';
@@ -111,6 +112,57 @@ export async function getAiPoweredWorks(): Promise<AiPoweredWork[]> {
     console.error('[CMS] getAiPoweredWorks failed:', error);
     return [];
   }
+}
+
+// ── Artist works ────────────────────────────────────────────────────────────
+
+export interface ArtistWork {
+  href: string;
+  src: string;
+  alt: string;
+  brand: string;
+  title: string;
+  year?: number;
+  /** What the artist did on this work, in display order. */
+  roles: ArtistRole[];
+}
+
+/**
+ * Every production project and AI work that credits the artist — a credit
+ * added in Studio puts the work on the artist's page by itself. Newest year
+ * first; works without a year keep their list order at the end.
+ */
+export async function getArtistWorks(slug: string): Promise<ArtistWork[]> {
+  const [projects, aiWorks] = await Promise.all([getProductionProjects(), getAiPoweredWorks()]);
+  const rolesIn = (credits: Partial<Record<ArtistRole, CreditPerson[]>>) =>
+    ARTIST_ROLES.filter((role) => credits[role]?.some((person) => person.slug === slug));
+
+  const works: ArtistWork[] = [
+    ...projects.map((p) => ({
+      href: `/production/works/${p.slug}`,
+      src: p.imageSrc,
+      alt: p.imageAlt,
+      brand: p.brand,
+      title: p.title,
+      year: p.year,
+      roles: rolesIn({ PHOTOGRAPHER: p.photographers, RETOUCHER: p.retouchers }),
+    })),
+    ...aiWorks.map((w) => ({
+      href: `/ai-powered/works/${w.slug}`,
+      src: w.imageSrc,
+      alt: w.imageAlt,
+      brand: w.brand,
+      title: w.title,
+      year: w.year,
+      roles: rolesIn({
+        PHOTOGRAPHER: w.credits?.photographers,
+        RETOUCHER: w.credits?.retouchers,
+        AI_ARTIST: w.credits?.aiArtists,
+      }),
+    })),
+  ];
+  // sort() is stable — works from the same year keep their list order
+  return works.filter((w) => w.roles.length > 0 && w.src).sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
 }
 
 export async function getAiPoweredImages(): Promise<string[]> {
