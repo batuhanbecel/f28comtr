@@ -2,6 +2,7 @@
 
 import { WorkMosaic } from '@/components/gallery/WorkMosaic';
 import { useLanguage } from '@/context/LanguageContext';
+import { formatRoles } from '@/lib/artistRoles';
 import type { HomeSelectedWork } from '@/lib/homeV2.shared';
 
 interface HomeV2SelectedWorksProps {
@@ -13,8 +14,7 @@ interface HomeV2SelectedWorksProps {
 
 export function HomeV2SelectedWorks({ works, sectionLabel, heading, viewAllLabel }: HomeV2SelectedWorksProps) {
   const { t } = useLanguage();
-  const roleLabel = (role: HomeSelectedWork['role']) =>
-    role === 'retoucher' ? (t.titleMap.RETOUCHER ?? 'Retoucher') : (t.titleMap.PHOTOGRAPHER ?? 'Photographer');
+  const roleLabel = (role: HomeSelectedWork['role']) => formatRoles([role], t.titleMap);
 
   return (
     <WorkMosaic

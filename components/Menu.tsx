@@ -29,7 +29,6 @@ function LanguageToggle() {
 export type NavPhotographer = {
   id: string;
   fullName: string;
-  title: string;
 };
 
 type NavChild = { href: string; label: string; meta?: string };

@@ -1,8 +1,11 @@
+import type { ArtistRole } from '@/lib/artistRoles';
+
 export interface Photographer {
   id: string;
   name: string;
   fullName: string;
-  title: string;
+  /** Display order (Photographer, Retoucher, AI Artist) — see `lib/artistRoles.ts`. */
+  roles: ArtistRole[];
   folder: string;
   preview: string;
 }
@@ -12,7 +15,7 @@ export const photographers: Photographer[] = [
     id: 'ozan-cakmak',
     name: 'Ozan',
     fullName: 'OZAN ÇAKMAK',
-    title: 'PHOTOGRAPHER',
+    roles: ['PHOTOGRAPHER'],
     folder: 'ozan-cakmak',
     preview: '/portfolios/previews/ozan-cakmak.webp',
   },
@@ -20,7 +23,7 @@ export const photographers: Photographer[] = [
     id: 'emre-yunusoglu',
     name: 'Emre',
     fullName: 'EMRE YUNUSOĞLU',
-    title: 'PHOTOGRAPHER',
+    roles: ['PHOTOGRAPHER'],
     folder: 'emre-yunusoglu',
     preview: '/portfolios/previews/emre-yunusoglu.webp',
   },
@@ -28,7 +31,7 @@ export const photographers: Photographer[] = [
     id: 'berkin-metin',
     name: 'Berkin',
     fullName: 'BERKİN METİN',
-    title: 'PHOTOGRAPHER',
+    roles: ['PHOTOGRAPHER'],
     folder: 'berkin-metin',
     preview: '/portfolios/previews/berkin-metin.webp',
   },
@@ -36,7 +39,7 @@ export const photographers: Photographer[] = [
     id: 'yonca-muslubas',
     name: 'Yonca',
     fullName: 'YONCA MUSLUBAŞ',
-    title: 'PHOTOGRAPHER',
+    roles: ['PHOTOGRAPHER'],
     folder: 'yonca-muslubas',
     preview: '/portfolios/previews/yonca-muslubas.webp',
   },
@@ -44,7 +47,7 @@ export const photographers: Photographer[] = [
     id: 'haldun-kirkbir',
     name: 'Haldun',
     fullName: 'HALDUN KIRKBİR',
-    title: 'PHOTOGRAPHER',
+    roles: ['PHOTOGRAPHER'],
     folder: 'haldun-kirkbir',
     preview: '/portfolios/previews/haldun-kirkbir.webp',
   },
@@ -52,7 +55,7 @@ export const photographers: Photographer[] = [
     id: 'omur-temel',
     name: 'Ömür',
     fullName: 'ÖMÜR TEMEL',
-    title: 'PHOTOGRAPHER',
+    roles: ['PHOTOGRAPHER'],
     folder: 'omur-temel',
     preview: '/portfolios/previews/omur-temel.webp',
   },
@@ -60,7 +63,7 @@ export const photographers: Photographer[] = [
     id: 'kerem-cakmak',
     name: 'Kerem',
     fullName: 'KEREM ÇAKMAK',
-    title: 'RETOUCHER',
+    roles: ['RETOUCHER'],
     folder: 'kerem-cakmak',
     preview: '/portfolios/previews/kerem-cakmak.webp',
   },
@@ -68,7 +71,7 @@ export const photographers: Photographer[] = [
     id: 'dogu-biricik',
     name: 'Doğu',
     fullName: 'DOĞU BİRİCİK',
-    title: 'RETOUCHER',
+    roles: ['RETOUCHER'],
     folder: 'dogu-biricik',
     preview: '/portfolios/previews/dogu-biricik.webp',
   },
@@ -76,7 +79,7 @@ export const photographers: Photographer[] = [
     id: 'batuhan-becel',
     name: 'Batuhan',
     fullName: 'BATUHAN BECEL',
-    title: 'RETOUCHER',
+    roles: ['RETOUCHER'],
     folder: 'batuhan-becel',
     preview: '/portfolios/previews/batuhan-becel.jpg',
   }

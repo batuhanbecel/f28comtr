@@ -22,6 +22,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useClient, useCurrentUser } from 'sanity';
 import { useRouter } from 'sanity/router';
 
+import { hasRoleFilter } from '@/lib/artistRoles';
 import { toNameCase } from '@/lib/displayCase';
 import { HOME_AI_SCENE_DEFAULT_COUNT } from '@/lib/homeV2.shared';
 
@@ -82,8 +83,9 @@ const DOC_MEDIA = `select(
 
 const OVERVIEW_QUERY = `{
   "counts": {
-    "photographers": count(*[_type == "photographer" && title == "PHOTOGRAPHER" && ${PUBLISHED}]),
-    "retouchers": count(*[_type == "photographer" && title == "RETOUCHER" && ${PUBLISHED}]),
+    "photographers": count(*[_type == "photographer" && ${hasRoleFilter('PHOTOGRAPHER')} && ${PUBLISHED}]),
+    "retouchers": count(*[_type == "photographer" && ${hasRoleFilter('RETOUCHER')} && ${PUBLISHED}]),
+    "aiArtists": count(*[_type == "photographer" && ${hasRoleFilter('AI_ARTIST')} && ${PUBLISHED}]),
     "portfolioImages": count(*[_type == "photographer" && ${PUBLISHED}].portfolioImages[]),
     "projects": count(*[_type == "productionProject" && ${PUBLISHED}]),
     "aiWorks": coalesce(count(*[_id == "aiPoweredCollection"][0].works), 0),
@@ -137,6 +139,7 @@ interface OverviewData {
   counts: {
     photographers: number;
     retouchers: number;
+    aiArtists: number;
     portfolioImages: number;
     projects: number;
     aiWorks: number;
@@ -561,7 +564,7 @@ export function StudioOverview() {
       icon: <UsersIcon />,
       value: counts?.photographers ?? 0,
       label: 'Fotoğrafçı',
-      note: `${counts?.retouchers ?? 0} retoucher · ${counts?.portfolioImages ?? 0} portfolyo görseli`,
+      note: `${counts?.retouchers ?? 0} retoucher · ${counts?.aiArtists ?? 0} AI artist · ${counts?.portfolioImages ?? 0} portfolyo görseli`,
       onClick: () => nav.pane('sanatcilar'),
     },
     {

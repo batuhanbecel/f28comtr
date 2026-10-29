@@ -4,7 +4,7 @@ import { LANG_COOKIE, langFromAcceptLanguage, parseLang } from '@/lib/prefs';
 import { getPageSeo, type Photographer, type SeoCopy } from '@/lib/cms';
 import { absoluteUrl } from '@/lib/siteUrl';
 import { translations, type Lang } from '@/lib/translations';
-import { toNameCase } from '@/lib/displayCase';
+import { rolesPhrase } from '@/lib/artistRoles';
 
 const SITE_NAME = 'f/2.8 Production Agency';
 
@@ -168,8 +168,8 @@ export async function generatePhotographerMetadata(
   const title = formatSeoTemplate(copy.titleTemplate, { name: photographer.fullName });
   const description = formatSeoTemplate(copy.descriptionTemplate, {
     name: photographer.fullName,
-    // CMS roles are stored in caps ("PHOTOGRAPHER") — read as a word in the snippet.
-    title: lang === 'tr' ? roleTr(photographer.title) : toNameCase(photographer.title ?? ''),
+    // CMS roles are stored in caps ("PHOTOGRAPHER") — read as words in the snippet.
+    title: rolesPhrase(photographer.roles, lang),
   });
 
   const preview = photographer.preview;
@@ -182,10 +182,6 @@ export async function generatePhotographerMetadata(
     lang,
     image,
   });
-}
-
-function roleTr(role: string | undefined): string {
-  return (role ?? '').toUpperCase() === 'RETOUCHER' ? 'rötuşçu' : 'fotoğrafçı';
 }
 
 export { SITE_NAME };

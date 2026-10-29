@@ -3,6 +3,7 @@ import { RobotIcon } from '@sanity/icons';
 import { AiPoweredWorksInput } from '../components/AiPoweredWorksInput';
 import { PortfolioImagesInput } from '../components/PortfolioImagesInput';
 import { slugifyTr } from '../lib/slugify';
+import { hasRoleFilter } from '@/lib/artistRoles';
 
 export const aiPoweredCollection = defineType({
   name: 'aiPoweredCollection',
@@ -197,15 +198,29 @@ export const aiPoweredCollection = defineType({
                     {
                       type: 'reference',
                       to: [{ type: 'photographer' }],
-                      options: { filter: 'title == "PHOTOGRAPHER"' },
+                      options: { filter: hasRoleFilter('PHOTOGRAPHER') },
+                    },
+                  ],
+                }),
+                defineField({
+                  name: 'aiArtistProfiles',
+                  title: 'AI Sanatçıları',
+                  type: 'array',
+                  description:
+                    'Sitede portfolyosu olanları referans olarak seç — Görev / Ünvan\'ında "AI Artist" işaretli sanatçılar listelenir.',
+                  of: [
+                    {
+                      type: 'reference',
+                      to: [{ type: 'photographer' }],
+                      options: { filter: hasRoleFilter('AI_ARTIST') },
                     },
                   ],
                 }),
                 defineField({
                   name: 'aiArtists',
-                  title: 'AI Sanatçıları',
+                  title: 'Diğer AI Sanatçıları',
                   type: 'array',
-                  description: 'AI sanatçıları (genelde freelance — isim yeterli).',
+                  description: 'Portfolyosu olmayan AI sanatçıları (genelde freelance — isim yeterli).',
                   of: [{ type: 'string' }],
                   options: { layout: 'tags' },
                 }),
@@ -218,7 +233,7 @@ export const aiPoweredCollection = defineType({
                     {
                       type: 'reference',
                       to: [{ type: 'photographer' }],
-                      options: { filter: 'title == "RETOUCHER"' },
+                      options: { filter: hasRoleFilter('RETOUCHER') },
                     },
                   ],
                 }),

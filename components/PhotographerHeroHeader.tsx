@@ -2,16 +2,17 @@
 
 import { PageHeader } from '@/components/PageHeader';
 import { useLanguage } from '@/context/LanguageContext';
+import { formatRoles, type ArtistRole } from '@/lib/artistRoles';
 
 interface PhotographerHeroHeaderProps {
   name: string;
-  title: string;
+  roles: ArtistRole[];
   children?: React.ReactNode;
 }
 
-export function PhotographerHeroHeader({ name, title, children }: PhotographerHeroHeaderProps) {
+export function PhotographerHeroHeader({ name, roles, children }: PhotographerHeroHeaderProps) {
   const { t } = useLanguage();
-  const localizedTitle = (t.titleMap as Record<string, string>)[title] ?? title;
+  const localizedTitle = formatRoles(roles, t.titleMap);
 
   return (
     <PageHeader

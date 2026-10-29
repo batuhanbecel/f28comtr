@@ -2,6 +2,7 @@
 
 import { Tile } from '@/components/gallery/Tile';
 import { useLanguage } from '@/context/LanguageContext';
+import { formatRoles } from '@/lib/artistRoles';
 import type { Photographer } from '@/lib/data';
 import { artistGridSizes } from '@/lib/imageSizes';
 import { ViewTransition } from '@/lib/ViewTransition';
@@ -21,7 +22,7 @@ export function ArtistGrid({ photographers }: { photographers: Photographer[] })
             alt={p.fullName}
             sizes={artistGridSizes(p.preview)}
             title={p.fullName}
-            meta={(t.titleMap as Record<string, string>)[p.title] ?? p.title}
+            meta={formatRoles(p.roles, t.titleMap)}
             ratio="3 / 4"
             eager={i < 5}
             showCredit

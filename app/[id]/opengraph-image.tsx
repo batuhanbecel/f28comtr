@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { photographers as staticPhotographers } from '@/lib/data';
 import { getPhotographers } from '@/lib/cms';
+import { ARTIST_ROLE_EN_LABELS, formatRoles } from '@/lib/artistRoles';
 import { absoluteUrl } from '@/lib/siteUrl';
 
 export const runtime = 'nodejs';
@@ -126,7 +127,7 @@ export default async function OGImage({ params }: { params: Promise<{ id: string
               marginBottom: 12,
             }}
           >
-            {photographer.title}
+            {formatRoles(photographer.roles, ARTIST_ROLE_EN_LABELS)}
           </div>
 
           {/* Photographer name */}

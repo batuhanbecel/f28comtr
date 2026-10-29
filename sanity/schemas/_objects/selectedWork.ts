@@ -1,5 +1,6 @@
 import { defineArrayMember, defineField } from 'sanity';
 import { HomeWorkImageInput } from '../../components/HomeWorkImageInput';
+import { ARTIST_ROLE_STUDIO_LABELS, formatRoles, normalizeRoles } from '@/lib/artistRoles';
 
 /**
  * One picked work: a photographer + an image from their portfolio (or an
@@ -39,9 +40,13 @@ export const selectedWorkMember = defineArrayMember({
       media: 'image',
       workTitle: 'workTitle',
       name: 'photographer.fullName',
-      role: 'photographer.title',
+      roles: 'photographer.roles',
+      legacyRole: 'photographer.title',
     },
-    prepare({ media, workTitle, name, role }) {
+    prepare({ media, workTitle, name, roles, legacyRole }) {
+      const role = name
+        ? formatRoles(normalizeRoles(roles?.length ? roles : legacyRole), ARTIST_ROLE_STUDIO_LABELS)
+        : null;
       return {
         media,
         title: workTitle || name || 'İsimsiz',
