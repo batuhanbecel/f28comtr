@@ -3,7 +3,8 @@ import Image from '@/components/Image';
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import { photographers as staticPhotographers } from '@/lib/data';
-import { getPhotographers, getPhotographerImages, type Photographer } from '@/lib/cms';
+import { getArtistWorks, getPhotographers, getPhotographerImages, type Photographer } from '@/lib/cms';
+import { ArtistWorks } from '@/components/ArtistWorks';
 import { ARTIST_ROLE_EN_LABELS } from '@/lib/artistRoles';
 import { shouldSkipOptimization } from '@/lib/blob';
 import { coverImageSizes } from '@/lib/imageSizes';
@@ -66,6 +67,11 @@ async function MasonryGridStream({
 }) {
   const images = await imagesPromise;
   return <MasonryGrid images={images} photographerName={photographer.fullName} />;
+}
+
+async function ArtistWorksStream({ id }: { id: string }) {
+  const works = await getArtistWorks(id);
+  return <ArtistWorks works={works} />;
 }
 
 export default async function PortfolioPage({ params }: PageProps) {
@@ -144,6 +150,10 @@ export default async function PortfolioPage({ params }: PageProps) {
           </Suspense>
         </section>
         </HeroSnapTarget>
+        {/* Works that credit the artist — below the fold, so it streams last */}
+        <Suspense fallback={null}>
+          <ArtistWorksStream id={id} />
+        </Suspense>
         <Footer />
       </HeroSnapBody>
     </ProductionSnapContainer>

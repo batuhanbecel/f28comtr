@@ -69,12 +69,13 @@ export function PortfolioImagesInput(props: ArrayOfObjectsInputProps) {
           });
         }
         if (uploaded.length > 0) {
-          const next = [...images, ...uploaded];
+          // New images go first — editors see them at once instead of dragging them up
+          const next = [...uploaded, ...images];
           patchImages(next);
-          const last = uploaded[uploaded.length - 1];
-          if (last?._key) {
-            setSelectedKey(last._key);
-            openArrayItem({ members, onItemOpen }, last._key);
+          const first = uploaded[0];
+          if (first?._key) {
+            setSelectedKey(first._key);
+            openArrayItem({ members, onItemOpen }, first._key);
           }
         }
       } finally {
@@ -148,7 +149,7 @@ export function PortfolioImagesInput(props: ArrayOfObjectsInputProps) {
                 Portfolyo görseli ekle
               </Text>
               <Text size={1} muted>
-                Görsel seçin — kırpma penceresi otomatik açılır
+                Görsel seçin — en başa eklenir, kırpma penceresi otomatik açılır
               </Text>
             </Stack>
           </Flex>

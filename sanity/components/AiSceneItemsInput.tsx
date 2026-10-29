@@ -39,7 +39,8 @@ export function AiSceneItemsInput(props: ArrayOfObjectsInputProps) {
         .filter((id) => !existing.has(id))
         .map((id) => ({ _key: randomKey(12), _type: 'reference' as const, _ref: id }));
       if (added.length === 0) return;
-      onChange(PatchEvent.from(set([...value, ...added].slice(0, HOME_AI_SCENE_MAX))));
+      // New picks go first; past the limit the extra new picks drop, never the existing ones
+      onChange(PatchEvent.from(set([...added.slice(0, HOME_AI_SCENE_MAX - value.length), ...value])));
     },
     [onChange, value],
   );
