@@ -18,6 +18,7 @@
     "migrate:copy-seo": "tsx scripts/migrate-copy-seo-to-sanity.ts",
     "migrate:ai-tags": "node scripts/migrate-ai-tags-to-references.mjs",
     "migrate:ai-categories": "node scripts/migrate-ai-categories.mjs",
+    "migrate:artist-roles": "node scripts/migrate-artist-roles.mjs",
     "fix:order-ranks": "node scripts/fix-order-ranks.mjs",
     "fix:tr-copy": "node scripts/fix-tr-copy.mjs",
     "download:ai-powered": "node scripts/download-ai-powered-assets.mjs"

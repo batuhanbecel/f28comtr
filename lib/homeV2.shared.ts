@@ -1,4 +1,7 @@
-export type HomeSelectedWorkRole = 'photographer' | 'retoucher';
+import type { ArtistRole } from '@/lib/artistRoles';
+
+/** The artist's first role (display order) — work credits stay one word long. */
+export type HomeSelectedWorkRole = ArtistRole;
 
 export interface HomeSelectedWork {
   imageSrc: string;

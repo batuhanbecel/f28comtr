@@ -4,6 +4,7 @@ import { orderRankField, orderRankOrdering } from '@sanity/orderable-document-li
 import { PortfolioImagesInput } from '../components/PortfolioImagesInput';
 import { slugifyTr } from '../lib/slugify';
 import { toNameCase } from '@/lib/displayCase';
+import { ARTIST_ROLES, ARTIST_ROLE_STUDIO_LABELS, formatRoles, normalizeRoles } from '@/lib/artistRoles';
 
 export const photographer = defineType({
   name: 'photographer',
@@ -50,18 +51,24 @@ export const photographer = defineType({
     }),
     defineField({
       group: 'identity',
-      name: 'title',
+      name: 'roles',
       title: 'Görev / Ünvan',
-      description: 'Portfolyo kartı ve detay sayfasında görünür.',
-      type: 'string',
+      description:
+        'Birden fazla seçilebilir, örn. hem Fotoğrafçı hem AI Artist. Portfolyo kartı, detay sayfası ve AI iş künyelerinde görünür.',
+      type: 'array',
+      of: [{ type: 'string' }],
       options: {
-        list: [
-          { title: 'Fotoğrafçı', value: 'PHOTOGRAPHER' },
-          { title: 'Retoucher', value: 'RETOUCHER' },
-        ],
-        layout: 'radio',
+        list: ARTIST_ROLES.map((value) => ({ title: ARTIST_ROLE_STUDIO_LABELS[value], value })),
       },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => Rule.required().min(1).unique(),
+    }),
+    defineField({
+      // Single role from before `roles` — read by the site only while `roles` is empty.
+      group: 'identity',
+      name: 'title',
+      title: 'Görev / Ünvan (eski — gizli)',
+      type: 'string',
+      hidden: true,
     }),
     defineField({
       group: 'identity',
@@ -91,12 +98,13 @@ export const photographer = defineType({
   preview: {
     select: {
       title: 'fullName',
-      role: 'title',
+      roles: 'roles',
+      legacyRole: 'title',
       media: 'preview',
       imageCount: 'portfolioImages.length',
     },
-    prepare({ title, role, media, imageCount }) {
-      const roleLabel = role === 'RETOUCHER' ? 'Retoucher' : 'Fotoğrafçı';
+    prepare({ title, roles, legacyRole, media, imageCount }) {
+      const roleLabel = formatRoles(normalizeRoles(roles?.length ? roles : legacyRole), ARTIST_ROLE_STUDIO_LABELS);
       const count = typeof imageCount === 'number' ? `${imageCount} görsel` : null;
       return {
         // Names are typed in caps for the site; show them as on the page.

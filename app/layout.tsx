@@ -106,7 +106,6 @@ export default async function RootLayout({
   const navPhotographers: NavPhotographer[] = photographers.map((p) => ({
     id: p.id,
     fullName: p.fullName,
-    title: p.title,
   }));
 
   const organizationLd = getOrganizationStructuredData(siteUrl, initialContactInfo, initialLang);

@@ -1,5 +1,6 @@
 import { sanityFetch } from '@/lib/sanity.fetch';
 import { toNameCase } from '@/lib/displayCase';
+import { CREDIT_PERSON } from '@/lib/artistRoles';
 import type { CreditPerson, AiPoweredWorkImage } from '@/lib/aiPoweredWorks';
 import type { Lang } from '@/lib/translations';
 
@@ -33,8 +34,8 @@ const PROJECTS_QUERY = `*[_type == "productionProject" && defined(slug.current)]
     "width": asset->metadata.dimensions.width,
     "height": asset->metadata.dimensions.height
   },
-  "photographers": photographers[]->{ "slug": slug.current, fullName },
-  "retouchers": retouchers[]->{ "slug": slug.current, fullName }
+  "photographers": photographers[]->${CREDIT_PERSON},
+  "retouchers": retouchers[]->${CREDIT_PERSON}
 }`;
 
 type RawPerson = { slug?: string | null; fullName?: string | null } | null;

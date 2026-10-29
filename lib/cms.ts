@@ -221,6 +221,11 @@ export async function getHomeAiSceneImages(lang: Lang): Promise<HomeAiSceneImage
 
 // ── Home Selected Works ─────────────────────────────────────────────────────
 
+/** First role in display order — work credits name one role. */
+function primaryRole(p: Photographer): HomeSelectedWorkRole {
+  return p.roles[0] ?? 'PHOTOGRAPHER';
+}
+
 export async function getHomeSelectedWorks(): Promise<HomeSelectedWorkStored[]> {
   try {
     return await getHomeSelectedWorksFromSanity();
@@ -242,15 +247,11 @@ export async function getHomeV2SelectedWorks(
   for (const entry of stored.slice(0, limit)) {
     const photographer = byId.get(entry.photographerId);
     if (!photographer) continue;
-    const role: HomeSelectedWorkRole =
-      (photographer.title ?? 'PHOTOGRAPHER').toUpperCase() === 'RETOUCHER'
-        ? 'retoucher'
-        : 'photographer';
     resolved.push({
       imageSrc: entry.imageSrc,
       workTitle: entry.workTitle.trim() || workTitleFallback,
       artistName: photographer.fullName,
-      role,
+      role: primaryRole(photographer),
       href: `/${entry.photographerId}`,
     });
   }
@@ -261,13 +262,11 @@ export async function getHomeV2SelectedWorks(
   const pool = await getProductionMarqueeItems(limit);
   return pool.map((item) => {
     const photographer = byId.get(item.photographerId);
-    const role: HomeSelectedWorkRole =
-      (photographer?.title ?? 'PHOTOGRAPHER').toUpperCase() === 'RETOUCHER' ? 'retoucher' : 'photographer';
     return {
       imageSrc: item.src,
       workTitle: '',
       artistName: item.photographerName,
-      role,
+      role: photographer ? primaryRole(photographer) : 'PHOTOGRAPHER',
       href: `/${item.photographerId}`,
     };
   });
@@ -335,8 +334,6 @@ function seededRandom(seed: string): () => number {
 export async function getSelectedWorks(workTitleFallback = ''): Promise<HomeSelectedWork[]> {
   const photographers = await getPhotographers();
   const byId = new Map(photographers.map((p) => [p.id, p]));
-  const roleOf = (p: Photographer): HomeSelectedWorkRole =>
-    (p.title ?? '').toUpperCase() === 'RETOUCHER' ? 'retoucher' : 'photographer';
 
   let stored: HomeSelectedWorkStored[] = [];
   try {
@@ -352,7 +349,7 @@ export async function getSelectedWorks(workTitleFallback = ''): Promise<HomeSele
         imageSrc: entry.imageSrc,
         workTitle: entry.workTitle.trim() || workTitleFallback,
         artistName: p.fullName,
-        role: roleOf(p),
+        role: primaryRole(p),
         href: `/${p.id}`,
       },
     ];
@@ -380,7 +377,7 @@ export async function getSelectedWorks(workTitleFallback = ''): Promise<HomeSele
       imageSrc: pool[Math.floor(random() * pool.length)],
       workTitle: '',
       artistName: p.fullName,
-      role: roleOf(p),
+      role: primaryRole(p),
       href: `/${p.id}`,
     });
   });

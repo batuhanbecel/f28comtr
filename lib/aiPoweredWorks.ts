@@ -8,7 +8,8 @@ export interface CreditPerson {
 
 export interface AiPoweredCredits {
   photographers: CreditPerson[];
-  aiArtists: string[];
+  /** Artists with a portfolio (linked) first, then names typed in Studio. */
+  aiArtists: CreditPerson[];
   retouchers: CreditPerson[];
 }
 

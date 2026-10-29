@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { BlockHead } from '@/components/gallery/BlockHead';
 import { useLanguage } from '@/context/LanguageContext';
+import { formatRoles } from '@/lib/artistRoles';
 import type { Photographer } from '@/lib/data';
 import { shouldSkipOptimization } from '@/lib/blob';
 import { coverSizesInBox, ROSTER_PREVIEW_ASPECT, ROSTER_PREVIEW_VW } from '@/lib/imageSizes';
@@ -26,8 +27,6 @@ export function HomeArtistRoster({ photographers, label, heading, intro, viewAll
   const { t } = useLanguage();
   const [active, setActive] = useState(0);
   if (photographers.length === 0) return null;
-
-  const role = (title: string) => (t.titleMap as Record<string, string>)[title] ?? title;
 
   return (
     <section className="g-section" aria-labelledby="roster-title">
@@ -66,7 +65,7 @@ export function HomeArtistRoster({ photographers, label, heading, intro, viewAll
                 </span>
                 <span className="index-list__num">{String(i + 1).padStart(2, '0')}</span>
                 <span className="roster__name">{p.fullName}</span>
-                <span className="roster__role">{role(p.title)}</span>
+                <span className="roster__role">{formatRoles(p.roles, t.titleMap)}</span>
               </Link>
             </li>
           ))}

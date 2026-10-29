@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import { photographers as staticPhotographers } from '@/lib/data';
 import { getPhotographers, getPhotographerImages, type Photographer } from '@/lib/cms';
+import { ARTIST_ROLE_EN_LABELS } from '@/lib/artistRoles';
 import { shouldSkipOptimization } from '@/lib/blob';
 import { coverImageSizes } from '@/lib/imageSizes';
 import { MasonryGrid } from '@/components/MasonryGrid';
@@ -84,7 +85,7 @@ export default async function PortfolioPage({ params }: PageProps) {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: photographer.fullName,
-    jobTitle: photographer.title,
+    jobTitle: photographer.roles.map((role) => ARTIST_ROLE_EN_LABELS[role]),
     image: previewUrl,
     url: `${siteUrl}/${photographer.id}`,
     worksFor: {
@@ -126,7 +127,7 @@ export default async function PortfolioPage({ params }: PageProps) {
           className="relative z-10 text-th-fg g-inner w-full"
           style={{ '--c-fg': '255 255 255', '--c-bg': '0 0 0' } as React.CSSProperties}
         >
-          <PhotographerHeroHeader name={photographer.fullName} title={photographer.title}>
+          <PhotographerHeroHeader name={photographer.fullName} roles={photographer.roles}>
             <Suspense fallback={<div className="h-11 w-52 border border-th-fg/10 bg-th-fg/[0.03] animate-pulse" aria-hidden="true" />}>
               <DownloadButton imagesPromise={imagesPromise} photographer={photographer} />
             </Suspense>

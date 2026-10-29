@@ -3,6 +3,7 @@ import type { AiPoweredWork, AiPoweredWorkImage } from '@/lib/aiPoweredWorks';
 import { normalizeWorkCategory } from '@/lib/aiPoweredWorks';
 import type { AiPortfolioData } from '@/lib/aiPoweredPortfolio.shared';
 import { toNameCase } from '@/lib/displayCase';
+import { CREDIT_PERSON } from '@/lib/artistRoles';
 
 const AI_WORKS_QUERY = `*[_id == "aiPoweredCollection"][0]{
   "works": works[]{
@@ -32,9 +33,10 @@ const AI_WORKS_QUERY = `*[_id == "aiPoweredCollection"][0]{
     instagramUrl,
     agency,
     "credits": {
-      "photographers": credits.photographers[]->{ "slug": slug.current, fullName },
+      "photographers": credits.photographers[]->${CREDIT_PERSON},
+      "aiArtistProfiles": credits.aiArtistProfiles[]->${CREDIT_PERSON},
       "aiArtists": credits.aiArtists,
-      "retouchers": credits.retouchers[]->{ "slug": slug.current, fullName }
+      "retouchers": credits.retouchers[]->${CREDIT_PERSON}
     }
   }
 }.works`;
@@ -69,6 +71,7 @@ interface RawCreditPerson {
 
 interface RawCredits {
   photographers?: RawCreditPerson[] | null;
+  aiArtistProfiles?: RawCreditPerson[] | null;
   aiArtists?: (string | null)[] | null;
   retouchers?: RawCreditPerson[] | null;
 }
@@ -138,9 +141,19 @@ function normalizeCredits(raw: RawCredits | null | undefined): AiPoweredWork['cr
   const retouchers = Array.isArray(raw?.retouchers)
     ? raw.retouchers.map(normalizePerson).filter((p): p is NonNullable<typeof p> => p !== null)
     : [];
-  const aiArtists = Array.isArray(raw?.aiArtists)
-    ? raw.aiArtists.filter((s): s is string => typeof s === 'string' && s.length > 0)
+  const aiArtistProfiles = Array.isArray(raw?.aiArtistProfiles)
+    ? raw.aiArtistProfiles.map(normalizePerson).filter((p): p is NonNullable<typeof p> => p !== null)
     : [];
+  // Typed free-form in Studio, often in caps — same name casing as the roster.
+  // A name that's also picked as a profile is listed once, with its link.
+  const linkedNames = new Set(aiArtistProfiles.map((p) => p.fullName.toLocaleLowerCase('tr')));
+  const typedAiArtists = Array.isArray(raw?.aiArtists)
+    ? raw.aiArtists
+        .filter((s): s is string => typeof s === 'string' && s.trim().length > 0)
+        .map((name) => ({ fullName: toNameCase(name.trim()) }))
+        .filter((p) => !linkedNames.has(p.fullName.toLocaleLowerCase('tr')))
+    : [];
+  const aiArtists = [...aiArtistProfiles, ...typedAiArtists];
   if (photographers.length === 0 && retouchers.length === 0 && aiArtists.length === 0) {
     return undefined;
   }

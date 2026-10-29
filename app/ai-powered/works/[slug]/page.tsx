@@ -8,7 +8,6 @@ import { Footer } from '@/components/Footer';
 import { getAiPoweredWorks, getPageCopy } from '@/lib/cms';
 import type { CreditPerson } from '@/lib/aiPoweredWorks';
 import { getServerLang } from '@/lib/serverLang';
-import { toNameCase } from '@/lib/displayCase';
 import { absoluteUrl } from '@/lib/siteUrl';
 
 interface PageProps {
@@ -93,8 +92,7 @@ export default async function AiPoweredWorkPage({ params }: PageProps) {
 
   const credits = {
     photographers: work.credits?.photographers ?? [],
-    // Typed free-form in Studio, often in caps — same name casing as the roster
-    aiArtists: (work.credits?.aiArtists ?? []).map((name) => ({ fullName: toNameCase(name) })),
+    aiArtists: work.credits?.aiArtists ?? [],
     retouchers: work.credits?.retouchers ?? [],
   };
 

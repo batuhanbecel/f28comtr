@@ -3,10 +3,11 @@
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { EditorialButton } from '@/components/EditorialButton';
+import { ARTIST_ROLE_EN_LABELS, formatRoles, type ArtistRole } from '@/lib/artistRoles';
 
 interface Photographer {
   fullName: string;
-  title: string;
+  roles: ArtistRole[];
   preview: string;
 }
 
@@ -188,7 +189,8 @@ export function DownloadPortfolio({ images, photographer }: Props) {
       pdf.setTextColor(70, 70, 70);
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(6.5);
-      pdf.text(photographer.title.toUpperCase(), cx, coverSplit + 26, { align: 'center' });
+      // English labels: the PDF's built-in Helvetica can't set ğ, ı or ş
+      pdf.text(formatRoles(photographer.roles, ARTIST_ROLE_EN_LABELS).toUpperCase(), cx, coverSplit + 26, { align: 'center' });
 
       // Photographer name
       pdf.setTextColor(240, 240, 240);

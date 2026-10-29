@@ -36,6 +36,7 @@ Before any Next.js work, read the relevant documentation. Training data is outda
 - **i18n:** cookie `f28_lang` (set in `proxy.ts`, read in `app/layout.tsx`, mirrored in `LanguageContext`)
 - **Theme:** cookie `f28_theme` (same flow via `ThemeContext`)
 - **Images:** shared sizes in `lib/imageSizes.ts`, blob proxy via `shouldSkipOptimization()`
+- **Artist roles:** `photographer.roles` holds several (`PHOTOGRAPHER` / `RETOUCHER` / `AI_ARTIST`) — always go through `lib/artistRoles.ts` (`ROLES_GROQ` in queries, `hasRoleFilter` in Studio reference filters, `formatRoles` / `rolesPhrase` for labels). The old single `title` is a hidden fallback; never read it directly
 - **AI gallery:** `/ai-powered` grid + per-work URLs at `/ai-powered/works/[slug]` + client-state lightbox
 - **CMS & Studio:** Embedded Sanity Studio at `/studio` (`sanity.config.ts`, custom UI via `sanity/studio.css`), Visual Editing via `/api/draft-mode` and ISR via `/api/revalidate`
 - **View transitions:** `lib/ViewTransition.tsx` + React 19.3 stable `ViewTransition` (no config flag needed) — photographer card→detail morph only; root crossfade is opacity-only (no blur)
