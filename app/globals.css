@@ -1683,6 +1683,11 @@ body[data-lightbox-open] nav {
   width: min(82vw, calc(clamp(360px, 72vh, 720px) * 0.8));
   scroll-snap-align: start;
 }
+/* Compact — about half size, for credits under an artist's own portfolio
+   (keep WORK_STRIP_COMPACT_SLOTS in lib/imageSizes.ts in step) */
+.work-strip--compact .work-strip__item {
+  width: min(56vw, calc(clamp(220px, 38vh, 380px) * 0.8));
+}
 
 /* ─── Home — AI teaser (square, tight — the AI side's grid rhythm) ──────── */
 

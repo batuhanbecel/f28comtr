@@ -105,6 +105,13 @@ export const WORK_STRIP_SLOTS: CoverSlot[] = [
   { width: 576, height: 720, unit: 'px' },
 ];
 
+/** Compact work strip tile (artist page credits): 4:5, min(56vw,
+ *  clamp(220px, 38vh, 380px) × 0.8) wide — at most 304 × 380px. */
+export const WORK_STRIP_COMPACT_SLOTS: CoverSlot[] = [
+  { media: '(max-width: 542px)', width: 56, height: 70 },
+  { width: 304, height: 380, unit: 'px' },
+];
+
 /** Edge-to-edge 3:4 portrait grid (/portfolios): 2 columns up to 1279px, 5 from
  *  1280px. Per image, since landscape covers are cropped to the tile height. */
 export function artistGridSizes(src: string): string {

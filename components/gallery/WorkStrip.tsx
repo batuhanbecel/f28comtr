@@ -6,7 +6,7 @@ import { Tile } from '@/components/gallery/Tile';
 import { ScrollerArrow } from '@/components/ScrollerArrow';
 import { useLanguage } from '@/context/LanguageContext';
 import { useScrollerArrows } from '@/hooks/useScrollerArrows';
-import { coverSizes, WORK_STRIP_SLOTS } from '@/lib/imageSizes';
+import { coverSizes, WORK_STRIP_COMPACT_SLOTS, WORK_STRIP_SLOTS } from '@/lib/imageSizes';
 
 export interface WorkStripItem {
   href: string;
@@ -23,10 +23,13 @@ interface WorkStripProps {
   intro?: string;
   viewAll?: { href: string; label: string };
   id?: string;
+  /** `compact`: about half-size tiles, for a strip that supports the page rather than leads it. */
+  size?: 'default' | 'compact';
 }
 
 /** Edge-to-edge sideways-scrolling strip of work (swipe / trackpad / arrows). */
-export function WorkStrip({ items, label, title, intro, viewAll, id }: WorkStripProps) {
+export function WorkStrip({ items, label, title, intro, viewAll, id, size = 'default' }: WorkStripProps) {
+  const slots = size === 'compact' ? WORK_STRIP_COMPACT_SLOTS : WORK_STRIP_SLOTS;
   const { t } = useLanguage();
   const { trackRef, canPrev, canNext, scrollByPage } = useScrollerArrows<HTMLUListElement>(items.length);
 
@@ -52,14 +55,14 @@ export function WorkStrip({ items, label, title, intro, viewAll, id }: WorkStrip
           </>
         }
       />
-      <ul ref={trackRef} className="work-strip">
+      <ul ref={trackRef} className={size === 'compact' ? 'work-strip work-strip--compact' : 'work-strip'}>
         {items.map((item, i) => (
           <li key={`${item.src}-${i}`} className="work-strip__item">
             <Tile
               href={item.href}
               src={item.src}
               alt={item.alt}
-              sizes={coverSizes(item.src, WORK_STRIP_SLOTS)}
+              sizes={coverSizes(item.src, slots)}
               title={item.title}
               meta={item.meta}
               eager={i < 3}
