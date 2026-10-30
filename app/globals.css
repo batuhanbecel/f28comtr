@@ -1151,6 +1151,18 @@ body[data-lightbox-open] nav {
   contain-intrinsic-size: auto 2000px;
 }
 
+/* Photo galleries (MasonryGrid, AI WorkGrid): 2 columns on phones, 3 from 768px.
+   Set here rather than measured in JS so the server render already has the
+   final columns — no reflow when the page hydrates (GALLERY_COLUMNS_STYLE). */
+.gallery-columns {
+  --gallery-cols: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 768px) {
+  .gallery-columns {
+    --gallery-cols: repeat(3, minmax(0, 1fr));
+  }
+}
+
 
 .portfolio-grid-cell img,
 .masonry-scroll img {

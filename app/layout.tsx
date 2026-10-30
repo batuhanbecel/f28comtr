@@ -117,6 +117,8 @@ export default async function RootLayout({
   return (
     <html lang={initialLang} className={`${inter.variable} ${geistMono.variable} ${geistDisplay.variable}`} data-theme={initialTheme}>
       <head>
+        {/* Every photo comes from Sanity's CDN — open the connection with the HTML */}
+        <link rel="preconnect" href="https://cdn.sanity.io" />
         <link rel="manifest" href="/manifest.json" />
         <script
           type="application/ld+json"

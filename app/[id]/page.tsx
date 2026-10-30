@@ -7,7 +7,7 @@ import { getArtistWorks, getPhotographers, getPhotographerImages, type Photograp
 import { ArtistWorks } from '@/components/ArtistWorks';
 import { ARTIST_ROLE_EN_LABELS } from '@/lib/artistRoles';
 import { shouldSkipOptimization } from '@/lib/blob';
-import { coverImageSizes } from '@/lib/imageSizes';
+import { coverImageSizesSplit } from '@/lib/imageSizes';
 import { MasonryGrid } from '@/components/MasonryGrid';
 import { MasonryGridSkeleton } from '@/components/MasonryGridSkeleton';
 import { Footer } from '@/components/Footer';
@@ -119,7 +119,7 @@ export default async function PortfolioPage({ params }: PageProps) {
             className="object-cover"
             loading="eager"
             fetchPriority="high"
-            sizes={coverImageSizes(photographer.preview)}
+            sizes={coverImageSizesSplit(photographer.preview, 80)}
             quality={90}
             unoptimized={shouldSkipOptimization(photographer.preview)}
           />

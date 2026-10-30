@@ -1,7 +1,15 @@
 'use client';
 
-import { VisualEditing } from '@sanity/visual-editing/react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
+
+// The overlay pulls in @sanity/ui, styled-components and framer-motion (~700KB).
+// A static import put all of it on every public page; loaded here on demand,
+// it only reaches editors in draft mode (this component renders only then).
+const VisualEditing = dynamic(
+  () => import('@sanity/visual-editing/react').then((mod) => mod.VisualEditing),
+  { ssr: false },
+);
 
 export function SanityVisualEditingClient() {
   return (

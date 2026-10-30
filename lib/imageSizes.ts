@@ -5,6 +5,22 @@ export const HERO_IMAGE_SIZES = "100vw";
 const SANITY_DIMENSIONS_RE = /-(\d+)x(\d+)\.[a-z0-9]+(?:\?|$)/i;
 
 /**
+ * Photo galleries (MasonryGrid, AI WorkGrid): columns come from CSS
+ * (`.gallery-columns` — 2 on phones, 3 from 768px), so the server render
+ * already has the final layout instead of reflowing once JS measures the width.
+ */
+export const GALLERY_COLUMNS_STYLE = { gridTemplateColumns: 'var(--gallery-cols)' } as const;
+
+/** An image's pixel size read from its Sanity URL — none for other URLs. */
+export function sanityImageDimensions(src: string): { w: number; h: number } | undefined {
+  const match = SANITY_DIMENSIONS_RE.exec(src);
+  if (!match) return undefined;
+  const w = Number(match[1]);
+  const h = Number(match[2]);
+  return w > 0 && h > 0 ? { w, h } : undefined;
+}
+
+/**
  * `sizes` for an `object-cover` image filling a full-width frame `frameVh`
  * viewport heights tall. On a portrait phone a landscape photo is scaled to
  * the frame's height, so it renders far wider than the screen: 100vw would
@@ -20,6 +36,22 @@ export function coverImageSizes(src: string, frameVh = 100): string {
   if (!Number.isFinite(aspect) || aspect <= 0) return HERO_IMAGE_SIZES;
   const renderedVh = Math.ceil(aspect * frameVh);
   return `(max-aspect-ratio: ${renderedVh}/100) ${renderedVh}vh, 100vw`;
+}
+
+/**
+ * `coverImageSizes` for a frame that is `phoneVh` tall below 768px and
+ * `frameVh` from 768px up (e.g. `h-[80vh] md:h-[100svh]`). Declaring the full
+ * 100vh on phones made a panorama hero ask for the 3840px file where 2560px
+ * covers the rendered crop.
+ */
+export function coverImageSizesSplit(src: string, phoneVh: number, frameVh = 100): string {
+  const phone = coverImageSizes(src, phoneVh);
+  const wide = coverImageSizes(src, frameVh);
+  if (phone === wide) return wide;
+  const phoneEntries = phone
+    .split(', ')
+    .map((entry) => (entry.startsWith('(') ? `(max-width: 767px) and ${entry}` : `(max-width: 767px) ${entry}`));
+  return [...phoneEntries, wide].join(', ');
 }
 
 /**

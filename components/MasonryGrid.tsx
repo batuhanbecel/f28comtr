@@ -1,11 +1,11 @@
 'use client';
 
 import Image from '@/components/Image';
-import { memo, useState, useEffect, useCallback, useDeferredValue, useRef } from 'react';
+import { memo, useState, useCallback, useDeferredValue } from 'react';
 import { BalancedMasonryGrid as MasonryGridLib, Frame } from '@masonry-grid/react';
 import { shouldSkipOptimization } from '@/lib/blob';
 import { GRID_IMAGE_QUALITY } from '@/lib/imageConfig';
-import { MASONRY_THUMB_SIZES } from '@/lib/imageSizes';
+import { GALLERY_COLUMNS_STYLE, MASONRY_THUMB_SIZES, sanityImageDimensions } from '@/lib/imageSizes';
 import { Lightbox } from '@/components/Lightbox';
 
 interface MasonryGridProps {
@@ -63,13 +63,12 @@ const MasonryThumb = memo(function MasonryThumb({
 
 export function MasonryGrid({ images, photographerName, fullWidth = false }: MasonryGridProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [frameWidth, setFrameWidth] = useState(300);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const deferredImages = useDeferredValue(images);
 
-  // Real per-image aspect ratios, measured on load. Until measured, a frame
-  // uses the 4:5 fallback so layout stays stable, then snaps to its true ratio.
+  // Per-image aspect ratios: read from the Sanity URL so frames have their
+  // final size in the server render (no shift as images arrive); other URLs are
+  // measured on load and use the 4:5 fallback until then.
   const [dims, setDims] = useState<Record<string, { w: number; h: number }>>({});
   const handleMeasure = useCallback((src: string, w: number, h: number) => {
     setDims((prev) => (prev[src] ? prev : { ...prev, [src]: { w, h } }));
@@ -82,35 +81,6 @@ export function MasonryGrid({ images, photographerName, fullWidth = false }: Mas
     alt: `${photographerName} — ${idx + 1} / ${visibleImages.length}`,
   }));
 
-  useEffect(() => {
-    let ticking = false;
-    const update = () => {
-      // Measure the grid itself — window.innerWidth includes the scrollbar.
-      const w = containerRef.current?.clientWidth || document.documentElement.clientWidth;
-      // Shared gallery columns: 3 from tablet up (work stays large), 2 on phones.
-      const cols = w >= 768 ? 3 : 2;
-      // The grid is `repeat(auto-fill, minmax(frameWidth, 1fr))` with a gap, so the
-      // gaps must come out of the width or the last column never fits.
-      setFrameWidth(Math.floor((w - GRID_GAP * (cols - 1)) / cols));
-      ticking = false;
-    };
-    update();
-    const onResize = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(update);
-    };
-    // Re-measure when the grid itself resizes — it can report 0 while
-    // `content-visibility: auto` keeps it unrendered off-screen.
-    const observer = new ResizeObserver(onResize);
-    if (containerRef.current) observer.observe(containerRef.current);
-    window.addEventListener('resize', onResize, { passive: true });
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('resize', onResize);
-    };
-  }, [fullWidth]);
-
   const openLightbox = useCallback((img: string) => {
     const idx = visibleImages.indexOf(img);
     if (idx >= 0) setLightboxIndex(idx);
@@ -122,10 +92,10 @@ export function MasonryGrid({ images, photographerName, fullWidth = false }: Mas
 
   return (
     <>
-      <div ref={containerRef} className={fullWidth ? 'masonry-scroll w-full' : 'masonry-scroll'}>
-        <MasonryGridLib frameWidth={frameWidth} gap={GRID_GAP}>
+      <div className={fullWidth ? 'masonry-scroll gallery-columns w-full' : 'masonry-scroll gallery-columns'}>
+        <MasonryGridLib style={GALLERY_COLUMNS_STYLE} gap={GRID_GAP}>
           {visibleImages.map((image, idx) => {
-            const d = dims[image];
+            const d = dims[image] ?? sanityImageDimensions(image);
             return (
               <Frame key={image} width={d?.w ?? FRAME_W} height={d?.h ?? FRAME_H}>
                 <MasonryThumb
