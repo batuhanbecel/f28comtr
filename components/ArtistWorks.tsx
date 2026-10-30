@@ -14,6 +14,7 @@ export function ArtistWorks({ works }: { works: ArtistWork[] }) {
       id="artist-works-title"
       label={t.artistWorks.label}
       title={t.artistWorks.title}
+      size="compact"
       items={works.map((work) => {
         const roles = formatRoles(work.roles, t.titleMap, ', ');
         return {
