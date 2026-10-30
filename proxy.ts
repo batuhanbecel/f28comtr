@@ -7,8 +7,18 @@ import {
   langFromAcceptLanguage,
 } from '@/lib/prefs';
 
+const TRAILING_BACKSLASH = /(?:%5C|\\)+$/i;
+
 export async function proxy(request: NextRequest) {
-  const { searchParams } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
+
+  // A link with a stray trailing backslash ("/ai-powered/portfolio\") arrives
+  // as "%5C" and crashed with a 500 on Vercel — send it to the page meant.
+  if (TRAILING_BACKSLASH.test(pathname)) {
+    const clean = request.nextUrl.clone();
+    clean.pathname = pathname.replace(TRAILING_BACKSLASH, '') || '/';
+    return NextResponse.redirect(clean, 308);
+  }
 
   const langParam = searchParams.get('lang');
   const langFromQuery = langParam === 'en' || langParam === 'tr' ? langParam : null;
